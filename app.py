@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, sse
 from flask_cors import CORS
 from optimizer import optimize_placement, get_tech_tree_json, Grid
 from modules import modules
@@ -12,6 +12,8 @@ logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+
+app.register_blueprint(sse, url_prefix="/stream")
 
 # Single message queue for all clients
 message_queue = queue.Queue()
