@@ -10,14 +10,6 @@ from modules import (
     solves,
 )  
 from solve_map_utils import filter_solves # Import the new function
-import json
-import queue
-
-def send_sse_message(message_queue, client_id, message):
-    """Sends an SSE message if the message queue is set."""
-    if message_queue and client_id:
-        message_queue.put(json.dumps({"clientId": client_id, "status": "info", "message": message}))
-
 
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     optimal_grid = None
@@ -382,10 +374,9 @@ def optimize_placement(
             print(
                 f"No best pattern definition found for ship: {ship}, tech: {tech}. Starting with the initial grid."
             )
-            send_sse_message(message_queue, client_id, "No best pattern definition found. Starting with the initial grid.")
+            
     else:
         print(f"No solve found for {ship} {tech}, placing modules in empty slots.")
-        send_sse_message(message_queue, client_id, "No solve found. Placing modules in empty slots.")
         best_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
         best_bonus = calculate_grid_score(best_grid, tech)
         solve_score = 0
@@ -396,7 +387,6 @@ def optimize_placement(
     all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
     if not all_modules_placed:
         print("WARNING: Not all modules for this tech were placed in the grid. Running brute-force solver.")
-        send_sse_message(message_queue, client_id, "Not all modules for this tech were placed in the grid. Running brute-force solver.")
         
         clear_all_modules_of_tech(best_grid, tech)
         temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
@@ -412,7 +402,6 @@ def optimize_placement(
 
         if opportunity:
             print(f"Found opportunity: {opportunity}")
-            send_sse_message(message_queue, client_id, f"Found possble supercharger opportunity. Hold on a moment.")
             # Create a localized grid
             opportunity_x, opportunity_y = opportunity
             localized_grid, start_x, start_y = create_localized_grid(
@@ -431,7 +420,6 @@ def optimize_placement(
                         best_grid, optimized_localized_grid, tech, start_x, start_y
                     )
                     print("BETTER, REFINED GRID FOUND!")
-                    send_sse_message(message_queue, client_id, "Better, refined grid found!")
                     solved_bonus = refined_bonus
                     best_bonus = refined_bonus
                 else:
@@ -451,7 +439,6 @@ def optimize_placement(
         # print_grid_compact(best_grid)
     else:
         print("No valid grid could be generated.")
-        send_sse_message(message_queue, client_id, "No valid grid could be generated.")
 
     return best_grid, percentage
 

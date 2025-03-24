@@ -1,5 +1,6 @@
 # app.py
-from flask import Flask, jsonify, request, Response, sse
+from flask import Flask, jsonify, request, Response
+# from flask_sse import sse
 from flask_cors import CORS
 from optimizer import optimize_placement, get_tech_tree_json, Grid
 from modules import modules
@@ -13,7 +14,6 @@ logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-app.register_blueprint(sse, url_prefix="/stream")
 
 # Single message queue for all clients
 message_queue = queue.Queue()
@@ -36,23 +36,19 @@ def send_messages(client_id):
             print(f"An error occurred in send_messages: {e}")
             break
 
-@app.route('/stream')
-def stream():
-    """SSE endpoint to stream messages to the client."""
-    client_id = request.args.get('clientId')
-    if not client_id:
-        return "Client ID is required", 400
+# @app.route('/stream')
+# def stream():
+#     """SSE endpoint to stream messages to the client."""
+#     client_id = request.args.get('clientId')
+#     if not client_id:
+#         return "Client ID is required", 400
 
-    return Response(send_messages(client_id), mimetype='text/event-stream')
+#     return Response(send_messages(client_id), mimetype='text/event-stream')
 
 @app.route('/optimize', methods=['POST'])
 def optimize_grid():
     """Endpoint to optimize the grid and send status updates via SSE."""
     data = request.get_json()
-    client_id = data.get("clientId")
-
-    if not client_id:
-        return jsonify({'error': 'No client id specified'}), 400
 
     ship = data.get("ship")
     tech = data.get('tech')
@@ -65,9 +61,7 @@ def optimize_grid():
 
     grid = Grid.from_dict(grid_data)
 
-    message_queue.put(json.dumps({"clientId": client_id, "status": "info", "message": "Starting optimization..."}))
-    grid, max_bonus = optimize_placement(grid, ship, modules, tech, client_id=client_id, message_queue=message_queue)
-    message_queue.put(json.dumps({"clientId": client_id, "status": "success", "message": "Optimization complete!"}))
+    grid, max_bonus = optimize_placement(grid, ship, modules, tech, message_queue=message_queue)
     return jsonify({'grid': grid.to_dict(), 'max_bonus': max_bonus})
 
 @app.route('/tech_tree/<ship_name>')
