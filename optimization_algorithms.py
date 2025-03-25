@@ -310,6 +310,8 @@ def optimize_placement(
     Returns:
         tuple: A tuple containing the best grid found and the percentage of the solve score achieved.
     """
+    print(f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}'")
+    
     best_grid = Grid.from_dict(grid.to_dict())
     best_bonus = -float("inf")
 
@@ -372,11 +374,11 @@ def optimize_placement(
             best_bonus = highest_pattern_bonus
         else:
             print(
-                f"No best pattern definition found for ship: {ship}, tech: {tech}. Starting with the initial grid."
+                f"ERROR -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}'. Starting with the initial grid."
             )
             
     else:
-        print(f"No solve found for {ship} {tech}, placing modules in empty slots.")
+        print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
         best_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
         best_bonus = calculate_grid_score(best_grid, tech)
         solve_score = 0
@@ -386,7 +388,7 @@ def optimize_placement(
     # Check if all modules were placed
     all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
     if not all_modules_placed:
-        print("WARNING: Not all modules for this tech were placed in the grid. Running brute-force solver.")
+        print("WARNING -- Not all modules for this tech were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
         
         clear_all_modules_of_tech(best_grid, tech)
         temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
@@ -395,18 +397,20 @@ def optimize_placement(
             best_bonus = temp_best_bonus
             solved_bonus = best_bonus
         else:
-            print("Brute-force solver failed to find a valid placement.")
+            print("ERROR -- Brute-force solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
     else:
         # Check for supercharged opportunities
         opportunity = find_supercharged_opportunities(best_grid, modules, ship, tech)
 
         if opportunity:
-            print(f"Found opportunity: {opportunity}")
+            print(f"INFO -- Found opportunity: {opportunity}")
             # Create a localized grid
             opportunity_x, opportunity_y = opportunity
             localized_grid, start_x, start_y = create_localized_grid(
                 best_grid, opportunity_x, opportunity_y
             )
+
+            print_grid_compact(localized_grid)
 
             # Refine the localized grid
             optimized_localized_grid, refined_bonus = refine_placement(
@@ -419,11 +423,11 @@ def optimize_placement(
                     apply_localized_grid_changes(
                         best_grid, optimized_localized_grid, tech, start_x, start_y
                     )
-                    print("BETTER, REFINED GRID FOUND!")
+                    print(f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'")
                     solved_bonus = refined_bonus
                     best_bonus = refined_bonus
                 else:
-                    print("Refined grid did not improve the score.")
+                    print(f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {refined_bonus}")
             else:
                 print("refine_placement returned None. No changes made.")
 
@@ -435,18 +439,17 @@ def optimize_placement(
 
 
     if best_grid is not None:
-        print(f"Percentage of Solve Score Achieved: {percentage:.2f}% (Current Score: {best_bonus:.2f}, Adjacency Score: {best_pattern_adjacency_score:.2f})")
+        print(f"SUCCESS -- Percentage of Solve Score Achieved: {percentage:.2f}% (Current Score: {best_bonus:.2f}, Adjacency Score: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}'")
         # print_grid_compact(best_grid)
     else:
-        print("No valid grid could be generated.")
+        print(f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'")
 
     return best_grid, percentage
-
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
-        print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
+        print(f"ERROR --  No modules found for ship: '{ship}' -- tech: '{tech}'")
         return grid
 
     module_index = 0  # Keep track of the current module to place
@@ -474,7 +477,7 @@ def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rew
                 module_index += 1  # Move to the next module
 
     if module_index < len(tech_modules) and len(tech_modules) > 0:
-        print(f"Warning: Not enough space to place all modules for ship '{ship}' and tech '{tech}'.")
+        print(f"WARNING -- Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'")
 
     return grid
 
