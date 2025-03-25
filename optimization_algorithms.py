@@ -605,12 +605,18 @@ def create_localized_grid(grid, opportunity_x, opportunity_y):
 
     # Calculate the bounds of the localized grid, clamping to the main grid's edges
     start_x = max(0, opportunity_x - localized_width // 2)
-    start_y = max(0, opportunity_y - localized_height // 2)
+    start_y_unclamped = opportunity_y - localized_height // 2
+    start_y = max(0, start_y_unclamped)
+    
+    # Calculate how much start_y was clamped
+    clamped_diff_y = start_y - start_y_unclamped
+
     end_x = min(
         grid.width, opportunity_x + localized_width // 2 + (localized_width % 2)
     )
+    # Adjust end_y based on how much start_y was clamped
     end_y = min(
-        grid.height, opportunity_y + localized_height // 2 + (localized_height % 2)
+        grid.height, opportunity_y + localized_height // 2 + (localized_height % 2) + clamped_diff_y
     )
 
     # Adjust the localized grid size based on the clamped bounds
@@ -631,6 +637,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y):
                 "supercharged"
             ]
 
+    print_grid_compact(localized_grid)
     return localized_grid, start_x, start_y
 
 
