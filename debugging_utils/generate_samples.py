@@ -1,5 +1,10 @@
+import sys
+import os
 import random
-import numpy as np
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, project_root)
+
 from optimizer import optimize_placement, Grid, print_grid_compact
 from modules import modules  # Import modules from modules_refactored.py
 
