@@ -637,7 +637,6 @@ def create_localized_grid(grid, opportunity_x, opportunity_y):
                 "supercharged"
             ]
 
-    print_grid_compact(localized_grid)
     return localized_grid, start_x, start_y
 
 
