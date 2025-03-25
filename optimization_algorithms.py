@@ -11,7 +11,7 @@ from modules import (
 )  
 from solve_map_utils import filter_solves # Import the new function
 
-def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
+def refine_placement_old(grid, ship, modules, tech, player_owned_rewards=None):
     optimal_grid = None
     highest_bonus = 0.0
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
@@ -66,11 +66,69 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
 
             core_bonus = calculate_grid_score(temp_grid_inner, tech)
 
+
             if core_bonus > highest_bonus:
                 highest_bonus = core_bonus
                 optimal_grid = temp_grid_inner.copy()  # Store the best-found grid
 
+
     return optimal_grid, highest_bonus
+
+def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
+    optimal_grid = None
+    highest_bonus = 0.0
+    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+
+    if tech_modules is None:
+        print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
+        return None, 0.0
+
+    # Precompute available positions for fast access
+    available_positions = [
+        (x, y) for y in range(grid.height) for x in range(grid.width)
+        if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]
+    ]
+
+    # Check if there are enough available positions for all modules
+    if len(available_positions) < len(tech_modules):
+        print(f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'.")
+        return None, 0.0
+
+    # Generate all permutations of module placements
+    for placement in permutations(available_positions, len(tech_modules)):
+        # Clear all modules of the selected technology
+        for y in range(grid.height):
+            for x in range(grid.width):
+                if grid.get_cell(x, y)["tech"] == tech:
+                    grid.cells[y][x]["module"] = None
+                    grid.cells[y][x]["tech"] = None
+                    grid.cells[y][x]["type"] = None
+                    grid.cells[y][x]["bonus"] = 0
+                    grid.cells[y][x]["adjacency"] = False
+                    grid.cells[y][x]["sc_eligible"] = False
+                    grid.cells[y][x]["image"] = None
+
+        # Place all modules in the current permutation
+        for index, (x, y) in enumerate(placement):
+            module = tech_modules[index]
+            place_module(
+                grid, x, y,
+                module["id"], module["label"], tech,
+                module["type"], module["bonus"],
+                module["adjacency"], module["sc_eligible"],
+                module["image"],
+            )
+
+        # Calculate the score for the current arrangement
+        grid_bonus = calculate_grid_score(grid, tech)
+
+        # Update the best grid if a better score is found
+        if grid_bonus > highest_bonus:
+            highest_bonus = grid_bonus
+            optimal_grid = grid.copy()
+
+    return optimal_grid, highest_bonus
+
 
 def rotate_pattern(pattern):
     """Rotates a pattern 90 degrees clockwise."""
@@ -248,7 +306,7 @@ def count_adjacent_occupied(grid, x, y):
 
 def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
     """
-    Calculates the secondary adjacency score for a pattern placed on the grid.
+    Calculates the adjacency score for a pattern placed on the grid.
 
     Args:
         grid (Grid): The grid.
@@ -257,7 +315,7 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
         start_y (int): The starting y-coordinate of the pattern.
 
     Returns:
-        int: The secondary adjacency score.
+        int: The adjacency score.
     """
     total_adjacency_score = 0
     pattern_positions = set()
@@ -281,12 +339,12 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
             if (
                 0 <= adj_x < grid.width
                 and 0 <= adj_y < grid.height
-                and (adj_x, adj_y) not in pattern_positions
                 and grid.get_cell(adj_x, adj_y)["module"] is not None
             ):
                 total_adjacency_score += 1
 
     return total_adjacency_score
+
 
 def optimize_placement(
     grid,
@@ -311,9 +369,10 @@ def optimize_placement(
         tuple: A tuple containing the best grid found and the percentage of the solve score achieved.
     """
     print(f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}'")
-    
+
     best_grid = Grid.from_dict(grid.to_dict())
     best_bonus = -float("inf")
+    best_adjacency_score = -float("inf")
 
     best_pattern_grid = Grid.from_dict(grid.to_dict())
     highest_pattern_bonus = -float("inf")
@@ -351,16 +410,22 @@ def optimize_placement(
             # Try placing the pattern in all possible positions
             for start_x in range(grid.width - pattern_width + 1):
                 for start_y in range(grid.height - pattern_height + 1):
+                    # Calculate the bonus before applying the pattern
+                    pre_pattern_bonus = calculate_grid_score(temp_grid, tech)
+
                     # Apply the pattern to the persistent temp_grid
                     pattern_result, adjacency_score = apply_pattern_to_grid(
                         temp_grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards
                     )
+
                     if pattern_result == 0:
-                        current_pattern_bonus = 0
+                        current_pattern_bonus = pre_pattern_bonus
                     else:
                         current_pattern_bonus = calculate_grid_score(temp_grid, tech)
 
-                    if current_pattern_bonus > highest_pattern_bonus:
+                    if current_pattern_bonus > highest_pattern_bonus or (
+                        current_pattern_bonus == highest_pattern_bonus and adjacency_score > best_pattern_adjacency_score
+                    ):
                         highest_pattern_bonus = current_pattern_bonus
                         best_pattern_grid = Grid.from_dict(temp_grid.to_dict())
                         best_pattern_adjacency_score = adjacency_score
@@ -376,7 +441,7 @@ def optimize_placement(
             print(
                 f"ERROR -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}'. Starting with the initial grid."
             )
-            
+
     else:
         print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
         best_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
@@ -389,7 +454,7 @@ def optimize_placement(
     all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
     if not all_modules_placed:
         print(f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
-        
+
         clear_all_modules_of_tech(best_grid, tech)
         temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
         if temp_best_grid is not None:
@@ -445,6 +510,7 @@ def optimize_placement(
         print(f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'")
 
     return best_grid, percentage
+
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
@@ -586,7 +652,6 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
     # No opportunities found
     return None
 
-
 def create_localized_grid(grid, opportunity_x, opportunity_y):
     """
     Creates a localized grid around a given opportunity, ensuring it stays within
@@ -604,7 +669,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y):
             - start_y (int): The starting y-coordinate of the localized grid in the main grid.
     """
     localized_width = 4
-    localized_height = 4
+    localized_height = 3
 
     # Calculate the bounds of the localized grid, clamping to the main grid's edges
     start_x = max(0, opportunity_x - localized_width // 2)

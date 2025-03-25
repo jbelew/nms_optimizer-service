@@ -48,11 +48,11 @@ initial_grid_config = {
 }
 
 # Set supercharged slots in the initial grid (optional)
-supercharged_positions = [(0, 1), (1, 0), (1,1)]  # Example: (x, y) coordinates
+supercharged_positions = [(1, 0), (3, 0)]  # Example: (x, y) coordinates
 for x, y in supercharged_positions:
     initial_grid_config["cells"][y][x]["supercharged"] = True
     
-inactive_positions = [(2, 0)]  # Example: (x, y) coordinates
+inactive_positions = []  # Example: (x, y) coordinates
 for x, y in inactive_positions:
     initial_grid_config["cells"][y][x]["active"] = False
 
