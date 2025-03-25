@@ -388,7 +388,7 @@ def optimize_placement(
     # Check if all modules were placed
     all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
     if not all_modules_placed:
-        print(f"WARNING -- Not all modules for this tech were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
+        print(f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
         
         clear_all_modules_of_tech(best_grid, tech)
         temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
