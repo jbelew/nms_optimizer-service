@@ -1,3 +1,8 @@
-src/__pycache__/
-src/tests/__pycache__/
+# Ignore Python bytecode files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore virtual environments
 venv/
+.env/
