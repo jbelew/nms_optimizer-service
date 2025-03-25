@@ -388,7 +388,7 @@ def optimize_placement(
     # Check if all modules were placed
     all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
     if not all_modules_placed:
-        print("WARNING -- Not all modules for this tech were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
+        print(f"WARNING -- Not all modules for this tech were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
         
         clear_all_modules_of_tech(best_grid, tech)
         temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
@@ -397,7 +397,7 @@ def optimize_placement(
             best_bonus = temp_best_bonus
             solved_bonus = best_bonus
         else:
-            print("ERROR -- Brute-force solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
+            print(f"ERROR -- Brute-force solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
     else:
         # Check for supercharged opportunities
         opportunity = find_supercharged_opportunities(best_grid, modules, ship, tech)
