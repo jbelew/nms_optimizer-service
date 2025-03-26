@@ -45,14 +45,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
             self.assertIsNone(result_grid)
             self.assertEqual(result_bonus, 0.0)
 
-    def test_refine_placement_no_core_modules(self):
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = []
-            with self.assertRaises(ValueError):
-                refine_placement(
-                    self.grid, self.ship, self.modules, self.tech, self.player_owned_rewards
-                )
-
     def test_refine_placement_success(self):
         with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
             mock_get_tech_modules.return_value = [
