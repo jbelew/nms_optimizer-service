@@ -21,7 +21,6 @@ def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=N
         print(f"Error generating solve map for {tech}: {e}")
         return None
 
-
 def generate_solve_map_template(grid):
     """Generates a solve map template from a Grid object."""
     template = {}
@@ -41,7 +40,7 @@ if __name__ == "__main__":
 
     tech = args.tech  # Get technology from command line or use default
 
-    solve_map, solve_score = generate_solve_map(tech, 4, 3)
+    solve_map, solve_score = generate_solve_map(tech, 3, 3)
 
     if solve_map:
         print(f"\nSolve map for {tech}: {solve_score:.2f}")  # Corrected formatting

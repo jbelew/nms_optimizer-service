@@ -73,11 +73,11 @@ modules = {
                     "label": "Hyperdrive",
                     "key": "hyper",
                     "modules": [
-                        {"id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": True, "sc_eligible": False, "image": "hyperdrive.png"},
-                        {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.2, "adjacency": False, "sc_eligible": False, "image": "atlantid.png"},
-                        {"id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.1, "adjacency": False, "sc_eligible": False, "image": "cadmium.png"},
-                        {"id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.1, "adjacency": False, "sc_eligible": False, "image": "emeril.png"},
-                        {"id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.1, "adjacency": False, "sc_eligible": False, "image": "indium.png"},              
+                        {"id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": True, "sc_eligible": False, "image": "hyperdrive.png"},
+                        {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.02, "adjacency": True, "sc_eligible": False, "image": "atlantid.png"},
+                        {"id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.01, "adjacency": True, "sc_eligible": False, "image": "cadmium.png"},
+                        {"id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.01, "adjacency": True, "sc_eligible": False, "image": "emeril.png"},
+                        {"id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.01, "adjacency": True, "sc_eligible": False, "image": "indium.png"},              
                         {"id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.00, "adjacency": False, "sc_eligible": False, "image": "emergency.png"},
                         {"id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .320, "adjacency": True, "sc_eligible": True, "image": "hyper-upgrade.png"},
                         {"id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .310, "adjacency": True, "sc_eligible": True, "image": "hyper-upgrade.png"},
@@ -234,16 +234,16 @@ solves = {
         "hyper": {
             "map": {
                 (0, 0): "HD",
-                (1, 0): "Xb",
-                (2, 0): "ED",
-                (0, 1): "Xc",
+                (1, 0): "AD",
+                (2, 0): "CD",
+                (0, 1): "ED",
                 (1, 1): "Xa",
-                (2, 1): "CD",
-                (0, 2): "AD",
-                (1, 2): "ID",
-                (2, 2): "EW",
+                (2, 1): "Xb",
+                (0, 2): "EW",
+                (1, 2): "Xc",
+                (2, 2): "ID",
             },
-            "score": 4.78
+            "score": 4.22
         },
         "launch": {
             "map": {
