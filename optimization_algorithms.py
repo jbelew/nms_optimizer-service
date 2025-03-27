@@ -668,7 +668,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y):
             - start_x (int): The starting x-coordinate of the localized grid in the main grid.
             - start_y (int): The starting y-coordinate of the localized grid in the main grid.
     """
-    localized_width = 3
+    localized_width = 4
     localized_height = 3
 
     # Calculate the bounds of the localized grid, clamping to the main grid's edges
