@@ -1,25 +1,29 @@
 # module_placement.py
-from grid_utils import Grid
+def place_module(grid, x, y, module_id, label, tech, module_type, bonus, adjacency, sc_eligible, image):
+    """Places a module on the grid at the specified position."""
+    grid.cells[y][x]["module"] = module_id
+    grid.cells[y][x]["label"] = label
+    grid.cells[y][x]["tech"] = tech
+    grid.cells[y][x]["type"] = module_type
+    grid.cells[y][x]["bonus"] = bonus
+    grid.cells[y][x]["adjacency"] = adjacency
+    grid.cells[y][x]["sc_eligible"] = sc_eligible
+    grid.cells[y][x]["image"] = image
+    grid.cells[y][x]["module_position"] = (x, y)
 
-def place_module(
-    grid: Grid,
-    x: int,
-    y: int,
-    module: str | None,
-    label: str | None,
-    tech: str | None,
-    type: str,
-    bonus: float,
-    adjacency: bool,
-    sc_eligible: bool,
-    image: str | None,
-) -> None:
-    """Places a module in the grid at the specified position."""
-    grid.set_module(x, y, module)
-    grid.set_label(x, y, label)
-    grid.set_tech(x, y, tech)
-    grid.set_type(x, y, type)
-    grid.set_bonus(x, y, bonus)
-    grid.set_adjacency(x, y, adjacency)
-    grid.set_sc_eligible(x, y, sc_eligible)
-    grid.set_image(x, y, image)
+def clear_all_modules_of_tech(grid, tech):
+    """Clears all modules of the specified tech type from the entire grid,
+    but preserves the 'supercharged' status of cells.
+    """
+    for y in range(grid.height):
+        for x in range(grid.width):
+            if grid.get_cell(x, y)["tech"] == tech:
+                grid.cells[y][x]["module"] = None
+                grid.cells[y][x]["label"] = ""
+                grid.cells[y][x]["tech"] = None
+                grid.cells[y][x]["type"] = ""
+                grid.cells[y][x]["bonus"] = 0
+                grid.cells[y][x]["adjacency"] = False
+                grid.cells[y][x]["sc_eligible"] = False
+                grid.cells[y][x]["image"] = None
+                grid.cells[y][x]["module_position"] = None

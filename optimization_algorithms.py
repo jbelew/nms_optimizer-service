@@ -3,76 +3,14 @@ from grid_utils import Grid
 from modules_data import get_tech_modules
 from grid_display import print_grid_compact, print_grid
 from bonus_calculations import calculate_grid_score
-from module_placement import place_module
+from module_placement import place_module, clear_all_modules_of_tech # Import from module_placement
+from simulated_annealing import simulated_annealing
 from itertools import permutations
 from itertools import combinations
 from modules import (
     solves,
 )  
 from solve_map_utils import filter_solves # Import the new function
-
-def refine_placement_old(grid, ship, modules, tech, player_owned_rewards=None):
-    optimal_grid = None
-    highest_bonus = 0.0
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
-
-    if tech_modules is None:
-        print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
-        return None, 0.0
-
-    core_modules = [module for module in tech_modules if module["type"] == "core"]
-    bonus_modules = [module for module in tech_modules if module["type"] == "bonus"]
-
-    if not core_modules:
-        raise ValueError("No core modules specified")
-
-    core_module = core_modules[0]  # Assuming one core module
-
-    # Precompute available positions for fast access
-    available_positions = [
-        (x, y) for y in range(grid.height) for x in range(grid.width)
-        if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]
-    ]
-
-    for core_x, core_y in available_positions:
-        temp_grid = grid.copy()  # Use a dedicated copy method instead of to_dict/from_dict
-
-        place_module(
-            temp_grid, core_x, core_y,
-            core_module["id"], core_module["label"], tech,
-            core_module["type"], core_module["bonus"],
-            core_module["adjacency"], core_module["sc_eligible"],
-            core_module["image"],
-        )
-
-        # Get new available positions after placing core
-        new_available_positions = [
-            (x, y) for x, y in available_positions if temp_grid.get_cell(x, y)["module"] is None
-        ]
-
-        # Use combinations for all possible bonus placements
-        for bonus_placement in combinations(new_available_positions, min(len(bonus_modules), len(new_available_positions))):
-            temp_grid_inner = temp_grid.copy()  # Avoid full grid recreation
-
-            for index, (x, y) in enumerate(bonus_placement):
-                bonus_module = bonus_modules[index]
-                place_module(
-                    temp_grid_inner, x, y,
-                    bonus_module["id"], bonus_module["label"], tech,
-                    bonus_module["type"], bonus_module["bonus"],
-                    bonus_module["adjacency"], bonus_module["sc_eligible"],
-                    bonus_module["image"],
-                )
-
-            core_bonus = calculate_grid_score(temp_grid_inner, tech)
-
-
-            if core_bonus > highest_bonus:
-                highest_bonus = core_bonus
-                optimal_grid = temp_grid_inner.copy()  # Store the best-found grid
-
-
-    return optimal_grid, highest_bonus
 
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     optimal_grid = None
@@ -453,16 +391,17 @@ def optimize_placement(
     # Check if all modules were placed
     all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
     if not all_modules_placed:
-        print(f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running brute-force solver.")
+        print(f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver.")
 
         clear_all_modules_of_tech(best_grid, tech)
-        temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
+        temp_best_grid, temp_best_bonus = simulated_annealing(best_grid, ship, modules, tech, player_owned_rewards, initial_temperature=2000, iterations_per_temp=25, cooling_rate=0.98)
+        print_grid_compact(temp_best_grid)
         if temp_best_grid is not None:
             best_grid = temp_best_grid
             best_bonus = temp_best_bonus
             solved_bonus = best_bonus
         else:
-            print(f"ERROR -- Brute-force solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
+            print(f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
     else:
         # Check for supercharged opportunities
         opportunity = find_supercharged_opportunities(best_grid, modules, ship, tech)
@@ -475,12 +414,16 @@ def optimize_placement(
                 best_grid, opportunity_x, opportunity_y
             )
 
-            print_grid_compact(localized_grid)
+            # Refine the localized grid
+            # optimized_localized_grid, refined_bonus = refine_placement(
+            #     localized_grid, ship, modules, tech, player_owned_rewards
+            # )
 
             # Refine the localized grid
-            optimized_localized_grid, refined_bonus = refine_placement(
+            optimized_localized_grid, refined_bonus = simulated_annealing(
                 localized_grid, ship, modules, tech, player_owned_rewards
             )
+
 
             if optimized_localized_grid is not None:
                 # Compare bonuses and apply changes if the refined bonus is higher
@@ -494,7 +437,7 @@ def optimize_placement(
                 else:
                     print(f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {refined_bonus}")
             else:
-                print("refine_placement returned None. No changes made.")
+                print("simulated_annealing returned None. No changes made.")
 
     # Calculate the percentage of the solve score achieved
     if solve_score > 0:
@@ -668,7 +611,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y):
             - start_x (int): The starting x-coordinate of the localized grid in the main grid.
             - start_y (int): The starting y-coordinate of the localized grid in the main grid.
     """
-    localized_width = 3
+    localized_width = 4
     localized_height = 3
 
     # Calculate the bounds of the localized grid, clamping to the main grid's edges
@@ -768,18 +711,3 @@ def check_all_modules_placed(grid, modules, ship, tech):
 
     all_module_ids = {module["id"] for module in tech_modules}
     return placed_module_ids == all_module_ids
-
-
-def clear_all_modules_of_tech(grid, tech):
-    """Clears all modules of the specified tech type from the entire grid."""
-    for y in range(grid.height):
-        for x in range(grid.width):
-            if grid.get_cell(x, y)["tech"] == tech:
-                grid.cells[y][x]["module"] = None
-                grid.cells[y][x]["label"] = ""
-                grid.cells[y][x]["tech"] = None
-                grid.cells[y][x]["type"] = ""
-                grid.cells[y][x]["bonus"] = 0
-                grid.cells[y][x]["adjacency"] = False
-                grid.cells[y][x]["sc_eligible"] = False
-                grid.cells[y][x]["image"] = None
