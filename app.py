@@ -61,8 +61,11 @@ def optimize_grid():
 
     grid = Grid.from_dict(grid_data)
 
-    grid, max_bonus = optimize_placement(grid, ship, modules, tech, message_queue=message_queue)
-    return jsonify({'grid': grid.to_dict(), 'max_bonus': max_bonus})
+    try:
+        grid, max_bonus = optimize_placement(grid, ship, modules, tech, message_queue=message_queue)
+        return jsonify({'grid': grid.to_dict(), 'max_bonus': max_bonus})
+    except ValueError as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/tech_tree/<ship_name>')
 def get_technology_tree(ship_name):

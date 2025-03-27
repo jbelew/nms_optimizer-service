@@ -138,6 +138,17 @@ modules = {
                         {"id": "NA", "type": "bonus", "label": "Nada Figurine", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "nada.png"},          
                         {"id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "null.png"},
                     ],
+                 },
+                 {
+                "label": "Scanners, Teleporter, Etc ...",
+                    "key": "scanners",
+                    "modules": [
+                        {"id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "cargo.png"},
+                        {"id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "economy.png"},
+                        {"id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "conflict.png"},
+                        {"id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "aquajets.png"},
+                        {"id": "TP", "type": "core", "label": "Teleport Receiver", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "teleport.png"},
+                    ],
                  },                 
                  {
                     "label": "Starship Shields",
@@ -150,17 +161,7 @@ modules = {
                         {"id": "Xc", "type": "bonus", "label": "Shield Upgrade Theta", "bonus": 0.28, "adjacency": True, "sc_eligible": True, "image": "shield-upgrade.png"},
                     ],
                  },
-                 {
-                "label": "Scanners, Teleporter, Etc ...",
-                    "key": "scanners",
-                    "modules": [
-                        {"id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "cargo.png"},
-                        {"id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "economy.png"},
-                        {"id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "conflict.png"},
-                        {"id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "aquajets.png"},
-                        {"id": "TP", "type": "core", "label": "Teleport Receiver", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "teleport.png"},
-                    ],
-                 },
+
             ]
         },
     },

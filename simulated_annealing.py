@@ -39,9 +39,9 @@ def simulated_annealing(grid, ship, modules, tech, player_owned_rewards=None, in
         (x, y) for y in range(grid.height) for x in range(grid.width)
         if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]
     ]
-    if len(available_positions) < len(tech_modules):
-        print(f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'.")
-        return grid, 0.0
+    # if len(available_positions) < len(tech_modules):
+    #     print(f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'.")
+    #     return grid, 0.0
 
     # Initialize the current state with a placement that prioritizes supercharged slots
     current_grid = grid.copy()
@@ -88,6 +88,8 @@ def simulated_annealing(grid, ship, modules, tech, player_owned_rewards=None, in
     end_time = time.time()  # End timing
     elapsed_time = end_time - start_time
     print(f"DEBUG -- Simulated annealing finished. Best score found: {best_score:.2f} -- Time: {elapsed_time:.4f}s")
+    if best_grid is None or best_score == 0:
+        raise ValueError(f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
     return best_grid, best_score
 
 def get_swap_probability(temperature, initial_temperature, stopping_temperature, initial_swap_probability, final_swap_probability):

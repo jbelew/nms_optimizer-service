@@ -308,6 +308,19 @@ def optimize_placement(
     """
     print(f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}'")
 
+    # --- Early Check: Any Empty, Active Slots? ---
+    has_empty_active_slots = False
+    for y in range(grid.height):
+        for x in range(grid.width):
+            if grid.get_cell(x, y)["active"] and grid.get_cell(x, y)["module"] is None:
+                has_empty_active_slots = True
+                break  # Found at least one empty, active slot, no need to check further
+        if has_empty_active_slots:
+            break
+    if not has_empty_active_slots:
+        raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
+    # --- End of Early Check ---
+
     best_grid = Grid.from_dict(grid.to_dict())
     best_bonus = -float("inf")
     best_adjacency_score = -float("inf")
@@ -337,6 +350,8 @@ def optimize_placement(
             print("Error: Grid.from_dict() returned None")
             return best_grid, best_bonus
 
+        pattern_applied = False  # Flag to check if any pattern was successfully applied
+        modules_placed_in_solve = False  # Flag to track if any modules were placed during the solve attempt
         for pattern in patterns_to_try:
             x_coords = [coord[0] for coord in pattern.keys()]
             y_coords = [coord[1] for coord in pattern.keys()]
@@ -360,6 +375,8 @@ def optimize_placement(
                         current_pattern_bonus = pre_pattern_bonus
                     else:
                         current_pattern_bonus = calculate_grid_score(temp_grid, tech)
+                        pattern_applied = True  # A pattern was successfully applied
+                        modules_placed_in_solve = True
 
                     if current_pattern_bonus > highest_pattern_bonus or (
                         current_pattern_bonus == highest_pattern_bonus and adjacency_score > best_pattern_adjacency_score
@@ -377,8 +394,30 @@ def optimize_placement(
             best_bonus = highest_pattern_bonus
         else:
             print(
-                f"ERROR -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}'. Starting with the initial grid."
+                f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to simulated annealing."
             )
+            best_grid = Grid.from_dict(grid.to_dict())
+            clear_all_modules_of_tech(best_grid, tech)
+            temp_best_grid, temp_best_bonus = simulated_annealing(best_grid, ship, modules, tech, player_owned_rewards)
+            if temp_best_grid is not None:
+                best_grid = temp_best_grid
+                best_bonus = temp_best_bonus
+            else:
+                print(f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
+                raise ValueError(f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
+            pattern_applied = True
+
+        if not pattern_applied:
+            print(f"WARNING -- No pattern was applied for ship: '{ship}' -- tech: '{tech}'. Falling back to simulated annealing.")
+            best_grid = Grid.from_dict(grid.to_dict())
+            clear_all_modules_of_tech(best_grid, tech)
+            temp_best_grid, temp_best_bonus = simulated_annealing(best_grid, ship, modules, tech, player_owned_rewards)
+            if temp_best_grid is not None:
+                best_grid = temp_best_grid
+                best_bonus = temp_best_bonus
+            else:
+                print(f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
+                raise ValueError(f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
 
     else:
         print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
@@ -394,14 +433,14 @@ def optimize_placement(
         print(f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver.")
 
         clear_all_modules_of_tech(best_grid, tech)
-        temp_best_grid, temp_best_bonus = simulated_annealing(best_grid, ship, modules, tech, player_owned_rewards, initial_temperature=2000, iterations_per_temp=25, cooling_rate=0.98)
-        print_grid_compact(temp_best_grid)
+        temp_best_grid, temp_best_bonus = simulated_annealing(best_grid, ship, modules, tech, player_owned_rewards, initial_temperature=2000, cooling_rate=.98, iterations_per_temp=20)
         if temp_best_grid is not None:
             best_grid = temp_best_grid
             best_bonus = temp_best_bonus
             solved_bonus = best_bonus
         else:
             print(f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
+            raise ValueError(f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'.")
     else:
         # Check for supercharged opportunities
         opportunity = find_supercharged_opportunities(best_grid, modules, ship, tech)
