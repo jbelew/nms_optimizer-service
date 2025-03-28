@@ -7,7 +7,7 @@ from modules_data import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
 
-def simulated_annealing(grid, ship, modules, tech, player_owned_rewards=None, initial_temperature=4000, cooling_rate=0.994, stopping_temperature=1.75, iterations_per_temp=35, initial_swap_probability=0.55, final_swap_probability=0.4):
+def simulated_annealing(grid, ship, modules, tech, player_owned_rewards=None, initial_temperature=4000, cooling_rate=0.996, stopping_temperature=1.5, iterations_per_temp=40, initial_swap_probability=0.55, final_swap_probability=0.4):
     """
     Performs simulated annealing to optimize module placement on a grid,
     prioritizing adjacency bonuses.
