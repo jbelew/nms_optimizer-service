@@ -12,9 +12,7 @@ def place_module(grid, x, y, module_id, label, tech, module_type, bonus, adjacen
     grid.cells[y][x]["module_position"] = (x, y)
 
 def clear_all_modules_of_tech(grid, tech):
-    """Clears all modules of the specified tech type from the entire grid,
-    but preserves the 'supercharged' status of cells.
-    """
+    """Clears all modules of the specified tech type from the entire grid."""
     for y in range(grid.height):
         for x in range(grid.width):
             if grid.get_cell(x, y)["tech"] == tech:

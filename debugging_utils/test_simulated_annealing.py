@@ -129,13 +129,13 @@ if __name__ == "__main__":
 
     # Simulated Annealing Parameters
     sa_params = {
-        "initial_temperature": 3500,
-        "cooling_rate": 0.99,
-        "stopping_temperature": 0.1,
-        "iterations_per_temp": 45,
-        "initial_swap_probability": 0.60,  # Start with a higher swap probability
-        "final_swap_probability": 0.40,    # End with a lower swap probability
+        "initial_temperature": 4000,  # Small bump to ensure early movement
+        "cooling_rate": 0.995,  # Slower cooling to avoid premature freezing
+        "stopping_temperature": 1.0,  # Ensures enough late-stage refinement
+        "iterations_per_temp": 30,  # Keep runtime in check
+        "initial_swap_probability": 0.55,  # Lower early randomness slightly
+        "final_swap_probability": 0.4,  # Allow some late movement without instability
     }
-
+    
     for _ in range(5):
         test_algorithm_comparison(ship, tech, sa_params)
