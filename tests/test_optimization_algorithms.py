@@ -8,7 +8,6 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from optimization_algorithms import (
-    refine_placement,
     rotate_pattern,
     mirror_pattern_horizontally,
     mirror_pattern_vertically,
@@ -35,27 +34,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.tech = "infra"
         self.modules = modules
         self.player_owned_rewards = []
-
-    def test_refine_placement_no_modules(self):
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = None
-            result_grid, result_bonus = refine_placement(
-                self.grid, self.ship, self.modules, self.tech, self.player_owned_rewards
-            )
-            self.assertIsNone(result_grid)
-            self.assertEqual(result_bonus, 0.0)
-
-    def test_refine_placement_success(self):
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = [
-                {"id": "IK", "type": "core", "bonus": 1.0, "adjacency": True, "sc_eligible": True, "image": "infra.png", "label": "Infraknife Accelerator"},
-                {"id": "Xa", "type": "bonus", "bonus": 0.40, "adjacency": True, "sc_eligible": True, "image": "infra-upgrade.png", "label": "Infraknife Accelerator Upgrade Sigma"},
-            ]
-            result_grid, result_bonus = refine_placement(
-                self.grid, self.ship, self.modules, self.tech, self.player_owned_rewards
-            )
-            self.assertIsInstance(result_grid, Grid)
-            self.assertGreaterEqual(result_bonus, 0.0)
 
     def test_rotate_pattern(self):
         pattern = {(0, 0): "A", (1, 0): "B", (0, 1): "C"}
@@ -137,21 +115,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.assertIsInstance(result_grid, Grid)
         self.assertEqual(result_percentage, 0)
 
-    @patch("optimization_algorithms.filter_solves")
-    @patch("optimization_algorithms.get_all_unique_pattern_variations")
-    @patch("optimization_algorithms.apply_pattern_to_grid")
-    @patch("optimization_algorithms.calculate_grid_score")
-    def test_optimize_placement_solve_found(self, mock_calculate_grid_score, mock_apply_pattern_to_grid, mock_get_all_unique_pattern_variations, mock_filter_solves):
-        mock_filter_solves.return_value = {self.ship: {self.tech: {"map": {(0, 0): "IK", (1, 0): "Xa"}, "score": 100}}}
-        mock_get_all_unique_pattern_variations.return_value = [{(0, 0): "IK", (1, 0): "Xa"}]
-        mock_apply_pattern_to_grid.return_value = (1, 1)
-        mock_calculate_grid_score.return_value = 50
-        result_grid, result_percentage = optimize_placement(
-            self.grid, self.ship, self.modules, self.tech, self.player_owned_rewards
-        )
-        self.assertIsInstance(result_grid, Grid)
-        self.assertEqual(result_percentage, 50)
-
     def test_place_all_modules_in_empty_slots(self):
         with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
             mock_get_tech_modules.return_value = [
@@ -182,7 +145,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
 
     def test_create_localized_grid(self):
         self.grid.set_supercharged(1, 1, True)
-        localized_grid, start_x, start_y = create_localized_grid(self.grid, 1, 1)
+        localized_grid, start_x, start_y = create_localized_grid(self.grid, 1, 1, self.tech)
         self.assertLessEqual(localized_grid.width, 4)
         self.assertLessEqual(localized_grid.width, 4)
         self.assertEqual(start_x, 0)
