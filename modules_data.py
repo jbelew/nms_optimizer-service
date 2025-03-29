@@ -2,6 +2,7 @@
 import json
 from modules import modules
 
+
 def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     """
     Retrieves modules for a specified ship and technology key, considering player-owned rewards.
@@ -31,9 +32,7 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     for tech_type in types_data:
         tech_category = types_data.get(tech_type)
         if tech_category is None:
-            print(
-                f"Error: Technology type '{tech_type}' not found for ship '{ship}'."
-            )
+            print(f"Error: Technology type '{tech_type}' not found for ship '{ship}'.")
             continue  # skip this type and check the next
 
         for technology in tech_category:
@@ -50,16 +49,19 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
                     if module["type"] == "reward":
                         if module["id"] in player_owned_rewards:
                             # Create a copy of the module before modifying it
-                            modified_module = module.copy() 
+                            modified_module = module.copy()
                             modified_module["type"] = "bonus"  # Convert type to bonus
                             filtered_modules.append(modified_module)
                     else:
-                        filtered_modules.append(module)  # No need to copy non-reward modules
+                        filtered_modules.append(
+                            module
+                        )  # No need to copy non-reward modules
 
                 return filtered_modules
 
     print(f"Error: Technology '{tech_key}' not found for ship '{ship}'.")
     return None
+
 
 def get_tech_modules_for_training(modules, ship, tech_key):
     """Retrieves modules for training, returning the modules as they are in modules_refactored.py."""
@@ -87,9 +89,12 @@ def get_tech_tree_json(ship):
         if "error" in tech_tree:
             return json.dumps({"error": tech_tree["error"]})  # Return error as JSON
         else:
-            return json.dumps(tech_tree, indent=2)  # Return tree as JSON with indentation for readability
+            return json.dumps(
+                tech_tree, indent=2
+            )  # Return tree as JSON with indentation for readability
     except Exception as e:
         return json.dumps({"error": str(e)})  # Catch any errors during tree generation
+
 
 def get_tech_tree(ship):
     """Generates a technology tree for a given ship."""
@@ -107,13 +112,20 @@ def get_tech_tree(ship):
         for tech in tech_list:
             tech_tree[tech_type].append(
                 {
-                    "label": tech["label"],  # Label of the technology
-                    "key": tech["key"],  # Key of the technology
-                    "modules": tech["modules"],  # List of modules for this technology
- 
+                    "label": tech["label"],
+                    "key": tech["key"],
+                    "modules": tech["modules"],
+                    "image": tech.get("image"),  # Get the image value
+                    "color": tech.get("color"),  # Get the color value
                 }
             )
 
     return tech_tree
 
-__all__ = ["get_tech_modules", "get_tech_modules_for_training", "get_tech_tree", "get_tech_tree_json"]
+
+__all__ = [
+    "get_tech_modules",
+    "get_tech_modules_for_training",
+    "get_tech_tree",
+    "get_tech_tree_json",
+]
