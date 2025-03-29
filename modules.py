@@ -681,7 +681,7 @@ modules = {
                         {
                             "id": "SB",
                             "type": "reward",
-                            "label": "Tenticled Figurine",
+                            "label": "Tentacled Figurine",
                             "bonus": 0.01,
                             "adjacency": True,
                             "sc_eligible": True,
