@@ -11,7 +11,7 @@ from optimization_algorithms import refine_placement  # Import refine_placement
 from grid_display import print_grid, print_grid_compact
 
 
-def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=None):
+def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=["PC"]):
     """Generates a single solve map for a given technology."""
     grid = Grid(width=grid_width, height=grid_height)
     try:

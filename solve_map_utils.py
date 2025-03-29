@@ -15,6 +15,7 @@ def filter_solves(solves, ship, modules, tech, player_owned_rewards=None):
     Returns:
         dict: A new solves dictionary with unowned modules removed from the solve map.  Returns an empty dictionary if no solves are found for the given ship and tech.
     """
+    
     filtered_solves = {}
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]

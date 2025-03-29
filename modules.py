@@ -114,13 +114,13 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "modules": [
-                        {"id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": True, "sc_eligible": True, "image": "artemis.png"},
-                        {"id": "PB", "type": "bonus", "label": "Polo Figurine", "bonus": 0.05, "adjacency": True, "sc_eligible": True, "image": "polo.png"},
-                        {"id": "SB", "type": "core", "label": "Tenticled Figurine", "bonus": 0.01, "adjacency": True, "sc_eligible": True, "image": "squid.png"},
-                        {"id": "SP", "type": "bonus", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": False, "image": "sputtering-trail.png"},
+                        {"id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": True, "sc_eligible": True, "image": "artemis.png"},
+                        {"id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": True, "sc_eligible": True, "image": "polo.png"},
+                        {"id": "SB", "type": "reward", "label": "Tenticled Figurine", "bonus": 0.01, "adjacency": True, "sc_eligible": True, "image": "squid.png"},
+                        {"id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": False, "image": "sputtering-trail.png"},
                         {"id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": False, "image": "cadmium-trail.png"},
                         {"id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": True, "image": "emeril-trail.png"},
-                        {"id": "TT", "type": "bonus", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": True, "image": "temporal-trail.png"},
+                        {"id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": True, "image": "temporal-trail.png"},
                         {"id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": True, "image": "stealth-trail.png"},
                         {"id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": True, "image": "golden-trail.png"},
                         {"id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": True, "sc_eligible": True, "image": "chromatic-trail.png"},
@@ -140,7 +140,7 @@ modules = {
                     ],
                  },
                  {
-                "label": "Scanners, Teleporter, Etc ...",
+                "label": "Scanners, Teleporter, Etc.",
                     "key": "scanners",
                     "modules": [
                         {"id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": False, "sc_eligible": False, "image": "cargo.png"},
@@ -269,7 +269,7 @@ solves = {
                 (1, 2): "ID",
                 (2, 2): "None",
             },
-            "score": 1.8810000000000002
+            "score": 1.88
         },
         "shield": {
             "map": {
@@ -284,18 +284,18 @@ solves = {
         },
         "trails": {
             "map": {
-                (0, 0): "RT",
-                (1, 0): "ET",
-                (2, 0): "ST",
+                (0, 0): "None",
+                (1, 0): "RT",
+                (2, 0): "CT",
                 (3, 0): "TT",
                 (0, 1): "SB",
                 (1, 1): "AB",
                 (2, 1): "PB",
-                (3, 1): "None",
-                (0, 2): "GT",
-                (1, 2): "CT",
-                (2, 2): "SP",
-                (3, 2): "None",
+                (3, 1): "ET",
+                (0, 2): "None",
+                (1, 2): "GT",
+                (2, 2): "ST",
+                (3, 2): "SP",
             },
             "score": 0.46
         },

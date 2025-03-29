@@ -49,11 +49,13 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
                 for module in modules_list:
                     if module["type"] == "reward":
                         if module["id"] in player_owned_rewards:
-                            module["type"] = "bonus"  # Convert type to bonus
-                            filtered_modules.append(module)
+                            # Create a copy of the module before modifying it
+                            modified_module = module.copy() 
+                            modified_module["type"] = "bonus"  # Convert type to bonus
+                            filtered_modules.append(modified_module)
                     else:
-                        filtered_modules.append(module)
-                        
+                        filtered_modules.append(module)  # No need to copy non-reward modules
+
                 return filtered_modules
 
     print(f"Error: Technology '{tech_key}' not found for ship '{ship}'.")
@@ -105,9 +107,10 @@ def get_tech_tree(ship):
         for tech in tech_list:
             tech_tree[tech_type].append(
                 {
-                    "label": tech["label"],
-                    "key": tech["key"],
-                    # Add other relevant fields if needed
+                    "label": tech["label"],  # Label of the technology
+                    "key": tech["key"],  # Key of the technology
+                    "modules": tech["modules"],  # List of modules for this technology
+ 
                 }
             )
 

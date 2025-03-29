@@ -289,8 +289,6 @@ def optimize_placement(
     ship,
     modules,
     tech,
-    client_id=None,  # Optional client_id
-    message_queue=None,  # Optional message_queue
     player_owned_rewards=None
 ):
     """
@@ -307,6 +305,9 @@ def optimize_placement(
         tuple: A tuple containing the best grid found and the percentage of the solve score achieved.
     """
     print(f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}'")
+
+    if player_owned_rewards is None:
+        player_owned_rewards = []
 
     # --- Early Check: Any Empty, Active Slots? ---
     has_empty_active_slots = False
@@ -373,7 +374,6 @@ def optimize_placement(
                     else:
                         current_pattern_bonus = calculate_grid_score(temp_grid, tech)
                         pattern_applied = True  # A pattern was successfully applied
-                        modules_placed_in_solve = True
 
                     if current_pattern_bonus > highest_pattern_bonus or (
                         current_pattern_bonus == highest_pattern_bonus and adjacency_score > best_pattern_adjacency_score
@@ -426,7 +426,7 @@ def optimize_placement(
     solved_bonus = calculate_grid_score(best_grid, tech)
 
     # Check if all modules were placed
-    all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech)
+    all_modules_placed = check_all_modules_placed(best_grid, modules, ship, tech, player_owned_rewards)
     if not all_modules_placed:
         print(f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver.")
 
@@ -853,7 +853,7 @@ def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
                         "image"
                     ]
 
-def check_all_modules_placed(grid, modules, ship, tech):
+def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=None):
     """
     Checks if all modules for a given tech have been placed in the grid.
 
@@ -862,12 +862,17 @@ def check_all_modules_placed(grid, modules, ship, tech):
         modules (dict): The module data.
         ship (str): The ship type.
         tech (str): The technology type.
+        player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
 
     Returns:
         bool: True if all modules are placed, False otherwise.
     """
+    if player_owned_rewards is None:
+        player_owned_rewards = []
 
-    tech_modules = get_tech_modules(modules, ship, tech)
+    # Get the filtered list of modules
+    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+
     placed_module_ids = set()
 
     for y in range(grid.height):
@@ -878,3 +883,4 @@ def check_all_modules_placed(grid, modules, ship, tech):
 
     all_module_ids = {module["id"] for module in tech_modules}
     return placed_module_ids == all_module_ids
+
