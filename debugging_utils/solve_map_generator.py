@@ -15,7 +15,7 @@ def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=[
     """Generates a single solve map for a given technology."""
     grid = Grid(width=grid_width, height=grid_height)
     try:
-        optimized_grid, optimized_score = refine_placement(grid, "Exotic", modules, tech, player_owned_rewards)  #Using Exotic ship
+        optimized_grid, optimized_score = refine_placement(grid, "standard", modules, tech, player_owned_rewards)
         return optimized_grid, optimized_score
     except Exception as e:
         print(f"Error generating solve map for {tech}: {e}")

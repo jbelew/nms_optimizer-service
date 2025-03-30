@@ -134,7 +134,7 @@ def clear_all_modules(grid):
             grid.cells[y][x]["image"] = None
 
 if __name__ == "__main__":
-    ship = "Exotic"
+    ship = "standard"
     tech = "infra"
 
     test_grid_creators = [

@@ -15,9 +15,6 @@ logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-# Single message queue for all clients
-message_queue = queue.Queue()
-
 @app.route('/optimize', methods=['POST'])
 def optimize_grid():
     """Endpoint to optimize the grid and send status updates via SSE."""
@@ -52,5 +49,17 @@ def get_technology_tree(ship_name):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/ship_types', methods=['GET'])
+def get_ship_types():
+    """Endpoint to get the available ship types and their labels."""
+    ship_types = {}
+    for ship_key, ship_data in modules.items():
+        ship_types[ship_key] = ship_data.get("label")
+
+    print(f"Ship types: {ship_types}")
+    return jsonify(ship_types)
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+

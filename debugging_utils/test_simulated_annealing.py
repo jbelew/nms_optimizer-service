@@ -124,7 +124,7 @@ def test_algorithm_comparison(ship, tech, sa_params):
     print("-" * 30)
 
 if __name__ == "__main__":
-    ship = "Exotic"
+    ship = "standard"
     tech = "pulse"
 
     # Simulated Annealing Parameters

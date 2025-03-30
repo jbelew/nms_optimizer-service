@@ -72,7 +72,7 @@ num_samples = 32  # Generate 5 samples for debugging
 grid_width = 8
 grid_height = 8
 max_supercharged = 4
-ship = "Exotic"
+ship = "standard"
 tech_filter = "infra"
 
 debug_data = generate_debug_data(num_samples, grid_width, grid_height, max_supercharged, ship, tech_filter)

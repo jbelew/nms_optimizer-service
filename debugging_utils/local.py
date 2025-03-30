@@ -60,7 +60,7 @@ for x, y in inactive_positions:
 grid = Grid.from_dict(initial_grid_config)
 
 # Define the optimization parameters
-ship = "Exotic"
+ship = "standard"
 tech = "infra"
 
 # Run the simulated annealing optimization

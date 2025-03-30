@@ -30,7 +30,7 @@ from modules import modules, solves
 class TestOptimizationAlgorithms(unittest.TestCase):
     def setUp(self):
         self.grid = Grid(4, 3)
-        self.ship = "Exotic"
+        self.ship = "standard"
         self.tech = "infra"
         self.modules = modules
         self.player_owned_rewards = []
