@@ -2,7 +2,7 @@
 
 modules = {
     "standard": {
-        "label": "Standard or Exotic",
+        "label": "Standard or Exotic Starship",
         "types": {
             "Weaponry":
                 [
