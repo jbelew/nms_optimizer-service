@@ -38,6 +38,7 @@ def optimize_grid():
         grid, max_bonus = optimize_placement(grid, ship, modules, tech, player_owned_rewards)
         return jsonify({'grid': grid.to_dict(), 'max_bonus': max_bonus})
     except ValueError as e:
+        print_grid_compact(grid)
         return jsonify({'error': str(e)}), 500
 
 @app.route('/tech_tree/<ship_name>')
