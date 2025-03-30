@@ -608,6 +608,8 @@ modules = {
                 {
                     "label": "Bobbleheads",
                     "key": "bobble",
+                    "image": "bobble.webp",
+                    "color": "white",
                     "modules": [
                         {
                             "id": "AP",
@@ -1408,6 +1410,8 @@ modules = {
                 {
                     "label": "Bobbleheads",
                     "key": "bobble",
+                    "image": "bobble.webp",
+                    "color": "white",
                     "modules": [
                         {
                             "id": "AP",
