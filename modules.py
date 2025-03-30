@@ -2,7 +2,7 @@
 
 modules = {
     "standard": {
-        "label": "Standard or Exotic Starship",
+        "label": "Standard / Exotic Starships",
         "types": {
             "Weaponry":
                 [
@@ -803,7 +803,7 @@ modules = {
         },
     },
     "sentinel": {
-        "label": "Sentinel Interceptor",
+        "label": "Sentinel Interceptors",
         "types": {
             "Weaponry":
                 [
