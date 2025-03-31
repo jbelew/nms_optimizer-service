@@ -32,19 +32,16 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
         print(f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'.")
         return None, 0.0
 
+    # Initialize the iteration counter
+    iteration_count = 0
+
     # Generate all permutations of module placements
     for placement in permutations(available_positions, len(tech_modules)):
-        # Clear all modules of the selected technology
-        for y in range(grid.height):
-            for x in range(grid.width):
-                if grid.get_cell(x, y)["tech"] == tech:
-                    grid.cells[y][x]["module"] = None
-                    grid.cells[y][x]["tech"] = None
-                    grid.cells[y][x]["type"] = None
-                    grid.cells[y][x]["bonus"] = 0
-                    grid.cells[y][x]["adjacency"] = False
-                    grid.cells[y][x]["sc_eligible"] = False
-                    grid.cells[y][x]["image"] = None
+        # Increment the iteration counter
+        iteration_count += 1
+
+        # Clear all modules of the selected technology - MOVED INSIDE THE LOOP
+        clear_all_modules_of_tech(grid, tech)
 
         # Place all modules in the current permutation
         for index, (x, y) in enumerate(placement):
@@ -58,12 +55,17 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
             )
 
         # Calculate the score for the current arrangement
+
         grid_bonus = calculate_grid_score(grid, tech)
+        # print_grid(grid)
 
         # Update the best grid if a better score is found
         if grid_bonus > highest_bonus:
             highest_bonus = grid_bonus
             optimal_grid = grid.copy()
+
+    # Print the total number of iterations
+    print(f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'.")
 
     return optimal_grid, highest_bonus
 

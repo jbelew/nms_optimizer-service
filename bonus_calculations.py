@@ -59,17 +59,27 @@ def populate_module_bonuses(grid: Grid, tech: str) -> None:
 
 
 def calculate_core_bonus(grid: Grid, tech: str) -> float:
-    """Calculates the core bonus for the grid, considering only the core module's base bonus and supercharged status."""
+    """Calculates the core bonus for the grid, considering adjacency, base bonus, and supercharged status."""
     core_bonus = 0
     core_x, core_y = None, None
 
-    # Find core module
+    # Find core module and calculate its bonus
     for y in range(grid.height):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)
             if cell["type"] == "core" and cell["tech"] == tech:
                 core_x, core_y = x, y
-                core_bonus = cell["bonus"]  # Use only the base bonus of the core module
+
+                # Calculate adjacency bonus for the core module
+                adjacency_bonus = calculate_adjacency_bonus(grid, x, y)
+
+                # Calculate the total bonus for the core module
+                base_bonus = cell["bonus"]
+                total_bonus = base_bonus * (1 + adjacency_bonus)
+
+                # Apply supercharged modifier if applicable
+                core_bonus = total_bonus
+
                 if cell["sc_eligible"] and cell["supercharged"]:
                     core_bonus *= 1.25  # Apply supercharged modifier
                 break  # Assume only one core module
@@ -122,4 +132,3 @@ def clear_scores(grid: Grid, tech: str) -> None:
             if cell["tech"] == tech:
                 grid.set_total(x, y, 0)
                 grid.set_adjacency_bonus(x, y, 0)
-

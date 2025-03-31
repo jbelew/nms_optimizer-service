@@ -21,6 +21,8 @@ def clear_all_modules_of_tech(grid, tech):
                 grid.cells[y][x]["tech"] = None
                 grid.cells[y][x]["type"] = ""
                 grid.cells[y][x]["bonus"] = 0
+                grid.cells[y][x]["total"] = 0
+                grid.cells[y][x]["adjacency_bonus"] = 0
                 grid.cells[y][x]["adjacency"] = False
                 grid.cells[y][x]["sc_eligible"] = False
                 grid.cells[y][x]["image"] = None
