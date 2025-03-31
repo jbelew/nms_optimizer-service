@@ -49,7 +49,6 @@ def run_simulated_annealing(base_grid, ship, tech, num_runs=10, **kwargs):
     times = []
     best_grid = None
     best_score = -float('inf')
-    final_grid = None
 
     for _ in range(num_runs):
         # Reset the grid to the base grid for each run
@@ -63,7 +62,6 @@ def run_simulated_annealing(base_grid, ship, tech, num_runs=10, **kwargs):
         if score > best_score:
             best_score = score
             best_grid = result_grid
-        final_grid = result_grid # Store the last grid
 
     return scores, times, best_grid, best_score
 
@@ -125,7 +123,7 @@ def test_algorithm_comparison(ship, tech, sa_params):
 
 if __name__ == "__main__":
     ship = "standard"
-    tech = "pulse"
+    tech = "phase"
 
     # Simulated Annealing Parameters
     sa_params = {

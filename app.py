@@ -19,7 +19,6 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 def optimize_grid():
     """Endpoint to optimize the grid and send status updates via SSE."""
     data = request.get_json()
-
     ship = data.get("ship")
     tech = data.get('tech')
     player_owned_rewards = data.get('player_owned_rewards')

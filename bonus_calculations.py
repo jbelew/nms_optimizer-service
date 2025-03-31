@@ -40,7 +40,10 @@ def calculate_module_bonus(grid: Grid, x: int, y: int) -> float:
     is_supercharged = cell["supercharged"]
     is_sc_eligible = cell["sc_eligible"]
 
-    total_bonus = base_bonus * (1 + adjacency_bonus)
+    total_bonus = base_bonus  # Default value if no adjacency
+
+    if cell["adjacency"]:
+        total_bonus = base_bonus * (1 + adjacency_bonus)
 
     if is_supercharged and is_sc_eligible:
         total_bonus *= 1.25
@@ -54,6 +57,8 @@ def populate_module_bonuses(grid: Grid, tech: str) -> None:
     for row in range(grid.height):
         for col in range(grid.width):
             current_cell = grid.get_cell(col, row)
+            if current_cell["module"] is None:
+                continue
             if current_cell["module"] is not None and current_cell["tech"] == tech:
                 calculate_module_bonus(grid, col, row)
 
@@ -75,13 +80,16 @@ def calculate_core_bonus(grid: Grid, tech: str) -> float:
 
                 # Calculate the total bonus for the core module
                 base_bonus = cell["bonus"]
-                total_bonus = base_bonus * (1 + adjacency_bonus)
+                total_bonus = base_bonus
+
+                if cell["adjacency"]:
+                    total_bonus = base_bonus * (1 + adjacency_bonus)
 
                 # Apply supercharged modifier if applicable
-                core_bonus = total_bonus
-
                 if cell["sc_eligible"] and cell["supercharged"]:
-                    core_bonus *= 1.25  # Apply supercharged modifier
+                    total_bonus *= 1.25  # Apply supercharged modifier
+                
+                core_bonus = total_bonus
                 break  # Assume only one core module
 
     return core_bonus
@@ -114,7 +122,7 @@ def calculate_grid_score(grid: Grid, tech: str) -> float:
             elif cell["type"] == "bonus" and cell["tech"] == tech:
                 total_grid_score += cell["total"]  # Sum all bonus module total bonuses
 
-    return total_grid_score + core_bonus #Add the core bonus to the total
+    return total_grid_score + core_bonus  # Add the core bonus to the total
 
 
 def calculate_all_bonuses(grid: Grid, tech: str) -> None:
