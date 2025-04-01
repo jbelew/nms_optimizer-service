@@ -687,7 +687,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "white",
+                    "color": "gray",
                     "modules": [
                         {
                             "id": "AB",
@@ -1486,7 +1486,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "white",
+                    "color": "gray",
                     "modules": [
                         {
                             "id": "AB",
