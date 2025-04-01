@@ -809,7 +809,7 @@ modules = {
                     "label": "Cyclotron Ballista",
                     "key": "cyclotron",
                     "image": "cyclotron.webp",
-                    "color": "red",
+                    "color": "purple",
                     "modules": [
                         {
                             "id": "CB",
@@ -862,7 +862,7 @@ modules = {
                     "label": "Infraknife Accelerator",
                     "key": "infra",
                     "image": "infra.webp",
-                    "color": "#E5484D",
+                    "color": "red",
                     "modules": [
                         {
                             "id": "IK",
@@ -915,7 +915,7 @@ modules = {
                     "label": "Phase Beam",
                     "key": "phase",
                     "image": "phase.webp",
-                    "color": "#30A46C",
+                    "color": "green",
                     "modules": [
                         {
                             "id": "PB",
@@ -968,7 +968,7 @@ modules = {
                     "label": "Positron Ejector",
                     "key": "positron",
                     "image": "positron.webp",
-                    "color": "#714F19",
+                    "color": "amber",
                     "modules": [
                         {
                             "id": "PE",
@@ -1021,7 +1021,7 @@ modules = {
                     "label": "Rocket Launcher",
                     "key": "rocket",
                     "image": "rocket.webp",
-                    "color": "#5B5BD6",
+                    "color": "iris",
                     "modules": [
                         {
                             "id": "RL",
@@ -1047,7 +1047,7 @@ modules = {
                     "label": "Sentinel Cannon",
                     "key": "photon",
                     "image": "cannon.webp",
-                    "color": "#00A2C7",
+                    "color": "cyan",
                     "modules": [
                         {
                             "id": "PC",
@@ -1102,7 +1102,7 @@ modules = {
                     "label": "Aeron Shields",
                     "key": "shield",
                     "image": "aeron.webp",
-                    "color": "#836A21",
+                    "color": "yellow",
                     "modules": [
                         {
                             "id": "DS",
@@ -1157,7 +1157,7 @@ modules = {
                     "label": "Anti-Gravity Well",
                     "key": "launch",
                     "image": "anti-gravity.webp",
-                    "color": "#12A594",
+                    "color": "jade",
                     "modules": [
                         {
                             "id": "LT",
@@ -1219,7 +1219,7 @@ modules = {
                     "label": "Hyperdrive",
                     "key": "hyper",
                     "image": "hyper.webp",
-                    "color": "#0090FF",
+                    "color": "sky",
                     "modules": [
                         {
                             "id": "HD",
@@ -1308,7 +1308,7 @@ modules = {
                     "label": "Luminance Drive",
                     "key": "pulse",
                     "image": "luminance.webp",
-                    "color": "#F76B15",
+                    "color": "orange",
                     "modules": [
                         {
                             "id": "PE",
@@ -1486,7 +1486,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "#EEEEEE",
+                    "color": "white",
                     "modules": [
                         {
                             "id": "AB",
