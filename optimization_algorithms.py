@@ -16,7 +16,6 @@ from modules import (
 )
 from solve_map_utils import filter_solves  # Import the new function
 
-
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     optimal_grid = None
     highest_bonus = 0.0
@@ -47,14 +46,13 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     # Generate all permutations of module placements
     for placement in permutations(available_positions, len(tech_modules)):
         # Shuffle the tech_modules list for each permutation
-        shuffled_tech_modules = tech_modules[
-            :
-        ]  # Create a copy to avoid modifying the original list
+        shuffled_tech_modules = tech_modules[:]  # Create a copy to avoid modifying the original list
         random.shuffle(shuffled_tech_modules)
+
         # Increment the iteration counter
         iteration_count += 1
 
-        # Clear all modules of the selected technology - MOVED INSIDE THE LOOP
+        # Clear all modules of the selected technology - MOVED BEFORE PLACEMENT
         clear_all_modules_of_tech(grid, tech)
 
         # Place all modules in the current permutation
@@ -74,23 +72,21 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
                 module["image"],
             )
 
-        # Calculate the score for the current arrangement
-
+        # Calculate the score for the current arrangement - MOVED OUTSIDE THE INNER LOOP
         grid_bonus = calculate_grid_score(grid, tech)
-        # print_grid(grid)
 
-        # Update the best grid if a better score is found
+        # Update the best grid if a better score is found - MOVED OUTSIDE THE INNER LOOP
         if grid_bonus > highest_bonus:
             highest_bonus = grid_bonus
-            optimal_grid = grid.copy()
+            optimal_grid = deepcopy(grid)  # Use deepcopy here
+            print_grid(optimal_grid)
 
     # Print the total number of iterations
     print(
-        f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'."
+        f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}' with score of {highest_bonus}."
     )
 
     return optimal_grid, highest_bonus
-
 
 def rotate_pattern(pattern):
     """Rotates a pattern 90 degrees clockwise."""

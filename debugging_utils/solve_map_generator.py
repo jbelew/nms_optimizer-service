@@ -10,7 +10,7 @@ from modules import modules
 from optimization_algorithms import refine_placement  # Import refine_placement
 from grid_display import print_grid, print_grid_compact
  
-def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=["PC"]):
+def generate_solve_map(tech, grid_width=4, grid_height=3, player_owned_rewards=["PC"]):
     """Generates a single solve map for a given technology."""
     grid = Grid(width=grid_width, height=grid_height)
     try:
@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     tech = args.tech  # Get technology from command line or use default
 
-    solve_map, solve_score = generate_solve_map(tech, 2, 3)
+    solve_map, solve_score = generate_solve_map(tech, 3, 4)
 
     if solve_map:
         print(f"\nSolve map for {tech}: {solve_score:.2f}")  # Corrected formatting
