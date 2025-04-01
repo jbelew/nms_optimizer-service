@@ -40,7 +40,7 @@ if __name__ == "__main__":
 
     tech = args.tech  # Get technology from command line or use default
 
-    solve_map, solve_score = generate_solve_map(tech, 3, 4)
+    solve_map, solve_score = generate_solve_map(tech, 4, 3)
 
     if solve_map:
         print(f"\nSolve map for {tech}: {solve_score:.2f}")  # Corrected formatting

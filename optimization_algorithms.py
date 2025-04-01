@@ -79,7 +79,6 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
         if grid_bonus > highest_bonus:
             highest_bonus = grid_bonus
             optimal_grid = deepcopy(grid)  # Use deepcopy here
-            print_grid(optimal_grid)
 
     # Print the total number of iterations
     print(
