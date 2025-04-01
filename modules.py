@@ -816,7 +816,7 @@ modules = {
                             "type": "core",
                             "label": "Cyclotron Ballista",
                             "bonus": 1.0,
-                            "adjacency": False,
+                            "adjacency": True,
                             "sc_eligible": True,
                             "image": "cyclotron.png",
                         },
