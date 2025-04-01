@@ -140,6 +140,9 @@ def apply_pattern_to_grid(
     preserving the original grid's state (except for modules of the same tech)
     and only filling empty, active slots with the pattern's modules.
     """
+    
+    clear_all_modules_of_tech(grid, tech)
+    
     # Check for overlap before applying the pattern
     for pattern_x, pattern_y in pattern.keys():
         grid_x = start_x + pattern_x
