@@ -937,31 +937,9 @@ def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
                 if (
                     grid.get_cell(main_x, main_y)["tech"] == tech
                     or grid.get_cell(main_x, main_y)["module"] is None
-                ):
-                    grid.cells[main_y][main_x]["module"] = localized_grid.cells[y][x][
-                        "module"
-                    ]
-                    grid.cells[main_y][main_x]["label"] = localized_grid.cells[y][x][
-                        "label"
-                    ]
-                    grid.cells[main_y][main_x]["tech"] = localized_grid.cells[y][x][
-                        "tech"
-                    ]
-                    grid.cells[main_y][main_x]["type"] = localized_grid.cells[y][x][
-                        "type"
-                    ]
-                    grid.cells[main_y][main_x]["bonus"] = localized_grid.cells[y][x][
-                        "bonus"
-                    ]
-                    grid.cells[main_y][main_x]["adjacency"] = localized_grid.cells[y][
-                        x
-                    ]["adjacency"]
-                    grid.cells[main_y][main_x]["sc_eligible"] = localized_grid.cells[y][
-                        x
-                    ]["sc_eligible"]
-                    grid.cells[main_y][main_x]["image"] = localized_grid.cells[y][x][
-                        "image"
-                    ]
+                ):                    
+                    grid.cells[main_y][main_x].update(localized_grid.cells[y][x])
+        
 
 
 def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=None):

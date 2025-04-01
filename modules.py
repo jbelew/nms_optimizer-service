@@ -10,7 +10,7 @@ modules = {
                     "label": "Cyclotron Ballista",
                     "key": "cyclotron",
                     "image": "cyclotron.webp",
-                    "color": "#ff0000",
+                    "color": "#8E4EC6",
                     "modules": [
                         {
                             "id": "CB",
@@ -63,7 +63,7 @@ modules = {
                     "label": "Infraknife Accelerator",
                     "key": "infra",
                     "image": "infra.webp",
-                    "color": "blue",
+                    "color": "#E5484D",
                     "modules": [
                         {
                             "id": "IK",
@@ -116,7 +116,7 @@ modules = {
                     "label": "Phase Beam",
                     "key": "phase",
                     "image": "phase.webp",
-                    "color": "blue",
+                    "color": "#30A46C",
                     "modules": [
                         {
                             "id": "PB",
@@ -169,7 +169,7 @@ modules = {
                     "label": "Photon Cannon",
                     "key": "photon",
                     "image": "photon.webp",
-                    "color": "blue",
+                    "color": "#00A2C7",
                     "modules": [
                         {
                             "id": "PC",
@@ -222,7 +222,7 @@ modules = {
                     "label": "Positron Ejector",
                     "key": "positron",
                     "image": "positron.webp",
-                    "color": "blue",
+                    "color": "#714F19",
                     "modules": [
                         {
                             "id": "PE",
@@ -275,7 +275,7 @@ modules = {
                     "label": "Rocket Launcher",
                     "key": "rocket",
                     "image": "rocket.webp",
-                    "color": "blue",
+                    "color": "#5B5BD6",
                     "modules": [
                         {
                             "id": "RL",
@@ -303,7 +303,7 @@ modules = {
                     "label": "Starship Shields",
                     "key": "shield",
                     "image": "shield.webp",
-                    "color": "blue",
+                    "color": "#836A21",
                     "modules": [
                         {
                             "id": "DS",
@@ -358,7 +358,7 @@ modules = {
                     "label": "Hyperdrive",
                     "key": "hyper",
                     "image": "hyper.webp",
-                    "color": "blue",
+                    "color": "#0090FF",
                     "modules": [
                         {
                             "id": "HD",
@@ -447,7 +447,7 @@ modules = {
                     "label": "Launch Thruster",
                     "key": "launch",
                     "image": "launch.webp",
-                    "color": "blue",
+                    "color": "#12A594",
                     "modules": [
                         {
                             "id": "LT",
@@ -509,7 +509,7 @@ modules = {
                     "label": "Pulse Engine",
                     "key": "pulse",
                     "image": "pulse.webp",
-                    "color": "blue",
+                    "color": "#F76B15",
                     "modules": [
                         {
                             "id": "PE",
@@ -591,7 +591,7 @@ modules = {
                     "label": "Aqua-Jets",
                     "key": "aqua",
                     "image": "aquajet.webp",
-                    "color": "blue",
+                    "color": "black",
                     "modules": [
                         {
                             "id": "AJ",
@@ -608,7 +608,7 @@ modules = {
                     "label": "Bobbleheads",
                     "key": "bobble",
                     "image": "bobble.webp",
-                    "color": "white",
+                    "color": "black",
                     "modules": [
                         {
                             "id": "AP",
@@ -687,7 +687,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "blue",
+                    "color": "#EEEEEE",
                     "modules": [
                         {
                             "id": "AB",
