@@ -14,7 +14,26 @@ from optimizer import (
     calculate_grid_score
 )
 from modules import modules
-from module_placement import place_module
+from module_placement import place_module, clear_all_modules_of_tech
+from bonus_calculations import clear_scores
+
+def reset_grid_state(grid):
+    """Resets the state of the grid cells to their initial, empty condition."""
+    for y in range(grid.height):
+        for x in range(grid.width):
+            grid.cells[y][x]["module"] = None
+            grid.cells[y][x]["label"] = ""
+            grid.cells[y][x]["tech"] = None
+            grid.cells[y][x]["type"] = ""
+            grid.cells[y][x]["bonus"] = 0
+            grid.cells[y][x]["total"] = 0
+            grid.cells[y][x]["adjacency_bonus"] = 0
+            grid.cells[y][x]["adjacency"] = False  # Explicitly reset adjacency to False
+            grid.cells[y][x]["sc_eligible"] = False
+            grid.cells[y][x]["image"] = None
+            grid.cells[y][x]["module_position"] = None  # Explicitly reset module_position
+            grid.cells[y][x]["active"] = True  # Reset to active
+            grid.cells[y][x]["supercharged"] = False  # Reset to not supercharged
 
 def create_test_grid_1(grid):
     """
@@ -46,13 +65,13 @@ def create_test_grid_3(grid):
     Creates a test grid with a core module and some bonus modules.
     """
     # Place some modules
-    place_module(grid, 0, 0, "IK", "Infraknife Accelerator", "infra", "core", 1.0, True, True, "infra.png")
-    place_module(grid, 1, 0, "Xa", "Infraknife Accelerator Upgrade Sigma", "infra", "bonus", 0.40, True, True, "infra-upgrade.png")
-    place_module(grid, 0, 1, "QR", "Q-Resonator", "infra", "bonus", 0.04, True, True, "q-resonator.png")
-    place_module(grid, 1, 1, "Xb", "Infraknife Accelerator Upgrade Tau", "infra", "bonus", 0.39, True, True, "infra-upgrade.png")
-    place_module(grid, 2, 1, "Xc", "Infraknife Accelerator Upgrade Theta", "infra", "bonus", 0.38, True, True, "infra-upgrade.png")
-    grid.set_supercharged(0,0, True)
+    place_module(grid, 0, 0, "Xa", "Infraknife Accelerator", "infra", "core", 1.0, True, True, "infra.png")
+    place_module(grid, 1, 0, "IK", "Infraknife Accelerator Upgrade Sigma", "infra", "bonus", 0.40, True, True, "infra-upgrade.png")
+    place_module(grid, 2, 0, "QR", "Q-Resonator", "infra", "bonus", 0.04, True, True, "q-resonator.png")
+    place_module(grid, 0, 1, "Xb", "Infraknife Accelerator Upgrade Tau", "infra", "bonus", 0.39, True, True, "infra-upgrade.png")
+    place_module(grid, 1, 1, "Xc", "Infraknife Accelerator Upgrade Theta", "infra", "bonus", 0.38, True, True, "infra-upgrade.png")
     grid.set_supercharged(1,0, True)
+    grid.set_supercharged(3,0, True)
     return grid
 
 def create_test_grid_4(grid):
@@ -98,16 +117,22 @@ def test_refine_placement(grid_creator, ship, tech):
     grid_copy = grid.copy()
 
     print("--- Initial Grid ---")
-    print_grid(grid)
-
+    # Reset grid state before calculating the manual score
+    reset_grid_state(grid_copy)
+    # Re-place the modules to ensure scores are calculated correctly
+    grid_copy = grid_creator(grid_copy)
+    # Clear the scores before calculating the manual score
+    clear_scores(grid_copy, tech)
+    # Calculate the manual score AFTER placing modules and clearing scores
     manual_score = calculate_grid_score(grid_copy, tech)
+    print_grid(grid_copy)
     print(f"Manual Score: {manual_score}")
 
     # Create a second deep copy for refine_placement
     grid_for_refine = grid.copy()
 
-    # Clear all modules from the grid before calling refine_placement
-    clear_all_modules(grid_for_refine)
+    # Clear all modules of the specified tech from the grid before calling refine_placement
+    clear_all_modules_of_tech(grid_for_refine, tech)
 
     optimal_grid, highest_bonus = refine_placement(grid_for_refine, ship, modules, tech)
 
@@ -119,19 +144,6 @@ def test_refine_placement(grid_creator, ship, tech):
         print("Refine placement returned None")
 
     print("-" * 20)
-
-def clear_all_modules(grid):
-    """Clears all modules from the entire grid."""
-    for y in range(grid.height):
-        for x in range(grid.width):
-            grid.cells[y][x]["module"] = None
-            grid.cells[y][x]["label"] = ""
-            grid.cells[y][x]["tech"] = None
-            grid.cells[y][x]["type"] = ""
-            grid.cells[y][x]["bonus"] = 0
-            grid.cells[y][x]["adjacency"] = False
-            grid.cells[y][x]["sc_eligible"] = False
-            grid.cells[y][x]["image"] = None
 
 if __name__ == "__main__":
     ship = "standard"
