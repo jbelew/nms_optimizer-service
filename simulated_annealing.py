@@ -42,6 +42,7 @@ def simulated_annealing(
         tuple: A tuple containing the best grid found and its score.
     """
     start_time = time.time()  # Start timing
+    max_processing_time = 20  # Maximum processing time in seconds
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
@@ -98,6 +99,10 @@ def simulated_annealing(
     temperature = initial_temperature
     swap_probability = initial_swap_probability
     while temperature > stopping_temperature:
+        # Check if the maximum processing time has been exceeded
+        if time.time() - start_time > max_processing_time:
+            print(f"INFO -- Maximum processing time ({max_processing_time}s) exceeded. Returning best found.")
+            return best_grid, best_score
         # Calculate the adaptive swap probability
         swap_probability = get_swap_probability(
             temperature,

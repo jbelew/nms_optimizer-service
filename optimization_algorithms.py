@@ -469,7 +469,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None):
             solved_grid = Grid.from_dict(grid.to_dict())
             clear_all_modules_of_tech(solved_grid, tech)
             temp_solved_grid, temp_solved_bonus = simulated_annealing(
-                solved_grid, ship, modules, tech, player_owned_rewards
+                solved_grid, ship, modules, tech, player_owned_rewards, initial_temperature=4000, cooling_rate=0.98, iterations_per_temp=30, initial_swap_probability=0.40,
+    final_swap_probability=0.3
             )
             if temp_solved_grid is not None:
                 solved_grid = temp_solved_grid
@@ -496,32 +497,32 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None):
     all_modules_placed = check_all_modules_placed(
         solved_grid, modules, ship, tech, player_owned_rewards
     )
-    if not all_modules_placed:
-        print(
-            f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
-        )
+    # if not all_modules_placed:
+    #     print(
+    #         f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
+    #     )
 
-        clear_all_modules_of_tech(solved_grid, tech)
-        temp_solved_grid, temp_solved_bonus = simulated_annealing(
-            solved_grid,
-            ship,
-            modules,
-            tech,
-            player_owned_rewards,
-            initial_temperature=2000,
-            cooling_rate=0.98,
-            iterations_per_temp=20,
-        )
-        if temp_solved_grid is not None:
-            solved_grid = temp_solved_grid
-            solved_bonus = calculate_grid_score(solved_grid, tech) # Recalculate score after annealing
-        else:
-            print(
-                f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
-            raise ValueError(
-                f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
+    #     clear_all_modules_of_tech(solved_grid, tech)
+    #     temp_solved_grid, temp_solved_bonus = simulated_annealing(
+    #         solved_grid,
+    #         ship,
+    #         modules,
+    #         tech,
+    #         player_owned_rewards,
+    #         initial_temperature=2000,
+    #         cooling_rate=0.98,
+    #         iterations_per_temp=20,
+    #     )
+    #     if temp_solved_grid is not None:
+    #         solved_grid = temp_solved_grid
+    #         solved_bonus = calculate_grid_score(solved_grid, tech) # Recalculate score after annealing
+    #     else:
+    #         print(
+    #             f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+    #         )
+    #         raise ValueError(
+    #             f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+    #         )
 
     # Check for supercharged opportunities
     opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
