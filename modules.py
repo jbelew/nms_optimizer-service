@@ -1228,7 +1228,7 @@ modules = {
                             "bonus": 0.0,
                             "adjacency": True,
                             "sc_eligible": False,
-                            "image": "hyperdrive.png",
+                            "image": "crimson.png",
                         },
                         {
                             "id": "AD",
@@ -1278,7 +1278,7 @@ modules = {
                         {
                             "id": "Xa",
                             "type": "bonus",
-                            "label": "Hyperdrive Upgrade Tau",
+                            "label": "Hyperdrive Upgrade Sigma",
                             "bonus": 0.320,
                             "adjacency": True,
                             "sc_eligible": True,
@@ -1330,6 +1330,15 @@ modules = {
                         },
                         {
                             "id": "PC",
+                            "type": "reward",
+                            "label": "Photonix Core",
+                            "bonus": 0.009,
+                            "adjacency": True,
+                            "sc_eligible": False,
+                            "image": "photonix.png",
+                        },
+                        {
+                            "id": "PI",
                             "type": "bonus",
                             "label": "Pilot Interface",
                             "bonus": 0.067,
@@ -1824,17 +1833,17 @@ solves = {
         },
         "pulse": {
             "map": {
-                (0, 0): "PC",
-                (1, 0): "Xc",
-                (2, 0): "FA",
+                (0, 0): "ID",
+                (1, 0): "FA",
+                (2, 0): "SL",
                 (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "ID",
-                (0, 2): "SL",
-                (1, 2): "PE",
-                (2, 2): "None",
+                (2, 1): "Xc",
+                (0, 2): "PE",
+                (1, 2): "PI",
+                (2, 2): "PC",
             },
-            "score": 0.61
+            "score": 0.64
         },
         "shield": {
             "map": {
