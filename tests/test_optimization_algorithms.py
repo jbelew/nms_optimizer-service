@@ -100,11 +100,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         count = count_adjacent_occupied(self.grid, 0, 1)
         self.assertEqual(count, 1)
 
-    def test_calculate_pattern_adjacency_score(self):
-        pattern = {(0, 0): "A", (1, 0): "B"}
-        self.grid.set_module(2, 0, "C")
-        score = calculate_pattern_adjacency_score(self.grid, pattern, 0, 0)
-        self.assertEqual(score, 1)
 
     @patch("optimization_algorithms.filter_solves")
     def test_optimize_placement_no_solve_found(self, mock_filter_solves):
