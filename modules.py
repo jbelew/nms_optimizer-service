@@ -417,7 +417,7 @@ modules = {
                         {
                             "id": "Xa",
                             "type": "bonus",
-                            "label": "Hyperdrive Upgrade Tau",
+                            "label": "Hyperdrive Upgrade Sigma",
                             "bonus": 0.320,
                             "adjacency": True,
                             "sc_eligible": True,
