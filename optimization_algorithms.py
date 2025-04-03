@@ -214,18 +214,6 @@ def get_all_unique_pattern_variations(original_pattern):
                     rotated_patterns.add(tuple(rotated_pattern_270.items()))
 
     # Add mirrored patterns
-    mirrored_horizontal = mirror_pattern_horizontally(original_pattern)
-    if mirrored_horizontal != original_pattern:
-        if tuple(mirrored_horizontal.items()) not in mirrored_patterns:
-            patterns_to_try.append(mirrored_horizontal)
-            mirrored_patterns.add(tuple(mirrored_horizontal.items()))
-    mirrored_vertical = mirror_pattern_vertically(original_pattern)
-    if mirrored_vertical != original_pattern:
-        if tuple(mirrored_vertical.items()) not in mirrored_patterns:
-            patterns_to_try.append(mirrored_vertical)
-            mirrored_patterns.add(tuple(mirrored_vertical.items()))
-
-    # Add mirrored and rotated patterns
     for pattern in list(patterns_to_try):
         mirrored_horizontal = mirror_pattern_horizontally(pattern)
         if tuple(mirrored_horizontal.items()) not in mirrored_patterns:
@@ -237,6 +225,7 @@ def get_all_unique_pattern_variations(original_pattern):
             mirrored_patterns.add(tuple(mirrored_vertical.items()))
 
     return patterns_to_try
+
 
 
 def count_adjacent_occupied(grid, x, y):
@@ -362,35 +351,33 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             pattern_height = max(y_coords) + 1
 
             # Try placing the pattern in all possible positions
-        for start_x in range(grid.width - pattern_width + 1):
-            for start_y in range(grid.height - pattern_height + 1):
-                # Apply the pattern to the persistent temp_grid
-                temp_result_grid, adjacency_score = apply_pattern_to_grid(
-                    temp_grid,
-                    pattern,
-                    modules,
-                    tech,
-                    start_x,
-                    start_y,
-                    ship,
-                    player_owned_rewards,
-                )
-                if temp_result_grid is not None:
-                    pattern_applied = True  # A pattern was attempted
-                    current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
+            for start_x in range(grid.width - pattern_width + 1):
+                for start_y in range(grid.height - pattern_height + 1):
+                    # Apply the pattern to the persistent temp_grid
+                    temp_result_grid, adjacency_score = apply_pattern_to_grid(
+                        temp_grid,
+                        pattern,
+                        modules,
+                        tech,
+                        start_x,
+                        start_y,
+                        ship,
+                        player_owned_rewards,
+                    )
+                    if temp_result_grid is not None:
+                        pattern_applied = True  # A pattern was attempted
+                        current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
 
-                    if current_pattern_bonus > highest_pattern_bonus:
-                        highest_pattern_bonus = current_pattern_bonus
-                        best_pattern_grid = temp_result_grid.copy()
-                        best_pattern_adjacency_score = adjacency_score
-                    elif (
-                        current_pattern_bonus == highest_pattern_bonus
-                        and adjacency_score > best_pattern_adjacency_score
-                    ):
-                        best_pattern_grid = temp_result_grid.copy()
-                        print_grid_compact(best_pattern_grid)
-                        best_pattern_adjacency_score = adjacency_score
-
+                        if current_pattern_bonus > highest_pattern_bonus:
+                            highest_pattern_bonus = current_pattern_bonus
+                            best_pattern_grid = temp_result_grid.copy()
+                            best_pattern_adjacency_score = adjacency_score
+                        elif (
+                            current_pattern_bonus == highest_pattern_bonus
+                            and adjacency_score > best_pattern_adjacency_score
+                        ):
+                            best_pattern_grid = temp_result_grid.copy()
+                            best_pattern_adjacency_score = adjacency_score
 
         # Reset temp_grid for the next pattern
         temp_grid = Grid.from_dict(grid_dict)
@@ -536,7 +523,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
     return best_grid, percentage
 
 
-def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None, message_queue=None):
+
+def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, message_queue=None):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
     ... (rest of the docstring)
@@ -564,9 +552,6 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None,
     solved_grid = Grid.from_dict(grid.to_dict())
     solved_bonus = -float("inf")
 
-    refined_grid = Grid.from_dict(grid.to_dict())
-    refined_bonus = -float("inf")
-
     best_pattern_grid = Grid.from_dict(grid.to_dict())
     highest_pattern_bonus = -float("inf")
     best_pattern_adjacency_score = 0
@@ -574,7 +559,15 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None,
     # Filter the solves dictionary based on player-owned rewards
     filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
 
-    if ship in filtered_solves and tech in filtered_solves[ship]:
+    # --- Special Case: No Solve Available ---
+    if ship not in filtered_solves or tech not in filtered_solves[ship]:
+        print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
+        solved_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
+        solved_bonus = calculate_grid_score(solved_grid, tech)
+        solve_score = 0
+        pattern_applied = True
+    else:
+        pattern_applied = False
         solve_data = filtered_solves[ship][tech]
         original_pattern = solve_data["map"]
         solve_score = solve_data["score"]
@@ -592,7 +585,6 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None,
             print("Error: Grid.from_dict() returned None")
             return best_grid, best_bonus
 
-        pattern_applied = False  # Flag to check if any pattern was successfully applied
         for pattern in patterns_to_try:
             x_coords = [coord[0] for coord in pattern.keys()]
             y_coords = [coord[1] for coord in pattern.keys()]
@@ -605,7 +597,7 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None,
             for start_x in range(grid.width - pattern_width + 1):
                 for start_y in range(grid.height - pattern_height + 1):
                     # Apply the pattern to the persistent temp_grid
-                    pattern_result, adjacency_score = apply_pattern_to_grid(
+                    temp_result_grid, adjacency_score = apply_pattern_to_grid(
                         temp_grid,
                         pattern,
                         modules,
@@ -615,86 +607,113 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None,
                         ship,
                         player_owned_rewards,
                     )
-                    if pattern_result == 1:
+                    if temp_result_grid is not None:
                         pattern_applied = True  # A pattern was attempted
-                        current_pattern_bonus = calculate_grid_score(temp_grid, tech)
+                        current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
 
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
-                            best_pattern_grid = Grid.from_dict(temp_grid.to_dict())
+                            best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
                         elif (
                             current_pattern_bonus == highest_pattern_bonus
                             and adjacency_score > best_pattern_adjacency_score
                         ):
-                            highest_pattern_bonus = current_pattern_bonus
-                            best_pattern_grid = Grid.from_dict(temp_grid.to_dict())
-
+                            best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
 
-            # Reset temp_grid for the next pattern
-            temp_grid = Grid.from_dict(grid_dict)
+        # Reset temp_grid for the next pattern
+        temp_grid = Grid.from_dict(grid_dict)
 
         if best_pattern_grid:
             # Initialize solved_grid with best_pattern_grid
             solved_grid = best_pattern_grid
-            solved_bonus = highest_pattern_bonus
+            # solved_bonus = highest_pattern_bonus
+            solved_bonus=calculate_grid_score(solved_grid, tech)
             print(f"INFO -- Best pattern score: {solved_bonus} for ship: '{ship}' -- tech: '{tech}' that fits.")
         else:
             print(
                 f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to simulated_annealing."
             )
-            solved_grid = Grid.from_dict(grid.to_dict())
-            clear_all_modules_of_tech(solved_grid, tech)
-            temp_solved_grid, temp_solved_bonus = simulated_annealing(
-                solved_grid, ship, modules, tech, player_owned_rewards
-            )
-            if temp_solved_grid is not None:
-                solved_grid = temp_solved_grid
-                solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
-            else:
-                print(
-                    f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
-                raise ValueError(
-                    f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
             pattern_applied = True
 
-        if not pattern_applied:
-            print(
-                f"WARNING -- No pattern was applied for ship: '{ship}' -- tech: '{tech}'. Falling back to simulated annealing."
-            )
-            solved_grid = Grid.from_dict(grid.to_dict())
-            clear_all_modules_of_tech(solved_grid, tech)
-            temp_solved_grid, temp_solved_bonus = simulated_annealing(
-                solved_grid,
-                ship,
-                modules,
-                tech,
-                player_owned_rewards,
-                initial_temperature=4000,
-                cooling_rate=0.98,
-                iterations_per_temp=30,
-                initial_swap_probability=0.40,
-                final_swap_probability=0.3,
-            )
-            if temp_solved_grid is not None:
-                solved_grid = temp_solved_grid
-                solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
+    # --- 1. Supercharged Opportunity Refinement (Moved to the Beginning) ---
+    opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
+
+    if opportunity:
+        print(f"INFO -- Found opportunity: {opportunity}")
+        # Create a localized grid
+        opportunity_x, opportunity_y = opportunity
+
+        # Deep copy solved_grid before clearing and creating localized grid
+        temp_solved_grid = deepcopy(solved_grid)
+        clear_all_modules_of_tech(temp_solved_grid, tech)
+        localized_grid, start_x, start_y = create_localized_grid(temp_solved_grid, opportunity_x, opportunity_y, tech)
+        print_grid(localized_grid)
+
+        # Refine the localized grid - Surround with id statement
+        temp_refined_grid, temp_refined_bonus = refine_placement(
+            localized_grid, ship, modules, tech, player_owned_rewards
+        )
+        temp_refined_bonus = calculate_grid_score(temp_refined_grid, tech)  # Recalculate score after annealing
+
+        if temp_refined_grid is not None:
+            print(f"INFO -- Refined grid score: {temp_refined_bonus}")
+            print_grid(temp_refined_grid)
+            # Apply changes to temp_solved_grid
+            apply_localized_grid_changes(temp_solved_grid, temp_refined_grid, tech, start_x, start_y)
+            # Calculate the new score of the entire grid
+            new_solved_bonus = calculate_grid_score(temp_solved_grid, tech)
+            # Compare bonuses and apply changes if the refined bonus is higher
+        
+            ######
+            #
+            #    TODO: Ugly hack for a bugt I can't find!    
+            #
+            ######
+            
+            if new_solved_bonus > (solved_bonus * .99):
+            # if new_solved_bonus > solved_bonus:
+                # Copy temp_solved_grid to solved_grid
+                solved_grid = temp_solved_grid.copy()
+                print(f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'")
+                solved_bonus = new_solved_bonus
             else:
                 print(
-                    f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+                    f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {temp_refined_bonus}"
                 )
-                raise ValueError(
-                    f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
+        else:
+            print("INFO -- Opportunity refinement failed. Not enough space to apply the opportunity.")
 
-    else:
-        print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
-        solved_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
-        solved_bonus = calculate_grid_score(solved_grid, tech)
-        solve_score = 0
+    # --- 3. Simulated Annealing (Fallback, Moved to the End) ---
+    if not pattern_applied:
+        print(
+            f"WARNING -- No pattern was applied for ship: '{ship}' -- tech: '{tech}'. Falling back to simulated annealing."
+        )
+        solved_grid = Grid.from_dict(grid.to_dict())
+        clear_all_modules_of_tech(solved_grid, tech)
+        temp_solved_grid, temp_solved_bonus = simulated_annealing(
+            solved_grid,
+            ship,
+            modules,
+            tech,
+            player_owned_rewards,
+            initial_temperature=4000,
+            cooling_rate=0.98,
+            iterations_per_temp=30,
+            initial_swap_probability=0.40,
+            final_swap_probability=0.3,
+        )
+        if temp_solved_grid is not None:
+            solved_grid = temp_solved_grid
+            solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
+        else:
+            print(
+                f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+            )
+            raise ValueError(
+                f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+            )
 
     # Check if all modules were placed
     all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
@@ -725,50 +744,6 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None,
             raise ValueError(
                 f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
             )
-
-    # Check for supercharged opportunities
-    opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
-
-    if opportunity:
-        print(f"INFO -- Found opportunity: {opportunity}")
-        # Create a localized grid
-        opportunity_x, opportunity_y = opportunity
-
-        # Deep copy solved_grid before clearing and creating localized grid
-        temp_solved_grid = deepcopy(solved_grid)
-        clear_all_modules_of_tech(temp_solved_grid, tech)
-        localized_grid, start_x, start_y = create_localized_grid(temp_solved_grid, opportunity_x, opportunity_y, tech)
-        print_grid(localized_grid)
-
-        # Refine the localized grid - Surround with id statement
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
-        if tech_modules is not None and len(tech_modules) < 6:
-            refined_grid, refined_bonus = refine_placement(localized_grid, ship, modules, tech, player_owned_rewards)
-            refined_bonus = calculate_grid_score(refined_grid, tech)  # Recalculate score after refine_placement
-        else:
-            refined_grid, refined_bonus = simulated_annealing(localized_grid, ship, modules, tech, player_owned_rewards)
-            refined_bonus = calculate_grid_score(refined_grid, tech)  # Recalculate score after annealing
-
-        print(f"Refined Bonus: {refined_bonus}")
-        print_grid_compact(refined_grid)
-
-        if refined_grid is not None:
-            # Apply changes to temp_solved_grid
-            apply_localized_grid_changes(temp_solved_grid, refined_grid, tech, start_x, start_y)
-            # Calculate the new score of the entire grid
-            new_solved_bonus = calculate_grid_score(temp_solved_grid, tech)
-            # Compare bonuses and apply changes if the refined bonus is higher
-            if new_solved_bonus > solved_bonus:
-                # Copy temp_solved_grid to solved_grid
-                solved_grid = temp_solved_grid.copy()
-                print(f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'")
-                solved_bonus = new_solved_bonus
-            else:
-                print(
-                    f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {refined_bonus}"
-                )
-        else:
-            print("simulated_annealing returned None. No changes made.")
 
     # Recalculate solved_bonus after applying the pattern or falling back to simulated_annealing
     solved_bonus = calculate_grid_score(solved_grid, tech)
