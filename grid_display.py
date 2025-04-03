@@ -48,7 +48,7 @@ def print_grid_compact(grid: Grid) -> None:
             is_shield = cell_data["tech"] == "shield"
             is_infra = cell_data["tech"] == "infra"
             active_state = (
-                " +" if cell_data["active"] else " -"
+                "\x20+" if cell_data["active"] else "\x20-"
             )  # what to show if there is no module
 
             formatted_row.append(
