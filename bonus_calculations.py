@@ -3,8 +3,10 @@ from grid_utils import Grid
 import math
 
 # Global weights
-core_weight = 0.15  # Default core weight
-bonus_weight = 0.04  # Default bonus weight
+core_weight = 0.08  # Default core weight
+greater_weight = 0.04  # Default greater adjacency weight (formerly bonus_weight)
+lesser_weight = 0.03  # Default lesser adjacency weight
+
 
 def calculate_adjacency_count(grid: Grid, x: int, y: int) -> list:
     """
@@ -42,51 +44,57 @@ def calculate_adjacency_bonus(grid: Grid, tech: str) -> None:
     for y in range(grid.height):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)
-            if (
-                cell["module"] is not None
-                and cell["tech"] == tech
-                and cell["type"] == "bonus"
-            ):
+            if cell["module"] is not None and cell["tech"] == tech:
                 adjacent_modules = calculate_adjacency_count(grid, x, y)
                 for adjacent in adjacent_modules:
                     adjacent_cell = grid.get_cell(adjacent["x"], adjacent["y"])
-                    if adjacent["type"] == "bonus":
-                        if (
-                            adjacent["adjacency"] == "lesser"
-                            and cell["adjacency"] == "lesser"
-                        ):
-                            adjacent_cell["adjacency_bonus"] += (
-                                cell["bonus"] * bonus_weight
-                            )
-                            cell["adjacency_bonus"] += (
-                                adjacent_cell["bonus"] * bonus_weight
-                            )
-                        elif (
-                            adjacent["adjacency"] == "greater"
-                            and cell["adjacency"] == "greater"
-                        ):
-                            adjacent_cell["adjacency_bonus"] += (
-                                cell["bonus"] * bonus_weight
-                            )
-                            cell["adjacency_bonus"] += (
-                                adjacent_cell["bonus"] * bonus_weight
-                            )
-                        elif (
-                            adjacent["adjacency"] == "greater"
-                            and cell["adjacency"] == "lesser"
-                        ):
-                            adjacent_cell["adjacency_bonus"] += (
-                                cell["bonus"] * bonus_weight
-                            )
-                        elif (
-                            adjacent["adjacency"] == "lesser"
-                            and cell["adjacency"] == "greater"
-                        ):
-                            pass # Do nothing, per the rules
-                    elif adjacent["type"] == "core":
-                        adjacent_cell["adjacency_bonus"] += (
-                            cell["bonus"] * core_weight
-                        )
+                    if cell["type"] == "bonus":
+                        if adjacent["type"] == "bonus":
+                            if (
+                                adjacent["adjacency"] == "lesser"
+                                and cell["adjacency"] == "lesser"
+                            ):
+                                adjacent_cell["adjacency_bonus"] += (
+                                    cell["bonus"] * lesser_weight
+                                )
+                                cell["adjacency_bonus"] += (
+                                    adjacent_cell["bonus"] * lesser_weight
+                                )
+                            elif (
+                                adjacent["adjacency"] == "greater"
+                                and cell["adjacency"] == "greater"
+                            ):
+                                adjacent_cell["adjacency_bonus"] += (
+                                    cell["bonus"] * greater_weight
+                                )
+                                cell["adjacency_bonus"] += (
+                                    adjacent_cell["bonus"] * greater_weight
+                                )
+                            elif (
+                                adjacent["adjacency"] == "greater"
+                                and cell["adjacency"] == "lesser"
+                            ):
+                                adjacent_cell["adjacency_bonus"] += (
+                                    cell["bonus"] * lesser_weight
+                                )
+                            elif (
+                                adjacent["adjacency"] == "lesser"
+                                and cell["adjacency"] == "greater"
+                            ):
+                                cell["adjacency_bonus"] += (
+                                    adjacent_cell["bonus"] * greater_weight
+                                )
+                        elif adjacent["type"] == "core":
+                            if cell["adjacency"] == "greater":
+                                adjacent_cell["adjacency_bonus"] += (
+                                    cell["bonus"] * core_weight
+                                )
+                    elif cell["type"] == "core":
+                        if adjacent["type"] == "bonus":
+                            if cell["adjacency"] == "greater":
+                                adjacent_cell["adjacency_bonus"] += (
+                                    cell["bonus"] * core_weight
+                                )
 
 
 def populate_module_bonuses(grid: Grid, x: int, y: int) -> float:
@@ -123,17 +131,19 @@ def calculate_grid_score(grid: Grid, tech: str) -> float:
     populate_all_module_bonuses(grid, tech)
 
     total_grid_score = 0
-    bonus_sum = 0
+    bonus_product = 1.0  # Initialize as 1.0 for multiplication
 
     for y in range(grid.height):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)
             if cell["tech"] == tech:
-                bonus_sum += cell["bonus"]
+                bonus_product *= (
+                    1.0 + cell["bonus"]
+                )  # Multiply by (1 + bonus) to handle 0 bonuses
                 total_grid_score += cell["total"]  # Sum all module total bonuses
 
-    # Apply the bonus_sum to the total_grid_score
-    total_grid_score *= 1.1**bonus_sum
+    # Apply the bonus_product to the total_grid_score
+    total_grid_score *= bonus_product
 
     return total_grid_score
 
