@@ -1109,6 +1109,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
     """
     Creates a localized grid around a given opportunity, ensuring it stays within
     the bounds of the main grid and preserves modules of other tech types.
+    Prioritizes locations with the most available supercharged slots.
 
     Args:
         grid (Grid): The main grid.
@@ -1125,22 +1126,47 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
     localized_width = 3
     localized_height = 3
 
-    # Calculate the bounds of the localized grid, clamping to the main grid's edges
-    start_x = max(0, opportunity_x - localized_width // 2)
-    start_y_unclamped = opportunity_y - localized_height // 2
-    start_y = max(0, start_y_unclamped)
+    best_start_x, best_start_y = 0, 0
+    max_supercharged_count = -1
 
-    # Calculate how much start_y was clamped
-    clamped_diff_y = start_y - start_y_unclamped
+    # Iterate through possible starting positions to find the best one
+    for start_y_offset in range(-1, 2):  # Check -1, 0, +1 offsets for y
+        for start_x_offset in range(-1, 2):  # Check -1, 0, 1 offsets for x
+            start_x_unclamped = opportunity_x - localized_width // 2 + start_x_offset
+            start_y_unclamped = opportunity_y - localized_height // 2 + start_y_offset
 
-    end_x = min(
-        grid.width, opportunity_x + localized_width // 2 + (localized_width % 2)
-    )
-    # Adjust end_y based on how much start_y was clamped
-    end_y = min(
-        grid.height,
-        opportunity_y + localized_height // 2 + (localized_height % 2) + clamped_diff_y,
-    )
+            start_x = max(0, start_x_unclamped)
+            start_y = max(0, start_y_unclamped)
+
+            end_x_unclamped = opportunity_x + localized_width // 2 + (localized_width % 2) + start_x_offset
+            end_y_unclamped = opportunity_y + localized_height // 2 + (localized_height % 2) + start_y_offset
+
+            end_x = min(grid.width, end_x_unclamped)
+            end_y = min(grid.height, end_y_unclamped)
+
+            # Adjust the localized grid size based on the clamped bounds
+            actual_localized_width = end_x - start_x
+            actual_localized_height = end_y - start_y
+
+            # Count supercharged slots in the current localized area
+            supercharged_count = 0
+            for y in range(start_y, end_y):
+                for x in range(start_x, end_x):
+                    if grid.get_cell(x, y)["supercharged"]:
+                        supercharged_count += 1
+
+            # Update best starting position if more supercharged slots are found
+            if supercharged_count > max_supercharged_count:
+                max_supercharged_count = supercharged_count
+                best_start_x = start_x
+                best_start_y = start_y
+
+    # Use the best starting position
+    start_x = best_start_x
+    start_y = best_start_y
+
+    end_x = min(grid.width, start_x + localized_width)
+    end_y = min(grid.height, start_y + localized_height)
 
     # Adjust the localized grid size based on the clamped bounds
     actual_localized_width = end_x - start_x
@@ -1183,6 +1209,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
                     ] = cell["module_position"]
 
     return localized_grid, start_x, start_y
+
 
 
 def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
