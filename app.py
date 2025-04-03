@@ -60,6 +60,7 @@ def optimize_grid():
 
         return jsonify({'grid': grid.to_dict(), 'max_bonus': max_bonus})
     except ValueError as e:
+        print(f"ERROR -- {str(e)}")
         print_grid_compact(grid)
         message_queue.put(sse_message({"message": f"Error: {str(e)}"}, event='status'))
         return jsonify({'error': str(e)}), 500
