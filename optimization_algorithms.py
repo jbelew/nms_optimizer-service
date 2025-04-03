@@ -15,6 +15,7 @@ from modules import (
     solves,
 )
 from solve_map_utils import filter_solves  # Import the new function
+from sse_events import sse_message
 
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     optimal_grid = None
@@ -78,13 +79,17 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
         # Update the best grid if a better score is found - MOVED OUTSIDE THE INNER LOOP
         if grid_bonus > highest_bonus:
             highest_bonus = grid_bonus
+        
             optimal_grid = deepcopy(grid) 
-            #print(highest_bonus)
-            #print_grid(optimal_grid)
+            # print(highest_bonus)
+            # print_grid(optimal_grid)
     # Print the total number of iterations
     print(
         f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}' with score of {highest_bonus}."
     )
+
+    print(f"Refined bonus -- {highest_bonus}")
+    print_grid(optimal_grid)
 
     return optimal_grid, highest_bonus
 
@@ -332,7 +337,7 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
 
     return total_adjacency_score
 
-def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None):
+def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, message_queue=None):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
     ... (rest of the docstring)
@@ -497,38 +502,14 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None):
     all_modules_placed = check_all_modules_placed(
         solved_grid, modules, ship, tech, player_owned_rewards
     )
-    # if not all_modules_placed:
-    #     print(
-    #         f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
-    #     )
-
-    #     clear_all_modules_of_tech(solved_grid, tech)
-    #     temp_solved_grid, temp_solved_bonus = simulated_annealing(
-    #         solved_grid,
-    #         ship,
-    #         modules,
-    #         tech,
-    #         player_owned_rewards,
-    #         initial_temperature=2000,
-    #         cooling_rate=0.98,
-    #         iterations_per_temp=20,
-    #     )
-    #     if temp_solved_grid is not None:
-    #         solved_grid = temp_solved_grid
-    #         solved_bonus = calculate_grid_score(solved_grid, tech) # Recalculate score after annealing
-    #     else:
-    #         print(
-    #             f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-    #         )
-    #         raise ValueError(
-    #             f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-    #         )
 
     # Check for supercharged opportunities
     opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
 
     if opportunity:
         print(f"INFO -- Found opportunity: {opportunity}")
+        if message_queue:
+            message_queue.put(sse_message(f"Attempting solve for ship: '{ship}' -- tech: '{tech}'", event='status'))
         # Create a localized grid
         opportunity_x, opportunity_y = opportunity
 
@@ -551,6 +532,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None):
                 localized_grid, ship, modules, tech, player_owned_rewards
             )
             refined_bonus = calculate_grid_score(refined_grid, tech) # Recalculate score after annealing
+            print_grid(refined_grid)
 
         if refined_grid is not None:
             # Apply changes to temp_solved_grid
@@ -573,6 +555,9 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None):
                 )
         else:
             print("simulated_annealing returned None. No changes made.")
+
+    # Recalculate solved_bonus after applying the pattern or falling back to simulated_annealing
+    solved_bonus = calculate_grid_score(solved_grid, tech)
 
     # Calculate the percentage of the solve score achieved
     if solve_score > 0:
@@ -706,6 +691,7 @@ def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None)
             print(
                 f"INFO -- Best pattern score: {best_bonus} for ship: '{ship}' -- tech: '{tech}' that fits."
             )
+        
         else:
             print(
                 f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to refine_placement."
@@ -1136,7 +1122,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
             - start_x (int): The starting x-coordinate of the localized grid in the main grid.
             - start_y (int): The starting y-coordinate of the localized grid in the main grid.
     """
-    localized_width = 4
+    localized_width = 3
     localized_height = 3
 
     # Calculate the bounds of the localized grid, clamping to the main grid's edges
