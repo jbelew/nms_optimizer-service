@@ -11,7 +11,7 @@ from optimization_algorithms import refine_placement  # Import refine_placement
 from grid_display import print_grid, print_grid_compact
 
 
-def generate_solve_map(tech, grid_width=4, grid_height=3, player_owned_rewards=None, supercharged_positions=None):
+def generate_solve_map(tech, grid_width=4, grid_height=2, player_owned_rewards=None, supercharged_positions=None):
     """
     Generates a single solve map for a given technology.
 
@@ -34,7 +34,7 @@ def generate_solve_map(tech, grid_width=4, grid_height=3, player_owned_rewards=N
                 grid.set_supercharged(x, y, True)
 
     try:
-        optimized_grid, optimized_score = refine_placement(grid, "sentinel", modules, tech, player_owned_rewards)
+        optimized_grid, optimized_score = refine_placement(grid, "standard", modules, tech, player_owned_rewards)
         print_grid(optimized_grid)
         return optimized_grid, optimized_score
     except Exception as e:

@@ -188,13 +188,13 @@ modules = {
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
                     ],
                 },
                 {
@@ -396,14 +396,14 @@ modules = {
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
-                    ],
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
+                     ],
                 },
                 {
                     "label": "Teleporter",
@@ -541,13 +541,13 @@ modules = {
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
                     ],
                 },
             ],
@@ -561,17 +561,17 @@ solves = {
             "map": {
                 (0, 0): "Xc",
                 (1, 0): "Xb",
-                (0, 1): "Xa",
-                (1, 1): "CB",
-                (0, 2): "None",
-                (1, 2): "QR"
+                (0, 1): "CB",
+                (1, 1): "Xa",
+                (0, 2): "QR",
+                (1, 2): "None"
             },
             "score": 14.748742095360003
         },
         "infra": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
+                (0, 0): "Xb",
+                (1, 0): "Xc",
                 (0, 1): "Xa",
                 (1, 1): "IK",
                 (0, 2): "None",
@@ -581,34 +581,34 @@ solves = {
         },
         "phase": {
             "map": {
-                (0, 0): "FD",
-                (1, 0): "Xc",
+                (0, 0): "PB",
+                (1, 0): "None",
                 (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "PB",
-                (1, 2): "None"
+                (1, 1): "FD",
+                (0, 2): "Xb",
+                (1, 2): "Xc"
             },
-            "score": 13.604770583040002
+            "score": 13.604770583040004
         },
         "photon": {
             "map": {
-                (0, 0): "NO",
-                (1, 0): "None",
-                (0, 1): "PC",
-                (1, 1): "Xb",
-                (0, 2): "Xa",
-                (1, 2): "Xc"
+                (0, 0): "Xc",
+                (1, 0): "Xb",
+                (0, 1): "Xa",
+                (1, 1): "PC",
+                (0, 2): "None",
+                (1, 2): "NO"
             },
             "score": 14.748742095360003
         },
         "positron": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "PE",
-                (0, 2): "None",
-                (1, 2): "FS"
+                (0, 0): "FS",
+                (1, 0): "None",
+                (0, 1): "PE",
+                (1, 1): "Xb",
+                (0, 2): "Xa",
+                (1, 2): "Xc"
             },
             "score": 14.748742095360003
         },
@@ -622,10 +622,10 @@ solves = {
         },
         "shield": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "DS",
-                (0, 1): "AA",
-                (1, 1): "Xa",
+                (0, 0): "DS",
+                (1, 0): "None",
+                (0, 1): "Xa",
+                (1, 1): "AA",
                 (0, 2): "Xb",
                 (1, 2): "Xc"
             },
@@ -633,39 +633,39 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "CD",
-                (1, 0): "Xc",
-                (2, 0): "HD",
-                (0, 1): "ED",
-                (1, 1): "Xb",
-                (2, 1): "Xa",
-                (0, 2): "ID",
-                (1, 2): "AD",
-                (2, 2): "EW"
+                (0, 0): "ID",
+                (1, 0): "AD",
+                (2, 0): "CD",
+                (0, 1): "EW",
+                (1, 1): "Xc",
+                (2, 1): "ED",
+                (0, 2): "Xb",
+                (1, 2): "Xa",
+                (2, 2): "HD"
             },
             "score": 10.372510117888519
         },
         "launch": {
             "map": {
-                (0, 0): "EF",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (0, 2): "LT",
-                (1, 2): "RC"
+                (0, 0): "Xc",
+                (1, 0): "RC",
+                (0, 1): "Xa",
+                (1, 1): "Xb",
+                (0, 2): "EF",
+                (1, 2): "LT"
             },
             "score": 11.789250969600003
         },
         "pulse": {
             "map": {
-                (0, 0): "SL",
+                (0, 0): "ID",
                 (1, 0): "Xb",
-                (2, 0): "PC",
+                (2, 0): "PE",
                 (0, 1): "Xc",
                 (1, 1): "Xa",
-                (2, 1): "PE",
-                (0, 2): "FA",
-                (1, 2): "ID",
+                (2, 1): "SL",
+                (0, 2): "PC",
+                (1, 2): "FA",
                 (2, 2): "None"
             },
             "score": 31.226768655344657
@@ -685,18 +685,18 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "SP"
             },
-            "score": 0.46
+            "score": 0.162
         }
     },
     "sentinel": {
         "cyclotron": {
             "map": {
-                (0, 0): "QR",
-                (1, 0): "None",
-                (0, 1): "CB",
-                (1, 1): "Xb",
-                (0, 2): "Xa",
-                (1, 2): "Xc"
+                (0, 0): "Xb",
+                (1, 0): "Xc",
+                (0, 1): "Xa",
+                (1, 1): "CB",
+                (0, 2): "None",
+                (1, 2): "QR"
             },
             "score": 14.748742095360003
         },
@@ -705,31 +705,31 @@ solves = {
                 (0, 0): "QR",
                 (1, 0): "None",
                 (0, 1): "IK",
-                (1, 1): "Xc",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (1, 1): "Xa",
+                (0, 2): "Xb",
+                (1, 2): "Xc"
             },
             "score": 14.748742095360003
         },
         "phase": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "FD",
+                (0, 0): "PB",
+                (1, 0): "None",
                 (0, 1): "Xa",
-                (1, 1): "Xc",
-                (0, 2): "PB",
-                (1, 2): "None"
+                (1, 1): "FD",
+                (0, 2): "Xb",
+                (1, 2): "Xc"
             },
-            "score": 13.604770583040002
+            "score": 13.604770583040004
         },
         "positron": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "FS",
+                (0, 0): "Xc",
+                (1, 0): "Xb",
                 (0, 1): "Xa",
                 (1, 1): "PE",
-                (0, 2): "Xb",
-                (1, 2): "Xc"
+                (0, 2): "None",
+                (1, 2): "FS"
             },
             "score": 14.748742095360003
         },
@@ -754,10 +754,10 @@ solves = {
         },
         "shield": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "DS",
-                (0, 1): "AA",
-                (1, 1): "Xa",
+                (0, 0): "DS",
+                (1, 0): "None",
+                (0, 1): "Xa",
+                (1, 1): "AA",
                 (0, 2): "Xb",
                 (1, 2): "Xc"
             },
@@ -765,24 +765,24 @@ solves = {
         },
         "launch": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "EF",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (0, 2): "LT",
-                (1, 2): "RC"
+                (0, 0): "EF",
+                (1, 0): "Xc",
+                (0, 1): "Xa",
+                (1, 1): "Xb",
+                (0, 2): "RC",
+                (1, 2): "LT"
             },
             "score": 11.789250969600003
         },
         "hyper": {
             "map": {
-                (0, 0): "ID",
+                (0, 0): "CD",
                 (1, 0): "Xc",
                 (2, 0): "HD",
-                (0, 1): "ED",
+                (0, 1): "ID",
                 (1, 1): "Xb",
                 (2, 1): "Xa",
-                (0, 2): "CD",
+                (0, 2): "ED",
                 (1, 2): "AD",
                 (2, 2): "EW"
             },
@@ -790,15 +790,15 @@ solves = {
         },
         "pulse": {
             "map": {
-                (0, 0): "SL",
-                (1, 0): "PC",
-                (2, 0): "PI",
-                (0, 1): "Xb",
+                (0, 0): "PE",
+                (1, 0): "Xb",
+                (2, 0): "PC",
+                (0, 1): "Xc",
                 (1, 1): "Xa",
-                (2, 1): "FA",
-                (0, 2): "PE",
-                (1, 2): "Xc",
-                (2, 2): "ID"
+                (2, 1): "ID",
+                (0, 2): "FA",
+                (1, 2): "SL",
+                (2, 2): "PI"
             },
             "score": 87.21354753068529
         },
@@ -817,7 +817,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "SP"
             },
-            "score": 0.46
+            "score": 0.162
         }
     },
     "living": {
@@ -834,8 +834,8 @@ solves = {
         },
         "spewing": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
+                (0, 0): "Xc",
+                (1, 0): "Xb",
                 (0, 1): "SV",
                 (1, 1): "Xa",
                 (0, 2): "None",
@@ -845,23 +845,23 @@ solves = {
         },
         "scream": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "None",
-                (0, 1): "Xc",
-                (1, 1): "SS",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "SS",
+                (1, 1): "Xb",
+                (0, 2): "None",
+                (1, 2): "None"
             },
             "score": 8.625736704000003
         },
         "assembly": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "NA",
+                (0, 0): "CM",
+                (1, 0): "None",
                 (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "CM",
-                (1, 2): "None"
+                (1, 1): "NA",
+                (0, 2): "Xc",
+                (1, 2): "Xb"
             },
             "score": 2.2178257920000006
         },
@@ -880,8 +880,8 @@ solves = {
             "map": {
                 (0, 0): "Xb",
                 (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "PH",
+                (0, 1): "PH",
+                (1, 1): "Xa",
                 (0, 2): "None",
                 (1, 2): "None"
             },
@@ -902,7 +902,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "SP"
             },
-            "score": 0.46
+            "score": 0.162
         }
     }
 }

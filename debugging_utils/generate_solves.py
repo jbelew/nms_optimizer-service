@@ -109,7 +109,7 @@ def generate_all_solves(modules, tech_to_generate=None, weapon_to_generate=None)
                     "(2, 2)": "ST",
                     "(3, 2)": "SP",
                 },
-                "score": 0.46,
+                "score": 0.162,
             }
     return all_solves
 

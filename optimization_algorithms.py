@@ -17,6 +17,7 @@ from modules import (
 from solve_map_utils import filter_solves  # Import the new function
 from sse_events import sse_message
 
+
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     optimal_grid = None
     highest_bonus = 0.0
@@ -36,9 +37,7 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
 
     # Check if there are enough available positions for all modules
     if len(available_positions) < len(tech_modules):
-        print(
-            f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'."
-        )
+        print(f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'.")
         return None, 0.0
 
     # Initialize the iteration counter
@@ -79,8 +78,8 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
         # Update the best grid if a better score is found - MOVED OUTSIDE THE INNER LOOP
         if grid_bonus > highest_bonus:
             highest_bonus = grid_bonus
-        
-            optimal_grid = deepcopy(grid) 
+
+            optimal_grid = deepcopy(grid)
             # print(highest_bonus)
             # print_grid(optimal_grid)
     # Print the total number of iterations
@@ -92,6 +91,7 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     print_grid(optimal_grid)
 
     return optimal_grid, highest_bonus
+
 
 def rotate_pattern(pattern):
     """Rotates a pattern 90 degrees clockwise."""
@@ -134,25 +134,20 @@ def mirror_pattern_vertically(pattern):
     return mirrored_pattern
 
 
-def apply_pattern_to_grid(
-    grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards=None
-):
+def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards=None):
     """Applies a pattern to an existing grid at a given starting position,
     preserving the original grid's state (except for modules of the same tech)
     and only filling empty, active slots with the pattern's modules.
     """
-    
+
     clear_all_modules_of_tech(grid, tech)
-    
+
     # Check for overlap before applying the pattern
     for pattern_x, pattern_y in pattern.keys():
         grid_x = start_x + pattern_x
         grid_y = start_y + pattern_y
         if 0 <= grid_x < grid.width and 0 <= grid_y < grid.height:
-            if (
-                grid.get_cell(grid_x, grid_y)["module"] is not None
-                and grid.get_cell(grid_x, grid_y)["tech"] != tech
-            ):
+            if grid.get_cell(grid_x, grid_y)["module"] is not None and grid.get_cell(grid_x, grid_y)["tech"] != tech:
                 return 0, 0  # Indicate a bad pattern with a score of 0
 
     # Clear existing modules of the selected technology
@@ -183,10 +178,7 @@ def apply_pattern_to_grid(
                 continue
             if module_id in module_id_map:
                 module_data = module_id_map[module_id]
-                if (
-                    grid.get_cell(grid_x, grid_y)["active"]
-                    and grid.get_cell(grid_x, grid_y)["module"] is None
-                ):
+                if grid.get_cell(grid_x, grid_y)["active"] and grid.get_cell(grid_x, grid_y)["module"] is None:
                     place_module(
                         grid,  # Apply changes directly to the input grid
                         grid_x,
@@ -225,10 +217,7 @@ def get_all_unique_pattern_variations(original_pattern):
             patterns_to_try.append(rotated_pattern_90)
             rotated_patterns.add(tuple(rotated_pattern_90.items()))
             rotated_pattern_180 = rotate_pattern(rotated_pattern_90)
-            if (
-                rotated_pattern_180 != original_pattern
-                and tuple(rotated_pattern_180.items()) not in rotated_patterns
-            ):
+            if rotated_pattern_180 != original_pattern and tuple(rotated_pattern_180.items()) not in rotated_patterns:
                 patterns_to_try.append(rotated_pattern_180)
                 rotated_patterns.add(tuple(rotated_pattern_180.items()))
                 rotated_pattern_270 = rotate_pattern(rotated_pattern_180)
@@ -291,7 +280,7 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
     """
     total_adjacency_score = 0
     pattern_positions = set()
-    #grid_edges = set() # Remove this line
+    # grid_edges = set() # Remove this line
 
     # Find all positions occupied by the pattern
     for pattern_x, pattern_y in pattern.keys():
@@ -299,9 +288,9 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
         grid_y = start_y + pattern_y
         if 0 <= grid_x < grid.width and 0 <= grid_y < grid.height:
             pattern_positions.add((grid_x, grid_y))
-            #if grid_x == 0 or grid_x == grid.width - 1 or grid_y == 0 or grid_y == grid.height - 1:
+            # if grid_x == 0 or grid_x == grid.width - 1 or grid_y == 0 or grid_y == grid.height - 1:
             #    grid_edges.add((grid_x, grid_y)) # Remove this line
-            
+
             # Check each edge individually
             if grid_x == 0:
                 total_adjacency_score += 1  # Left edge
@@ -312,7 +301,7 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
             if grid_y == grid.height - 1:
                 total_adjacency_score += 1  # Bottom edge
 
-    #total_adjacency_score += len(grid_edges) # Remove this line
+    # total_adjacency_score += len(grid_edges) # Remove this line
 
     # Iterate through the pattern's positions and check for adjacent occupied slots
     for grid_x, grid_y in pattern_positions:
@@ -337,6 +326,7 @@ def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
 
     return total_adjacency_score
 
+
 def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, message_queue=None):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
@@ -357,9 +347,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
         if has_empty_active_slots:
             break
     if not has_empty_active_slots:
-        raise ValueError(
-            f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'."
-        )
+        raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
 
     best_grid = Grid.from_dict(grid.to_dict())
     best_bonus = -float("inf")
@@ -443,9 +431,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             # Initialize solved_grid with best_pattern_grid
             solved_grid = best_pattern_grid
             solved_bonus = highest_pattern_bonus
-            print(
-                f"INFO -- Best pattern score: {solved_bonus} for ship: '{ship}' -- tech: '{tech}' that fits."
-            )
+            print(f"INFO -- Best pattern score: {solved_bonus} for ship: '{ship}' -- tech: '{tech}' that fits.")
         else:
             print(
                 f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to simulated_annealing."
@@ -457,7 +443,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             )
             if temp_solved_grid is not None:
                 solved_grid = temp_solved_grid
-                solved_bonus = calculate_grid_score(solved_grid, tech) # Recalculate score after annealing
+                solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
             else:
                 print(
                     f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
@@ -474,12 +460,20 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             solved_grid = Grid.from_dict(grid.to_dict())
             clear_all_modules_of_tech(solved_grid, tech)
             temp_solved_grid, temp_solved_bonus = simulated_annealing(
-                solved_grid, ship, modules, tech, player_owned_rewards, initial_temperature=4000, cooling_rate=0.98, iterations_per_temp=30, initial_swap_probability=0.40,
-    final_swap_probability=0.3
+                solved_grid,
+                ship,
+                modules,
+                tech,
+                player_owned_rewards,
+                initial_temperature=4000,
+                cooling_rate=0.98,
+                iterations_per_temp=30,
+                initial_swap_probability=0.40,
+                final_swap_probability=0.3,
             )
             if temp_solved_grid is not None:
                 solved_grid = temp_solved_grid
-                solved_bonus = calculate_grid_score(solved_grid, tech) # Recalculate score after annealing
+                solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
             else:
                 print(
                     f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
@@ -489,19 +483,40 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
                 )
 
     else:
-        print(
-            f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots."
-        )
-        solved_grid = place_all_modules_in_empty_slots(
-            grid, modules, ship, tech, player_owned_rewards
-        )
+        print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
+        solved_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
 
     # Check if all modules were placed
-    all_modules_placed = check_all_modules_placed(
-        solved_grid, modules, ship, tech, player_owned_rewards
-    )
+    all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
+
+    if not all_modules_placed:
+        print(
+            f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
+        )
+
+        clear_all_modules_of_tech(solved_grid, tech)
+        temp_solved_grid, temp_solved_bonus = simulated_annealing(
+            solved_grid,
+            ship,
+            modules,
+            tech,
+            player_owned_rewards,
+            initial_temperature=2000,
+            cooling_rate=0.98,
+            iterations_per_temp=20,
+        )
+        if temp_solved_grid is not None:
+            solved_grid = temp_solved_grid
+            solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
+        else:
+            print(
+                f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+            )
+            raise ValueError(
+                f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+            )
 
     # Check for supercharged opportunities
     opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
@@ -509,45 +524,35 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
     if opportunity:
         print(f"INFO -- Found opportunity: {opportunity}")
         if message_queue:
-            message_queue.put(sse_message(f"Attempting solve for ship: '{ship}' -- tech: '{tech}'", event='status'))
+            message_queue.put(sse_message(f"Attempting solve for ship: '{ship}' -- tech: '{tech}'", event="status"))
         # Create a localized grid
         opportunity_x, opportunity_y = opportunity
 
         # Deep copy solved_grid before clearing and creating localized grid
         temp_solved_grid = deepcopy(solved_grid)
         clear_all_modules_of_tech(temp_solved_grid, tech)
-        localized_grid, start_x, start_y = create_localized_grid(
-            temp_solved_grid, opportunity_x, opportunity_y, tech
-        )
+        localized_grid, start_x, start_y = create_localized_grid(temp_solved_grid, opportunity_x, opportunity_y, tech)
 
         # Refine the localized grid - Surround with id statement
         tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
         if tech_modules is not None and len(tech_modules) < 6:
-            refined_grid, refined_bonus = refine_placement(
-                localized_grid, ship, modules, tech, player_owned_rewards
-            )
-            refined_bonus = calculate_grid_score(refined_grid, tech) # Recalculate score after refine_placement
+            refined_grid, refined_bonus = refine_placement(localized_grid, ship, modules, tech, player_owned_rewards)
+            refined_bonus = calculate_grid_score(refined_grid, tech)  # Recalculate score after refine_placement
         else:
-            refined_grid, refined_bonus = simulated_annealing(
-                localized_grid, ship, modules, tech, player_owned_rewards
-            )
-            refined_bonus = calculate_grid_score(refined_grid, tech) # Recalculate score after annealing
+            refined_grid, refined_bonus = simulated_annealing(localized_grid, ship, modules, tech, player_owned_rewards)
+            refined_bonus = calculate_grid_score(refined_grid, tech)  # Recalculate score after annealing
             print_grid(refined_grid)
 
         if refined_grid is not None:
             # Apply changes to temp_solved_grid
-            apply_localized_grid_changes(
-                temp_solved_grid, refined_grid, tech, start_x, start_y
-            )
+            apply_localized_grid_changes(temp_solved_grid, refined_grid, tech, start_x, start_y)
             # Calculate the new score of the entire grid
             new_solved_bonus = calculate_grid_score(temp_solved_grid, tech)
             # Compare bonuses and apply changes if the refined bonus is higher
             if new_solved_bonus > solved_bonus:
                 # Copy temp_solved_grid to solved_grid
                 solved_grid = temp_solved_grid.copy()
-                print(
-                    f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'"
-                )
+                print(f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'")
                 solved_bonus = new_solved_bonus
             else:
                 print(
@@ -561,7 +566,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
 
     # Calculate the percentage of the solve score achieved
     if solve_score > 0:
-        percentage = (solved_bonus / solve_score) * 100 # Use solved_bonus
+        percentage = (solved_bonus / solve_score) * 100  # Use solved_bonus
     else:
         percentage = 0
 
@@ -572,280 +577,12 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             f"SUCCESS -- Percentage of Solve Score Achieved: {percentage:.2f}% (Current Score: {best_bonus:.2f}, Adjacency Score: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}'"
         )
     else:
-        print(
-            f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'"
-        )
+        print(f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'")
 
     return best_grid, percentage
 
 
-def optimize_placement_old(grid, ship, modules, tech, player_owned_rewards=None):
-    """
-    Optimizes the placement of modules in a grid for a specific ship and technology.
-
-    Args:
-        grid (Grid): The initial grid layout.
-        ship (str): The ship type.
-        modules (dict): The module data.
-        tech (str): The technology type.
-        player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
-
-    Returns:
-        tuple: A tuple containing the best grid found and the percentage of the solve score achieved.
-    """
-    print(f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}'")
-
-    if player_owned_rewards is None:
-        player_owned_rewards = []
-
-    # --- Early Check: Any Empty, Active Slots? ---
-    has_empty_active_slots = False
-    for y in range(grid.height):
-        for x in range(grid.width):
-            if grid.get_cell(x, y)["active"] and grid.get_cell(x, y)["module"] is None:
-                has_empty_active_slots = True
-                break  # Found at least one empty, active slot, no need to check further
-        if has_empty_active_slots:
-            break
-    if not has_empty_active_slots:
-        raise ValueError(
-            f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'."
-        )
-
-    best_grid = Grid.from_dict(grid.to_dict())
-    best_bonus = -float("inf")
-
-    best_pattern_grid = Grid.from_dict(grid.to_dict())
-    highest_pattern_bonus = -float("inf")
-    best_pattern_adjacency_score = 0
-
-    # Filter the solves dictionary based on player-owned rewards
-    filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
-
-    if ship in filtered_solves and tech in filtered_solves[ship]:
-        solve_data = filtered_solves[ship][tech]
-        original_pattern = solve_data["map"]
-        solve_score = solve_data["score"]
-
-        # Generate all unique pattern variations
-        patterns_to_try = get_all_unique_pattern_variations(original_pattern)
-
-        # Create a temporary grid outside the pattern loop
-        grid_dict = grid.to_dict()
-        if grid_dict is None:
-            print("Error: grid.to_dict() returned None")
-            return best_grid, best_bonus
-        temp_grid = Grid.from_dict(grid_dict)
-        if temp_grid is None:
-            print("Error: Grid.from_dict() returned None")
-            return best_grid, best_bonus
-
-        pattern_applied = False  # Flag to check if any pattern was successfully applied
-        for pattern in patterns_to_try:
-            x_coords = [coord[0] for coord in pattern.keys()]
-            y_coords = [coord[1] for coord in pattern.keys()]
-            if not x_coords or not y_coords:
-                continue
-            pattern_width = max(x_coords) + 1
-            pattern_height = max(y_coords) + 1
-
-            # Try placing the pattern in all possible positions
-            for start_x in range(grid.width - pattern_width + 1):
-                for start_y in range(grid.height - pattern_height + 1):
-                    # Calculate the bonus before applying the pattern
-                    pre_pattern_bonus = calculate_grid_score(temp_grid, tech)
-
-                    # Apply the pattern to the persistent temp_grid
-                    pattern_result, adjacency_score = apply_pattern_to_grid(
-                        temp_grid,
-                        pattern,
-                        modules,
-                        tech,
-                        start_x,
-                        start_y,
-                        ship,
-                        player_owned_rewards,
-                    )
-
-                    if pattern_result == 0:
-                        current_pattern_bonus = pre_pattern_bonus
-                    else:
-                        current_pattern_bonus = calculate_grid_score(temp_grid, tech)
-                        pattern_applied = True  # A pattern was successfully applied
-
-                    if current_pattern_bonus > highest_pattern_bonus or (
-                        current_pattern_bonus == highest_pattern_bonus
-                        and adjacency_score > best_pattern_adjacency_score
-                    ):
-                        highest_pattern_bonus = current_pattern_bonus
-                        best_pattern_grid = Grid.from_dict(temp_grid.to_dict())
-                        best_pattern_adjacency_score = adjacency_score
-
-            # Reset temp_grid for the next pattern
-            temp_grid = Grid.from_dict(grid_dict)
-
-        if best_pattern_grid:
-            # Initialize best_grid with best_pattern_grid
-            best_grid = best_pattern_grid
-            best_bonus = highest_pattern_bonus
-            print(
-                f"INFO -- Best pattern score: {best_bonus} for ship: '{ship}' -- tech: '{tech}' that fits."
-            )
-        
-        else:
-            print(
-                f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to refine_placement."
-            )
-            best_grid = Grid.from_dict(grid.to_dict())
-            clear_all_modules_of_tech(best_grid, tech)
-            temp_best_grid, temp_best_bonus = simulated_annealing(
-                best_grid, ship, modules, tech, player_owned_rewards
-            )
-            # temp_best_grid, temp_best_bonus = refine_placement(best_grid, ship, modules, tech, player_owned_rewards)
-            if temp_best_grid is not None:
-                best_grid = temp_best_grid
-                best_bonus = temp_best_bonus
-            else:
-                print(
-                    f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
-                raise ValueError(
-                    f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
-            pattern_applied = True
-
-        if not pattern_applied:
-            print(
-                f"WARNING -- No pattern was applied for ship: '{ship}' -- tech: '{tech}'. Falling back to simulated annealing."
-            )
-            best_grid = Grid.from_dict(grid.to_dict())
-            clear_all_modules_of_tech(best_grid, tech)
-            temp_best_grid, temp_best_bonus = simulated_annealing(
-                best_grid, ship, modules, tech, player_owned_rewards
-            )
-            if temp_best_grid is not None:
-                best_grid = temp_best_grid
-                best_bonus = temp_best_bonus
-            else:
-                print(
-                    f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
-                raise ValueError(
-                    f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-                )
-
-    else:
-        print(
-            f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots."
-        )
-        best_grid = place_all_modules_in_empty_slots(
-            grid, modules, ship, tech, player_owned_rewards
-        )
-        best_bonus = calculate_grid_score(best_grid, tech)
-        solve_score = 0
-
-    solved_bonus = calculate_grid_score(best_grid, tech)
-
-    # Check if all modules were placed
-    all_modules_placed = check_all_modules_placed(
-        best_grid, modules, ship, tech, player_owned_rewards
-    )
-    if not all_modules_placed:
-        print(
-            f"WARNING -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
-        )
-
-        clear_all_modules_of_tech(best_grid, tech)
-        temp_best_grid, temp_best_bonus = simulated_annealing(
-            best_grid,
-            ship,
-            modules,
-            tech,
-            player_owned_rewards,
-            initial_temperature=2000,
-            cooling_rate=0.98,
-            iterations_per_temp=20,
-        )
-        if temp_best_grid is not None:
-            best_grid = temp_best_grid
-            best_bonus = temp_best_bonus
-            solved_bonus = best_bonus
-        else:
-            print(
-                f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
-            raise ValueError(
-                f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
-    else:
-        # Check for supercharged opportunities
-        opportunity = find_supercharged_opportunities(best_grid, modules, ship, tech)
-
-        if opportunity:
-            print(f"INFO -- Found opportunity: {opportunity}")
-            # Create a localized grid
-            opportunity_x, opportunity_y = opportunity
-
-            # Deep copy best_grid before clearing and creating localized grid
-            temp_best_grid = deepcopy(best_grid)
-            clear_all_modules_of_tech(temp_best_grid, tech)
-            localized_grid, start_x, start_y = create_localized_grid(
-                temp_best_grid, opportunity_x, opportunity_y, tech
-            )
-
-            # Refine the localized grid - Surround with id statement
-            tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
-            if tech_modules is not None and len(tech_modules) < 6:
-                optimized_localized_grid, refined_bonus = refine_placement(
-                    localized_grid, ship, modules, tech, player_owned_rewards
-                )
-            else:
-                optimized_localized_grid, refined_bonus = simulated_annealing(
-                    localized_grid, ship, modules, tech, player_owned_rewards
-                )
-
-            if optimized_localized_grid is not None:
-                # Compare bonuses and apply changes if the refined bonus is higher
-                if refined_bonus > solved_bonus:
-                    # Apply changes to temp_best_grid
-                    apply_localized_grid_changes(
-                        temp_best_grid, optimized_localized_grid, tech, start_x, start_y
-                    )
-                    # Copy temp_best_grid to best_grid
-                    best_grid = temp_best_grid.copy()
-                    print(
-                        f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'"
-                    )
-                    solved_bonus = refined_bonus
-                    best_bonus = refined_bonus
-                else:
-                    print(
-                        f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {refined_bonus}"
-                    )
-            else:
-                print("simulated_annealing returned None. No changes made.")
-
-    # Calculate the percentage of the solve score achieved
-    if solve_score > 0:
-        percentage = (best_bonus / solve_score) * 100
-    else:
-        percentage = 0
-
-    if best_grid is not None:
-        print(
-            f"SUCCESS -- Percentage of Solve Score Achieved: {percentage:.2f}% (Current Score: {best_bonus:.2f}, Adjacency Score: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}'"
-        )
-    else:
-        print(
-            f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'"
-        )
-
-    return best_grid, percentage
-
-
-def place_all_modules_in_empty_slots(
-    grid, modules, ship, tech, player_owned_rewards=None
-):
+def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
@@ -877,9 +614,7 @@ def place_all_modules_in_empty_slots(
                 module_index += 1  # Move to the next module
 
     if module_index < len(tech_modules) and len(tech_modules) > 0:
-        print(
-            f"WARNING -- Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'"
-        )
+        print(f"WARNING -- Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'")
 
     return grid
 
@@ -901,20 +636,12 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
                        None otherwise.
     """
     occupied_positions = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["module"] is not None
+        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["module"] is not None
     ]
     supercharged_positions = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["supercharged"]
+        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["supercharged"]
     ]
-    occupied_supercharged_count = sum(
-        1 for x, y in occupied_positions if (x, y) in supercharged_positions
-    )
+    occupied_supercharged_count = sum(1 for x, y in occupied_positions if (x, y) in supercharged_positions)
 
     # --- Helper Functions ---
     def is_valid_position(x, y):
@@ -945,30 +672,19 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
         return count
 
     # --- Main Logic ---
-    boundary_supercharged_slots = [
-        (x, y) for x, y in supercharged_positions if is_on_boundary(grid, x, y)
-    ]
+    boundary_supercharged_slots = [(x, y) for x, y in supercharged_positions if is_on_boundary(grid, x, y)]
     unused_boundary_supercharged_slots = [
-        (x, y)
-        for x, y in boundary_supercharged_slots
-        if grid.get_cell(x, y)["module"] is None
+        (x, y) for x, y in boundary_supercharged_slots if grid.get_cell(x, y)["module"] is None
     ]
 
     if unused_boundary_supercharged_slots:
         # There's an unused supercharged slot on the boundary, so there's an opportunity
         opportunity_x, opportunity_y = unused_boundary_supercharged_slots[0]
-        localized_grid, _, _ = create_localized_grid(
-            grid, opportunity_x, opportunity_y, tech
-        )  # Unpack the tuple
-        if (
-            count_supercharged_in_localized(localized_grid)
-            > occupied_supercharged_count
-        ):
+        localized_grid, _, _ = create_localized_grid(grid, opportunity_x, opportunity_y, tech)  # Unpack the tuple
+        if count_supercharged_in_localized(localized_grid) > occupied_supercharged_count:
             return opportunity_x, opportunity_y
 
-    modules_in_boundary_supercharged = [
-        (x, y) for x, y in occupied_positions if (x, y) in boundary_supercharged_slots
-    ]
+    modules_in_boundary_supercharged = [(x, y) for x, y in occupied_positions if (x, y) in boundary_supercharged_slots]
     if not modules_in_boundary_supercharged:
         pass
     else:
@@ -979,13 +695,8 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
                     ny,
                 ) not in modules_in_boundary_supercharged:
                     # There's a module adjacent to a supercharged slot on the boundary, so there's a swap opportunity
-                    localized_grid, _, _ = create_localized_grid(
-                        grid, sx, sy
-                    )  # Unpack the tuple
-                    if (
-                        count_supercharged_in_localized(localized_grid)
-                        > occupied_supercharged_count
-                    ):
+                    localized_grid, _, _ = create_localized_grid(grid, sx, sy)  # Unpack the tuple
+                    if count_supercharged_in_localized(localized_grid) > occupied_supercharged_count:
                         return sx, sy
 
     # Check for supercharged slots within the bounds of the current tech
@@ -1015,20 +726,12 @@ def find_supercharged_opportunities_old(grid, modules, ship, tech):
                        None otherwise.
     """
     occupied_positions = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["module"] is not None
+        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["module"] is not None
     ]
     supercharged_positions = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["supercharged"]
+        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["supercharged"]
     ]
-    occupied_supercharged_count = sum(
-        1 for x, y in occupied_positions if (x, y) in supercharged_positions
-    )
+    occupied_supercharged_count = sum(1 for x, y in occupied_positions if (x, y) in supercharged_positions)
 
     # --- Helper Functions ---
     def is_valid_position(x, y):
@@ -1059,30 +762,19 @@ def find_supercharged_opportunities_old(grid, modules, ship, tech):
         return count
 
     # --- Main Logic ---
-    boundary_supercharged_slots = [
-        (x, y) for x, y in supercharged_positions if is_on_boundary(grid, x, y)
-    ]
+    boundary_supercharged_slots = [(x, y) for x, y in supercharged_positions if is_on_boundary(grid, x, y)]
     unused_boundary_supercharged_slots = [
-        (x, y)
-        for x, y in boundary_supercharged_slots
-        if grid.get_cell(x, y)["module"] is None
+        (x, y) for x, y in boundary_supercharged_slots if grid.get_cell(x, y)["module"] is None
     ]
 
     if unused_boundary_supercharged_slots:
         # There's an unused supercharged slot on the boundary, so there's an opportunity
         opportunity_x, opportunity_y = unused_boundary_supercharged_slots[0]
-        localized_grid, _, _ = create_localized_grid(
-            grid, opportunity_x, opportunity_y
-        )  # Unpack the tuple
-        if (
-            count_supercharged_in_localized(localized_grid)
-            > occupied_supercharged_count
-        ):
+        localized_grid, _, _ = create_localized_grid(grid, opportunity_x, opportunity_y)  # Unpack the tuple
+        if count_supercharged_in_localized(localized_grid) > occupied_supercharged_count:
             return opportunity_x, opportunity_y
 
-    modules_in_boundary_supercharged = [
-        (x, y) for x, y in occupied_positions if (x, y) in boundary_supercharged_slots
-    ]
+    modules_in_boundary_supercharged = [(x, y) for x, y in occupied_positions if (x, y) in boundary_supercharged_slots]
     if not modules_in_boundary_supercharged:
         return None
     for sx, sy in boundary_supercharged_slots:
@@ -1092,13 +784,8 @@ def find_supercharged_opportunities_old(grid, modules, ship, tech):
                 ny,
             ) not in modules_in_boundary_supercharged:
                 # There's a module adjacent to a supercharged slot on the boundary, so there's a swap opportunity
-                localized_grid, _, _ = create_localized_grid(
-                    grid, sx, sy
-                )  # Unpack the tuple
-                if (
-                    count_supercharged_in_localized(localized_grid)
-                    > occupied_supercharged_count
-                ):
+                localized_grid, _, _ = create_localized_grid(grid, sx, sy)  # Unpack the tuple
+                if count_supercharged_in_localized(localized_grid) > occupied_supercharged_count:
                     return sx, sy
 
     # No opportunities found
@@ -1182,34 +869,23 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
             localized_y = y - start_y
             cell = grid.get_cell(x, y)
             localized_grid.cells[localized_y][localized_x]["active"] = cell["active"]
-            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell[
-                "supercharged"
-            ]
+            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell["supercharged"]
 
             # Copy module data if a module exists
             if cell["module"] is not None:
-                localized_grid.cells[localized_y][localized_x]["module"] = cell[
-                    "module"
-                ]
+                localized_grid.cells[localized_y][localized_x]["module"] = cell["module"]
                 localized_grid.cells[localized_y][localized_x]["label"] = cell["label"]
                 localized_grid.cells[localized_y][localized_x]["tech"] = cell["tech"]
                 localized_grid.cells[localized_y][localized_x]["type"] = cell["type"]
                 localized_grid.cells[localized_y][localized_x]["bonus"] = cell["bonus"]
-                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell[
-                    "adjacency"
-                ]
-                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell[
-                    "sc_eligible"
-                ]
+                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell["adjacency"]
+                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell["sc_eligible"]
                 localized_grid.cells[localized_y][localized_x]["image"] = cell["image"]
                 # Only copy module_position if it exists
                 if "module_position" in cell:
-                    localized_grid.cells[localized_y][localized_x][
-                        "module_position"
-                    ] = cell["module_position"]
+                    localized_grid.cells[localized_y][localized_x]["module_position"] = cell["module_position"]
 
     return localized_grid, start_x, start_y
-
 
 
 def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
@@ -1227,12 +903,8 @@ def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
             main_y = start_y + y
             if 0 <= main_x < grid.width and 0 <= main_y < grid.height:
                 # Only copy if the cell is empty or of the same tech
-                if (
-                    grid.get_cell(main_x, main_y)["tech"] == tech
-                    or grid.get_cell(main_x, main_y)["module"] is None
-                ):                    
+                if grid.get_cell(main_x, main_y)["tech"] == tech or grid.get_cell(main_x, main_y)["module"] is None:
                     grid.cells[main_y][main_x].update(localized_grid.cells[y][x])
-        
 
 
 def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=None):
