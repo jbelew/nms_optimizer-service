@@ -428,7 +428,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
         if best_pattern_grid:
             # Initialize solved_grid with best_pattern_grid
             solved_grid = best_pattern_grid
-            solved_bonus = highest_pattern_bonus
+            # solved_bonus = highest_pattern_bonus
+            solved_bonus=calculate_grid_score(solved_grid, tech)
             print(f"INFO -- Best pattern score: {solved_bonus} for ship: '{ship}' -- tech: '{tech}' that fits.")
         else:
             print(
@@ -464,7 +465,15 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             # Calculate the new score of the entire grid
             new_solved_bonus = calculate_grid_score(temp_solved_grid, tech)
             # Compare bonuses and apply changes if the refined bonus is higher
-            if new_solved_bonus > solved_bonus:
+        
+            ######
+            #
+            #    TODO: Ugly hack for a bugt I can't find!    
+            #
+            ######
+            
+            if new_solved_bonus > (solved_bonus * .99):
+            # if new_solved_bonus > solved_bonus:
                 # Copy temp_solved_grid to solved_grid
                 solved_grid = temp_solved_grid.copy()
                 print(f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'")
