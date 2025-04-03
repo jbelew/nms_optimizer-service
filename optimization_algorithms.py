@@ -37,7 +37,6 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
 
     # Check if there are enough available positions for all modules
     if len(available_positions) < len(tech_modules):
-        print(f"Not enough available positions to place all modules for ship '{ship}' and tech '{tech}'.")
         return None, 0.0
 
     # Initialize the iteration counter
@@ -130,37 +129,29 @@ def mirror_pattern_vertically(pattern):
 
 
 def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards=None):
-    """Applies a pattern to an existing grid at a given starting position,
-    preserving the original grid's state (except for modules of the same tech)
-    and only filling empty, active slots with the pattern's modules.
-    """
+    """Applies a pattern to a *copy* of the grid at a given starting position.
 
-    clear_all_modules_of_tech(grid, tech)
+    Returns a new grid with the pattern applied, or None if the pattern cannot be applied.
+    """
+    # Create a deep copy of the grid to avoid modifying the original
+    new_grid = grid.copy()
 
     # Check for overlap before applying the pattern
     for pattern_x, pattern_y in pattern.keys():
         grid_x = start_x + pattern_x
         grid_y = start_y + pattern_y
-        if 0 <= grid_x < grid.width and 0 <= grid_y < grid.height:
-            if grid.get_cell(grid_x, grid_y)["module"] is not None and grid.get_cell(grid_x, grid_y)["tech"] != tech:
-                return 0, 0  # Indicate a bad pattern with a score of 0
+        if 0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height:
+            if new_grid.get_cell(grid_x, grid_y)["module"] is not None and new_grid.get_cell(grid_x, grid_y)["tech"] != tech:
+                return None, 0  # Indicate a bad pattern with a score of 0
 
-    # Clear existing modules of the selected technology
-    for y in range(grid.height):
-        for x in range(grid.width):
-            if grid.get_cell(x, y)["tech"] == tech:
-                grid.cells[y][x]["module"] = None
-                grid.cells[y][x]["tech"] = None
-                grid.cells[y][x]["type"] = None
-                grid.cells[y][x]["bonus"] = 0
-                grid.cells[y][x]["adjacency"] = False
-                grid.cells[y][x]["sc_eligible"] = False
-                grid.cells[y][x]["image"] = None
+    # Clear existing modules of the selected technology in the new grid
+    clear_all_modules_of_tech(new_grid, tech)
 
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
-        return 0, 0
+        return None, 0
+
     # Create a mapping from module id to module data
     module_id_map = {module["id"]: module for module in tech_modules}
 
@@ -168,14 +159,14 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
         grid_x = start_x + pattern_x
         grid_y = start_y + pattern_y
 
-        if 0 <= grid_x < grid.width and 0 <= grid_y < grid.height:
+        if 0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height:
             if module_id is None:
                 continue
             if module_id in module_id_map:
                 module_data = module_id_map[module_id]
-                if grid.get_cell(grid_x, grid_y)["active"] and grid.get_cell(grid_x, grid_y)["module"] is None:
+                if new_grid.get_cell(grid_x, grid_y)["active"] and new_grid.get_cell(grid_x, grid_y)["module"] is None:
                     place_module(
-                        grid,  # Apply changes directly to the input grid
+                        new_grid,  # Apply changes to the new grid
                         grid_x,
                         grid_y,
                         module_data["id"],
@@ -188,9 +179,8 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
                         module_data["image"],
                     )
 
-    adjacency_score = calculate_pattern_adjacency_score(grid, pattern, start_x, start_y)
-    return 1, adjacency_score  # Return 1 to indicate a good pattern
-
+    adjacency_score = calculate_pattern_adjacency_score(new_grid, tech)
+    return new_grid, adjacency_score  # Return the new grid
 
 def get_all_unique_pattern_variations(original_pattern):
     """
@@ -260,64 +250,44 @@ def count_adjacent_occupied(grid, x, y):
     return count
 
 
-def calculate_pattern_adjacency_score(grid, pattern, start_x, start_y):
+def calculate_pattern_adjacency_score(grid, tech):
     """
-    Calculates the adjacency score for a pattern placed on the grid.
+    Calculates the adjacency score for modules of a specific tech on the grid.
 
     Args:
         grid (Grid): The grid.
-        pattern (dict): The pattern.
-        start_x (int): The starting x-coordinate of the pattern.
-        start_y (int): The starting y-coordinate of the pattern.
+        tech (str): The tech type of the modules to consider.
 
     Returns:
         int: The adjacency score.
     """
+    module_edge_weight = 1.0  # Weight for adjacency to other modules
+    grid_edge_weight = 1.0  # Weight for adjacency to grid edges
+
     total_adjacency_score = 0
-    pattern_positions = set()
-    # grid_edges = set() # Remove this line
 
-    # Find all positions occupied by the pattern
-    for pattern_x, pattern_y in pattern.keys():
-        grid_x = start_x + pattern_x
-        grid_y = start_y + pattern_y
-        if 0 <= grid_x < grid.width and 0 <= grid_y < grid.height:
-            pattern_positions.add((grid_x, grid_y))
-            # if grid_x == 0 or grid_x == grid.width - 1 or grid_y == 0 or grid_y == grid.height - 1:
-            #    grid_edges.add((grid_x, grid_y)) # Remove this line
+    # Iterate through the grid to find modules of the specified tech
+    for y in range(grid.height):
+        for x in range(grid.width):
+            cell = grid.get_cell(x, y)
+            if cell["module"] is not None and cell["tech"] == tech:
+                # Check each edge individually and apply grid_edge_weight
+                if x == 0:
+                    total_adjacency_score += grid_edge_weight  # Left edge
+                if x == grid.width - 1:
+                    total_adjacency_score += grid_edge_weight  # Right edge
+                if y == 0:
+                    total_adjacency_score += grid_edge_weight  # Top edge
+                if y == grid.height - 1:
+                    total_adjacency_score += grid_edge_weight  # Bottom edge
 
-            # Check each edge individually
-            if grid_x == 0:
-                total_adjacency_score += 1  # Left edge
-            if grid_x == grid.width - 1:
-                total_adjacency_score += 1  # Right edge
-            if grid_y == 0:
-                total_adjacency_score += 1  # Top edge
-            if grid_y == grid.height - 1:
-                total_adjacency_score += 1  # Bottom edge
-
-    # total_adjacency_score += len(grid_edges) # Remove this line
-
-    # Iterate through the pattern's positions and check for adjacent occupied slots
-    for grid_x, grid_y in pattern_positions:
-        adjacent_positions = [
-            (grid_x - 1, grid_y),
-            (grid_x + 1, grid_y),
-            (grid_x, grid_y - 1),
-            (grid_x, grid_y + 1),
-        ]
-        for adj_x, adj_y in adjacent_positions:
-            if (
-                0 <= adj_x < grid.width
-                and 0 <= adj_y < grid.height
-                and grid.get_cell(adj_x, adj_y)["module"] is not None
-                and (
-                    adj_x,
-                    adj_y,
-                )
-                not in pattern_positions
-            ):
-                total_adjacency_score += 1
+                # Check adjacent positions for modules of different techs
+                adjacent_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
+                for adj_x, adj_y in adjacent_positions:
+                    if 0 <= adj_x < grid.width and 0 <= adj_y < grid.height:
+                        adjacent_cell = grid.get_cell(adj_x, adj_y)
+                        if adjacent_cell["module"] is not None and adjacent_cell["tech"] != tech:
+                            total_adjacency_score += module_edge_weight
 
     return total_adjacency_score
 
@@ -392,38 +362,38 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             pattern_height = max(y_coords) + 1
 
             # Try placing the pattern in all possible positions
-            for start_x in range(grid.width - pattern_width + 1):
-                for start_y in range(grid.height - pattern_height + 1):
-                    # Apply the pattern to the persistent temp_grid
-                    pattern_result, adjacency_score = apply_pattern_to_grid(
-                        temp_grid,
-                        pattern,
-                        modules,
-                        tech,
-                        start_x,
-                        start_y,
-                        ship,
-                        player_owned_rewards,
-                    )
-                    if pattern_result == 1:
-                        pattern_applied = True  # A pattern was attempted
-                        current_pattern_bonus = calculate_grid_score(temp_grid, tech)
+        for start_x in range(grid.width - pattern_width + 1):
+            for start_y in range(grid.height - pattern_height + 1):
+                # Apply the pattern to the persistent temp_grid
+                temp_result_grid, adjacency_score = apply_pattern_to_grid(
+                    temp_grid,
+                    pattern,
+                    modules,
+                    tech,
+                    start_x,
+                    start_y,
+                    ship,
+                    player_owned_rewards,
+                )
+                if temp_result_grid is not None:
+                    pattern_applied = True  # A pattern was attempted
+                    current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
 
-                        if current_pattern_bonus > highest_pattern_bonus:
-                            highest_pattern_bonus = current_pattern_bonus
-                            best_pattern_grid = Grid.from_dict(temp_grid.to_dict())
-                            best_pattern_adjacency_score = adjacency_score
-                        elif (
-                            current_pattern_bonus == highest_pattern_bonus
-                            and adjacency_score > best_pattern_adjacency_score
-                        ):
-                            highest_pattern_bonus = current_pattern_bonus
-                            best_pattern_grid = Grid.from_dict(temp_grid.to_dict())
+                    if current_pattern_bonus > highest_pattern_bonus:
+                        highest_pattern_bonus = current_pattern_bonus
+                        best_pattern_grid = temp_result_grid.copy()
+                        best_pattern_adjacency_score = adjacency_score
+                    elif (
+                        current_pattern_bonus == highest_pattern_bonus
+                        and adjacency_score > best_pattern_adjacency_score
+                    ):
+                        best_pattern_grid = temp_result_grid.copy()
+                        print_grid_compact(best_pattern_grid)
+                        best_pattern_adjacency_score = adjacency_score
 
-                            best_pattern_adjacency_score = adjacency_score
 
-            # Reset temp_grid for the next pattern
-            temp_grid = Grid.from_dict(grid_dict)
+        # Reset temp_grid for the next pattern
+        temp_grid = Grid.from_dict(grid_dict)
 
         if best_pattern_grid:
             # Initialize solved_grid with best_pattern_grid
@@ -483,7 +453,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
                     f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {temp_refined_bonus}"
                 )
         else:
-            print("simulated_annealing returned None. No changes made.")
+            print("INFO -- Opportunity refinement failed. Not enough space to apply the opportunity.")
 
     # --- 3. Simulated Annealing (Fallback, Moved to the End) ---
     if not pattern_applied:

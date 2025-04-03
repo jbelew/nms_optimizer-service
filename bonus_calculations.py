@@ -130,7 +130,6 @@ def populate_all_module_bonuses(grid: Grid, tech: str) -> None:
 def calculate_grid_score(grid: Grid, tech: str) -> float:
     """Calculates the total grid score for a given technology."""
     if grid is None:
-        print("ERROR -- calculate_grid_score: grid is None")
         return 0.0  # Or handle the error in a way that makes sense for your application
 
     clear_scores(grid, tech)
