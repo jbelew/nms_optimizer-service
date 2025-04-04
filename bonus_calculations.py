@@ -3,7 +3,7 @@ from grid_utils import Grid
 import math
 
 # Global weights
-core_weight = 0.08  # Default core weight
+core_weight = 0.06  # Default core weight
 greater_weight = 0.04  # Default greater adjacency weight (formerly bonus_weight)
 lesser_weight = 0.03  # Default lesser adjacency weight
 
@@ -112,7 +112,7 @@ def populate_module_bonuses(grid: Grid, x: int, y: int) -> float:
     total_bonus = base_bonus + adjacency_bonus
 
     if is_supercharged and is_sc_eligible:
-        total_bonus *= 1.25  # Apply supercharge multiplie
+        total_bonus *= 1.50  # Apply supercharge multiplie
 
     grid.set_total(x, y, total_bonus)
     return total_bonus

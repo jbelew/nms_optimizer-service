@@ -77,8 +77,10 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
         # Update the best grid if a better score is found - MOVED OUTSIDE THE INNER LOOP
         if grid_bonus > highest_bonus:
             highest_bonus = grid_bonus
-
             optimal_grid = deepcopy(grid)
+            # print(highest_bonus)
+            # print_grid_compact(optimal_grid)
+            
     # Print the total number of iterations
     print(f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'")
 
@@ -324,8 +326,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
         pattern_applied = True
-        return solved_grid, solved_bonus # Add this line to exit early
-    
+        return solved_grid, solved_bonus  # Add this line to exit early
+
     else:
         pattern_applied = False
         solve_data = filtered_solves[ship][tech]
@@ -409,9 +411,9 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
         temp_solved_grid = deepcopy(solved_grid)
         clear_all_modules_of_tech(temp_solved_grid, tech)
         localized_grid, start_x, start_y = create_localized_grid(temp_solved_grid, opportunity_x, opportunity_y, tech)
-        print_grid(localized_grid)
 
         # Refine the localized grid - Surround with id statement
+        print_grid(localized_grid)
         temp_refined_grid, temp_refined_bonus = refine_placement(
             localized_grid, ship, modules, tech, player_owned_rewards
         )
@@ -432,7 +434,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             #
             ######
 
-            if new_solved_bonus > (solved_bonus * 0.99):
+            if new_solved_bonus > (solved_bonus * 0.90):
                 # if new_solved_bonus > solved_bonus:
                 # Copy temp_solved_grid to solved_grid
                 solved_grid = temp_solved_grid.copy()
@@ -477,7 +479,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
 
     # Check if all modules were placed - Only if a pattern was applied
     all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
-    
+
     if not all_modules_placed:
         print(
             f"WARNING! -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
@@ -563,10 +565,21 @@ def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rew
     return grid
 
 
+def count_empty_in_localized(localized_grid):
+    """Counts the number of truly empty slots in a localized grid."""
+    count = 0
+    for y in range(localized_grid.height):
+        for x in range(localized_grid.width):
+            cell = localized_grid.get_cell(x, y)
+            if cell["module"] is None:  # Only count if the module slot is empty
+                count += 1
+    return count
+
+
 def find_supercharged_opportunities(grid, modules, ship, tech):
     """
-    Checks if there are any opportunities to utilize unused supercharged slots,
-    prioritizing locations with the most supercharged slots AND then the most empty cells.
+    Scans the entire grid with a sliding window to find the highest-scoring
+    window containing available supercharged slots.
 
     Args:
         grid (Grid): The current grid layout.
@@ -575,81 +588,67 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
         tech (str): The technology type.
 
     Returns:
-        tuple or None: A tuple (opportunity_x, opportunity_y) if an opportunity is found,
-                       None otherwise.
+        tuple or None: A tuple (opportunity_x, opportunity_y) representing the
+                       top-left corner of the best window, or None if no
+                       suitable window is found.
     """
-    supercharged_positions = [
-        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["supercharged"]
-    ]
+    grid_copy = grid.copy()
+    clear_all_modules_of_tech(grid_copy, tech)
 
-    # --- Helper Functions ---
-    def count_supercharged_in_localized(localized_grid):
-        """Counts the number of supercharged slots in a localized grid."""
-        count = 0
-        for y in range(localized_grid.height):
-            for x in range(localized_grid.width):
-                if localized_grid.get_cell(x, y)["supercharged"]:
-                    count += 1
-        return count
+    window_width = 3
+    window_height = 3
 
-    def count_empty_in_localized(localized_grid, tech):
-        """Counts the number of empty slots in a localized grid."""
-        count = 0
-        for y in range(localized_grid.height):
-            for x in range(localized_grid.width):
-                cell = localized_grid.get_cell(x, y)
-                if cell["module"] is None or cell["tech"] == tech:
-                    count += 1
-        return count
+    best_window_score = -1
+    best_window_start_x, best_window_start_y = None, None
 
-    best_opportunity = None
-    best_opportunity_score = -1
-    best_opportunity_supercharged_density = -1
-    best_opportunity_empty_density = -1
-    best_opportunity_localized_width = 0
-    best_opportunity_localized_height = 0
+    for start_y in range(grid_copy.height - window_height + 1):
+        for start_x in range(grid_copy.width - window_width + 1):
+            window_grid = Grid(window_width, window_height)
+            for y in range(window_height):
+                for x in range(window_width):
+                    grid_x = start_x + x
+                    grid_y = start_y + y
+                    cell = grid_copy.get_cell(grid_x, grid_y)
+                    window_grid.cells[y][x] = cell.copy()
 
-    if supercharged_positions:
-        for opportunity_x, opportunity_y in supercharged_positions:
-            localized_grid, _, _ = create_localized_grid(grid, opportunity_x, opportunity_y, tech)
-            supercharged_count = count_supercharged_in_localized(localized_grid)
-            empty_count = count_empty_in_localized(localized_grid, tech)
-            localized_width = localized_grid.width
-            localized_height = localized_grid.height
+            window_score = calculate_window_score(window_grid)
+            if window_score > best_window_score:
+                best_window_score = window_score
+                best_window_start_x, best_window_start_y = start_x, start_y
 
-            supercharged_density = (
-                supercharged_count / (localized_width * localized_height)
-                if (localized_width * localized_height) > 0
-                else 0
-            )
-            empty_density = (
-                empty_count / (localized_width * localized_height) if (localized_width * localized_height) > 0 else 0
-            )
-            opportunity_score = (supercharged_density * 100) + (
-                empty_density * 50
-            )  # Prioritize supercharged, then empty
+    if best_window_start_x is not None and best_window_start_y is not None:
+        return best_window_start_x, best_window_start_y  # Return the top-left of the best window
+    else:
+        return None
 
-            if (
-                supercharged_density > best_opportunity_supercharged_density
-                or (
-                    supercharged_density == best_opportunity_supercharged_density
-                    and empty_density > best_opportunity_empty_density
-                )
-                or (
-                    supercharged_density == best_opportunity_supercharged_density
-                    and empty_density == best_opportunity_empty_density
-                    and (localized_width * localized_height)
-                    > (best_opportunity_localized_width * best_opportunity_localized_height)
-                )
-            ):
-                best_opportunity_score = opportunity_score
-                best_opportunity_supercharged_density = supercharged_density
-                best_opportunity_empty_density = empty_density
-                best_opportunity_localized_width = localized_width
-                best_opportunity_localized_height = localized_height
-                best_opportunity = (opportunity_x, opportunity_y)
 
-    return best_opportunity
+def calculate_window_score(window_grid):
+    """Calculates a score for a given window based on supercharged and empty slots."""
+    supercharged_count = 0
+    empty_count = 0
+    for y in range(window_grid.height):
+        for x in range(window_grid.width):
+            cell = window_grid.get_cell(x, y)
+            if cell["supercharged"]:
+                supercharged_count += 1
+            if cell["module"] is None:
+                empty_count += 1
+
+    # Prioritize supercharged slots, then empty slots
+    return (supercharged_count * 1) + (empty_count * 1)
+
+
+def find_best_supercharged_in_window(grid, start_x, start_y, window_width, window_height):
+    """Finds the first available supercharged slot within a given window."""
+    for y in range(window_height):
+        for x in range(window_width):
+            grid_x = start_x + x
+            grid_y = start_y + y
+            cell = grid.get_cell(grid_x, grid_y)
+            if cell["supercharged"] and cell["module"] is None:
+                return grid_x, grid_y  # Return the first available supercharged slot
+
+    return None, None  # No supercharged slot found in the window
 
 
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
