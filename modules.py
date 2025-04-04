@@ -475,7 +475,7 @@ modules = {
                     "image": "assembly.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "assembly.png", },
+                        { "id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "assembly.png", },
                         { "id": "Xa", "type": "bonus", "label": "Neural Assembly Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Neural Assembly Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Neural Assembly Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
