@@ -344,10 +344,9 @@ modules = {
                     "modules": [
                         { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": False, "image": "luminance.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
-                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
-                        { "id": "PI", "type": "bonus", "label": "Pilot Interface", "bonus": 0.26, "adjacency": "none", "sc_eligible": True, "image": "pilot.png", },
-                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
-                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.34, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
+                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
+                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
+                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.17, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
@@ -374,6 +373,15 @@ modules = {
                         { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "atlas.png", },
                         { "id": "NA", "type": "bonus", "label": "Nada Figurine", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "nada.png", },
                         { "id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "null.png", },
+                    ],
+                },
+                {
+                    "label": "Pilot Interface",
+                    "key": "pilot",
+                    "image": "pilot.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PI", "type": "bonus", "label": "Pilot Interface", "bonus": 0.30, "adjacency": "none", "sc_eligible": True, "image": "pilot.png", },
                     ],
                 },
                 {
@@ -559,116 +567,116 @@ solves = {
     "standard": {
         "cyclotron": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
-                (0, 1): "CB",
-                (1, 1): "Xa",
-                (0, 2): "QR",
-                (1, 2): "None"
+                (0, 0): "None",
+                (1, 0): "QR",
+                (0, 1): "Xc",
+                (1, 1): "CB",
+                (0, 2): "Xa",
+                (1, 2): "Xb"
             },
-            "score": 14.748742095360003
+            "score": 16.533104257280005
         },
         "infra": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
+                (0, 0): "None",
+                (1, 0): "QR",
+                (0, 1): "Xc",
                 (1, 1): "IK",
-                (0, 2): "None",
-                (1, 2): "QR"
+                (0, 2): "Xa",
+                (1, 2): "Xb"
             },
-            "score": 14.748742095360003
+            "score": 16.533104257280005
         },
         "phase": {
             "map": {
-                (0, 0): "PB",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "FD",
-                (0, 2): "Xb",
-                (1, 2): "Xc"
+                (0, 0): "Xc",
+                (1, 0): "Xb",
+                (0, 1): "FD",
+                (1, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "PB"
             },
-            "score": 13.604770583040004
+            "score": 15.770084195840003
         },
         "photon": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
-                (0, 1): "Xa",
+                (0, 0): "None",
+                (1, 0): "NO",
+                (0, 1): "Xb",
                 (1, 1): "PC",
-                (0, 2): "None",
-                (1, 2): "NO"
-            },
-            "score": 14.748742095360003
-        },
-        "positron": {
-            "map": {
-                (0, 0): "FS",
-                (1, 0): "None",
-                (0, 1): "PE",
-                (1, 1): "Xb",
                 (0, 2): "Xa",
                 (1, 2): "Xc"
             },
-            "score": 14.748742095360003
+            "score": 16.53310425728
+        },
+        "positron": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "PE",
+                (1, 1): "Xb",
+                (0, 2): "FS",
+                (1, 2): "None"
+            },
+            "score": 16.533104257279998
         },
         "rocket": {
             "map": {
-                (0, 0): "LR",
-                (0, 1): "RL",
+                (0, 0): "RL",
+                (0, 1): "LR",
                 (0, 2): "None"
             },
-            "score": 2.4086937600000002
+            "score": 3.42008832
         },
         "shield": {
             "map": {
-                (0, 0): "DS",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "AA",
+                (0, 0): "None",
+                (1, 0): "DS",
+                (0, 1): "Xc",
+                (1, 1): "Xa",
                 (0, 2): "Xb",
-                (1, 2): "Xc"
+                (1, 2): "AA"
             },
-            "score": 9.712789032960004
+            "score": 11.625227202560005
         },
         "hyper": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "AD",
-                (2, 0): "CD",
-                (0, 1): "EW",
-                (1, 1): "Xc",
-                (2, 1): "ED",
-                (0, 2): "Xb",
-                (1, 2): "Xa",
-                (2, 2): "HD"
+                (0, 0): "HD",
+                (1, 0): "Xa",
+                (2, 0): "EW",
+                (0, 1): "ED",
+                (1, 1): "Xb",
+                (2, 1): "Xc",
+                (0, 2): "CD",
+                (1, 2): "AD",
+                (2, 2): "ID"
             },
-            "score": 10.372510117888519
+            "score": 12.331969050187706
         },
         "launch": {
             "map": {
                 (0, 0): "Xc",
-                (1, 0): "RC",
+                (1, 0): "EF",
                 (0, 1): "Xa",
                 (1, 1): "Xb",
-                (0, 2): "EF",
+                (0, 2): "RC",
                 (1, 2): "LT"
             },
-            "score": 11.789250969600003
+            "score": 13.829370854400004
         },
         "pulse": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xb",
-                (2, 0): "PE",
+                (0, 0): "PE",
+                (1, 0): "None",
+                (2, 0): "SL",
                 (0, 1): "Xc",
                 (1, 1): "Xa",
-                (2, 1): "SL",
-                (0, 2): "PC",
-                (1, 2): "FA",
-                (2, 2): "None"
+                (2, 1): "FA",
+                (0, 2): "ID",
+                (1, 2): "Xb",
+                (2, 2): "PC"
             },
-            "score": 31.226768655344657
+            "score": 33.99634364958593
         },
         "trails": {
             "map": {
@@ -691,116 +699,116 @@ solves = {
     "sentinel": {
         "cyclotron": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
+                (0, 0): "None",
+                (1, 0): "QR",
+                (0, 1): "Xc",
                 (1, 1): "CB",
-                (0, 2): "None",
-                (1, 2): "QR"
+                (0, 2): "Xa",
+                (1, 2): "Xb"
             },
-            "score": 14.748742095360003
+            "score": 16.533104257280005
         },
         "infra": {
             "map": {
-                (0, 0): "QR",
-                (1, 0): "None",
-                (0, 1): "IK",
-                (1, 1): "Xa",
-                (0, 2): "Xb",
+                (0, 0): "None",
+                (1, 0): "QR",
+                (0, 1): "Xb",
+                (1, 1): "IK",
+                (0, 2): "Xa",
                 (1, 2): "Xc"
             },
-            "score": 14.748742095360003
+            "score": 16.53310425728
         },
         "phase": {
-            "map": {
-                (0, 0): "PB",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "FD",
-                (0, 2): "Xb",
-                (1, 2): "Xc"
-            },
-            "score": 13.604770583040004
-        },
-        "positron": {
-            "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
-                (0, 1): "Xa",
-                (1, 1): "PE",
-                (0, 2): "None",
-                (1, 2): "FS"
-            },
-            "score": 14.748742095360003
-        },
-        "rocket": {
-            "map": {
-                (0, 0): "LR",
-                (0, 1): "RL",
-                (0, 2): "None"
-            },
-            "score": 2.4086937600000002
-        },
-        "photon": {
             "map": {
                 (0, 0): "Xb",
                 (1, 0): "Xc",
                 (0, 1): "Xa",
-                (1, 1): "PC",
-                (0, 2): "None",
-                (1, 2): "NO"
+                (1, 1): "FD",
+                (0, 2): "PB",
+                (1, 2): "None"
             },
-            "score": 14.748742095360003
+            "score": 15.770084195840003
+        },
+        "positron": {
+            "map": {
+                (0, 0): "None",
+                (1, 0): "FS",
+                (0, 1): "Xc",
+                (1, 1): "PE",
+                (0, 2): "Xa",
+                (1, 2): "Xb"
+            },
+            "score": 16.533104257280005
+        },
+        "rocket": {
+            "map": {
+                (0, 0): "RL",
+                (0, 1): "LR",
+                (0, 2): "None"
+            },
+            "score": 3.42008832
+        },
+        "photon": {
+            "map": {
+                (0, 0): "None",
+                (1, 0): "NO",
+                (0, 1): "Xc",
+                (1, 1): "PC",
+                (0, 2): "Xa",
+                (1, 2): "Xb"
+            },
+            "score": 16.533104257280005
         },
         "shield": {
             "map": {
-                (0, 0): "DS",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "AA",
+                (0, 0): "None",
+                (1, 0): "DS",
+                (0, 1): "Xc",
+                (1, 1): "Xa",
                 (0, 2): "Xb",
-                (1, 2): "Xc"
+                (1, 2): "AA"
             },
-            "score": 9.712789032960004
+            "score": 11.625227202560005
         },
         "launch": {
             "map": {
                 (0, 0): "EF",
                 (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "RC",
-                (1, 2): "LT"
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (0, 2): "LT",
+                (1, 2): "RC"
             },
-            "score": 11.789250969600003
+            "score": 13.829370854400004
         },
         "hyper": {
             "map": {
-                (0, 0): "CD",
+                (0, 0): "Xb",
                 (1, 0): "Xc",
-                (2, 0): "HD",
-                (0, 1): "ID",
-                (1, 1): "Xb",
-                (2, 1): "Xa",
-                (0, 2): "ED",
-                (1, 2): "AD",
-                (2, 2): "EW"
+                (2, 0): "ID",
+                (0, 1): "Xa",
+                (1, 1): "EW",
+                (2, 1): "AD",
+                (0, 2): "HD",
+                (1, 2): "ED",
+                (2, 2): "CD"
             },
-            "score": 10.218784223904356
+            "score": 12.164765707900973
         },
         "pulse": {
             "map": {
-                (0, 0): "PE",
-                (1, 0): "Xb",
-                (2, 0): "PC",
-                (0, 1): "Xc",
+                (0, 0): "SL",
+                (1, 0): "None",
+                (2, 0): "PE",
+                (0, 1): "PC",
                 (1, 1): "Xa",
-                (2, 1): "ID",
-                (0, 2): "FA",
-                (1, 2): "SL",
-                (2, 2): "PI"
+                (2, 1): "Xc",
+                (0, 2): "ID",
+                (1, 2): "Xb",
+                (2, 2): "FA"
             },
-            "score": 87.21354753068529
+            "score": 42.964968895926276
         },
         "trails": {
             "map": {
@@ -823,69 +831,69 @@ solves = {
     "living": {
         "grafted": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "None",
-                (0, 1): "GE",
-                (1, 1): "Xc",
-                (0, 2): "Xb",
-                (1, 2): "Xa"
-            },
-            "score": 12.660426912000004
-        },
-        "spewing": {
-            "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
-                (0, 1): "SV",
+                (0, 0): "GE",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
                 (0, 2): "None",
                 (1, 2): "None"
             },
-            "score": 13.519780512000002
+            "score": 14.747714128
+        },
+        "spewing": {
+            "map": {
+                (0, 0): "SV",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "None"
+            },
+            "score": 15.392229328
         },
         "scream": {
             "map": {
                 (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "SS",
+                (1, 0): "SS",
+                (0, 1): "Xa",
                 (1, 1): "Xb",
                 (0, 2): "None",
                 (1, 2): "None"
             },
-            "score": 8.625736704000003
+            "score": 10.446795136000002
         },
         "assembly": {
             "map": {
-                (0, 0): "CM",
+                (0, 0): "NA",
                 (1, 0): "None",
                 (0, 1): "Xa",
-                (1, 1): "NA",
+                (1, 1): "CM",
                 (0, 2): "Xc",
                 (1, 2): "Xb"
             },
-            "score": 2.2178257920000006
+            "score": 3.074946432000001
         },
         "singularity": {
             "map": {
-                (0, 0): "AD",
-                (1, 0): "Xb",
+                (0, 0): "Xb",
+                (1, 0): "AD",
                 (0, 1): "Xa",
                 (1, 1): "Xc",
                 (0, 2): "SC",
                 (1, 2): "None"
             },
-            "score": 9.756829779840002
+            "score": 11.677480414080001
         },
         "pulsing": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "PH",
-                (1, 1): "Xa",
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "PH",
                 (0, 2): "None",
                 (1, 2): "None"
             },
-            "score": 17.896521120000006
+            "score": 20.238178480000002
         },
         "trails": {
             "map": {

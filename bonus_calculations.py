@@ -137,12 +137,14 @@ def calculate_grid_score(grid: Grid, tech: str) -> float:
     populate_all_module_bonuses(grid, tech)
 
     total_grid_score = 0
+    base_bonus_sum = 0  # Initialize the sum of base bonuses
     bonus_product = 1.0  # Initialize as 1.0 for multiplication
 
     for y in range(grid.height):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)
             if cell["tech"] == tech:
+                base_bonus_sum += cell["bonus"]  # Sum the base bonuses
                 bonus_product *= (
                     1.0 + cell["bonus"]
                 )  # Multiply by (1 + bonus) to handle 0 bonuses
@@ -150,8 +152,10 @@ def calculate_grid_score(grid: Grid, tech: str) -> float:
 
     # Apply the bonus_product to the total_grid_score
     total_grid_score *= bonus_product
+    total_grid_score += base_bonus_sum # Add the base bonus sum to the total grid score
 
     return total_grid_score
+
 
 
 def clear_scores(grid: Grid, tech: str) -> None:
