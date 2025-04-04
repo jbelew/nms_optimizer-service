@@ -672,7 +672,7 @@ def calculate_window_score(window_grid):
                     empty_count += 1
 
     # Prioritize supercharged slots, then empty slots, and penalize edge supercharged slots
-    return (supercharged_count * 2) + (empty_count * 1) - (edge_penalty * 0.5)
+    return (supercharged_count * 3) + (empty_count * 1) - (edge_penalty * 0.5)
 
 
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
