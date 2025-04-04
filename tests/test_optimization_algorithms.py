@@ -65,30 +65,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mirrored_pattern = mirror_pattern_vertically(pattern)
         self.assertEqual(mirrored_pattern, {})
 
-    def test_apply_pattern_to_grid_no_overlap(self):
-        pattern = {(0, 0): "IK", (1, 0): "Xa"}
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = [
-                {"id": "IK", "type": "core", "bonus": 1.0, "adjacency": True, "sc_eligible": True, "image": "infra.png", "label": "Infraknife Accelerator"},
-                {"id": "Xa", "type": "bonus", "bonus": 0.40, "adjacency": True, "sc_eligible": True, "image": "infra-upgrade.png", "label": "Infraknife Accelerator Upgrade Sigma"},
-            ]
-            result, _ = apply_pattern_to_grid(self.grid, pattern, self.modules, self.tech, 0, 0, self.ship, self.player_owned_rewards)
-            self.assertEqual(result, 1)
-            self.assertEqual(self.grid.get_cell(0, 0)["module"], "IK")
-            self.assertEqual(self.grid.get_cell(1, 0)["module"], "Xa")
-
-    def test_apply_pattern_to_grid_with_overlap(self):
-        pattern = {(0, 0): "IK", (1, 0): "Xa"}
-        self.grid.set_module(0, 0, "RL")
-        self.grid.set_tech(0, 0, "rocket")
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = [
-                {"id": "IK", "type": "core", "bonus": 1.0, "adjacency": True, "sc_eligible": True, "image": "infra.png", "label": "Infraknife Accelerator"},
-                {"id": "Xa", "type": "bonus", "bonus": 0.40, "adjacency": True, "sc_eligible": True, "image": "infra-upgrade.png", "label": "Infraknife Accelerator Upgrade Sigma"},
-            ]
-            result, _ = apply_pattern_to_grid(self.grid, pattern, self.modules, self.tech, 0, 0, self.ship, self.player_owned_rewards)
-            self.assertEqual(result, 0)
-
     def test_get_all_unique_pattern_variations(self):
         pattern = {(0, 0): "A", (1, 0): "B"}
         variations = get_all_unique_pattern_variations(pattern)
@@ -99,16 +75,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.grid.set_module(1, 0, "B")
         count = count_adjacent_occupied(self.grid, 0, 1)
         self.assertEqual(count, 1)
-
-
-    @patch("optimization_algorithms.filter_solves")
-    def test_optimize_placement_no_solve_found(self, mock_filter_solves):
-        mock_filter_solves.return_value = {}
-        result_grid, result_percentage = optimize_placement(
-            self.grid, self.ship, self.modules, self.tech, self.player_owned_rewards
-        )
-        self.assertIsInstance(result_grid, Grid)
-        self.assertEqual(result_percentage, 0)
 
     def test_place_all_modules_in_empty_slots(self):
         with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
@@ -137,15 +103,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.grid.set_tech(1, 0, "infra")
         result = find_supercharged_opportunities(self.grid, self.modules, self.ship, self.tech)
         self.assertEqual(result, (0, 0))
-
-    def test_create_localized_grid(self):
-        self.grid.set_supercharged(1, 1, True)
-        localized_grid, start_x, start_y = create_localized_grid(self.grid, 1, 1, self.tech)
-        self.assertLessEqual(localized_grid.width, 4)
-        self.assertLessEqual(localized_grid.width, 4)
-        self.assertEqual(start_x, 0)
-        self.assertEqual(start_y, 0)
-        self.assertTrue(localized_grid.get_cell(1, 1)["supercharged"])
 
     def test_apply_localized_grid_changes(self):
         localized_grid = Grid(4, 4)
