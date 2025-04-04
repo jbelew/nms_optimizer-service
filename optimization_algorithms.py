@@ -675,7 +675,6 @@ def calculate_window_score(window_grid):
     return (supercharged_count * 2) + (empty_count * 1) - (edge_penalty * 0.5)
 
 
-
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
     """
     Creates a localized grid around a given opportunity, ensuring it stays within
