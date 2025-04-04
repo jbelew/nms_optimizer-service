@@ -641,6 +641,37 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
                     cell = grid_copy.get_cell(grid_x, grid_y)
                     window_grid.cells[y][x] = cell.copy()
 
+            # Check if the window has at least one available supercharged slot
+            has_available_supercharged = False
+            for y in range(window_height):
+                for x in range(window_width):
+                    cell = window_grid.get_cell(x, y)
+                    if cell["supercharged"] and cell["module"] is None and cell["active"]:
+                        has_available_supercharged = True
+                        break
+                if has_available_supercharged:
+                    break
+
+            if not has_available_supercharged:
+                continue  # Skip this window if it doesn't have an available supercharged slot
+
+            # Check if the number of available cells in the current window is less than the number of modules
+            tech_modules = get_tech_modules(modules, ship, tech)
+            if tech_modules is None:
+                print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
+                return None
+
+            available_cells_in_window = 0
+            for y in range(window_height):
+                for x in range(window_width):
+                    cell = window_grid.get_cell(x, y)
+                    if cell["active"] and cell["module"] is None:
+                        available_cells_in_window += 1
+
+            if available_cells_in_window < len(tech_modules):
+                # print(f"INFO -- Not enough available cells in the window ({available_cells_in_window}) for all modules ({len(tech_modules)}). Skipping this window.")
+                continue  # Skip this window and move to the next one
+
             window_score = calculate_window_score(window_grid)
             if window_score > best_window_score:
                 best_window_score = window_score
@@ -650,7 +681,6 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
         return best_window_start_x, best_window_start_y  # Return the top-left of the best window
     else:
         return None
-
 
 def calculate_window_score(window_grid):
     """Calculates a score for a given window based on supercharged and empty slots,
