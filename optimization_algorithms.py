@@ -253,7 +253,7 @@ def calculate_pattern_adjacency_score(grid, tech):
     Returns:
         int: The adjacency score.
     """
-    module_edge_weight = 1.0  # Weight for adjacency to other modules
+    module_edge_weight = 2.0  # Weight for adjacency to other modules
     grid_edge_weight = 0.75  # Weight for adjacency to grid edges
 
     total_adjacency_score = 0
