@@ -254,7 +254,7 @@ def calculate_pattern_adjacency_score(grid, tech):
         int: The adjacency score.
     """
     module_edge_weight = 2.0  # Weight for adjacency to other modules
-    grid_edge_weight = 0.75  # Weight for adjacency to grid edges
+    grid_edge_weight = 1.0  # Weight for adjacency to grid edges
 
     total_adjacency_score = 0
 
@@ -379,10 +379,11 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
                             best_pattern_adjacency_score = adjacency_score
                         elif (
                             current_pattern_bonus == highest_pattern_bonus
-                            and adjacency_score > best_pattern_adjacency_score
+                            and adjacency_score >= best_pattern_adjacency_score # Changed > to >=
                         ):
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
+
 
         # Reset temp_grid for the next pattern
         temp_grid = Grid.from_dict(grid_dict)
