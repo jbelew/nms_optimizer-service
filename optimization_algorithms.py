@@ -370,8 +370,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
                         player_owned_rewards,
                     )
                     if temp_result_grid is not None:
-                        pattern_applied = True  # A pattern was attempted
                         current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
+
 
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
@@ -394,11 +394,11 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             # solved_bonus = highest_pattern_bonus
             solved_bonus = calculate_grid_score(solved_grid, tech)
             print(f"INFO -- Best pattern score: {solved_bonus} for ship: '{ship}' -- tech: '{tech}' that fits.")
+            pattern_applied = True
         else:
             print(
                 f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to simulated_annealing."
             )
-            pattern_applied = True
 
     # --- 1. Supercharged Opportunity Refinement (Moved to the Beginning) ---
     opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
@@ -542,6 +542,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
     return best_grid, percentage
 
 
+
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
@@ -673,7 +674,7 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
                 # print(f"INFO -- Not enough available cells in the window ({available_cells_in_window}) for all modules ({len(tech_modules)}). Skipping this window.")
                 continue  # Skip this window and move to the next one
 
-            window_score = calculate_window_score(window_grid)
+            window_score = calculate_window_score(window_grid, tech)
             if window_score > best_window_score:
                 best_window_score = window_score
                 best_window_start_x, best_window_start_y = start_x, start_y
@@ -683,7 +684,7 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
     else:
         return None
 
-def calculate_window_score(window_grid):
+def calculate_window_score(window_grid, tech):
     """Calculates a score for a given window based on supercharged and empty slots,
     excluding inactive cells. Prioritizes supercharged slots away from the horizontal edges of the window.
     """
@@ -695,10 +696,12 @@ def calculate_window_score(window_grid):
             cell = window_grid.get_cell(x, y)
             if cell["active"]:  # Only consider active cells
                 if cell["supercharged"]:
-                    supercharged_count += 1
-                    # Check if the supercharged slot is on the horizontal edge of the window
-                    if x == 0 or x == window_grid.width - 1:
-                        edge_penalty += 1  # Apply a penalty for edge supercharged slots
+                    # Check if the supercharged cell is empty or occupied by the current tech
+                    if cell["module"] is None or cell["tech"] == tech:
+                        supercharged_count += 1
+                        # Check if the supercharged slot is on the horizontal edge of the window
+                        if x == 0 or x == window_grid.width - 1:
+                            edge_penalty += 1  # Apply a penalty for edge supercharged slots
                 if cell["module"] is None:
                     empty_count += 1
 
