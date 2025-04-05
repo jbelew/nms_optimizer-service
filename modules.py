@@ -104,7 +104,7 @@ modules = {
                     "image": "hyper.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "hyperdrive.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": "greater", "sc_eligible": False, "image": "hyperdrive.png", },
                         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.02, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
                         { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
                         { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
@@ -325,7 +325,7 @@ modules = {
                     "image": "hyper.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "crimson.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": "greater", "sc_eligible": False, "image": "crimson.png", },
                         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.02, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
                         { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
                         { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
@@ -641,17 +641,17 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "ED",
-                (1, 0): "AD",
-                (2, 0): "CD",
-                (0, 1): "ID",
-                (1, 1): "Xc",
-                (2, 1): "EW",
-                (0, 2): "HD",
-                (1, 2): "Xa",
-                (2, 2): "Xb"
+                (0, 0): "ID",
+                (1, 0): "Xc",
+                (2, 0): "Xb",
+                (0, 1): "CD",
+                (1, 1): "HD",
+                (2, 1): "Xa",
+                (0, 2): "AD",
+                (1, 2): "ED",
+                (2, 2): "EW",
             },
-            "score": 12.331969050187706
+            "score": 13.26
         },
         "launch": {
             "map": {
@@ -784,17 +784,17 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "CD",
-                (1, 0): "ID",
-                (2, 0): "HD",
-                (0, 1): "AD",
-                (1, 1): "Xc",
+                (0, 0): "ID",
+                (1, 0): "Xc",
+                (2, 0): "Xb",
+                (0, 1): "CD",
+                (1, 1): "HD",
                 (2, 1): "Xa",
-                (0, 2): "ED",
-                (1, 2): "Xb",
-                (2, 2): "EW"
+                (0, 2): "AD",
+                (1, 2): "ED",
+                (2, 2): "EW",
             },
-            "score": 12.164765707900973
+            "score": 13.26
         },
         "pulse": {
             "map": {
