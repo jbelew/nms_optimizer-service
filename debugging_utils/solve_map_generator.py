@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "--rewards",
         type=str,
         nargs="*",
-        default=["SB", "SP", "TT"],
+        default=["PC", "SB", "SP", "TT"],
         help="List of player-owned reward module IDs",
     )
     parser.add_argument(
