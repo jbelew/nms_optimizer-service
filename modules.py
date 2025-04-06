@@ -135,7 +135,7 @@ modules = {
                     "image": "pulse.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": False, "image": "pulse.png", },
+                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "pulse.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.27, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
@@ -342,7 +342,7 @@ modules = {
                     "image": "luminance.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": False, "image": "luminance.png", },
+                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "luminance.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
@@ -678,7 +678,7 @@ solves = {
                 (1, 2): "SL",
                 (2, 2): "PE",
             },
-            "score": 34.69
+            "score": 12.72
         },
         "trails": {
             "map": {
@@ -812,7 +812,7 @@ solves = {
                 (1, 2): "SL",
                 (2, 2): "PE",
             },
-            "score": 34.69
+            "score": 12.72
         },
         "trails": {
             "map": {
