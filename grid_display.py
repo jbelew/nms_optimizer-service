@@ -19,15 +19,15 @@ def print_grid(grid: Grid) -> None:
             )  # what to show if there is no module
 
             formatted_row.append(
-                f"\033[93m{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.2f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})\033[0m"
+                f"\033[93m{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.4f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})\033[0m"
                 if is_supercharged
                 else (
-                    f"\033[96m{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.2f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})\033[0m"
+                    f"\033[96m{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.4f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})\033[0m"
                     if is_shield
                     else (
-                        f"\033[91m{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.2f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})\033[0m"
+                        f"\033[91m{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.4f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})\033[0m"
                         if is_infra
-                        else f"{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.2f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})"
+                        else f"{active_state if cell_data['module'] is None else cell_data['module']} (T: {cell_data['total']:.4f}) (B: {cell_data['bonus']:.2f}) (A: {cell_data['adjacency_bonus']:.2f})"
                     )
                 )
             )

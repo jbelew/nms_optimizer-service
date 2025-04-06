@@ -4,9 +4,9 @@ import math
 
 # Global weights
 core_weight_greater = 0.06  # Core weight for greater adjacency
-core_weight_lesser = 0.06 # Core weight for lesser adjacency
+core_weight_lesser = 0.037 # Core weight for lesser adjacency
 greater_weight = 0.04  # Default greater adjacency weight (formerly bonus_weight)
-lesser_weight = 0.03  # Default lesser adjacency weight
+lesser_weight = 0.030  # Default lesser adjacency weight
 
 # Constants for adjacency types
 ADJACENCY_GREATER = "greater"
@@ -143,7 +143,7 @@ def calculate_grid_score(grid: Grid, tech: str) -> float:
     total_grid_score *= bonus_multiplier
     total_grid_score += base_bonus_sum  # Add the base bonus sum to the total grid score
 
-    return round(total_grid_score, 4)  # Round to 8 decimal places
+    return round(total_grid_score, 8)  # Round to 8 decimal places
 
 
 def clear_scores(grid: Grid, tech: str) -> None:
