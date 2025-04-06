@@ -104,12 +104,12 @@ modules = {
                     "image": "hyper.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": "greater", "sc_eligible": False, "image": "hyperdrive.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.02, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
-                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
-                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
-                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "indium.png", },
-                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.01, "adjacency": "greater", "sc_eligible": False, "image": "emergency.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "hyperdrive.png", },
+                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
+                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
+                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
+                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "indium.png", },
+                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "emergency.png", },
                         { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": 0.320, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": 0.310, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": 0.300, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
@@ -123,10 +123,10 @@ modules = {
                     "modules": [
                         { "id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "launch.png", },
                         { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.20, "adjacency": "greater", "sc_eligible": False, "image": "efficient.png", },
-                        { "id": "RC", "type": "bonus", "label": "Launch System Recharger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "recharger.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
+                        { "id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "recharger.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.237, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.226, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.221, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                     ],
                 },
                 {
@@ -313,7 +313,7 @@ modules = {
                     "modules": [
                         { "id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "anti-gravity.png", },
                         { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.20, "adjacency": "greater", "sc_eligible": False, "image": "efficient.png", },
-                        { "id": "RC", "type": "bonus", "label": "Launch System Recharger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "recharger.png", },
+                        { "id": "RC", "type": "bonus", "label": "Launch Atuo-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "recharger.png", },
                         { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
@@ -325,16 +325,16 @@ modules = {
                     "image": "hyper.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 1.0, "adjacency": "greater", "sc_eligible": False, "image": "crimson.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.02, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
-                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
-                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
-                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "indium.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "hyperdrive.png", },
+                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
+                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
+                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
+                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": False, "image": "indium.png", },
                         { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "emergency.png", },
                         { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": 0.320, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": 0.310, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": 0.300, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
-                    ],
+                  ],
                 },
                 {
                     "label": "Luminance Drive",
@@ -641,17 +641,17 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "Xb",
-                (0, 1): "CD",
-                (1, 1): "HD",
-                (2, 1): "Xa",
-                (0, 2): "AD",
-                (1, 2): "ED",
-                (2, 2): "EW",
+                (0, 0): "AD",
+                (1, 0): "HD",
+                (2, 0): "CD",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (2, 1): "ID",
+                (0, 2): "EW",
+                (1, 2): "Xc",
+                (2, 2): "ED",
             },
-            "score": 13.26
+            "score": 3.40
         },
         "launch": {
             "map": {
@@ -784,17 +784,17 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "Xb",
-                (0, 1): "CD",
-                (1, 1): "HD",
-                (2, 1): "Xa",
-                (0, 2): "AD",
-                (1, 2): "ED",
-                (2, 2): "EW",
+                (0, 0): "AD",
+                (1, 0): "HD",
+                (2, 0): "CD",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (2, 1): "ID",
+                (0, 2): "EW",
+                (1, 2): "Xc",
+                (2, 2): "ED",
             },
-            "score": 13.26
+            "score": 3.40
         },
         "pulse": {
             "map": {

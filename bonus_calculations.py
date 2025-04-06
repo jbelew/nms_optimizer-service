@@ -3,7 +3,8 @@ from grid_utils import Grid
 import math
 
 # Global weights
-core_weight = 0.06  # Default core weight
+core_weight_greater = 0.06  # Core weight for greater adjacency
+core_weight_lesser = 0.06 # Core weight for lesser adjacency
 greater_weight = 0.04  # Default greater adjacency weight (formerly bonus_weight)
 lesser_weight = 0.03  # Default lesser adjacency weight
 
@@ -75,14 +76,19 @@ def calculate_adjacency_bonus(grid: Grid, tech: str) -> None:
                                 elif (
                                     adjacent["adjacency"] == ADJACENCY_LESSER and cell["adjacency"] == ADJACENCY_GREATER
                                 ):
-                                    cell["adjacency_bonus"] += adjacent_cell["bonus"] * greater_weight
+                                    cell["adjacency_bonus"] += adjacent_cell["bonus"] * lesser_weight
                             elif adjacent["type"] == ADJACENCY_CORE:
                                 if cell["adjacency"] == ADJACENCY_GREATER:
-                                    adjacent_cell["adjacency_bonus"] += cell["bonus"] * core_weight
+                                    adjacent_cell["adjacency_bonus"] += cell["bonus"] * core_weight_greater
+                                elif cell["adjacency"] == ADJACENCY_LESSER:
+                                    adjacent_cell["adjacency_bonus"] += cell["bonus"] * core_weight_lesser
+
                         elif cell["type"] == ADJACENCY_CORE:
                             if adjacent["type"] == ADJACENCY_BONUS:
                                 if cell["adjacency"] == ADJACENCY_GREATER:
-                                    adjacent_cell["adjacency_bonus"] += cell["bonus"] * core_weight
+                                    adjacent_cell["adjacency_bonus"] += cell["bonus"] * core_weight_greater
+                                elif cell["adjacency"] == ADJACENCY_LESSER:
+                                    adjacent_cell["adjacency_bonus"] += cell["bonus"] * core_weight_lesser
 
 
 def populate_module_bonuses(grid: Grid, x: int, y: int) -> float:
