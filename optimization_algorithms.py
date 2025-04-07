@@ -326,7 +326,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
         pattern_applied = True
-        return solved_grid, solved_bonus  # Add this line to exit early
+        return solved_grid, solved_bonus, 1  # Add this line to exit early
 
     else:
         pattern_applied = False
@@ -539,8 +539,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
     else:
         print(f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'")
 
-    return best_grid, percentage
-
+    return best_grid, percentage, solved_bonus
 
 
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):

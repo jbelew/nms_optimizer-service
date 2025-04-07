@@ -104,12 +104,12 @@ modules = {
                     "image": "hyper.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "hyperdrive.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.001, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
-                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.001, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
-                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.001, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
-                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.001, "adjacency": "lesser", "sc_eligible": False, "image": "indium.png", },
-                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "emergency.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "hyperdrive.png", },
+                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
+                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
+                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
+                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "indium.png", },
+                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emergency.png", },
                         { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": .420, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .410, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .400, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
@@ -121,9 +121,9 @@ modules = {
                     "image": "launch.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "launch.png", },
-                        { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.20, "adjacency": "greater", "sc_eligible": False, "image": "efficient.png", },
-                        { "id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "recharger.png", },
+                        { "id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "launch.png", },
+                        { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.20, "adjacency": "greater", "sc_eligible": True, "image": "efficient.png", },
+                        { "id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "recharger.png", },
                         { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
@@ -135,11 +135,11 @@ modules = {
                     "image": "pulse.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "pulse.png", },
+                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "pulse.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.27, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
-                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
+                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.17, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
@@ -187,14 +187,14 @@ modules = {
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
-                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
+                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "sputtering-trail.png", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "cadmium-trail.png", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
                     ],
                 },
                 {
@@ -296,8 +296,8 @@ modules = {
                     "image": "aeron.webp",
                     "color": "yellow",
                     "modules": [
-                        { "id": "DS", "type": "core", "label": "Aeron Shields", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "aeron.png", },
-                        { "id": "AA", "type": "bonus", "label": "Ablative Armor", "bonus": 0.07, "adjacency": "greater", "sc_eligible": False, "image": "ablative.png", },
+                        { "id": "DS", "type": "core", "label": "Aeron Shields", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "aeron.png", },
+                        { "id": "AA", "type": "bonus", "label": "Ablative Armor", "bonus": 0.07, "adjacency": "greater", "sc_eligible": True, "image": "ablative.png", },
                         { "id": "Xa", "type": "bonus", "label": "Shield Upgrade Sigma", "bonus": 0.3, "adjacency": "greater", "sc_eligible": True, "image": "shield-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Shield Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "shield-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Shield Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "shield-upgrade.png", },
@@ -311,9 +311,9 @@ modules = {
                     "image": "anti-gravity.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "anti-gravity.png", },
-                        { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.20, "adjacency": "greater", "sc_eligible": False, "image": "efficient.png", },
-                        { "id": "RC", "type": "bonus", "label": "Launch Atuo-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "recharger.png", },
+                        { "id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "anti-gravity.png", },
+                        { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.20, "adjacency": "greater", "sc_eligible": True, "image": "efficient.png", },
+                        { "id": "RC", "type": "bonus", "label": "Launch Atuo-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "recharger.png", },
                         { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
@@ -325,12 +325,12 @@ modules = {
                     "image": "crimson.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "crimson.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "atlantid.png", },
-                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "cadmium.png", },
-                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "emeril.png", },
-                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": False, "image": "indium.png", },
-                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "emergency.png", },
+                        { "id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "crimson.png", },
+                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
+                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
+                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
+                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "indium.png", },
+                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "emergency.png", },
                         { "id": "Xa", "type": "bonus", "label": "Crimson Core Upgrade Sigma", "bonus": 0.320, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Crimson Core Upgrade Tau", "bonus": 0.310, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Crimson Core Upgrade Theta", "bonus": 0.300, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
@@ -342,10 +342,10 @@ modules = {
                     "image": "luminance.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": False, "image": "luminance.png", },
+                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "luminance.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
-                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
+                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
                         { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.17, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
@@ -381,7 +381,7 @@ modules = {
                     "image": "pilot.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PI", "type": "bonus", "label": "Pilot Interface", "bonus": 0.30, "adjacency": "none", "sc_eligible": True, "image": "pilot.png", },
+                        { "id": "PI", "type": "bonus", "label": "Pilot Interface", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "pilot.png", },
                     ],
                 },
                 {
@@ -403,14 +403,14 @@ modules = {
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
-                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
+                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "sputtering-trail.png", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "cadmium-trail.png", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
                      ],
                 },
                 {
@@ -461,7 +461,7 @@ modules = {
                     "image": "scream.webp",
                     "color": "yellow",
                     "modules": [
-                        { "id": "SS", "type": "core", "label": "Scream Supressor", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "scream.png", },
+                        { "id": "SS", "type": "core", "label": "Scream Supressor", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "scream.png", },
                         { "id": "Xa", "type": "bonus", "label": "Scream Supressor Sigma", "bonus": 0.3, "adjacency": "greater", "sc_eligible": True, "image": "scream-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scream Supressor Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scream-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scream Supressor Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scream-upgrade.png", },
@@ -475,11 +475,11 @@ modules = {
                     "image": "assembly.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "assembly.png", },
+                        { "id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "assembly.png", },
                         { "id": "Xa", "type": "bonus", "label": "Neural Assembly Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Neural Assembly Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Neural Assembly Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
-                        { "id": "CM", "type": "bonus", "label": "Chroloplast Membrane", "bonus": 0.00, "adjacency": "greater", "sc_eligible": False, "image": "chloroplast.png", },
+                        { "id": "CM", "type": "bonus", "label": "Chroloplast Membrane", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "chloroplast.png", },
                     ],
                 },
                 {
@@ -488,11 +488,11 @@ modules = {
                     "image": "singularity.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Singularity Cortex", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "singularity.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.02, "adjacency": "greater", "sc_eligible": False, "image": "atlantid.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Singularity Cortex Upgrade Sigma", "bonus": 0.320, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Singularity Cortex Upgrade Tau", "bonus": 0.310, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Singularity Cortex Upgrade Theta", "bonus": 0.300, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
+                        { "id": "SC", "type": "core", "label": "Singularity Cortex", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "singularity.png", },
+                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "atlantid.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Singularity Cortex Upgrade Sigma", "bonus": 0.420, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Singularity Cortex Upgrade Tau", "bonus": 0.410, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Singularity Cortex Upgrade Theta", "bonus": 0.400, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
                     ],
                 },
                 {
@@ -501,7 +501,7 @@ modules = {
                     "image": "pulsing.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PH", "type": "core", "label": "Pulsing Heart", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "pulsing.png", },
+                        { "id": "PH", "type": "core", "label": "Pulsing Heart", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "pulsing.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulsing Heart Upgrade Sigma", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulsing Heart Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulsing Heart Upgrade Theta", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
@@ -548,14 +548,14 @@ modules = {
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
-                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.001, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
+                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "sputtering-trail.png", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "cadmium-trail.png", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emeril-trail.png", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "temporal-trail.png", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "stealth-trail.png", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "golden-trail.png", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "chromatic-trail.png", },
                     ],
                 },
             ],
@@ -567,58 +567,58 @@ solves = {
     "standard": {
         "cyclotron": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "QR",
+                (0, 0): "Xa",
+                (1, 0): "Xb",
                 (0, 1): "Xc",
                 (1, 1): "CB",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (0, 2): "None",
+                (1, 2): "QR"
             },
-            "score": 16.533104257280005
+            "score": 16.53310426
         },
         "infra": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
+                (0, 0): "QR",
+                (1, 0): "None",
                 (0, 1): "IK",
-                (1, 1): "Xb",
-                (0, 2): "QR",
-                (1, 2): "None"
+                (1, 1): "Xc",
+                (0, 2): "Xb",
+                (1, 2): "Xa"
             },
-            "score": 16.533104257279998
+            "score": 16.53310426
         },
         "phase": {
             "map": {
-                (0, 0): "FD",
-                (1, 0): "Xb",
-                (0, 1): "Xa",
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PB",
                 (1, 1): "Xc",
-                (0, 2): "PB",
+                (0, 2): "FD",
                 (1, 2): "None"
             },
-            "score": 15.770084195840003
+            "score": 16.14768417
         },
         "photon": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "NO",
-                (0, 1): "Xc",
-                (1, 1): "PC",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (0, 0): "NO",
+                (1, 0): "None",
+                (0, 1): "PC",
+                (1, 1): "Xb",
+                (0, 2): "Xc",
+                (1, 2): "Xa"
             },
-            "score": 16.533104257280005
+            "score": 16.53310426
         },
         "positron": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "FS",
-                (0, 1): "Xc",
-                (1, 1): "PE",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (0, 0): "FS",
+                (1, 0): "None",
+                (0, 1): "PE",
+                (1, 1): "Xc",
+                (0, 2): "Xb",
+                (1, 2): "Xa"
             },
-            "score": 16.533104257280005
+            "score": 16.53310426
         },
         "rocket": {
             "map": {
@@ -630,14 +630,14 @@ solves = {
         },
         "shield": {
             "map": {
-                (0, 0): "AA",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "DS",
                 (0, 2): "None",
-                (1, 2): "DS"
+                (1, 2): "AA"
             },
-            "score": 11.625227202560003
+            "score": 11.96791263
         },
         "hyper": {
             "map": {
@@ -653,32 +653,32 @@ solves = {
                 (1, 2): "Xc",
                 (2, 2): "EW",
             },
-            "score": 5.42
+            "score": 5.44
         },
         "launch": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "EF",
-                (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "RC",
-                (1, 2): "LT"
+                (0, 0): "EF",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (0, 2): "LT",
+                (1, 2): "RC"
             },
-            "score": 13.829370854400004
+            "score": 4.37381343
         },
         "pulse": {
             "map": {
                 (0, 0): "ID",
-                (1, 0): "Xb",
-                (2, 0): "FA",
-                (0, 1): "PC",
+                (1, 0): "PC",
+                (2, 0): "None",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "Xc",
-                (0, 2): "None",
-                (1, 2): "SL",
-                (2, 2): "PE",
+                (2, 1): "SL",
+                (0, 2): "FA",
+                (1, 2): "Xc",
+                (2, 2): "PE"
             },
-            "score": 12.72
+            "score": 15.61128125
         },
         "trails": {
             "map": {
@@ -701,47 +701,47 @@ solves = {
     "sentinel": {
         "cyclotron": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "QR",
-                (0, 1): "Xb",
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "CB",
-                (0, 2): "Xa",
-                (1, 2): "Xc"
+                (0, 2): "None",
+                (1, 2): "QR"
             },
-            "score": 16.53310425728
+            "score": 16.53310426
         },
         "infra": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "QR",
-                (0, 1): "Xb",
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "IK",
-                (0, 2): "Xa",
-                (1, 2): "Xc"
+                (0, 2): "None",
+                (1, 2): "QR"
             },
-            "score": 16.53310425728
+            "score": 16.53310426
         },
         "phase": {
             "map": {
-                (0, 0): "FD",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
-                (0, 2): "None",
-                (1, 2): "PB"
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "PB",
+                (1, 1): "Xb",
+                (0, 2): "FD",
+                (1, 2): "None"
             },
-            "score": 15.770084195840003
+            "score": 16.14768417
         },
         "positron": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "FS",
-                (0, 1): "Xc",
-                (1, 1): "PE",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PE",
+                (1, 1): "Xc",
+                (0, 2): "FS",
+                (1, 2): "None"
             },
-            "score": 16.533104257280005
+            "score": 16.53310426
         },
         "rocket": {
             "map": {
@@ -753,25 +753,25 @@ solves = {
         },
         "photon": {
             "map": {
-                (0, 0): "NO",
-                (1, 0): "None",
+                (0, 0): "Xb",
+                (1, 0): "Xa",
                 (0, 1): "PC",
-                (1, 1): "Xb",
-                (0, 2): "Xc",
-                (1, 2): "Xa"
+                (1, 1): "Xc",
+                (0, 2): "NO",
+                (1, 2): "None"
             },
-            "score": 16.533104257279998
+            "score": 16.53310426
         },
         "shield": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "DS",
-                (0, 1): "Xc",
+                (0, 0): "Xc",
+                (1, 0): "Xb",
+                (0, 1): "AA",
                 (1, 1): "Xa",
-                (0, 2): "Xb",
-                (1, 2): "AA"
+                (0, 2): "None",
+                (1, 2): "DS"
             },
-            "score": 11.625227202560005
+            "score": 3.4857944
         },
         "launch": {
             "map": {
@@ -782,7 +782,7 @@ solves = {
                 (0, 2): "RC",
                 (1, 2): "LT"
             },
-            "score": 13.829370854400004
+            "score": 4.37381343
         },
         "hyper": {
             "map": {
@@ -798,21 +798,21 @@ solves = {
                 (1, 2): "Xc",
                 (2, 2): "EW",
             },
-            "score": 5.42
+            "score": 5.44
         },
         "pulse": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xb",
-                (2, 0): "FA",
-                (0, 1): "PC",
+                (0, 0): "PC",
+                (1, 0): "FA",
+                (2, 0): "None",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "Xc",
-                (0, 2): "None",
-                (1, 2): "SL",
-                (2, 2): "PE",
+                (2, 1): "SL",
+                (0, 2): "ID",
+                (1, 2): "Xc",
+                (2, 2): "PE"
             },
-            "score": 12.72
+            "score": 16.15667893
         },
         "trails": {
             "map": {
@@ -836,24 +836,24 @@ solves = {
         "grafted": {
             "map": {
                 (0, 0): "GE",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
-                (0, 2): "None",
-                (1, 2): "None"
-            },
-            "score": 14.747714128
-        },
-        "spewing": {
-            "map": {
-                (0, 0): "SV",
                 (1, 0): "Xc",
                 (0, 1): "Xb",
                 (1, 1): "Xa",
                 (0, 2): "None",
                 (1, 2): "None"
             },
-            "score": 15.392229328
+            "score": 15.14516517
+        },
+        "spewing": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "SV",
+                (1, 1): "Xb",
+                (0, 2): "None",
+                (1, 2): "None"
+            },
+            "score": 15.39222933
         },
         "scream": {
             "map": {
@@ -864,40 +864,40 @@ solves = {
                 (0, 2): "None",
                 (1, 2): "None"
             },
-            "score": 10.446795136000002
+            "score": 3.01183757
         },
         "assembly": {
             "map": {
                 (0, 0): "NA",
                 (1, 0): "None",
                 (0, 1): "Xa",
-                (1, 1): "Xc",
+                (1, 1): "CM",
                 (0, 2): "Xb",
-                (1, 2): "CM"
+                (1, 2): "Xc"
             },
-            "score": 10.573012864000003
+            "score": 3.07494643
         },
         "singularity": {
             "map": {
-                (0, 0): "SC",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "Xc",
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "SC",
+                (1, 1): "Xb",
                 (0, 2): "AD",
-                (1, 2): "Xb"
+                (1, 2): "None"
             },
-            "score": 11.677480414080005
+            "score": 16.36649306
         },
         "pulsing": {
             "map": {
-                (0, 0): "PH",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
+                (0, 0): "Xb",
+                (1, 0): "PH",
+                (0, 1): "Xa",
+                (1, 1): "Xc",
                 (0, 2): "None",
                 (1, 2): "None"
             },
-            "score": 20.238178480000002
+            "score": 7.04628924
         },
         "trails": {
             "map": {
