@@ -38,8 +38,8 @@ modules = {
                     "image": "phase.webp",
                     "color": "green",
                     "modules": [
-                        { "id": "PB", "type": "core", "label": "Phase Beam", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": True, "image": "phase-beam.png", },
-                        { "id": "FD", "type": "bonus", "label": "Fourier De-Limiter", "bonus": 0.07, "adjacency": "greater", "sc_eligible": True, "image": "fourier.png", },
+                        { "id": "PB", "type": "core", "label": "Phase Beam", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "phase-beam.png", },
+                        { "id": "FD", "type": "bonus", "label": "Fourier De-Limiter", "bonus": 0.07, "adjacency": "lesser", "sc_eligible": True, "image": "fourier.png", },
                         { "id": "Xa", "type": "bonus", "label": "Phase Beam Upgrade Sigma", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Phase Beam Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Phase Beam Upgrade Theta", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
@@ -246,7 +246,7 @@ modules = {
                     "color": "green",
                     "modules": [
                         { "id": "PB", "type": "core", "label": "Phase Beam", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "phase-beam.png", },
-                        { "id": "FD", "type": "bonus", "label": "Fourier De-Limiter", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "fourier.png", },
+                        { "id": "FD", "type": "bonus", "label": "Fourier De-Limiter", "bonus": 0.07, "adjacency": "lesser", "sc_eligible": True, "image": "fourier.png", },
                         { "id": "Xa", "type": "bonus", "label": "Phase Beam Upgrade Sigma", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Phase Beam Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Phase Beam Upgrade Theta", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
@@ -596,7 +596,7 @@ solves = {
                 (1, 1): "Xb",
                 (2, 1): "Xa",
             },
-            "score": 16.76
+            "score": 16.75
         },
         "photon": {
             "map": {
@@ -730,7 +730,7 @@ solves = {
                 (1, 1): "Xb",
                 (2, 1): "Xa",
             },
-            "score": 16.76
+            "score": 16.75
         },
         "positron": {
             "map": {
