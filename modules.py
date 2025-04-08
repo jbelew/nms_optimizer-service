@@ -38,7 +38,7 @@ modules = {
                     "image": "phase.webp",
                     "color": "green",
                     "modules": [
-                        { "id": "PB", "type": "core", "label": "Phase Beam", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "phase-beam.png", },
+                        { "id": "PB", "type": "core", "label": "Phase Beam", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": True, "image": "phase-beam.png", },
                         { "id": "FD", "type": "bonus", "label": "Fourier De-Limiter", "bonus": 0.07, "adjacency": "greater", "sc_eligible": True, "image": "fourier.png", },
                         { "id": "Xa", "type": "bonus", "label": "Phase Beam Upgrade Sigma", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Phase Beam Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "phase-upgrade.png", },
@@ -589,14 +589,14 @@ solves = {
         },
         "phase": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (2, 0): "PB",
-                (0, 1): "Xc",
-                (1, 1): "FD",
-                (2, 1): "None",
+                (0, 0): "FD",
+                (1, 0): "PB",
+                (2, 0): "Xc",
+                (0, 1): "None",
+                (1, 1): "Xb",
+                (2, 1): "Xa",
             },
-            "score": 5.44
+            "score": 16.76
         },
         "photon": {
             "map": {
@@ -723,14 +723,14 @@ solves = {
         },
         "phase": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (2, 0): "PB",
-                (0, 1): "Xc",
-                (1, 1): "FD",
-                (2, 1): "None",
+                (0, 0): "FD",
+                (1, 0): "PB",
+                (2, 0): "Xc",
+                (0, 1): "None",
+                (1, 1): "Xb",
+                (2, 1): "Xa",
             },
-            "score": 5.44
+            "score": 16.76
         },
         "positron": {
             "map": {
