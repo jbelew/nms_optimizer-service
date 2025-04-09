@@ -7,7 +7,7 @@ sys.path.insert(0, project_root)
 
 from grid_utils import Grid
 from modules import modules
-from optimization_algorithms import refine_placement  # Import refine_placement
+from optimization_algorithms import refine_placement, refine_placement_for_training  # Import refine_placement
 from grid_display import print_grid, print_grid_compact
 
 

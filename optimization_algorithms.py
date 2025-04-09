@@ -671,13 +671,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             new_solved_bonus = calculate_grid_score(temp_solved_grid, tech)
             # Compare bonuses and apply changes if the refined bonus is higher
 
-            ######
-            #
-            #    TODO: Ugly hack for a bugt I can't find!
-            #
-            ######
-
-            if new_solved_bonus > (solved_bonus * 0.99):
+            if new_solved_bonus > solved_bonus:
                 # if new_solved_bonus > solved_bonus:
                 # Copy temp_solved_grid to solved_grid
                 solved_grid = temp_solved_grid.copy()
@@ -1002,6 +996,141 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
                     localized_grid.cells[localized_y][localized_x]["module_position"] = cell["module_position"]
 
     return localized_grid, start_x, start_y
+
+# --- NEW ML-Specific Function ---
+def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
+    """
+    Creates a localized grid (4x3) around a given opportunity for ML processing.
+
+    Modules of *other* tech types within the localized area are temporarily
+    removed, and their corresponding cells in the localized grid are marked
+    as inactive. The original state of these modified cells (from the main grid)
+    is stored for later restoration.
+
+    Args:
+        grid (Grid): The main grid.
+        opportunity_x (int): The x-coordinate of the opportunity (top-left corner).
+        opportunity_y (int): The y-coordinate of the opportunity (top-left corner).
+        tech (str): The technology type being optimized (modules of this tech are kept).
+
+    Returns:
+        tuple: A tuple containing:
+            - localized_grid (Grid): The localized grid prepared for ML.
+            - start_x (int): The starting x-coordinate of the localized grid in the main grid.
+            - start_y (int): The starting y-coordinate of the localized grid in the main grid.
+            - original_state_map (dict): A dictionary mapping main grid coordinates
+                                         (x, y) to their original cell data for cells
+                                         that were modified (other tech removed).
+    """
+    localized_width = 4
+    localized_height = 3
+
+    # Directly use opportunity_x and opportunity_y as the starting position
+    start_x = opportunity_x
+    start_y = opportunity_y
+
+    # Clamp the starting position to ensure it's within the grid bounds
+    start_x = max(0, start_x)
+    start_y = max(0, start_y)
+
+    # Calculate the end position based on the clamped start position
+    end_x = min(grid.width, start_x + localized_width)
+    end_y = min(grid.height, start_y + localized_height)
+
+    # Adjust the localized grid size based on the clamped bounds
+    actual_localized_width = end_x - start_x
+    actual_localized_height = end_y - start_y
+
+    # Create the localized grid with the adjusted size
+    localized_grid = Grid(actual_localized_width, actual_localized_height)
+    original_state_map = {} # To store original state of modified cells
+
+    # Copy the grid structure and module data, modifying for other techs
+    for y_main in range(start_y, end_y):
+        for x_main in range(start_x, end_x):
+            localized_x = x_main - start_x
+            localized_y = y_main - start_y
+            main_cell = grid.get_cell(x_main, y_main)
+            local_cell = localized_grid.get_cell(localized_x, localized_y)
+
+            # Always copy basic structure like supercharged status
+            local_cell["supercharged"] = main_cell["supercharged"]
+
+            # Check the module and its tech in the main grid
+            if main_cell["module"] is not None and main_cell["tech"] != tech:
+                # --- Other Tech Found ---
+                # 1. Store the original state using main grid coordinates
+                #    Use deepcopy to ensure modifications to main_cell later don't affect the stored state
+                original_state_map[(x_main, y_main)] = deepcopy(main_cell)
+
+                # 2. Clear module info in the local grid cell
+                local_cell["module"] = None
+                local_cell["label"] = ""
+                local_cell["tech"] = None
+                local_cell["type"] = ""
+                local_cell["bonus"] = 0.0
+                local_cell["adjacency"] = False
+                local_cell["sc_eligible"] = False
+                local_cell["image"] = None
+                local_cell["total"] = 0.0
+                local_cell["adjacency_bonus"] = 0.0
+                if "module_position" in local_cell:
+                    del local_cell["module_position"] # Or set to None
+
+                # 3. Mark the local cell as inactive
+                local_cell["active"] = False
+
+            elif not main_cell["active"]:
+                 # --- Inactive Cell in Main Grid ---
+                 # Keep it inactive in the local grid and ensure module info is cleared
+                local_cell["active"] = False
+                local_cell["module"] = None
+                local_cell["label"] = ""
+                local_cell["tech"] = None
+                local_cell["type"] = ""
+                local_cell["bonus"] = 0.0
+                local_cell["adjacency"] = False
+                local_cell["sc_eligible"] = False
+                local_cell["image"] = None
+                local_cell["total"] = 0.0
+                local_cell["adjacency_bonus"] = 0.0
+                if "module_position" in local_cell:
+                    del local_cell["module_position"]
+
+            else:
+                # --- Target Tech, Empty Active Cell ---
+                # Copy the cell data directly (preserves target tech modules and empty active state)
+                # Use deepcopy here as well for safety, although update might be sufficient
+                local_cell.update(deepcopy(main_cell))
+                # Ensure 'active' is explicitly True if copied from an active main cell
+                local_cell["active"] = True
+
+
+    return localized_grid, start_x, start_y, original_state_map
+
+# --- Restoration Function (Keep as is from previous response) ---
+def restore_original_state(grid, original_state_map):
+    """
+    Restores the original state of cells in the main grid that were temporarily
+    modified (other tech modules removed and marked inactive) during localization.
+
+    Args:
+        grid (Grid): The main grid to restore.
+        original_state_map (dict): The dictionary mapping main grid coordinates (x, y)
+                                   to their original cell data, as returned by
+                                   create_localized_grid_ml.
+    """
+    if not original_state_map:
+        return # Nothing to restore
+
+    print(f"INFO -- Restoring original state for {len(original_state_map)} cells.")
+    for (x, y), original_cell_data in original_state_map.items():
+        if 0 <= x < grid.width and 0 <= y < grid.height:
+            # Directly update the cell in the main grid with its original data
+            # Use deepcopy of the stored data for safety when updating
+            grid.cells[y][x].update(deepcopy(original_cell_data))
+        else:
+            print(f"Warning -- Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid.")
 
 
 def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
