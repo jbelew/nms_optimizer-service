@@ -3,6 +3,7 @@ from grid_utils import Grid
 from modules_data import get_tech_modules
 from grid_display import print_grid_compact, print_grid
 from bonus_calculations import calculate_grid_score
+from modules_data import get_tech_modules_for_training
 from module_placement import (
     place_module,
     clear_all_modules_of_tech,
@@ -10,6 +11,9 @@ from module_placement import (
 from simulated_annealing import simulated_annealing
 from itertools import permutations
 import random
+import math
+import multiprocessing
+import time
 from copy import deepcopy
 from modules import (
     solves,
@@ -83,6 +87,233 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
 
     # Print the total number of iterations
     print(f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'")
+
+    return optimal_grid, highest_bonus
+
+
+# --- Worker Function (Define at top level) ---
+# --- Worker Function (Define at top level) ---
+def _evaluate_permutation_worker(args):
+    """
+    Worker function to evaluate a single permutation.
+    Takes a tuple of arguments to be easily used with pool.map.
+    Creates its own grid copy internally to avoid modifying the shared base.
+    """
+    # 1. Unpack arguments
+    placement_indices, original_base_grid, tech_modules, available_positions, tech = args
+    num_modules_to_place = len(tech_modules)
+
+    # 2. Create a local copy *inside* the worker for this specific permutation
+    # This is crucial: the grid received (original_base_grid) is pickled by multiprocessing,
+    # but we need a distinct copy for *each* permutation evaluation within this worker.
+    working_grid = original_base_grid.copy() # Perform the copy here
+
+    # 3. Clear the tech modules from the *local copy*
+    clear_all_modules_of_tech(working_grid, tech)
+
+    # 4. Determine placement positions
+    try:
+        placement_positions = [available_positions[i] for i in placement_indices]
+    except IndexError:
+        # Log error or handle appropriately
+        print(f"Error: Invalid placement index in worker. Indices: {placement_indices}, Available: {len(available_positions)}")
+        return (-1.0, None) # Indicate error
+
+    # 5. Place modules onto the local working_grid
+    placement_successful = True
+    for index, (x, y) in enumerate(placement_positions):
+        if index >= num_modules_to_place: # Safety check
+            placement_successful = False
+            break
+        module = tech_modules[index]
+        try:
+            place_module(
+                working_grid, # Use the local copy
+                x, y, module["id"], module["label"], tech, module["type"],
+                module["bonus"], module["adjacency"], module["sc_eligible"], module["image"]
+            )
+        except IndexError:
+            print(f"ERROR: IndexError during place_module at ({x},{y}) in worker. Skipping.")
+            placement_successful = False
+            break
+        except Exception as e: # Catch other potential errors
+            print(f"ERROR: Exception during place_module at ({x},{y}) in worker: {e}. Skipping.")
+            placement_successful = False
+            break
+
+    if not placement_successful:
+        return (-1.0, None) # Indicate error or skip
+
+    # 6. Calculate score on the local working_grid
+    grid_bonus = calculate_grid_score(working_grid, tech)
+
+    # 7. Return score and the indices
+    return (grid_bonus, placement_indices)
+
+
+# --- Modified refine_placement_for_training ---
+def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
+    """
+    Optimizes module placement using brute-force permutations with multiprocessing,
+    intended for generating optimal ground truth for training data.
+    Optimized copying strategy and added memory management safeguards.
+    """
+    start_time = time.time()
+    optimal_grid = None
+    highest_bonus = -1.0 # Use -1 to clearly distinguish from a valid 0 score
+
+    tech_modules = get_tech_modules_for_training(modules, ship, tech)
+
+    # --- Initial Checks (same as before) ---
+    if not tech_modules:
+        print(f"Warning: No modules for {ship}/{tech}. Returning cleared grid.")
+        cleared_grid = grid.copy()
+        clear_all_modules_of_tech(cleared_grid, tech)
+        return cleared_grid, 0.0
+
+    num_modules_to_place = len(tech_modules)
+    available_positions = [(x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["active"]]
+    num_available = len(available_positions)
+
+    if num_available < num_modules_to_place:
+        print(f"Warning: Not enough active slots ({num_available}) for modules ({num_modules_to_place}) for {tech}. Returning cleared grid.")
+        cleared_grid = grid.copy()
+        clear_all_modules_of_tech(cleared_grid, tech)
+        return cleared_grid, 0.0
+    # --- End Initial Checks ---
+
+    # --- Base Grid Setup ---
+    # Create ONE base working grid here. It will be pickled and sent to workers.
+    # Workers will create their own copies from this base.
+    base_working_grid = grid.copy()
+    clear_all_modules_of_tech(base_working_grid, tech)
+    # --- End Base Grid Setup ---
+
+    # --- Permutation Info & Worker Setup ---
+    try:
+        num_permutations = math.perm(num_available, num_modules_to_place)
+        print(f"-- Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> {num_permutations:,} permutations.")
+    except (ValueError, OverflowError):
+        print(f"-- Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> Large number of permutations.")
+        num_permutations = float("inf")
+
+    if num_workers is None:
+        num_workers = multiprocessing.cpu_count()
+        # Optional: Limit workers if permutations are truly astronomical, though fixing copying might be enough
+        # if num_permutations > 100_000_000 and num_workers > 4:
+        #     print(f"-- Limiting workers from {num_workers} to 4 due to extreme permutation count.")
+        #     num_workers = 4
+        print(f"-- Using {num_workers} worker processes.")
+    # --- End Worker Setup ---
+
+    # --- Task Preparation ---
+    # Generate permutations of *indices* into available_positions
+    permutation_indices_iterator = permutations(range(num_available), num_modules_to_place)
+
+    # Package arguments: Pass the single base_working_grid. It gets pickled by the pool mechanism.
+    tasks = (
+        (indices, base_working_grid, tech_modules, available_positions, tech)
+        for indices in permutation_indices_iterator
+    )
+    # --- End Task Preparation ---
+
+    best_placement_indices = None
+    processed_count = 0
+
+    # --- Chunksize Calculation (heuristic) ---
+    chunksize = 1000 # Minimum chunksize
+    if num_permutations != float("inf"):
+        # Aim for a moderate number of chunks per worker to balance overhead and load balancing
+        chunks_per_worker_target = 500 # Tune this value
+        calculated_chunksize = num_permutations // (num_workers * chunks_per_worker_target)
+        chunksize = max(chunksize, calculated_chunksize)
+        # Add an upper limit to prevent huge chunks consuming too much memory at once
+        max_chunksize = 50000 # Tune this based on memory observations
+        chunksize = min(chunksize, max_chunksize)
+    # --- End Chunksize Calculation ---
+
+    # --- Multiprocessing Pool Execution ---
+    print(f"-- Starting parallel evaluation with chunksize={chunksize}...")
+    # Add maxtasksperchild: Restarts worker after N tasks to help free memory
+    maxtasks = 2000 # Tune this value (e.g., 1000-10000)
+    print(f"-- Setting maxtasksperchild={maxtasks}")
+    with multiprocessing.Pool(processes=num_workers, maxtasksperchild=maxtasks) as pool:
+        # imap_unordered is good for performance when order doesn't matter
+        results_iterator = pool.imap_unordered(_evaluate_permutation_worker, tasks, chunksize=chunksize)
+
+        # Progress reporting frequency
+        update_frequency = max(1, chunksize * num_workers // 4) # Update reasonably often
+
+        for score, placement_indices in results_iterator:
+            processed_count += 1
+            # Check for worker errors
+            if score == -1.0 and placement_indices is None:
+                continue
+
+            # Track best score
+            if placement_indices is not None and score > highest_bonus:
+                highest_bonus = score
+                best_placement_indices = placement_indices
+
+            # Print progress periodically
+            if processed_count % update_frequency == 0 or (num_permutations != float('inf') and processed_count == num_permutations):
+                elapsed = time.time() - start_time
+                progress_percent = (processed_count / num_permutations * 100) if num_permutations != float("inf") else 0
+                # Use \r and flush=True for inline updating
+                print(f"\r-- Processed ~{processed_count // 1000}k permutations. Best: {highest_bonus:.4f} ({elapsed:.1f}s)", end="", flush=True)
+
+    print() # Ensure the next print starts on a new line after progress updates
+
+    end_time = time.time()
+    total_time = end_time - start_time
+    print(f"-- Parallel evaluation finished in {total_time:.2f} seconds. Processed {processed_count} permutations.")
+    if total_time > 0:
+        perms_per_sec = processed_count / total_time
+        print(f"-- Rate: {perms_per_sec:,.0f} permutations/sec")
+    # --- End Pool Execution ---
+
+    # --- Reconstruct Best Grid ---
+    if best_placement_indices is not None:
+        print(f"-- Reconstructing best grid with score: {highest_bonus:.4f}")
+        # Start from the original grid structure again for safety
+        optimal_grid = grid.copy()
+        clear_all_modules_of_tech(optimal_grid, tech) # Clear only the target tech
+        best_positions = [available_positions[i] for i in best_placement_indices]
+        reconstruction_successful = True
+        for index, (x, y) in enumerate(best_positions):
+            # ... (rest of reconstruction logic is the same as your previous version) ...
+            if index >= len(tech_modules): reconstruction_successful = False; break
+            module = tech_modules[index]
+            try:
+                place_module(optimal_grid, x, y, module["id"], module["label"], tech, module["type"], module["bonus"], module["adjacency"], module["sc_eligible"], module["image"])
+            except Exception as e:
+                print(f"ERROR during final grid reconstruction at ({x},{y}): {e}")
+                reconstruction_successful = False; break
+
+        if not reconstruction_successful:
+            print("Warning: Final grid reconstruction failed. Returning cleared grid.")
+            optimal_grid = grid.copy(); clear_all_modules_of_tech(optimal_grid, tech); highest_bonus = 0.0
+        else:
+            # Optional score verification
+            final_score = calculate_grid_score(optimal_grid, tech)
+            if abs(final_score - highest_bonus) > 1e-6:
+                print(f"Warning: Final score ({final_score:.4f}) differs from tracked best ({highest_bonus:.4f}). Using final score.")
+                highest_bonus = final_score
+
+    # --- Handle No Valid Placement Found ---
+    elif num_modules_to_place > 0: # Check if modules existed but no solution found
+        print(f"Warning: No optimal grid found for {ship}/{tech}. Returning cleared grid.")
+        optimal_grid = grid.copy()
+        clear_all_modules_of_tech(optimal_grid, tech)
+        highest_bonus = 0.0 # Score is 0 for a cleared grid
+    else: # No modules to place initially
+        print(f"-- No modules to place for {ship}/{tech}. Returning cleared grid.")
+        optimal_grid = grid.copy()
+        clear_all_modules_of_tech(optimal_grid, tech)
+        highest_bonus = 0.0
+    # --- End Handling ---
+
+    print_grid(optimal_grid) # Optional: Print final grid for debugging
 
     return optimal_grid, highest_bonus
 
@@ -372,18 +603,16 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
                     if temp_result_grid is not None:
                         current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
 
-
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
                         elif (
                             current_pattern_bonus == highest_pattern_bonus
-                            and adjacency_score >= best_pattern_adjacency_score # Changed > to >=
+                            and adjacency_score >= best_pattern_adjacency_score  # Changed > to >=
                         ):
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
-
 
         # Reset temp_grid for the next pattern
         temp_grid = Grid.from_dict(grid_dict)
@@ -682,6 +911,7 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
         return best_window_start_x, best_window_start_y  # Return the top-left of the best window
     else:
         return None
+
 
 def calculate_window_score(window_grid, tech):
     """Calculates a score for a given window based on supercharged and empty slots,
