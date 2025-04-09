@@ -143,13 +143,13 @@ def simulated_annealing(
 
     end_time = time.time()  # End timing
     elapsed_time = end_time - start_time
-    print(
-        f"INFO -- Simulated annealing finished. Best score found: {best_score:.2f} -- Time: {elapsed_time:.4f}s"
-    )
+    print(f"INFO -- Simulated annealing finished. Best score found: {best_score:.2f} -- Time: {elapsed_time:.4f}s")
     if best_grid is None or best_score == 0:
         raise ValueError(
             f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
         )
+
+    print_grid(best_grid)
     return best_grid, best_score
 
 
@@ -169,11 +169,8 @@ def get_swap_probability(
     if temperature <= stopping_temperature:
         return final_swap_probability
 
-    return initial_swap_probability - (
-        initial_swap_probability - final_swap_probability
-    ) * (
-        (initial_temperature - temperature)
-        / (initial_temperature - stopping_temperature)
+    return initial_swap_probability - (initial_swap_probability - final_swap_probability) * (
+        (initial_temperature - temperature) / (initial_temperature - stopping_temperature)
     )
 
 
@@ -215,9 +212,7 @@ def place_modules_with_supercharged_priority(grid, tech_modules, tech):
 
     # Limit the number of modules to place if there are not enough slots
     num_available_positions = len(supercharged_slots) + len(active_slots)
-    modules_to_place = sorted_modules[
-        : min(len(sorted_modules), num_available_positions)
-    ]
+    modules_to_place = sorted_modules[: min(len(sorted_modules), num_available_positions)]
 
     # Separate sc_eligible and non_sc_eligible modules
     sc_eligible_modules = [m for m in modules_to_place if m["sc_eligible"]]
@@ -226,13 +221,9 @@ def place_modules_with_supercharged_priority(grid, tech_modules, tech):
     # Handle core module placement
     if core_module:
         if core_module["sc_eligible"]:
-            sc_eligible_modules.insert(
-                0, core_module
-            )  # Ensure core is first if sc_eligible
+            sc_eligible_modules.insert(0, core_module)  # Ensure core is first if sc_eligible
         else:
-            non_sc_eligible_modules.insert(
-                0, core_module
-            )  # Ensure core is first if not sc_eligible
+            non_sc_eligible_modules.insert(0, core_module)  # Ensure core is first if not sc_eligible
 
     # Sort sc_eligible modules by bonus (descending)
     sc_eligible_modules.sort(key=lambda m: m["bonus"], reverse=True)
@@ -319,9 +310,7 @@ def place_modules_with_supercharged_priority(grid, tech_modules, tech):
                 continue
 
     # Place remaining modules in any active slots
-    remaining_modules = [
-        m for m in modules_to_place if m["id"] not in placed_module_ids
-    ]
+    remaining_modules = [m for m in modules_to_place if m["id"] not in placed_module_ids]
     # random.shuffle(active_slots)  # Shuffle active slots for random placement - NO LONGER SHUFFLING SLOTS
     for index, (x, y) in enumerate(active_slots):
         if index < len(remaining_modules):
@@ -437,15 +426,10 @@ def move_module(grid, tech, tech_modules):
 
         for new_x, new_y in empty_positions:
             # Check if the new position is occupied by a module of a different tech
-            if (
-                grid.get_cell(new_x, new_y)["tech"] is not None
-                and grid.get_cell(new_x, new_y)["tech"] != tech
-            ):
+            if grid.get_cell(new_x, new_y)["tech"] is not None and grid.get_cell(new_x, new_y)["tech"] != tech:
                 continue  # Skip this position if it's occupied by a different tech
 
-            adjacency_change = calculate_adjacency_change(
-                grid, x, y, new_x, new_y, module_data, tech
-            )
+            adjacency_change = calculate_adjacency_change(grid, x, y, new_x, new_y, module_data, tech)
             if adjacency_change > best_adjacency_change:
                 best_adjacency_change = adjacency_change
                 best_new_x, best_new_y = new_x, new_y
@@ -495,10 +479,7 @@ def get_adjacent_empty_positions(grid, x, y):
     empty_positions = []
     for ax, ay in adjacent_positions:
         if 0 <= ax < grid.width and 0 <= ay < grid.height:
-            if (
-                grid.get_cell(ax, ay)["module"] is None
-                and grid.get_cell(ax, ay)["active"]
-            ):
+            if grid.get_cell(ax, ay)["module"] is None and grid.get_cell(ax, ay)["active"]:
                 empty_positions.append((ax, ay))
     return empty_positions
 
@@ -533,10 +514,7 @@ def calculate_adjacency_change(grid, x1, y1, x2, y2, module_data, tech):
         for ax, ay in adjacent_positions:
             if 0 <= ax < grid.width and 0 <= ay < grid.height:
                 adjacent_cell = grid.get_cell(ax, ay)
-                if (
-                    adjacent_cell["tech"] == tech
-                    and adjacent_cell["module"] is not None
-                ):
+                if adjacent_cell["tech"] == tech and adjacent_cell["module"] is not None:
                     adjacency_count += 1
         return adjacency_count
 

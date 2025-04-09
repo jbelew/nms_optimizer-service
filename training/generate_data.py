@@ -120,7 +120,7 @@ def generate_training_batch(
                     ship,
                     modules,
                     tech,
-                    player_owned_rewards=None,
+                    player_owned_rewards=["PC"],
                     initial_temperature=4000,
                     cooling_rate=0.997,
                     stopping_temperature=1.0,

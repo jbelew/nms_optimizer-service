@@ -8,8 +8,8 @@ from torch.utils.tensorboard import SummaryWriter
 import sys
 import os
 import time
-import glob # <-- Import glob for file searching
-import argparse # <-- Import argparse for command-line arguments
+import glob  # <-- Import glob for file searching
+import argparse  # <-- Import argparse for command-line arguments
 
 # --- Add project root to sys.path ---
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -42,13 +42,13 @@ class ModulePlacementCNN(nn.Module):
         self.bn1 = nn.BatchNorm2d(32)
         self.bn2 = nn.BatchNorm2d(64)
         # Add Dropout layer
-        self.dropout = nn.Dropout(0.3) # Adjust dropout rate as needed
+        self.dropout = nn.Dropout(0.3)  # Adjust dropout rate as needed
         self.output_conv = nn.Conv2d(64, num_output_classes, kernel_size=1)
 
     def forward(self, x):
         x = self.relu1(self.bn1(self.conv1(x)))
         x = self.relu2(self.bn2(self.conv2(x)))
-        x = self.dropout(x) # Apply dropout
+        x = self.dropout(x)  # Apply dropout
         x_placement = self.output_conv(x)
         return x_placement
 
@@ -68,7 +68,9 @@ class PlacementDataset(data.Dataset):
 
 
 # --- Training Function (remains mostly the same, added weight decay) ---
-def train_model(train_loader, grid_height, grid_width, num_output_classes, num_epochs, learning_rate, weight_decay, log_dir):
+def train_model(
+    train_loader, grid_height, grid_width, num_output_classes, num_epochs, learning_rate, weight_decay, log_dir
+):
     """Initializes and trains a ModulePlacementCNN model for placement prediction only."""
     print(f"Starting training for {log_dir}...")
     print(f"  Num output classes: {num_output_classes}")
@@ -94,7 +96,7 @@ def train_model(train_loader, grid_height, grid_width, num_output_classes, num_e
     for epoch in range(num_epochs):
         model.train()
         running_loss_placement = 0.0
-        start_epoch_time = time.time() # Time each epoch
+        start_epoch_time = time.time()  # Time each epoch
         for i, (inputs, targets_placement) in enumerate(train_loader):
             inputs, targets_placement = inputs.to(device), targets_placement.to(device)
             optimizer.zero_grad()
@@ -111,9 +113,11 @@ def train_model(train_loader, grid_height, grid_width, num_output_classes, num_e
 
         avg_loss_placement = running_loss_placement / len(train_loader)
         epoch_time = time.time() - start_epoch_time
-        print(f"Epoch [{epoch + 1}/{num_epochs}], "
-              f"Placement Loss: {avg_loss_placement:.4f}, "
-              f"Time: {epoch_time:.2f}s")
+        print(
+            f"Epoch [{epoch + 1}/{num_epochs}], "
+            f"Placement Loss: {avg_loss_placement:.4f}, "
+            f"Time: {epoch_time:.2f}s"
+        )
         writer.add_scalar("Loss/epoch_placement", avg_loss_placement, epoch)
         writer.add_scalar("Time/epoch", epoch_time, epoch)
 
@@ -132,12 +136,12 @@ def run_training_from_files(
     grid_width,
     grid_height,
     learning_rate,
-    weight_decay, # Added weight decay
+    weight_decay,  # Added weight decay
     num_epochs,
     batch_size,
     base_log_dir,
     model_save_dir,
-    data_source_dir # <-- Changed parameter name
+    data_source_dir,  # <-- Changed parameter name
 ):
     """
     Orchestrates the training process by loading and aggregating data
@@ -154,8 +158,7 @@ def run_training_from_files(
             raise KeyError(f"Category '{tech_category_to_train}' not found or invalid for ship '{ship}'.")
 
         tech_keys_to_train = [
-            tech_data["key"] for tech_data in category_data
-            if isinstance(tech_data, dict) and "key" in tech_data
+            tech_data["key"] for tech_data in category_data if isinstance(tech_data, dict) and "key" in tech_data
         ]
     except KeyError as e:
         print(f"Error accessing module data: {e}")
@@ -195,12 +198,14 @@ def run_training_from_files(
                 # Rename 'data' to 'npz_file' to avoid collision
                 with np.load(filepath) as npz_file:
                     # Use the new variable name here
-                    x_batch = npz_file['X']
-                    y_batch = npz_file['y']
+                    x_batch = npz_file["X"]
+                    y_batch = npz_file["y"]
                     # Basic validation
                     if x_batch.shape[1:] != (grid_height, grid_width) or y_batch.shape[1:] != (grid_height, grid_width):
-                         print(f"Warning: Shape mismatch in {filepath}. Expected ({grid_height},{grid_width}), got X:{x_batch.shape[1:]}, y:{y_batch.shape[1:]}. Skipping file.")
-                         continue
+                        print(
+                            f"Warning: Shape mismatch in {filepath}. Expected ({grid_height},{grid_width}), got X:{x_batch.shape[1:]}, y:{y_batch.shape[1:]}. Skipping file."
+                        )
+                        continue
                     if x_batch.shape[0] != y_batch.shape[0]:
                         print(f"Warning: Sample count mismatch between X and y in {filepath}. Skipping file.")
                         continue
@@ -221,7 +226,9 @@ def run_training_from_files(
             X_data_np = np.concatenate(all_X_data, axis=0)
             y_data_np = np.concatenate(all_y_data, axis=0)
             load_time = time.time() - load_start_time
-            print(f"Loaded and concatenated {total_loaded_samples} total samples for tech '{tech}' in {load_time:.2f}s.")
+            print(
+                f"Loaded and concatenated {total_loaded_samples} total samples for tech '{tech}' in {load_time:.2f}s."
+            )
         except Exception as e:
             print(f"Error concatenating data arrays for tech '{tech}': {e}. Skipping.")
             continue
@@ -229,8 +236,8 @@ def run_training_from_files(
         # --- Determine num_output_classes (remains the same) ---
         tech_modules = get_tech_modules_for_training(modules, ship, tech)
         if not tech_modules:
-             print(f"Warning: Could not get modules for tech '{tech}' to determine class count. Skipping.")
-             continue
+            print(f"Warning: Could not get modules for tech '{tech}' to determine class count. Skipping.")
+            continue
         num_output_classes = len(tech_modules) + 1
         if num_output_classes <= 1:
             print(f"Skipping tech '{tech}': Not enough output classes ({num_output_classes}). Needs > 1.")
@@ -253,7 +260,11 @@ def run_training_from_files(
 
         # Consider adding num_workers and pin_memory if loading is slow and using GPU
         train_loader = data.DataLoader(
-            train_dataset, batch_size=effective_batch_size, shuffle=True, num_workers=min(4, os.cpu_count()), pin_memory=torch.cuda.is_available()
+            train_dataset,
+            batch_size=effective_batch_size,
+            shuffle=True,
+            num_workers=min(4, os.cpu_count()),
+            pin_memory=torch.cuda.is_available(),
         )
 
         # --- 3. Train Model ---
@@ -266,10 +277,10 @@ def run_training_from_files(
         model_filename = f"model_{ship}_{tech}.pth"
         model_save_path = os.path.join(model_save_dir, model_filename)
         try:
-            model.to("cpu") # Ensure model is on CPU before saving state_dict
+            model.to("cpu")  # Ensure model is on CPU before saving state_dict
             torch.save(model.state_dict(), model_save_path)
             print(f"Saved trained model for tech '{tech}' to {model_save_path}")
-            trained_models[tech] = model # Store the CPU version if needed
+            trained_models[tech] = model  # Store the CPU version if needed
         except Exception as e:
             print(f"Error saving model for tech '{tech}': {e}")
 
@@ -284,13 +295,24 @@ if __name__ == "__main__":
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
     parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
     parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
-    parser.add_argument("--lr", type=float, default=0.0005, help="Learning rate.") # Adjusted default LR
-    parser.add_argument("--wd", type=float, default=1e-5, help="Weight decay (L2 regularization).") # Added weight decay arg
-    parser.add_argument("--epochs", type=int, default=75, help="Number of training epochs.") # Adjusted default epochs
-    parser.add_argument("--batch_size", type=int, default=64, help="Training batch size.") # Adjusted default batch size
-    parser.add_argument("--log_dir", type=str, default="runs_placement_only", help="Base directory for TensorBoard logs.")
+    parser.add_argument("--lr", type=float, default=0.0005, help="Learning rate.")  # Adjusted default LR
+    parser.add_argument(
+        "--wd", type=float, default=1e-5, help="Weight decay (L2 regularization)."
+    )  # Added weight decay arg
+    parser.add_argument("--epochs", type=int, default=75, help="Number of training epochs.")  # Adjusted default epochs
+    parser.add_argument(
+        "--batch_size", type=int, default=64, help="Training batch size."
+    )  # Adjusted default batch size
+    parser.add_argument(
+        "--log_dir", type=str, default="runs_placement_only", help="Base directory for TensorBoard logs."
+    )
     parser.add_argument("--model_dir", type=str, default="trained_models", help="Directory to save trained models.")
-    parser.add_argument("--data_source_dir", type=str, default=DEFAULT_DATA_SOURCE_DIR, help="Directory containing generated .npz data files.") # Changed argument name
+    parser.add_argument(
+        "--data_source_dir",
+        type=str,
+        default=DEFAULT_DATA_SOURCE_DIR,
+        help="Directory containing generated .npz data files.",
+    )  # Changed argument name
 
     args = parser.parse_args()
     # --- End Argument Parsing ---
@@ -302,17 +324,15 @@ if __name__ == "__main__":
         "grid_height": args.height,
         "ship": args.ship,
         "tech_category_to_train": args.category,
-
         # Training Hyperparameters
         "learning_rate": args.lr,
-        "weight_decay": args.wd, # Added weight decay
+        "weight_decay": args.wd,  # Added weight decay
         "num_epochs": args.epochs,
         "batch_size": args.batch_size,
-
         # Paths
         "base_log_dir": args.log_dir,
         "model_save_dir": args.model_dir,
-        "data_source_dir": args.data_source_dir # Changed key name
+        "data_source_dir": args.data_source_dir,  # Changed key name
     }
     # --- End Configuration ---
 
@@ -330,15 +350,14 @@ if __name__ == "__main__":
         grid_width=config["grid_width"],
         grid_height=config["grid_height"],
         learning_rate=config["learning_rate"],
-        weight_decay=config["weight_decay"], # Pass weight decay
+        weight_decay=config["weight_decay"],  # Pass weight decay
         num_epochs=config["num_epochs"],
         batch_size=config["batch_size"],
         base_log_dir=config["base_log_dir"],
         model_save_dir=config["model_save_dir"],
-        data_source_dir=config["data_source_dir"] # Pass data source dir
+        data_source_dir=config["data_source_dir"],  # Pass data source dir
     )
 
     end_time_all = time.time()
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
-
