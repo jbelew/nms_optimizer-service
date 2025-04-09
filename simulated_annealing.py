@@ -42,7 +42,7 @@ def simulated_annealing(
         tuple: A tuple containing the best grid found and its score.
     """
     start_time = time.time()  # Start timing
-    max_processing_time = 25  # Maximum processing time in seconds
+    max_processing_time = 360  # Maximum processing time in seconds
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")

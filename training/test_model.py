@@ -255,13 +255,13 @@ if __name__ == "__main__":
     # --- Consolidated Configuration ---
     config = {
         "test_ship": "standard",
-        "test_tech": "cyclotron", # Technology to test
+        "test_tech": "hyper", # Technology to test
         "model_trained_grid_width": 4, # Grid width the model was trained on
         "model_trained_grid_height": 3, # Grid height the model was trained on
-        "max_test_inactive": 1, # Max inactive cells for the random test input
-        "max_test_supercharged": 4, # Max supercharged cells for the random test input
+        "max_test_inactive": 0, # Max inactive cells for the random test input
+        "max_test_supercharged": 0, # Max supercharged cells for the random test input
         "use_compact_print": False, # Use compact grid printing format?
-        "model_dir": "../trained_models" # Relative path to model directory
+        "model_dir": "trained_models" # Relative path to model directory
     }
     # --- End Configuration ---
 
