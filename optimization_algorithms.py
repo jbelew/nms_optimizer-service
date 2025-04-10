@@ -630,9 +630,9 @@ def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, oppo
 def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y):
     """Handles the SA/Refine-based refinement within an opportunity window."""
     print(f"INFO -- Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y})")
+    clear_all_modules_of_tech(grid, tech)
     # Create a localized grid (preserves other tech modules)
     localized_grid, start_x, start_y = create_localized_grid(grid, opportunity_x, opportunity_y, tech)
-    clear_all_modules_of_tech(localized_grid, tech)
     print_grid(localized_grid)
 
     # Get the number of modules for the given tech
