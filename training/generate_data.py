@@ -14,13 +14,15 @@ if project_root not in sys.path:
 # --- End Add project root ---
 
 # --- Imports from your project ---
-from optimizer import (
-    refine_placement_for_training,
-    Grid,
-    get_tech_modules_for_training,
+# Import Grid and get_tech_modules_for_training from optimizer
+from optimizer import Grid, get_tech_modules_for_training
+
+# Import optimization functions directly from optimization_algorithms
+from optimization_algorithms import (
+    get_all_unique_pattern_variations,
+    refine_placement_for_training # <<<--- Moved this import here
 )
-# <<<--- Import pattern variation functions from the correct file --->>>
-from optimization_algorithms import get_all_unique_pattern_variations
+# Import other necessary modules
 from modules import modules, solves
 from simulated_annealing import simulated_annealing
 from grid_display import print_grid
@@ -46,10 +48,11 @@ def generate_training_batch(
     """
     Generates a batch of training data and saves it to a unique .npz file.
     Optionally uses pre-defined solve maps (including rotated/mirrored variations)
-    for a portion of the samples.
+    for a portion of the samples. Includes mirrored data augmentation.
 
     Args:
-        num_samples (int): The number of samples to generate in this batch.
+        num_samples (int): The number of *original* samples to generate before augmentation.
+                           The final batch size will be larger due to augmentation.
         grid_width (int): The width of the grid.
         grid_height (int): The height of the grid.
         max_supercharged (int): Max supercharged slots (among active cells).
@@ -62,13 +65,16 @@ def generate_training_batch(
 
     Returns:
         tuple: (generated_count, num_output_classes, saved_filepath) or (0, 0, None) on failure.
+               generated_count now reflects the total count including augmentations.
     """
     start_time_tech = time.time()
 
     # --- 1. Generate Samples ---
     new_X_list = []
     new_y_list = []
-    print(f"Generating {num_samples} samples for ship='{ship}', tech='{tech}' (Solve Map Prob: {solve_map_prob:.2f})...")
+    # Note: num_samples is the target for *original* generations.
+    print(f"Generating {num_samples} original samples for ship='{ship}', tech='{tech}' (Solve Map Prob: {solve_map_prob:.2f})...")
+    print("Data augmentation (mirroring) will increase the final sample count.")
 
     tech_modules = get_tech_modules_for_training(modules, ship, tech)
     if not tech_modules:
@@ -113,25 +119,30 @@ def generate_training_batch(
         solve_map_exists = False
     # --- End Solve Map Variations ---
 
-    generated_count = 0
+    original_generated_count = 0 # Track original samples generated
     attempt_count = 0
+    # Adjust max_attempts if needed, as each success yields more samples now
     max_attempts = num_samples * 15 + 100
 
     total_cells = grid_width * grid_height
     all_positions = [(x, y) for y in range(grid_height) for x in range(grid_width)]
 
-    while generated_count < num_samples and attempt_count < max_attempts:
+    while original_generated_count < num_samples and attempt_count < max_attempts:
         attempt_count += 1
         original_grid_layout = Grid(grid_width, grid_height)
 
         # --- Add Inactive/Supercharged Cells (same as before) ---
-        num_inactive = random.randint(0, min(max_inactive_cells, total_cells))
-        if num_inactive > 0:
-            inactive_positions = random.sample(all_positions, num_inactive)
-            for x, y in inactive_positions:
-                original_grid_layout.set_active(x, y, False)
-        else:
-            inactive_positions = []
+        inactive_positions = []
+        if random.random() < 0.5:
+            num_inactive = random.randint(0, min(max_inactive_cells, total_cells))
+            if num_inactive > 0:
+                if num_inactive <= len(all_positions):
+                    inactive_positions = random.sample(all_positions, num_inactive)
+                    for x, y in inactive_positions:
+                        original_grid_layout.set_active(x, y, False)
+                else:
+                    print(f"Warning: Cannot sample {num_inactive} inactive positions from {len(all_positions)} total positions. Setting 0 inactive.")
+                    inactive_positions = []
 
         active_positions = [pos for pos in all_positions if pos not in inactive_positions]
         num_active_cells = len(active_positions)
@@ -146,7 +157,6 @@ def generate_training_batch(
         # --- End Add Cells ---
 
         # --- Decide: Use Solve Map Variation or Optimize ---
-        # Use map only if variations exist and probability check passes
         use_solve_map = solve_map_exists and random.random() < solve_map_prob
 
         input_matrix = np.zeros((grid_height, grid_width), dtype=np.int8)
@@ -157,14 +167,14 @@ def generate_training_batch(
         for y in range(grid_height):
             for x in range(grid_width):
                 cell = original_grid_layout.get_cell(x, y)
+                # Input matrix represents supercharged status (1 if active AND supercharged, 0 otherwise)
                 input_matrix[y, x] = int(cell["active"] and cell["supercharged"])
         # --- End Input Matrix ---
 
         # --- Create Output Matrix ---
         if use_solve_map:
             # --- Method 1: Use Random Pre-defined Solve Map Variation ---
-            print(f"-- Attempt {attempt_count}: Using pre-defined solve map variation for tech '{tech}'")
-            # <<<--- Randomly select a variation --->>>
+            # print(f"-- Attempt {attempt_count}: Using pre-defined solve map variation for tech '{tech}'") # Less verbose
             current_pattern_data = random.choice(solve_map_variations)
 
             for y in range(grid_height):
@@ -173,7 +183,6 @@ def generate_training_batch(
                         output_matrix[y, x] = 0
                         continue
 
-                    # <<<--- Use the selected variation --->>>
                     module_id = current_pattern_data.get((x, y))
 
                     if module_id is None or module_id == "None":
@@ -190,43 +199,12 @@ def generate_training_batch(
                 if not sample_valid:
                     break
 
-            # --- Visualization using print_grid (Uses current_pattern_data) ---
-            if sample_valid:
-
-                # Output Grid Vis (Populated from output_matrix which came from current_pattern_data)
-                output_grid_vis = Grid(grid_width, grid_height)
-                for y_vis in range(grid_height):
-                    for x_vis in range(grid_width):
-                        original_cell = original_grid_layout.get_cell(x_vis, y_vis)
-                        output_grid_vis.set_active(x_vis, y_vis, original_cell["active"])
-                        output_grid_vis.set_supercharged(x_vis, y_vis, original_cell["supercharged"])
-                        output_grid_vis.cells[y_vis][x_vis]['module'] = None # Initialize fields
-                        output_grid_vis.cells[y_vis][x_vis]['tech'] = None
-                        output_grid_vis.cells[y_vis][x_vis]['total'] = 0.0
-                        output_grid_vis.cells[y_vis][x_vis]['bonus'] = 0.0
-                        output_grid_vis.cells[y_vis][x_vis]['adjacency_bonus'] = 0.0
-
-                        class_id = output_matrix[y_vis, x_vis]
-                        if class_id > 0:
-                            module_id_to_place = class_id_to_module.get(class_id)
-                            if module_id_to_place and module_id_to_place in module_details_map:
-                                module_data = module_details_map[module_id_to_place]
-                                try:
-                                    if output_grid_vis.get_cell(x_vis, y_vis)["active"]:
-                                        place_module(
-                                            output_grid_vis, x_vis, y_vis,
-                                            module_data["id"], module_data.get("label", module_data["id"][:3]),
-                                            tech, module_data.get("type", ""),
-                                            module_data.get("bonus", 0.0), module_data.get("adjacency", []),
-                                            module_data.get("sc_eligible", False), module_data.get("image")
-                                        )
-                                except Exception as e:
-                                    print(f"Error placing module {module_data['id']} at ({x_vis},{y_vis}) for visualization: {e}")
-                            else:
-                                print(f"Warning: Could not find module details for class ID {class_id} (Module ID: {module_id_to_place}) during visualization.")
-
-                print(f"Output Grid (Solve Map Variation Placement - Tech: {tech})")
-                print_grid(output_grid_vis)
+            # --- Visualization (Optional, can be removed/commented for speed) ---
+            # if sample_valid:
+            #     output_grid_vis = Grid(grid_width, grid_height)
+            #     # ... (visualization code remains the same) ...
+            #     print(f"Output Grid (Solve Map Variation Placement - Tech: {tech})")
+            #     print_grid(output_grid_vis)
             # --- End Visualization ---
 
         else:
@@ -234,6 +212,7 @@ def generate_training_batch(
             optimized_grid = None
             try:
                 num_modules_for_tech = len(tech_modules)
+                # Choose optimization based on module count
                 if num_modules_for_tech < 7:
                     optimized_grid, best_bonus = refine_placement_for_training(
                         original_grid_layout, ship, modules, tech
@@ -241,10 +220,10 @@ def generate_training_batch(
                 else:
                     optimized_grid, best_bonus = simulated_annealing(
                         original_grid_layout, ship, modules, tech,
-                        player_owned_rewards=["PC"], initial_temperature=4000,
-                        cooling_rate=0.997, stopping_temperature=1.0,
-                        iterations_per_temp=50, initial_swap_probability=0.55,
-                        final_swap_probability=0.4,
+                        player_owned_rewards=["PC"], # Example, adjust if needed
+                        initial_temperature=4000, cooling_rate=0.997,
+                        stopping_temperature=1.0, iterations_per_temp=50,
+                        initial_swap_probability=0.55, final_swap_probability=0.4,
                     )
                 if optimized_grid is None: sample_valid = False
             except ValueError as ve:
@@ -269,31 +248,57 @@ def generate_training_batch(
                                 print(f"\nWarning: Module ID '{module_id}' from OPTIMIZED grid not found. Skipping sample.")
                                 sample_valid = False; break
                             output_matrix[y, x] = mapped_class
-                    if not sample_valid: continue
-            elif sample_valid and optimized_grid is None:
+                    if not sample_valid: continue # Check validity within the inner loop
+            elif sample_valid and optimized_grid is None: # Handle case where optimization returns None but no exception
                 sample_valid = False
             # --- End Optimization ---
 
 
-        # --- Add Valid Sample (same as before) ---
+        # --- Add Valid Sample AND AUGMENTATIONS ---
         if sample_valid:
+            # 1. Add the original sample
             new_X_list.append(input_matrix)
             new_y_list.append(output_matrix)
-            generated_count += 1
-            if generated_count % 1 == 0 or generated_count == num_samples:
-                 print(f"-- Generated {generated_count}/{num_samples} samples for tech '{tech}' (Attempt {attempt_count}) --")
+
+            # 2. Add horizontally flipped sample
+            input_matrix_hflip = np.fliplr(input_matrix)
+            output_matrix_hflip = np.fliplr(output_matrix)
+            new_X_list.append(input_matrix_hflip)
+            new_y_list.append(output_matrix_hflip)
+
+            # 3. Add vertically flipped sample
+            input_matrix_vflip = np.flipud(input_matrix)
+            output_matrix_vflip = np.flipud(output_matrix)
+            new_X_list.append(input_matrix_vflip)
+            new_y_list.append(output_matrix_vflip)
+
+            # 4. Add horizontally AND vertically flipped sample (180 deg rotation)
+            input_matrix_hvflip = np.flipud(np.fliplr(input_matrix))
+            output_matrix_hvflip = np.flipud(np.fliplr(output_matrix))
+            new_X_list.append(input_matrix_hvflip)
+            new_y_list.append(output_matrix_hvflip)
+
+
+            original_generated_count += 1 # Increment count of *original* samples
+            total_samples_in_list = len(new_X_list) # Current total including augmentations
+
+            # Update progress print based on original count
+            if original_generated_count % 1 == 0 or original_generated_count == num_samples:
+                 print(f"-- Generated {original_generated_count}/{num_samples} original samples for tech '{tech}' (Attempt {attempt_count}, Total in list: {total_samples_in_list}) --")
         # --- End Add Sample ---
 
-    # ... (rest of the function: warnings, saving data, etc. - remains the same) ...
-    if generated_count < num_samples:
+    # --- Final Count and Warnings ---
+    final_generated_count = len(new_X_list) # Total samples including augmentations
+    if original_generated_count < num_samples:
         print(
-            f"\nWarning: Only generated {generated_count}/{num_samples} samples after {max_attempts} attempts for tech '{tech}'."
+            f"\nWarning: Only generated {original_generated_count}/{num_samples} *original* samples after {max_attempts} attempts for tech '{tech}'. Final count with augmentation: {final_generated_count}."
         )
 
     if not new_X_list:
         print("No valid samples generated for this batch. Skipping save.")
         return 0, num_output_classes, None
 
+    # --- Convert to NumPy Arrays ---
     new_X_np = np.array(new_X_list, dtype=np.int8)
     new_y_np = np.array(new_y_list, dtype=np.int8)
 
@@ -303,21 +308,25 @@ def generate_training_batch(
         try:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             unique_id = uuid.uuid4().hex[:8]
-            filename = f"data_{ship}_{tech}_{timestamp}_{unique_id}.npz"
+            # Include grid dimensions in filename for clarity
+            filename = f"data_{ship}_{tech}_{grid_width}x{grid_height}_{timestamp}_{unique_id}.npz"
             saved_filepath = os.path.join(output_dir, filename)
-            print(f"Saving {len(new_X_np)} generated samples to {saved_filepath}...")
+            print(f"Saving {len(new_X_np)} generated samples (incl. augmentations) to {saved_filepath}...")
             np.savez_compressed(saved_filepath, X=new_X_np, y=new_y_np)
             print("Save complete.")
         except Exception as e:
             print(f"Error saving data batch: {e}")
-            saved_filepath = None; generated_count = 0
+            saved_filepath = None
+            final_generated_count = 0 # Reset count if save fails
     else:
         print("No data generated in this batch, skipping save.")
+        final_generated_count = 0
 
     elapsed_time_tech = time.time() - start_time_tech
-    print(f"Data generation process finished for tech '{tech}'. Generated: {generated_count}. Time: {elapsed_time_tech:.2f}s")
+    print(f"Data generation process finished for tech '{tech}'. Generated: {final_generated_count} (incl. augmentations). Time: {elapsed_time_tech:.2f}s")
 
-    return generated_count, num_output_classes, saved_filepath
+    # Return the final count including augmentations
+    return final_generated_count, num_output_classes, saved_filepath
 
 
 # --- Main Execution (remains the same) ---
@@ -326,7 +335,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate a batch of training data for NMS Optimizer.")
     parser.add_argument("--category", type=str, required=True, help="Tech category.", metavar="CATEGORY_NAME")
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.", metavar="SHIP_TYPE")
-    parser.add_argument("--samples", type=int, default=64, help="Samples per tech.", metavar="NUM_SAMPLES")
+    parser.add_argument("--samples", type=int, default=64, help="Original samples per tech (before augmentation).", metavar="NUM_SAMPLES") # Clarified help text
     parser.add_argument("--width", type=int, default=4, help="Grid width.", metavar="WIDTH")
     parser.add_argument("--height", type=int, default=3, help="Grid height.", metavar="HEIGHT")
     parser.add_argument("--max_sc", type=int, default=4, help="Max supercharged.", metavar="MAX_SC")
@@ -371,6 +380,7 @@ if __name__ == "__main__":
     total_samples_generated_overall = 0
     for tech in tech_keys_to_process:
         print(f"\n{'='*10} Processing Tech: {tech} {'='*10}")
+        # generate_training_batch now returns the count *including* augmentations
         generated_count, _, _ = generate_training_batch(
             num_samples=config["num_samples_per_tech"], grid_width=config["grid_width"],
             grid_height=config["grid_height"], max_supercharged=config["max_supercharged"],
@@ -381,7 +391,7 @@ if __name__ == "__main__":
 
     end_time_all = time.time()
     print(f"\n{'='*20} Data Batch Generation Complete {'='*20}")
-    print(f"Total samples generated across all techs in this run: {total_samples_generated_overall}")
+    print(f"Total samples generated across all techs (incl. augmentations) in this run: {total_samples_generated_overall}") # Updated message
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     print(f"Generated files saved in: {os.path.abspath(config['output_dir'])}")
 

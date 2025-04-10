@@ -9,6 +9,7 @@ from module_placement import (
     clear_all_modules_of_tech,
 )  # Import from module_placement
 from simulated_annealing import simulated_annealing
+#from ml_placement import ml_placement
 from itertools import permutations
 import random
 import math
@@ -18,8 +19,7 @@ from copy import deepcopy
 from modules import (
     solves,
 )
-from solve_map_utils import filter_solves  # Import the new function
-from sse_events import sse_message
+from solve_map_utils import filter_solves  # Import the new functio
 
 
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
@@ -92,7 +92,6 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
 
 
 # --- Worker Function (Define at top level) ---
-# --- Worker Function (Define at top level) ---
 def _evaluate_permutation_worker(args):
     """
     Worker function to evaluate a single permutation.
@@ -106,7 +105,7 @@ def _evaluate_permutation_worker(args):
     # 2. Create a local copy *inside* the worker for this specific permutation
     # This is crucial: the grid received (original_base_grid) is pickled by multiprocessing,
     # but we need a distinct copy for *each* permutation evaluation within this worker.
-    working_grid = original_base_grid.copy() # Perform the copy here
+    working_grid = original_base_grid.copy()  # Perform the copy here
 
     # 3. Clear the tech modules from the *local copy*
     clear_all_modules_of_tech(working_grid, tech)
@@ -116,33 +115,43 @@ def _evaluate_permutation_worker(args):
         placement_positions = [available_positions[i] for i in placement_indices]
     except IndexError:
         # Log error or handle appropriately
-        print(f"Error: Invalid placement index in worker. Indices: {placement_indices}, Available: {len(available_positions)}")
-        return (-1.0, None) # Indicate error
+        print(
+            f"Error: Invalid placement index in worker. Indices: {placement_indices}, Available: {len(available_positions)}"
+        )
+        return (-1.0, None)  # Indicate error
 
     # 5. Place modules onto the local working_grid
     placement_successful = True
     for index, (x, y) in enumerate(placement_positions):
-        if index >= num_modules_to_place: # Safety check
+        if index >= num_modules_to_place:  # Safety check
             placement_successful = False
             break
         module = tech_modules[index]
         try:
             place_module(
-                working_grid, # Use the local copy
-                x, y, module["id"], module["label"], tech, module["type"],
-                module["bonus"], module["adjacency"], module["sc_eligible"], module["image"]
+                working_grid,  # Use the local copy
+                x,
+                y,
+                module["id"],
+                module["label"],
+                tech,
+                module["type"],
+                module["bonus"],
+                module["adjacency"],
+                module["sc_eligible"],
+                module["image"],
             )
         except IndexError:
             print(f"ERROR: IndexError during place_module at ({x},{y}) in worker. Skipping.")
             placement_successful = False
             break
-        except Exception as e: # Catch other potential errors
+        except Exception as e:  # Catch other potential errors
             print(f"ERROR: Exception during place_module at ({x},{y}) in worker: {e}. Skipping.")
             placement_successful = False
             break
 
     if not placement_successful:
-        return (-1.0, None) # Indicate error or skip
+        return (-1.0, None)  # Indicate error or skip
 
     # 6. Calculate score on the local working_grid
     grid_bonus = calculate_grid_score(working_grid, tech)
@@ -160,7 +169,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     """
     start_time = time.time()
     optimal_grid = None
-    highest_bonus = -1.0 # Use -1 to clearly distinguish from a valid 0 score
+    highest_bonus = -1.0  # Use -1 to clearly distinguish from a valid 0 score
 
     tech_modules = get_tech_modules_for_training(modules, ship, tech)
 
@@ -172,11 +181,15 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         return cleared_grid, 0.0
 
     num_modules_to_place = len(tech_modules)
-    available_positions = [(x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["active"]]
+    available_positions = [
+        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["active"]
+    ]
     num_available = len(available_positions)
 
     if num_available < num_modules_to_place:
-        print(f"Warning: Not enough active slots ({num_available}) for modules ({num_modules_to_place}) for {tech}. Returning cleared grid.")
+        print(
+            f"Warning: Not enough active slots ({num_available}) for modules ({num_modules_to_place}) for {tech}. Returning cleared grid."
+        )
         cleared_grid = grid.copy()
         clear_all_modules_of_tech(cleared_grid, tech)
         return cleared_grid, 0.0
@@ -192,9 +205,13 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     # --- Permutation Info & Worker Setup ---
     try:
         num_permutations = math.perm(num_available, num_modules_to_place)
-        print(f"-- Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> {num_permutations:,} permutations.")
+        print(
+            f"-- Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> {num_permutations:,} permutations."
+        )
     except (ValueError, OverflowError):
-        print(f"-- Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> Large number of permutations.")
+        print(
+            f"-- Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> Large number of permutations."
+        )
         num_permutations = float("inf")
 
     if num_workers is None:
@@ -221,28 +238,28 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     processed_count = 0
 
     # --- Chunksize Calculation (heuristic) ---
-    chunksize = 1000 # Minimum chunksize
+    chunksize = 1000  # Minimum chunksize
     if num_permutations != float("inf"):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
-        chunks_per_worker_target = 500 # Tune this value
+        chunks_per_worker_target = 500  # Tune this value
         calculated_chunksize = num_permutations // (num_workers * chunks_per_worker_target)
         chunksize = max(chunksize, calculated_chunksize)
         # Add an upper limit to prevent huge chunks consuming too much memory at once
-        max_chunksize = 50000 # Tune this based on memory observations
+        max_chunksize = 50000  # Tune this based on memory observations
         chunksize = min(chunksize, max_chunksize)
     # --- End Chunksize Calculation ---
 
     # --- Multiprocessing Pool Execution ---
     print(f"-- Starting parallel evaluation with chunksize={chunksize}...")
     # Add maxtasksperchild: Restarts worker after N tasks to help free memory
-    maxtasks = 2000 # Tune this value (e.g., 1000-10000)
+    maxtasks = 2000  # Tune this value (e.g., 1000-10000)
     print(f"-- Setting maxtasksperchild={maxtasks}")
     with multiprocessing.Pool(processes=num_workers, maxtasksperchild=maxtasks) as pool:
         # imap_unordered is good for performance when order doesn't matter
         results_iterator = pool.imap_unordered(_evaluate_permutation_worker, tasks, chunksize=chunksize)
 
         # Progress reporting frequency
-        update_frequency = max(1, chunksize * num_workers // 4) # Update reasonably often
+        update_frequency = max(1, chunksize * num_workers // 4)  # Update reasonably often
 
         for score, placement_indices in results_iterator:
             processed_count += 1
@@ -256,13 +273,19 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
                 best_placement_indices = placement_indices
 
             # Print progress periodically
-            if processed_count % update_frequency == 0 or (num_permutations != float('inf') and processed_count == num_permutations):
+            if processed_count % update_frequency == 0 or (
+                num_permutations != float("inf") and processed_count == num_permutations
+            ):
                 elapsed = time.time() - start_time
                 progress_percent = (processed_count / num_permutations * 100) if num_permutations != float("inf") else 0
                 # Use \r and flush=True for inline updating
-                print(f"\r-- Processed ~{processed_count // 1000}k permutations. Best: {highest_bonus:.4f} ({elapsed:.1f}s)", end="", flush=True)
+                print(
+                    f"\r-- Processed ~{processed_count // 1000}k permutations. Best: {highest_bonus:.4f} ({elapsed:.1f}s)",
+                    end="",
+                    flush=True,
+                )
 
-    print() # Ensure the next print starts on a new line after progress updates
+    print()  # Ensure the next print starts on a new line after progress updates
 
     end_time = time.time()
     total_time = end_time - start_time
@@ -277,43 +300,62 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         print(f"-- Reconstructing best grid with score: {highest_bonus:.4f}")
         # Start from the original grid structure again for safety
         optimal_grid = grid.copy()
-        clear_all_modules_of_tech(optimal_grid, tech) # Clear only the target tech
+        clear_all_modules_of_tech(optimal_grid, tech)  # Clear only the target tech
         best_positions = [available_positions[i] for i in best_placement_indices]
         reconstruction_successful = True
         for index, (x, y) in enumerate(best_positions):
             # ... (rest of reconstruction logic is the same as your previous version) ...
-            if index >= len(tech_modules): reconstruction_successful = False; break
+            if index >= len(tech_modules):
+                reconstruction_successful = False
+                break
             module = tech_modules[index]
             try:
-                place_module(optimal_grid, x, y, module["id"], module["label"], tech, module["type"], module["bonus"], module["adjacency"], module["sc_eligible"], module["image"])
+                place_module(
+                    optimal_grid,
+                    x,
+                    y,
+                    module["id"],
+                    module["label"],
+                    tech,
+                    module["type"],
+                    module["bonus"],
+                    module["adjacency"],
+                    module["sc_eligible"],
+                    module["image"],
+                )
             except Exception as e:
                 print(f"ERROR during final grid reconstruction at ({x},{y}): {e}")
-                reconstruction_successful = False; break
+                reconstruction_successful = False
+                break
 
         if not reconstruction_successful:
             print("Warning: Final grid reconstruction failed. Returning cleared grid.")
-            optimal_grid = grid.copy(); clear_all_modules_of_tech(optimal_grid, tech); highest_bonus = 0.0
+            optimal_grid = grid.copy()
+            clear_all_modules_of_tech(optimal_grid, tech)
+            highest_bonus = 0.0
         else:
             # Optional score verification
             final_score = calculate_grid_score(optimal_grid, tech)
             if abs(final_score - highest_bonus) > 1e-6:
-                print(f"Warning: Final score ({final_score:.4f}) differs from tracked best ({highest_bonus:.4f}). Using final score.")
+                print(
+                    f"Warning: Final score ({final_score:.4f}) differs from tracked best ({highest_bonus:.4f}). Using final score."
+                )
                 highest_bonus = final_score
 
     # --- Handle No Valid Placement Found ---
-    elif num_modules_to_place > 0: # Check if modules existed but no solution found
+    elif num_modules_to_place > 0:  # Check if modules existed but no solution found
         print(f"Warning: No optimal grid found for {ship}/{tech}. Returning cleared grid.")
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)
-        highest_bonus = 0.0 # Score is 0 for a cleared grid
-    else: # No modules to place initially
+        highest_bonus = 0.0  # Score is 0 for a cleared grid
+    else:  # No modules to place initially
         print(f"-- No modules to place for {ship}/{tech}. Returning cleared grid.")
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)
         highest_bonus = 0.0
     # --- End Handling ---
 
-    print_grid(optimal_grid) # Optional: Print final grid for debugging
+    print_grid_compact(optimal_grid)  # Optional: Print final grid for debugging
 
     return optimal_grid, highest_bonus
 
@@ -484,8 +526,8 @@ def calculate_pattern_adjacency_score(grid, tech):
     Returns:
         int: The adjacency score.
     """
-    module_edge_weight = 2.0  # Weight for adjacency to other modules
-    grid_edge_weight = 1.0  # Weight for adjacency to grid edges
+    module_edge_weight = 3.0  # Weight for adjacency to other modules
+    grid_edge_weight = 0.5  # Weight for adjacency to grid edges
 
     total_adjacency_score = 0
 
@@ -515,13 +557,128 @@ def calculate_pattern_adjacency_score(grid, tech):
     return total_adjacency_score
 
 
-def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, message_queue=None):
+# --- Helper function for ML opportunity refinement ---
+def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y):
+    """Handles the ML-based refinement within an opportunity window."""
+    from ml_placement import ml_placement
+
+    if player_owned_rewards is None:
+        player_owned_rewards = []
+
+    print(f"INFO -- Using ML for opportunity refinement at ({opportunity_x}, {opportunity_y})")
+    # 1. Create localized grid specifically for ML (handles other techs)
+    #    Pass the ORIGINAL grid here to gather localization info.
+    localized_grid_ml, start_x, start_y, original_state_map = create_localized_grid_ml(
+        grid, opportunity_x, opportunity_y, tech
+    )
+
+    # 2. Run ML placement on the localized grid
+    #    Make sure player_owned_rewards is passed correctly!
+    ml_refined_grid, ml_refined_score_local = ml_placement(
+        localized_grid_ml,
+        ship,
+        modules,
+        tech,
+        player_owned_rewards=player_owned_rewards,  # <<< Pass player_owned_rewards
+        # Pass model_dir, model_grid_width, model_grid_height if needed
+    )
+
+    # 3. Process ML result
+    if ml_refined_grid is not None:
+        print(f"INFO -- ML refinement produced a grid. Applying changes...")
+
+        # --- *** Modification Start *** ---
+        # Create the working copy NOW, *after* localization info is gathered
+        # This copy will be modified and potentially returned.
+        grid_copy = grid.copy()
+
+        # Clear ALL modules of the target tech from the *entire* grid copy
+        # This ensures we don't keep modules outside the refinement window.
+        # print(f"DEBUG -- Clearing all '{tech}' modules from the full grid copy before applying ML changes.")
+        clear_all_modules_of_tech(grid_copy, tech)
+        # --- *** Modification End *** ---
+
+        # Apply ML changes (from the small ml_refined_grid) to the cleared grid copy
+        # This places the modules found by ML into the correct positions within the window
+        # on the otherwise empty (for this tech) grid_copy.
+        apply_localized_grid_changes(grid_copy, ml_refined_grid, tech, start_x, start_y)
+
+        # Restore the original state of cells (other techs) that were temporarily removed during localization
+        # Apply restoration to the grid_copy.
+        restore_original_state(grid_copy, original_state_map)
+
+        # Recalculate the score of the *entire* modified grid copy
+        new_score_global = calculate_grid_score(grid_copy, tech)
+        print(f"INFO -- Score after ML refinement and restoration: {new_score_global:.4f}")
+        return grid_copy, new_score_global  # Return the modified grid copy and its new global score
+    else:
+        # Handle ML failure
+        print("INFO -- ML refinement failed or returned None. No changes applied.")
+        # If ML failed, we still need to restore the original state onto a copy
+        # to ensure consistency, especially if create_localized_grid_ml had side effects.
+        grid_copy = grid.copy()  # Create a fresh copy from the original grid
+        restore_original_state(grid_copy, original_state_map)
+        # Return the restored grid and its score (which should be the original score)
+        original_score = calculate_grid_score(grid_copy, tech)  # Recalculate score after restoration
+        print(f"INFO -- Returning grid with original score after failed ML: {original_score:.4f}")
+        # Return the grid_copy (which now matches the original state) and its score
+        return grid_copy, original_score
+
+
+# --- Existing function for SA/Refine opportunity ---
+def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y):
+    """Handles the SA/Refine-based refinement within an opportunity window."""
+    print(f"INFO -- Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y})")
+    # Create a localized grid (preserves other tech modules)
+    localized_grid, start_x, start_y = create_localized_grid(grid, opportunity_x, opportunity_y, tech)
+    clear_all_modules_of_tech(localized_grid, tech) 
+    print_grid(localized_grid)
+
+    # Get the number of modules for the given tech
+    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    num_modules = len(tech_modules) if tech_modules else 0
+
+    # Refine the localized grid
+    if num_modules < 6:
+        print(f"INFO -- {tech} has less than 6 modules, running refine_placement")
+        temp_refined_grid, temp_refined_bonus_local = refine_placement(
+            localized_grid, ship, modules, tech, player_owned_rewards
+        )
+    else:
+        print(f"INFO -- {tech} has 6 or more modules, running simulated_annealing")
+        temp_refined_grid, temp_refined_bonus_local = simulated_annealing(
+            localized_grid, ship, modules, tech, player_owned_rewards
+        )
+
+    # Process SA/Refine result
+    if temp_refined_grid is not None:
+        # Recalculate local score just to be sure
+        temp_refined_bonus_local = calculate_grid_score(temp_refined_grid, tech)
+        #print(f"INFO -- SA/Refine local score: {temp_refined_bonus_local:.4f}")
+        #print_grid_compact(temp_refined_grid)
+
+        # Apply changes back to the main grid copy (grid)
+        apply_localized_grid_changes(grid, temp_refined_grid, tech, start_x, start_y)
+
+        # Calculate the new score of the entire grid
+        new_score_global = calculate_grid_score(grid, tech)
+        print(f"INFO -- Score after SA/Refine refinement: {new_score_global:.4f}")
+        return grid, new_score_global  # Return the modified grid and its new global score
+    else:
+        print("INFO -- SA/Refine refinement failed. No changes applied.")
+        return grid, -1.0  # Indicate failure or no improvement
+
+
+def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, experimental=False):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
     ... (rest of the docstring)
     """
-    print(f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}'")
+    print(
+        f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}' -- Experimental: {experimental}"
+    )  # Log experimental flag
 
+    # ... (initial checks, variable initializations, pattern matching logic remain the same) ...
     if player_owned_rewards is None:
         player_owned_rewards = []
 
@@ -550,6 +707,9 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
     # Filter the solves dictionary based on player-owned rewards
     filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
 
+    solve_score = 0  # Initialize solve_score
+    pattern_applied = False  # Initialize pattern_applied
+
     # --- Special Case: No Solve Available ---
     if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
         print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
@@ -557,28 +717,22 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
         pattern_applied = True
-        return solved_grid, solved_bonus, 1  # Add this line to exit early
-
+        return solved_grid, solved_bonus, 1 
+    
+    # --- Pattern Matching Logic ---
     else:
-        pattern_applied = False
+        # This block executes only if a solve map exists in filtered_solves
         solve_data = filtered_solves[ship][tech]
         original_pattern = solve_data["map"]
-        solve_score = solve_data["score"]
+        solve_score = solve_data["score"]  # Get the official solve score
 
-        # Generate all unique pattern variations
         patterns_to_try = get_all_unique_pattern_variations(original_pattern)
 
-        # Create a temporary grid outside the pattern loop
         grid_dict = grid.to_dict()
-        if grid_dict is None:
-            print("Error: grid.to_dict() returned None")
-            return best_grid, best_bonus
         temp_grid = Grid.from_dict(grid_dict)
-        if temp_grid is None:
-            print("Error: Grid.from_dict() returned None")
-            return best_grid, best_bonus
 
         for pattern in patterns_to_try:
+            # ... (pattern dimension calculation) ...
             x_coords = [coord[0] for coord in pattern.keys()]
             y_coords = [coord[1] for coord in pattern.keys()]
             if not x_coords or not y_coords:
@@ -586,19 +740,10 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             pattern_width = max(x_coords) + 1
             pattern_height = max(y_coords) + 1
 
-            # Try placing the pattern in all possible positions
             for start_x in range(grid.width - pattern_width + 1):
                 for start_y in range(grid.height - pattern_height + 1):
-                    # Apply the pattern to the persistent temp_grid
                     temp_result_grid, adjacency_score = apply_pattern_to_grid(
-                        temp_grid,
-                        pattern,
-                        modules,
-                        tech,
-                        start_x,
-                        start_y,
-                        ship,
-                        player_owned_rewards,
+                        temp_grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards
                     )
                     if temp_result_grid is not None:
                         current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
@@ -614,85 +759,100 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
 
-        # Reset temp_grid for the next pattern
-        temp_grid = Grid.from_dict(grid_dict)
+            # Reset temp_grid for the next pattern variation if needed (or manage copies carefully)
+            temp_grid = Grid.from_dict(grid_dict)  # Resetting here
 
-        if best_pattern_grid:
-            # Initialize solved_grid with best_pattern_grid
-            solved_grid = best_pattern_grid
-            # solved_bonus = highest_pattern_bonus
-            solved_bonus = calculate_grid_score(solved_grid, tech)
-            print(f"INFO -- Best pattern score: {solved_bonus} for ship: '{ship}' -- tech: '{tech}' that fits.")
+        if highest_pattern_bonus > -float("inf"):  # Check if any pattern was successfully applied
+            solved_grid = best_pattern_grid  # Use the best pattern found
+            solved_bonus = highest_pattern_bonus  # Use the score of the best pattern
+            print(
+                f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}' that fits."
+            )
             pattern_applied = True
         else:
             print(
-                f"WARNING -- No best pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to simulated_annealing."
+                f"WARNING -- No pattern definition found for ship: '{ship}' -- tech: '{tech}' that fits. Falling back to simulated_annealing."
             )
+            # Fallback to SA if no pattern fits
+            solved_grid = grid.copy()
+            clear_all_modules_of_tech(solved_grid, tech)
+            solved_grid, solved_bonus = simulated_annealing(solved_grid, ship, modules, tech, player_owned_rewards)
+            if solved_grid is None:
+                raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
+            print(f"INFO -- Fallback SA score: {solved_bonus:.4f}")
+            pattern_applied = False  # Explicitly mark that pattern wasn't the final result
 
-    # --- 1. Supercharged Opportunity Refinement (Moved to the Beginning) ---
-    opportunity = find_supercharged_opportunities(solved_grid, modules, ship, tech)
+    # --- Opportunity Refinement ---
+    # Make a copy of the current best grid (either from pattern or fallback SA) to refine
+    grid_to_refine = solved_grid.copy()
+    current_best_score = calculate_grid_score(grid_to_refine, tech)  # Get the score *before* refinement
+
+    opportunity = find_supercharged_opportunities(grid_to_refine, modules, ship, tech)
 
     if opportunity:
         print(f"INFO -- Found opportunity: {opportunity}")
-        # Create a localized grid
         opportunity_x, opportunity_y = opportunity
 
-        # Deep copy solved_grid before clearing and creating localized grid
-        temp_solved_grid = deepcopy(solved_grid)
-        clear_all_modules_of_tech(temp_solved_grid, tech)
-        localized_grid, start_x, start_y = create_localized_grid(temp_solved_grid, opportunity_x, opportunity_y, tech)
-
-        # Refine the localized grid - Surround with id statement
-        print_grid(localized_grid)
-
-        # Get the number of modules for the given tech
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
-        num_modules = len(tech_modules) if tech_modules else 0
-
-        if num_modules < 6:
-            print(f"INFO -- {tech} has less than 6 modules, running refine_placement")
-            temp_refined_grid, temp_refined_bonus = refine_placement(
-                localized_grid, ship, modules, tech, player_owned_rewards
+        # --- Branch based on experimental flag ---
+        if experimental:
+            # --- Use ML Refinement ---
+            refined_grid_candidate, refined_score_global = _handle_ml_opportunity(
+                grid_to_refine.copy(),  # Pass a copy to the handler
+                modules,
+                ship,
+                tech,
+                player_owned_rewards,
+                opportunity_x,
+                opportunity_y,
             )
+            print_grid_compact(refined_grid_candidate)
         else:
-            print(f"INFO -- {tech} has 6 or more modules, running simulated_annealing")
-            temp_refined_grid, temp_refined_bonus = simulated_annealing(
-                localized_grid, ship, modules, tech, player_owned_rewards
+            # --- Use SA/Refine Refinement ---
+            refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
+                grid_to_refine.copy(),  # Pass a copy to the handler
+                modules,
+                ship,
+                tech,
+                player_owned_rewards,
+                opportunity_x,
+                opportunity_y,
             )
 
-        temp_refined_bonus = calculate_grid_score(temp_refined_grid, tech)  # Recalculate score after annealing
-
-        if temp_refined_grid is not None:
-            print(f"INFO -- Refined grid score: {temp_refined_bonus}")
-            print_grid(temp_refined_grid)
-            # Apply changes to temp_solved_grid
-            apply_localized_grid_changes(temp_solved_grid, temp_refined_grid, tech, start_x, start_y)
-            # Calculate the new score of the entire grid
-            new_solved_bonus = calculate_grid_score(temp_solved_grid, tech)
-            # Compare bonuses and apply changes if the refined bonus is higher
-
-            if new_solved_bonus > solved_bonus:
-                # if new_solved_bonus > solved_bonus:
-                # Copy temp_solved_grid to solved_grid
-                solved_grid = temp_solved_grid.copy()
-                print(f"INFO -- Better refined grid found for ship: '{ship}' -- tech: '{tech}'")
-                solved_bonus = new_solved_bonus
-            else:
-                print(
-                    f"INFO -- Refined grid did not improve the score. Solved Bonus: {solved_bonus} vs Refined Bonus: {temp_refined_bonus}"
-                )
+        # --- Compare and Update ---
+        if refined_grid_candidate is not None and refined_score_global > (current_best_score * 0.9):
+            print(
+                f"INFO -- Opportunity refinement improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
+            )
+            solved_grid = refined_grid_candidate  # Update solved_grid with the better one
+            solved_bonus = refined_score_global  # Update the score
+        elif refined_grid_candidate is not None:
+            print(
+                f"INFO -- Opportunity refinement did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f}). Keeping previous best."
+            )
+            # solved_grid and solved_bonus remain unchanged
         else:
-            print("INFO -- Opportunity refinement failed. Not enough space to apply the opportunity.")
+            print("INFO -- Opportunity refinement failed. Keeping previous best.")
+            # solved_grid and solved_bonus remain unchanged
 
-    # --- 3. Simulated Annealing (Fallback, Moved to the End) ---
-    if not pattern_applied:
+    else:
+        print("INFO -- No supercharged opportunity found for refinement.")
+        # solved_grid and solved_bonus remain unchanged from pattern/fallback SA
+
+    # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
+    # Check if all modules were placed after pattern matching and potential refinement
+    all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
+
+    if not all_modules_placed:
         print(
-            f"WARNING -- No pattern was applied for ship: '{ship}' -- tech: '{tech}'. Falling back to simulated annealing."
+            f"WARNING! -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running final simulated_annealing solver."
         )
-        solved_grid = Grid.from_dict(grid.to_dict())
-        clear_all_modules_of_tech(solved_grid, tech)
+
+        # Start SA from the current state of solved_grid, but clear the tech first
+        grid_for_final_sa = solved_grid.copy()
+        clear_all_modules_of_tech(grid_for_final_sa, tech)
+
         temp_solved_grid, temp_solved_bonus = simulated_annealing(
-            solved_grid,
+            grid_for_final_sa,
             ship,
             modules,
             tech,
@@ -703,66 +863,45 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, mes
             initial_swap_probability=0.40,
             final_swap_probability=0.3,
         )
+
         if temp_solved_grid is not None:
-            solved_grid = temp_solved_grid
-            solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
+            # Recalculate score after final SA
+            final_sa_score = calculate_grid_score(temp_solved_grid, tech)
+            # Only update if the final SA score is better than the current solved_bonus
+            # This prevents overwriting a potentially good partial pattern result with a worse full SA result
+            if final_sa_score > solved_bonus:
+                print(f"INFO -- Final SA improved score from {solved_bonus:.4f} to {final_sa_score:.4f}")
+                solved_grid = temp_solved_grid
+                solved_bonus = final_sa_score
+            else:
+                print(
+                    f"INFO -- Final SA did not improve score ({final_sa_score:.4f} vs {solved_bonus:.4f}). Keeping previous best."
+                )
         else:
+            # This case should be rare if SA is robust, but handle it
             print(
-                f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
+                f"ERROR -- Final simulated_annealing solver failed for ship: '{ship}' -- tech: '{tech}'. Returning previous best grid."
             )
-            raise ValueError(
-                f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
+            # Keep the existing solved_grid and solved_bonus
 
-    # Check if all modules were placed - Only if a pattern was applied
-    all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
+    # --- Final Result Calculation ---
+    # solved_bonus should now hold the best score achieved through the entire process
+    best_grid = solved_grid
+    best_bonus = solved_bonus
 
-    if not all_modules_placed:
-        print(
-            f"WARNING! -- Not all modules were placed in grid for ship: '{ship}' -- tech: '{tech}'. Running simulated_annealing solver."
-        )
-
-        clear_all_modules_of_tech(solved_grid, tech)
-        temp_solved_grid, temp_solved_bonus = simulated_annealing(
-            solved_grid,
-            ship,
-            modules,
-            tech,
-            player_owned_rewards,
-            initial_temperature=2000,
-            cooling_rate=0.98,
-            iterations_per_temp=20,
-        )
-        if temp_solved_grid is not None:
-            solved_grid = temp_solved_grid
-            solved_bonus = calculate_grid_score(solved_grid, tech)  # Recalculate score after annealing
-        else:
-            print(
-                f"ERROR -- simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
-            raise ValueError(
-                f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-            )
-
-    # Recalculate solved_bonus after applying the pattern or falling back to simulated_annealing
-    solved_bonus = calculate_grid_score(solved_grid, tech)
-
-    # Calculate the percentage of the solve score achieved
+    # Calculate the percentage of the official solve score achieved
     if solve_score > 0:
-        percentage = (solved_bonus / solve_score) * 100  # Use solved_bonus
+        percentage = (best_bonus / solve_score) * 100
     else:
-        percentage = 0
+        # Handle cases where solve_score is 0 (e.g., no official solve map, or map score is 0)
+        percentage = 100.0 if best_bonus > 0 else 0.0  # Or another appropriate value
 
-    if solved_grid is not None:
-        best_grid = solved_grid
-        best_bonus = solved_bonus
-        print(
-            f"SUCCESS -- Percentage of Solve Score Achieved: {percentage:.2f}% (Current Score: {best_bonus:.2f}, Adjacency Score: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}'"
-        )
-    else:
-        print(f"ERROR -- No valid grid could be generated for ship: '{ship}' -- tech: '{tech}'")
+    print(
+        f"SUCCESS -- Final Score: {best_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) for ship: '{ship}' -- tech: '{tech}'"
+    )
+    print_grid_compact(best_grid)  # Print the final best grid
 
-    return best_grid, percentage, solved_bonus
+    return best_grid, percentage, best_bonus  # Return the final best grid and score
 
 
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
@@ -997,6 +1136,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
 
     return localized_grid, start_x, start_y
 
+
 # --- NEW ML-Specific Function ---
 def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
     """
@@ -1043,7 +1183,7 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
 
     # Create the localized grid with the adjusted size
     localized_grid = Grid(actual_localized_width, actual_localized_height)
-    original_state_map = {} # To store original state of modified cells
+    original_state_map = {}  # To store original state of modified cells
 
     # Copy the grid structure and module data, modifying for other techs
     for y_main in range(start_y, end_y):
@@ -1075,14 +1215,14 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
                 local_cell["total"] = 0.0
                 local_cell["adjacency_bonus"] = 0.0
                 if "module_position" in local_cell:
-                    del local_cell["module_position"] # Or set to None
+                    del local_cell["module_position"]  # Or set to None
 
                 # 3. Mark the local cell as inactive
                 local_cell["active"] = False
 
             elif not main_cell["active"]:
-                 # --- Inactive Cell in Main Grid ---
-                 # Keep it inactive in the local grid and ensure module info is cleared
+                # --- Inactive Cell in Main Grid ---
+                # Keep it inactive in the local grid and ensure module info is cleared
                 local_cell["active"] = False
                 local_cell["module"] = None
                 local_cell["label"] = ""
@@ -1105,8 +1245,8 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
                 # Ensure 'active' is explicitly True if copied from an active main cell
                 local_cell["active"] = True
 
-
     return localized_grid, start_x, start_y, original_state_map
+
 
 # --- Restoration Function (Keep as is from previous response) ---
 def restore_original_state(grid, original_state_map):
@@ -1121,7 +1261,7 @@ def restore_original_state(grid, original_state_map):
                                    create_localized_grid_ml.
     """
     if not original_state_map:
-        return # Nothing to restore
+        return  # Nothing to restore
 
     print(f"INFO -- Restoring original state for {len(original_state_map)} cells.")
     for (x, y), original_cell_data in original_state_map.items():

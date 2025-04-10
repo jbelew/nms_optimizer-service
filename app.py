@@ -1,7 +1,8 @@
 # app.py
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from optimizer import optimize_placement, get_tech_tree_json, Grid
+from optimization_algorithms import optimize_placement # Import directly from optimization_algorithms
+from optimizer import get_tech_tree_json, Grid # Keep these imports from optimizer
 from modules import modules
 from grid_display import print_grid_compact
 import logging
@@ -10,7 +11,6 @@ logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
-
 
 @app.route("/optimize", methods=["POST"])
 def optimize_grid():

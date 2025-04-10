@@ -295,11 +295,11 @@ if __name__ == "__main__":
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
     parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
     parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
-    parser.add_argument("--lr", type=float, default=0.0005, help="Learning rate.")  # Adjusted default LR
+    parser.add_argument("--lr", type=float, default=1e-3, help="Learning rate.")  # Adjusted default LR
     parser.add_argument(
-        "--wd", type=float, default=1e-5, help="Weight decay (L2 regularization)."
+        "--wd", type=float, default=1e-3, help="Weight decay (L2 regularization)."
     )  # Added weight decay arg
-    parser.add_argument("--epochs", type=int, default=75, help="Number of training epochs.")  # Adjusted default epochs
+    parser.add_argument("--epochs", type=int, default=96, help="Number of training epochs.")  # Adjusted default epochs
     parser.add_argument(
         "--batch_size", type=int, default=64, help="Training batch size."
     )  # Adjusted default batch size
