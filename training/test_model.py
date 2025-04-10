@@ -195,6 +195,11 @@ def test_placement_model(
         module_data = tech_module_defs_map.get(module_id)
         if module_data:
             try:
+                
+                # --->>> ADD OR UNCOMMENT THIS LINE <<<---
+                print(f"Placing {module_id} at ({x},{y}) with confidence {placement['score']:.4f}")
+                # --->>> END ADDITION <<<---
+                
                 place_module(
                     output_grid,
                     x,
@@ -274,7 +279,7 @@ if __name__ == "__main__":
         "model_trained_grid_width": 4,  # Grid width the model was trained on
         "model_trained_grid_height": 3,  # Grid height the model was trained on
         "max_test_inactive": 0,  # Max inactive cells for the random test input
-        "max_test_supercharged": 0,  # Max supercharged cells for the random test input
+        "max_test_supercharged": 4,  # Max supercharged cells for the random test input
         "use_compact_print": False,  # Use compact grid printing format?
         "model_dir": "trained_models",  # Relative path to model directory
     }

@@ -241,7 +241,7 @@ def generate_training_batch(
                 else:
                     optimized_grid, best_bonus = simulated_annealing(
                         original_grid_layout, ship, modules, tech,
-                        player_owned_rewards=None, initial_temperature=4000,
+                        player_owned_rewards=["PC"], initial_temperature=4000,
                         cooling_rate=0.997, stopping_temperature=1.0,
                         iterations_per_temp=50, initial_swap_probability=0.55,
                         final_swap_probability=0.4,
