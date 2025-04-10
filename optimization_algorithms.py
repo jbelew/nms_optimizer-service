@@ -9,7 +9,8 @@ from module_placement import (
     clear_all_modules_of_tech,
 )  # Import from module_placement
 from simulated_annealing import simulated_annealing
-#from ml_placement import ml_placement
+
+# from ml_placement import ml_placement
 from itertools import permutations
 import random
 import math
@@ -631,7 +632,7 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
     print(f"INFO -- Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y})")
     # Create a localized grid (preserves other tech modules)
     localized_grid, start_x, start_y = create_localized_grid(grid, opportunity_x, opportunity_y, tech)
-    clear_all_modules_of_tech(localized_grid, tech) 
+    clear_all_modules_of_tech(localized_grid, tech)
     print_grid(localized_grid)
 
     # Get the number of modules for the given tech
@@ -654,8 +655,8 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
     if temp_refined_grid is not None:
         # Recalculate local score just to be sure
         temp_refined_bonus_local = calculate_grid_score(temp_refined_grid, tech)
-        #print(f"INFO -- SA/Refine local score: {temp_refined_bonus_local:.4f}")
-        #print_grid_compact(temp_refined_grid)
+        # print(f"INFO -- SA/Refine local score: {temp_refined_bonus_local:.4f}")
+        # print_grid_compact(temp_refined_grid)
 
         # Apply changes back to the main grid copy (grid)
         apply_localized_grid_changes(grid, temp_refined_grid, tech, start_x, start_y)
@@ -717,8 +718,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
         pattern_applied = True
-        return solved_grid, solved_bonus, 1 
-    
+        return solved_grid, solved_bonus, 1
+
     # --- Pattern Matching Logic ---
     else:
         # This block executes only if a solve map exists in filtered_solves
@@ -776,7 +777,18 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             # Fallback to SA if no pattern fits
             solved_grid = grid.copy()
             clear_all_modules_of_tech(solved_grid, tech)
-            solved_grid, solved_bonus = simulated_annealing(solved_grid, ship, modules, tech, player_owned_rewards)
+            solved_grid, solved_bonus = simulated_annealing(
+                solved_grid,
+                ship,
+                modules,
+                tech,
+                player_owned_rewards,
+                initial_temperature=4000,
+                cooling_rate=0.98,
+                iterations_per_temp=30,
+                initial_swap_probability=0.40,
+                final_swap_probability=0.3,
+            )
             if solved_grid is None:
                 raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
             print(f"INFO -- Fallback SA score: {solved_bonus:.4f}")
