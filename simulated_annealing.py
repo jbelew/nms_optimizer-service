@@ -149,7 +149,7 @@ def simulated_annealing(
             f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
         )
 
-    print_grid(best_grid)
+    # print_grid(best_grid)
     return best_grid, best_score
 
 
