@@ -769,6 +769,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             print(
                 f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}' that fits."
             )
+            print_grid_compact(solved_grid)
             pattern_applied = True
         else:
             print(
@@ -831,7 +832,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             )
 
         # --- Compare and Update ---
-        if refined_grid_candidate is not None and refined_score_global > (current_best_score * 0.9):
+        if refined_grid_candidate is not None and refined_score_global > current_best_score:
             print(
                 f"INFO -- Opportunity refinement improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
             )
