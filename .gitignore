@@ -8,3 +8,4 @@ venv/
 .env/
 new_solves.json
 runs_placement_only/
+runs_early_stopping/

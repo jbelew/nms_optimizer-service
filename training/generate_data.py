@@ -221,8 +221,8 @@ def generate_training_batch(
                     optimized_grid, best_bonus = simulated_annealing(
                         original_grid_layout, ship, modules, tech,
                         player_owned_rewards=["PC"], # Example, adjust if needed
-                        initial_temperature=4000, cooling_rate=0.997,
-                        stopping_temperature=1.0, iterations_per_temp=50,
+                        initial_temperature=4000, cooling_rate=0.995,
+                        stopping_temperature=1.5, iterations_per_temp=40,
                         initial_swap_probability=0.55, final_swap_probability=0.4,
                     )
                 if optimized_grid is None: sample_valid = False
@@ -234,6 +234,7 @@ def generate_training_batch(
                 sample_valid = False
 
             if sample_valid and optimized_grid is not None:
+                print_grid(optimized_grid)
                 for y in range(grid_height):
                     for x in range(grid_width):
                         if not original_grid_layout.get_cell(x, y)["active"]:
