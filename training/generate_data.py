@@ -133,7 +133,7 @@ def generate_training_batch(
 
         # --- Add Inactive/Supercharged Cells (same as before) ---
         inactive_positions = []
-        if random.random() < 0.5:
+        if random.random() < 0.10:
             num_inactive = random.randint(0, min(max_inactive_cells, total_cells))
             if num_inactive > 0:
                 if num_inactive <= len(all_positions):
