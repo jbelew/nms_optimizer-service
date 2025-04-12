@@ -356,8 +356,6 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         highest_bonus = 0.0
     # --- End Handling ---
 
-    print_grid_compact(optimal_grid)  # Optional: Print final grid for debugging
-
     return optimal_grid, highest_bonus
 
 
