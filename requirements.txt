@@ -46,7 +46,6 @@ pandocfilters==1.5.1
 parso==0.8.4
 pexpect==4.9.0
 pickleshare==0.7.5
-pipreqs==0.5.0
 platformdirs==4.3.7
 prompt_toolkit==3.0.50
 protobuf==6.30.2
