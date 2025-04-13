@@ -473,7 +473,8 @@ def run_training_from_files(
         tech_model_save_dir = os.path.join(base_model_save_dir, ship, tech)
         # <<< Use tech_model_save_dir for the path >>>
         model_filename = f"model_{ship}_{tech}.pth"
-        model_save_path = os.path.join(tech_model_save_dir, model_filename)
+        model_save_path = os.path.join(base_model_save_dir, model_filename) # Save directly in base_model_save_dir
+
 
         can_early_stop = val_loader is not None
         effective_patience = early_stopping_patience if can_early_stop else num_epochs
@@ -566,5 +567,5 @@ if __name__ == "__main__":
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     # <<< Updated final message >>>
-    print(f"Best models saved in subdirectories under: {os.path.abspath(config['base_model_save_dir'])}")
+    print(f"Best models saved directly in: {os.path.abspath(config['base_model_save_dir'])}")
 

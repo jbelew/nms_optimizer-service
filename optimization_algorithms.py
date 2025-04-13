@@ -830,7 +830,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             )
 
         # --- Compare and Update OR Fallback to SA (if experimental) ---
-        if refined_grid_candidate is not None and refined_score_global > current_best_score:
+        if refined_grid_candidate is not None and refined_score_global >= current_best_score:
             print(
                 f"INFO -- Opportunity refinement improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
             )
