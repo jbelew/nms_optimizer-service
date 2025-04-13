@@ -117,7 +117,7 @@ def train_model(
     ).to(device)
     criterion_placement = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    scheduler = StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
+    #scheduler = StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
 
     os.makedirs(os.path.dirname(model_save_path), exist_ok=True)  # Ensure save directory exists
     os.makedirs(log_dir, exist_ok=True)
@@ -294,7 +294,7 @@ def train_model(
                 break  # Exit the training loop
         # --- End Early Stopping Check ---
 
-        scheduler.step()
+        #scheduler.step()
 
     if not early_stop_triggered:
         print(f"Finished Training for {num_epochs} epochs.")

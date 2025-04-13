@@ -631,7 +631,7 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
     clear_all_modules_of_tech(grid, tech)
     # Create a localized grid (preserves other tech modules)
     localized_grid, start_x, start_y = create_localized_grid(grid, opportunity_x, opportunity_y, tech)
-    print_grid(localized_grid)
+    # print_grid(localized_grid)
 
     # Get the number of modules for the given tech
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
@@ -829,21 +829,60 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 opportunity_y,
             )
 
-        # --- Compare and Update ---
+        # --- Compare and Update OR Fallback to SA (if experimental) ---
         if refined_grid_candidate is not None and refined_score_global > current_best_score:
             print(
                 f"INFO -- Opportunity refinement improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
             )
             solved_grid = refined_grid_candidate  # Update solved_grid with the better one
             solved_bonus = refined_score_global  # Update the score
-        elif refined_grid_candidate is not None:
-            print(
-                f"INFO -- Opportunity refinement did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f}). Keeping previous best."
-            )
-            # solved_grid and solved_bonus remain unchanged
         else:
-            print("INFO -- Opportunity refinement failed. Keeping previous best.")
-            # solved_grid and solved_bonus remain unchanged
+            # --- Refinement Failed or Did Not Improve ---
+            if refined_grid_candidate is not None:
+                 print(
+                     f"INFO -- Opportunity refinement did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f})."
+                 )
+            else:
+                 print("INFO -- Opportunity refinement failed.")
+
+            # --- Fallback to Simulated Annealing ONLY IF experimental is True ---
+            if experimental:
+                print("INFO -- Experimental flag is True, attempting fallback Simulated Annealing.")
+                # Run SA on the grid state *before* the failed/unimproved refinement attempt
+                grid_for_sa_fallback = grid_to_refine.copy() # Use the grid before refinement
+                clear_all_modules_of_tech(grid_for_sa_fallback, tech) # Clear before SA
+
+                sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
+                    grid_for_sa_fallback.copy(),
+                    modules,
+                    ship,
+                    tech,
+                    player_owned_rewards,
+                    opportunity_x,
+                    opportunity_y,
+                    # You might want slightly different SA params for this fallback
+                    # initial_temperature=3000,
+                    # cooling_rate=0.99,
+                    # iterations_per_temp=35,
+                    # initial_swap_probability=0.50,
+                    # final_swap_probability=0.35,
+                )
+
+                if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
+                    print(f"INFO -- Fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
+                    solved_grid = sa_fallback_grid
+                    solved_bonus = sa_fallback_bonus
+                elif sa_fallback_grid is not None:
+                    print_grid_compact(sa_fallback_grid)
+                    print(f"INFO -- Fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best.")
+                    # solved_grid and solved_bonus remain unchanged (from before refinement attempt)
+                else:
+                     print(f"ERROR -- Fallback Simulated Annealing failed after opportunity refinement. Keeping previous best.")
+                     # solved_grid and solved_bonus remain unchanged
+            else:
+                # Experimental is False, so don't run fallback SA
+                print("INFO -- Experimental flag is False, keeping previous best grid without fallback SA.")
+                # solved_grid and solved_bonus remain unchanged (from before refinement attempt)
 
     else:
         print("INFO -- No supercharged opportunity found for refinement.")

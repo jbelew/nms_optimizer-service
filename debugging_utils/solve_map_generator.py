@@ -23,7 +23,7 @@ def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=N
         supercharged_positions (list, optional): List of (x, y) tuples for supercharged cells. Defaults to None.
     """
     if player_owned_rewards is None:
-        player_owned_rewards = ["PC", "SB", "SP", "TT"]
+        player_owned_rewards = ["PC", "SB", "SP", "TT", "RL", "PR"]
 
     grid = Grid(width=grid_width, height=grid_height)
 
@@ -34,7 +34,7 @@ def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=N
                 grid.set_supercharged(x, y, True)
 
     try:
-        optimized_grid, optimized_score = refine_placement(grid, "standard", modules, tech, player_owned_rewards)
+        optimized_grid, optimized_score = refine_placement(grid, "multitool", modules, tech, player_owned_rewards)
         print_grid(optimized_grid)
         return optimized_grid, optimized_score
     except Exception as e:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "--rewards",
         type=str,
         nargs="*",
-        default=["PC", "SB", "SP", "TT"],
+        default=["PC", "SB", "SP", "TT", "PR", "RL", "SH", "RA", "SM"],
         help="List of player-owned reward module IDs",
     )
     parser.add_argument(
