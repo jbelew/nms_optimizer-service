@@ -14,11 +14,9 @@ if project_root not in sys.path:
 # --- End Add project root ---
 
 # --- Imports from your project ---
-# <<< Ensure Grid is imported correctly >>>
 try:
     from optimizer import Grid
 except ImportError:
-    # Fallback if Grid is in grid_utils.py and optimizer.py causes issues
     from grid_utils import Grid
 
 from modules_data import get_tech_modules_for_training
@@ -45,11 +43,11 @@ def generate_training_batch(
     max_inactive_cells,
     ship,
     tech,
-    output_dir,
+    base_output_dir, # <<< Renamed for clarity
     solve_map_prob=0.0,
 ):
     """
-    Generates a batch of training data (including inactive mask) and saves it.
+    Generates a batch of training data and saves it into ship/tech subdirectories.
     Optionally uses pre-defined solve maps variations. Includes mirrored data augmentation.
 
     Args:
@@ -60,7 +58,7 @@ def generate_training_batch(
         max_inactive_cells (int): Maximum number of inactive cells to add.
         ship (str): Ship type key.
         tech (str): Technology key.
-        output_dir (str): Directory to save the generated .npz file.
+        base_output_dir (str): Base directory to save the generated .npz file (e.g., 'generated_batches').
         solve_map_prob (float): Probability (0.0-1.0) of using a pre-defined solve map variation.
 
     Returns:
@@ -68,6 +66,10 @@ def generate_training_batch(
                generated_count reflects total count including augmentations.
     """
     start_time_tech = time.time()
+
+    # --- Construct specific output directory ---
+    tech_output_dir = os.path.join(base_output_dir, ship, tech)
+    # --- End Construct specific output directory ---
 
     # --- 1. Generate Samples ---
     new_X_supercharge_list = []
@@ -84,25 +86,21 @@ def generate_training_batch(
     num_output_classes = len(tech_modules) + 1
 
     # --- Check if Solve Map Exists and Generate Variations ---
-    # <<< FIX: Define solve_map_exists and generate variations conditionally >>>
     solve_map_exists = False
     solve_map_variations = []
     if ship in solves and tech in solves[ship]:
         original_pattern = solves[ship][tech].get("map")
-        if original_pattern: # Check if the map itself is not empty/None
+        if original_pattern:
             solve_map_exists = True
-            # Generate variations only if the map exists
             solve_map_variations = get_all_unique_pattern_variations(original_pattern)
-            if not solve_map_variations: # Handle case where variations might be empty
+            if not solve_map_variations:
                  print(f"Warning: Solve map exists for {ship}/{tech}, but generated no variations.")
-                 solve_map_exists = False # Treat as non-existent if no variations
-            # else:
-            #     print(f"DEBUG: Generated {len(solve_map_variations)} variations for {ship}/{tech}") # Optional debug
+                 solve_map_exists = False
     # --- End Solve Map Check ---
 
     original_generated_count = 0
     attempt_count = 0
-    max_attempts = num_samples * 15 + 100 # Increased attempts
+    max_attempts = num_samples * 15 + 100
 
     total_cells = grid_width * grid_height
     all_positions = [(x, y) for y in range(grid_height) for x in range(grid_width)]
@@ -110,16 +108,17 @@ def generate_training_batch(
     while original_generated_count < num_samples and attempt_count < max_attempts:
         attempt_count += 1
         original_grid_layout = Grid(grid_width, grid_height)
-        inactive_positions_set = set() # Use a set for faster lookup
+        inactive_positions_set = set()
 
         # --- Add Inactive/Supercharged Cells ---
         inactive_positions = []
-        if random.random() < 0.10: # Probability of adding inactive cells
+        if random.random() < 0.10:
+            print("INFO -- Adding inactive cells")
             num_inactive = random.randint(0, min(max_inactive_cells, total_cells))
             if num_inactive > 0:
                 if num_inactive <= len(all_positions):
                     inactive_positions = random.sample(all_positions, num_inactive)
-                    inactive_positions_set = set(inactive_positions) # Store in set
+                    inactive_positions_set = set(inactive_positions)
                     for x, y in inactive_positions:
                         original_grid_layout.set_active(x, y, False)
                 else:
@@ -129,20 +128,19 @@ def generate_training_batch(
 
         active_positions = [pos for pos in all_positions if pos not in inactive_positions_set]
         num_active_cells = len(active_positions)
-        if num_active_cells == 0: continue # Skip if no active cells
+        if num_active_cells == 0: continue
 
-        supercharged_positions_set = set() # Store supercharged positions
+        supercharged_positions_set = set()
         max_possible_supercharged = min(max_supercharged, num_active_cells)
         num_supercharged = random.randint(0, max_possible_supercharged)
         if num_supercharged > 0:
             supercharged_positions = random.sample(active_positions, num_supercharged)
-            supercharged_positions_set = set(supercharged_positions) # Store in set
+            supercharged_positions_set = set(supercharged_positions)
             for x, y in supercharged_positions:
                 original_grid_layout.set_supercharged(x, y, True)
         # --- End Add Cells ---
 
         # --- Decide: Use Solve Map Variation or Optimize ---
-        # <<< FIX: Now solve_map_exists is defined >>>
         use_solve_map = solve_map_exists and random.random() < solve_map_prob
 
         # --- Create Input and Output Matrices ---
@@ -162,16 +160,14 @@ def generate_training_batch(
 
         # Create Output Matrix
         if use_solve_map:
-            # <<< FIX: Check if solve_map_variations is actually populated >>>
             if not solve_map_variations:
                  print(f"ERROR: Trying to use solve map for {ship}/{tech}, but variations list is empty. Skipping sample.")
                  sample_valid = False
-                 continue # Skip to next attempt
+                 continue
 
             current_pattern_data = random.choice(solve_map_variations)
             for y in range(grid_height):
                 for x in range(grid_width):
-                    # Check active status based on the initially generated layout
                     if not original_grid_layout.get_cell(x, y)["active"]:
                         output_matrix[y, x] = 0
                         continue
@@ -190,12 +186,10 @@ def generate_training_batch(
             optimized_grid = None
             try:
                 num_modules_for_tech = len(tech_modules)
-                # Use refine_placement_for_training for fewer modules (faster, exact)
                 if num_modules_for_tech < 7:
                     optimized_grid, best_bonus = refine_placement_for_training(
                         original_grid_layout, ship, modules, tech
                     )
-                # Use simulated_annealing for more modules (heuristic, faster than brute force)
                 else:
                     optimized_grid, best_bonus = simulated_annealing(
                         original_grid_layout, ship, modules, tech,
@@ -216,7 +210,6 @@ def generate_training_batch(
                 print_grid(optimized_grid) # Optional: uncomment for debugging
                 for y in range(grid_height):
                     for x in range(grid_width):
-                        # Check active status based on the initially generated layout
                         if not original_grid_layout.get_cell(x, y)["active"]:
                              output_matrix[y, x] = 0; continue
                         cell_data = optimized_grid.get_cell(x, y)
@@ -231,14 +224,12 @@ def generate_training_batch(
                             output_matrix[y, x] = mapped_class
                     if not sample_valid: continue
             elif sample_valid and optimized_grid is None:
-                # If optimization returned None but no error, it's still invalid
                 sample_valid = False
         # --- End Output Matrix ---
 
 
         # --- Add Valid Sample AND AUGMENTATIONS ---
         if sample_valid:
-            # Apply augmentations to both input matrices and the output matrix
             # 1. Original
             new_X_supercharge_list.append(input_supercharge_np)
             new_X_inactive_mask_list.append(input_inactive_mask_np)
@@ -260,19 +251,18 @@ def generate_training_batch(
             new_y_list.append(np.flipud(np.fliplr(output_matrix)))
 
             original_generated_count += 1
-            total_samples_in_list = len(new_y_list) # Use y_list length as reference
+            total_samples_in_list = len(new_y_list)
 
-            # Print progress less frequently
             if original_generated_count % 1 == 0 or original_generated_count == num_samples:
                  print(f"-- Generated {original_generated_count}/{num_samples} original samples for tech '{tech}' (Attempt {attempt_count}, Total in list: {total_samples_in_list}) --")
         # --- End Add Sample ---
 
     # --- Final Count and Warnings ---
-    final_generated_count = len(new_y_list) # Use y_list length
+    final_generated_count = len(new_y_list)
     if original_generated_count < num_samples:
         print(f"\nWarning: Only generated {original_generated_count}/{num_samples} *original* samples after {max_attempts} attempts for tech '{tech}'. Final count with augmentation: {final_generated_count}.")
 
-    if not new_y_list: # Check if any samples were generated
+    if not new_y_list:
         print("No valid samples generated for this batch. Skipping save.")
         return 0, num_output_classes, None
 
@@ -287,16 +277,16 @@ def generate_training_batch(
 
     # --- Save Batch ---
     saved_filepath = None
-    if new_y_np.size > 0: # Check if y array has data
+    if new_y_np.size > 0:
         try:
-            os.makedirs(output_dir, exist_ok=True) # Ensure directory exists
+            # <<< Use tech_output_dir >>>
+            os.makedirs(tech_output_dir, exist_ok=True) # Ensure directory exists
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             unique_id = uuid.uuid4().hex[:8]
-            # Include grid dimensions in filename
             filename = f"data_{ship}_{tech}_{grid_width}x{grid_height}_{timestamp}_{unique_id}.npz"
-            saved_filepath = os.path.join(output_dir, filename)
+            # <<< Use tech_output_dir >>>
+            saved_filepath = os.path.join(tech_output_dir, filename)
             print(f"Saving {len(new_y_np)} generated samples (incl. augmentations) to {saved_filepath}...")
-            # Save all three arrays with distinct keys
             np.savez_compressed(
                 saved_filepath,
                 X_supercharge=new_X_supercharge_np,
@@ -328,7 +318,8 @@ if __name__ == "__main__":
     parser.add_argument("--height", type=int, default=3, help="Grid height.", metavar="HEIGHT")
     parser.add_argument("--max_sc", type=int, default=4, help="Max supercharged.", metavar="MAX_SC")
     parser.add_argument("--max_inactive", type=int, default=3, help="Max inactive.", metavar="MAX_INACTIVE")
-    parser.add_argument("--output_dir", type=str, default=GENERATED_BATCH_DIR, help="Output directory.", metavar="DIR_PATH")
+    # <<< Changed help text for output_dir >>>
+    parser.add_argument("--output_dir", type=str, default=GENERATED_BATCH_DIR, help="Base output directory (ship/tech subdirs will be created).", metavar="DIR_PATH")
     parser.add_argument("--solve_prob", type=float, default=0.05, help="Probability (0.0-1.0) of using solve map.", metavar="PROB")
     args = parser.parse_args()
     if not 0.0 <= args.solve_prob <= 1.0: parser.error("--solve_prob must be between 0.0 and 1.0")
@@ -343,10 +334,11 @@ if __name__ == "__main__":
     print(f"Starting data batch generation process...")
     print(f"Configuration: {config}")
 
-    try:
-        os.makedirs(config["output_dir"], exist_ok=True)
-        print(f"Output directory: {os.path.abspath(config['output_dir'])}")
-    except OSError as e: print(f"Error creating output directory '{config['output_dir']}': {e}"); exit()
+    # <<< No need to create base_output_dir here, generate_training_batch handles it >>>
+    # try:
+    #     os.makedirs(config["output_dir"], exist_ok=True)
+    #     print(f"Base output directory: {os.path.abspath(config['output_dir'])}")
+    # except OSError as e: print(f"Error creating base output directory '{config['output_dir']}': {e}"); exit()
 
     try:
         ship_data = modules.get(config["ship"])
@@ -368,7 +360,8 @@ if __name__ == "__main__":
             num_samples=config["num_samples_per_tech"], grid_width=config["grid_width"],
             grid_height=config["grid_height"], max_supercharged=config["max_supercharged"],
             max_inactive_cells=config["max_inactive_cells"], ship=config["ship"], tech=tech,
-            output_dir=config["output_dir"], solve_map_prob=config["solve_map_prob"],
+            base_output_dir=config["output_dir"], # <<< Pass base_output_dir
+            solve_map_prob=config["solve_map_prob"],
         )
         total_samples_generated_overall += generated_count
 
@@ -376,5 +369,6 @@ if __name__ == "__main__":
     print(f"\n{'='*20} Data Batch Generation Complete {'='*20}")
     print(f"Total samples generated across all techs (incl. augmentations) in this run: {total_samples_generated_overall}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
-    print(f"Generated files saved in: {os.path.abspath(config['output_dir'])}")
+    # <<< Updated final message >>>
+    print(f"Generated files saved in subdirectories under: {os.path.abspath(config['output_dir'])}")
 
