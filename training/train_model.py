@@ -11,8 +11,7 @@ import time
 import glob
 import argparse
 import numpy as np
-from model_definition import ModulePlacementCNN
-
+from typing import Optional # Added for type hinting
 
 # --- Add project root to sys.path ---
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -21,6 +20,7 @@ if project_root not in sys.path:
 # --- End Add project root ---
 
 # --- Imports from your project ---
+from model_definition import ModulePlacementCNN # Import model definition
 from modules_data import get_tech_modules_for_training
 from modules import modules
 from sklearn.model_selection import train_test_split
@@ -46,6 +46,7 @@ class PlacementDataset(data.Dataset):
         self.y = y
 
     def __len__(self):
+        # Use the length of the first available array
         if self.X_supercharge is not None:
             return len(self.X_supercharge)
         elif self.X_inactive_mask is not None:
@@ -60,6 +61,7 @@ class PlacementDataset(data.Dataset):
         x_inactive = self.X_inactive_mask[idx]
         target = self.y[idx]
 
+        # Ensure tensors are created correctly
         input_tensor = torch.stack(
             [torch.tensor(x_sc, dtype=torch.float32), torch.tensor(x_inactive, dtype=torch.float32)], dim=0
         )
@@ -68,7 +70,7 @@ class PlacementDataset(data.Dataset):
         return input_tensor, target_tensor
 
 
-# --- Training Function (Modified for Validation and Early Stopping) ---
+# --- Training Function (Modified for Validation, Early Stopping, Class Weights, Scheduler) ---
 def train_model(
     train_loader,
     val_loader,
@@ -82,6 +84,7 @@ def train_model(
     model_save_path,
     scheduler_step_size,
     scheduler_gamma,
+    criterion_weights: Optional[torch.Tensor] = None, # <<< Added for class weights
     early_stopping_patience: int = 10,
     early_stopping_metric: str = "val_loss",
 ):
@@ -100,11 +103,21 @@ def train_model(
     model = ModulePlacementCNN(
         input_channels=2, grid_height=grid_height, grid_width=grid_width, num_output_classes=num_output_classes
     ).to(device)
-    criterion_placement = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    #scheduler = StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
 
-    # <<< Ensure the specific model save directory exists >>>
+    # <<< Use class weights if provided >>>
+    if criterion_weights is not None:
+        print("  Using provided class weights for loss.")
+        criterion_placement = nn.CrossEntropyLoss(weight=criterion_weights.to(device))
+    else:
+        print("  Using default CrossEntropyLoss (no class weights).")
+        criterion_placement = nn.CrossEntropyLoss()
+    # <<< End class weights usage >>>
+
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    # <<< Enable the scheduler >>>
+    scheduler = StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
+
+    # Ensure the specific model save directory exists
     os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
     writer = SummaryWriter(log_dir=log_dir)
@@ -236,9 +249,10 @@ def train_model(
                 best_metric_value = current_metric_value
                 epochs_no_improve = 0
                 try:
+                    # Save model to CPU to avoid GPU memory issues on load
                     model.to("cpu")
                     torch.save(model.state_dict(), model_save_path)
-                    model.to(device)
+                    model.to(device) # Move back to original device
                     print(f"  Saved new best model checkpoint (Epoch {epoch+1}, {early_stopping_metric}: {best_metric_value:.4f})")
                 except Exception as e:
                     print(f"  Error saving model checkpoint: {e}")
@@ -252,10 +266,12 @@ def train_model(
                 break
         # --- End Early Stopping Check ---
 
-        #scheduler.step()
+        # <<< Step the scheduler after validation and logging >>>
+        scheduler.step()
 
     if not early_stop_triggered:
         print(f"Finished Training for {num_epochs} epochs.")
+        # Save the final model state if no validation was performed or early stopping didn't trigger
         if not val_loader:
             try:
                 print(f"Saving final model state (no validation performed) to {model_save_path}")
@@ -267,12 +283,14 @@ def train_model(
 
     writer.close()
 
+    # --- Load Best Model State After Training (if validation was used) ---
     if val_loader:
         try:
             print(f"Loading best model state from {model_save_path} (Metric: {early_stopping_metric}, Value: {best_metric_value:.4f})")
             if os.path.exists(model_save_path):
+                # Load state dict onto the correct device directly
                 model.load_state_dict(torch.load(model_save_path, map_location=device))
-                model.to(device)
+                model.to(device) # Ensure model is on the correct device
             else:
                 print(f"Warning: Best model file {model_save_path} not found. Returning last state.")
         except Exception as e:
@@ -281,7 +299,7 @@ def train_model(
     return model
 
 
-# --- Training Orchestration Function (Modified) ---
+# --- Training Orchestration Function (Modified for Class Weights) ---
 def run_training_from_files(
     ship,
     tech_category_to_train,
@@ -292,8 +310,8 @@ def run_training_from_files(
     num_epochs,
     batch_size,
     base_log_dir,
-    base_model_save_dir, # <<< Renamed for clarity
-    base_data_source_dir, # <<< Renamed for clarity
+    base_model_save_dir,
+    base_data_source_dir,
     scheduler_step_size,
     scheduler_gamma,
     validation_split=0.2,
@@ -302,7 +320,7 @@ def run_training_from_files(
 ):
     """
     Orchestrates the training process, loading data and saving models
-    using ship/tech subdirectories.
+    using ship/tech subdirectories. Includes class weight calculation.
     """
     # --- Get Tech Keys ---
     try:
@@ -325,7 +343,6 @@ def run_training_from_files(
         print(f"Error: No valid tech keys found for ship '{ship}', category '{tech_category_to_train}'.")
         return
     print(f"Planning to train models for techs: {tech_keys_to_train}")
-    # <<< Updated print statement >>>
     print(f"Looking for data files in subdirectories under: {os.path.abspath(base_data_source_dir)}")
     # --- End Get Tech Keys ---
 
@@ -335,9 +352,7 @@ def run_training_from_files(
         print(f"\n{'='*10} Processing Tech: {tech} {'='*10}")
 
         # --- 1. Find and Load Data ---
-        # <<< Construct specific data source directory >>>
         tech_data_source_dir = os.path.join(base_data_source_dir, ship, tech)
-        # <<< Use tech_data_source_dir in pattern >>>
         file_pattern = os.path.join(tech_data_source_dir, f"data_{ship}_{tech}_{grid_width}x{grid_height}_*.npz")
         data_files = glob.glob(file_pattern)
         if not data_files:
@@ -359,6 +374,7 @@ def run_training_from_files(
                         npz_file["X_supercharge"], npz_file["X_inactive_mask"], npz_file["y"]
                     )
 
+                    # Basic shape and consistency validation
                     if len(x_sc_batch.shape) < 3 or len(x_inactive_batch.shape) < 3 or len(y_batch.shape) < 3:
                         print(f"Warning: Unexpected array dimensions in {filepath}. Skipping file.")
                         continue
@@ -367,7 +383,7 @@ def run_training_from_files(
                         or x_inactive_batch.shape[1:] != (grid_height, grid_width)
                         or y_batch.shape[1:] != (grid_height, grid_width)
                     ):
-                        print(f"Warning: Shape mismatch in {filepath}. Skipping file.")
+                        print(f"Warning: Shape mismatch in {filepath} (Expected {grid_height}x{grid_width}). Skipping file.")
                         continue
                     if not (x_sc_batch.shape[0] == x_inactive_batch.shape[0] == y_batch.shape[0]):
                         print(f"Warning: Sample count mismatch in {filepath}. Skipping file.")
@@ -435,6 +451,29 @@ def run_training_from_files(
                 X_train_sc_np, X_train_in_np, y_train_np = X_supercharge_data_np, X_inactive_mask_data_np, y_data_np
         # --- End Split ---
 
+        # --- Calculate Class Weights (using y_train_np) ---
+        print("Calculating class weights...")
+        class_weights_tensor = None
+        if y_train_np is not None and y_train_np.size > 0:
+            flat_labels = y_train_np.flatten()
+            class_counts = np.bincount(flat_labels, minlength=num_output_classes)
+            # Prevent division by zero and handle classes not present
+            total_pixels = flat_labels.size
+            # Inverse frequency weighting: weight = total / (num_classes * count)
+            class_weights = np.where(
+                class_counts > 0,
+                total_pixels / (num_output_classes * class_counts),
+                0 # Assign 0 weight if class is not present
+            )
+            # Optional: Normalize weights (can help stability)
+            # class_weights = class_weights / np.sum(class_weights) * num_output_classes
+
+            class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32)
+            print(f"Calculated class weights: {class_weights_tensor.cpu().numpy()}")
+        else:
+            print("Warning: y_train_np not available or empty. Cannot calculate class weights.")
+        # --- End Calculate Class Weights ---
+
         # --- 3. Prepare Datasets and DataLoaders ---
         try:
             train_dataset = PlacementDataset(X_train_sc_np, X_train_in_np, y_train_np)
@@ -468,13 +507,10 @@ def run_training_from_files(
         # --- End Prepare DataLoaders ---
 
         # --- 4. Train Model ---
-        # <<< Construct specific log and model save directories >>>
-        log_dir = os.path.join(base_log_dir, ship, tech) # Removed category from log path for simplicity
-        tech_model_save_dir = os.path.join(base_model_save_dir, ship, tech)
-        # <<< Use tech_model_save_dir for the path >>>
+        log_dir = os.path.join(base_log_dir, ship, tech)
+        # Save model directly in the base model directory, named appropriately
         model_filename = f"model_{ship}_{tech}.pth"
-        model_save_path = os.path.join(base_model_save_dir, model_filename) # Save directly in base_model_save_dir
-
+        model_save_path = os.path.join(base_model_save_dir, model_filename)
 
         can_early_stop = val_loader is not None
         effective_patience = early_stopping_patience if can_early_stop else num_epochs
@@ -485,6 +521,7 @@ def run_training_from_files(
             train_loader, val_loader, grid_height, grid_width, num_output_classes,
             num_epochs, learning_rate, weight_decay, log_dir, model_save_path,
             scheduler_step_size, scheduler_gamma,
+            criterion_weights=class_weights_tensor, # <<< Pass calculated weights
             early_stopping_patience=effective_patience,
             early_stopping_metric=early_stopping_metric,
         )
@@ -503,14 +540,13 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
     parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
     parser.add_argument("--lr", type=float, default=3e-4, help="Initial learning rate.")
-    parser.add_argument("--wd", type=float, default=1e-3, help="Weight decay (L2 regularization).")
+    parser.add_argument("--wd", type=float, default=1e-4, help="Weight decay (L2 regularization). Try lower values like 1e-4 or 0.") # Adjusted default WD
     parser.add_argument("--epochs", type=int, default=100, help="Maximum number of training epochs.")
     parser.add_argument("--batch_size", type=int, default=64, help="Training batch size.")
-    parser.add_argument("--scheduler_step", type=int, default=30, help="StepLR: Number of epochs before decaying LR.")
-    parser.add_argument("--scheduler_gamma", type=float, default=0.1, help="StepLR: Multiplicative factor of LR decay.")
-    # <<< Updated help text for directories >>>
+    parser.add_argument("--scheduler_step", type=int, default=20, help="StepLR: Number of epochs before decaying LR.") # Adjusted default step
+    parser.add_argument("--scheduler_gamma", type=float, default=0.5, help="StepLR: Multiplicative factor of LR decay.") # Adjusted default gamma
     parser.add_argument("--log_dir", type=str, default=DEFAULT_LOG_DIR, help="Base directory for TensorBoard logs (ship/tech subdirs will be created).")
-    parser.add_argument("--model_dir", type=str, default=DEFAULT_MODEL_SAVE_DIR, help="Base directory to save best trained models (ship/tech subdirs will be created).")
+    parser.add_argument("--model_dir", type=str, default=DEFAULT_MODEL_SAVE_DIR, help="Base directory to save best trained models.")
     parser.add_argument("--data_source_dir", type=str, default=DEFAULT_DATA_SOURCE_DIR, help="Base directory containing generated .npz data files (expects ship/tech subdirs).")
     parser.add_argument("--val_split", type=float, default=0.2, help="Fraction of data to use for validation (0.0 to 1.0).")
     parser.add_argument("--es_patience", type=int, default=15, help="Early Stopping: Number of epochs to wait for improvement.")
@@ -531,8 +567,8 @@ if __name__ == "__main__":
         "tech_category_to_train": args.category, "learning_rate": args.lr,
         "weight_decay": args.wd, "num_epochs": args.epochs, "batch_size": args.batch_size,
         "scheduler_step_size": args.scheduler_step, "scheduler_gamma": args.scheduler_gamma,
-        "base_log_dir": args.log_dir, "base_model_save_dir": args.model_dir, # <<< Renamed
-        "base_data_source_dir": args.data_source_dir, # <<< Renamed
+        "base_log_dir": args.log_dir, "base_model_save_dir": args.model_dir,
+        "base_data_source_dir": args.data_source_dir,
         "validation_split": args.val_split, "early_stopping_patience": args.es_patience,
         "early_stopping_metric": effective_es_metric,
     }
@@ -541,8 +577,8 @@ if __name__ == "__main__":
     print(f"Starting model training process...")
     print(f"Configuration: {config}")
 
-    # <<< No need to create base_model_save_dir here, train_model handles specific dirs >>>
-    # os.makedirs(config["base_model_save_dir"], exist_ok=True)
+    # Ensure the base model save directory exists
+    os.makedirs(config["base_model_save_dir"], exist_ok=True)
 
     run_training_from_files(
         ship=config["ship"],
@@ -554,8 +590,8 @@ if __name__ == "__main__":
         num_epochs=config["num_epochs"],
         batch_size=config["batch_size"],
         base_log_dir=config["base_log_dir"],
-        base_model_save_dir=config["base_model_save_dir"], # <<< Pass base dir
-        base_data_source_dir=config["base_data_source_dir"], # <<< Pass base dir
+        base_model_save_dir=config["base_model_save_dir"],
+        base_data_source_dir=config["base_data_source_dir"],
         scheduler_step_size=config["scheduler_step_size"],
         scheduler_gamma=config["scheduler_gamma"],
         validation_split=config["validation_split"],
@@ -566,6 +602,4 @@ if __name__ == "__main__":
     end_time_all = time.time()
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
-    # <<< Updated final message >>>
     print(f"Best models saved directly in: {os.path.abspath(config['base_model_save_dir'])}")
-

@@ -609,6 +609,7 @@ def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, oppo
         # Recalculate the score of the *entire* modified grid copy
         new_score_global = calculate_grid_score(grid_copy, tech)
         print(f"INFO -- Score after ML refinement and restoration: {new_score_global:.4f}")
+        print_grid_compact(grid_copy)
         return grid_copy, new_score_global  # Return the modified grid copy and its new global score
     else:
         # Handle ML failure

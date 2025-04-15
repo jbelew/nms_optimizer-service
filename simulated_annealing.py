@@ -20,138 +20,142 @@ def simulated_annealing(
     iterations_per_temp=35,
     initial_swap_probability=0.55,
     final_swap_probability=0.4,
+    # <<< Add a flag to indicate polishing mode >>>
+    start_from_current_grid: bool = False,
+    max_processing_time: float = 360.0 # <<< Make max time an argument
 ):
     """
-    Performs simulated annealing to optimize module placement on a grid,
-    prioritizing adjacency bonuses.
+    Performs simulated annealing to optimize module placement on a grid.
 
     Args:
-        grid (Grid): The initial grid layout.
-        ship (str): The ship type.
-        modules (dict): The module data.
-        tech (str): The technology type.
-        player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
-        initial_temperature (float): The starting temperature.
-        cooling_rate (float): The rate at which the temperature decreases.
-        stopping_temperature (float): The temperature at which the algorithm stops.
-        iterations_per_temp (int): The number of iterations at each temperature.
-        initial_swap_probability (float): The starting swap probability.
-        final_swap_probability (float): The ending swap probability.
-
-    Returns:
-        tuple: A tuple containing the best grid found and its score.
+        # ... (other args remain the same)
+        start_from_current_grid (bool): If True, skips the initial clearing and
+                                        placement, starting optimization from the
+                                        provided grid state. Ideal for polishing.
+        max_processing_time (float): Maximum time in seconds allowed for annealing.
     """
     start_time = time.time()  # Start timing
-    max_processing_time = 360  # Maximum processing time in seconds
+    # max_processing_time = 360  # Maximum processing time in seconds # <<< Use argument instead
+
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
         return grid, 0.0
 
-    # Identify supercharged and active slots
-    supercharged_slots = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["module"] is None
-        and grid.get_cell(x, y)["supercharged"]
-        and grid.get_cell(x, y)["active"]
-    ]
-    active_slots = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["module"] is None
-        and grid.get_cell(x, y)["active"]
-        and not grid.get_cell(x, y)["supercharged"]
-    ]
-
-    # Calculate the correct number of available positions
-    num_available_positions = len(supercharged_slots) + len(active_slots)
-    # print(f"DEBUG -- simulated_annealing: num_available_positions: {num_available_positions}")
-
-    # Determine the modules to consider for placement (core + top bonus)
-    core_module = next((m for m in tech_modules if m["type"] == "core"), None)
-    bonus_modules = [m for m in tech_modules if m["type"] != "core"]
-    bonus_modules.sort(key=lambda m: m["bonus"], reverse=True)
-
-    # Ensure core module is included if it exists
+    # --- Determine modules to consider (based on available slots if not polishing) ---
     modules_to_consider = []
-    if core_module:
-        modules_to_consider.append(core_module)
-        num_available_positions -= 1
+    if not start_from_current_grid:
+        # Original logic to figure out which modules fit in empty slots
+        supercharged_slots = [
+            (x, y) for y in range(grid.height) for x in range(grid.width)
+            if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["supercharged"] and grid.get_cell(x, y)["active"]
+        ]
+        active_slots = [
+            (x, y) for y in range(grid.height) for x in range(grid.width)
+            if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"] and not grid.get_cell(x, y)["supercharged"]
+        ]
+        num_available_positions = len(supercharged_slots) + len(active_slots)
 
-    # Add the top bonus modules that fit
-    modules_to_consider.extend(bonus_modules[:num_available_positions])
+        core_module = next((m for m in tech_modules if m["type"] == "core"), None)
+        bonus_modules = [m for m in tech_modules if m["type"] != "core"]
+        bonus_modules.sort(key=lambda m: m["bonus"], reverse=True)
 
-    # print(f"DEBUG -- simulated_annealing: modules_to_consider: {[m['id'] for m in modules_to_consider]}")
+        if core_module:
+            modules_to_consider.append(core_module)
+            # Adjust available positions count if core is definitely placed
+            if num_available_positions > 0:
+                 num_available_positions -= 1
 
-    # Initialize the current state with a placement that prioritizes supercharged slots
-    current_grid = grid.copy()
-    # Clear any existing modules of the same tech from the grid.
-    clear_all_modules_of_tech(current_grid, tech)
-    place_modules_with_supercharged_priority(current_grid, modules_to_consider, tech)
+        modules_to_consider.extend(bonus_modules[:num_available_positions])
+    else:
+        # If polishing, consider all modules currently placed on the grid for swaps/moves
+        modules_to_consider = []
+        for y in range(grid.height):
+            for x in range(grid.width):
+                cell = grid.get_cell(x, y)
+                if cell["tech"] == tech and cell["module"] is not None:
+                    # Find the full module definition
+                    module_def = next((m for m in tech_modules if m["id"] == cell["module"]), None)
+                    if module_def:
+                        modules_to_consider.append(module_def)
+        # If modules_to_consider is empty after checking grid, fall back to tech_modules
+        if not modules_to_consider:
+             modules_to_consider = tech_modules
+
+
+    # --- Initialize the current state ---
+    current_grid = grid.copy() # Always start with a copy
+
+    # <<< Conditional Initial Placement >>>
+    if not start_from_current_grid:
+        # Clear any existing modules of the same tech from the grid.
+        clear_all_modules_of_tech(current_grid, tech)
+        # Place modules with priority (original behavior)
+        place_modules_with_supercharged_priority(current_grid, modules_to_consider, tech)
+    # else: If start_from_current_grid is True, we use the grid as passed in.
+
     current_score = calculate_grid_score(current_grid, tech)
-
     best_grid = current_grid.copy()
     best_score = current_score
 
     temperature = initial_temperature
     swap_probability = initial_swap_probability
+
+    # --- Annealing Loop ---
     while temperature > stopping_temperature:
         # Check if the maximum processing time has been exceeded
         if time.time() - start_time > max_processing_time:
-            print(f"INFO -- Maximum processing time ({max_processing_time}s) exceeded. Returning best found.")
-            return best_grid, best_score
+            print(f"INFO -- SA: Max processing time ({max_processing_time}s) exceeded. Returning best found.")
+            break # Exit the loop
+
         # Calculate the adaptive swap probability
         swap_probability = get_swap_probability(
-            temperature,
-            initial_temperature,
-            stopping_temperature,
-            initial_swap_probability,
-            final_swap_probability,
+            temperature, initial_temperature, stopping_temperature,
+            initial_swap_probability, final_swap_probability
         )
 
-        # print(f"DEBUG -- Current temperature: {temperature:.2f}, Current Score: {current_score:.2f}, Best Score: {best_score:.2f}, Swap Probability: {swap_probability:.2f}")
         for _ in range(iterations_per_temp):
-            # Create a neighbor by either swapping or moving a module
             neighbor_grid = current_grid.copy()
-            if random.random() < swap_probability:  # Use the adaptive swap_probability
+            # Ensure modules_to_consider is passed correctly
+            if random.random() < swap_probability:
                 swap_modules(neighbor_grid, tech, modules_to_consider)
             else:
                 move_module(neighbor_grid, tech, modules_to_consider)
             neighbor_score = calculate_grid_score(neighbor_grid, tech)
 
-            # Decide whether to accept the neighbor
             delta_e = neighbor_score - current_score
-            if delta_e > 0:
-                # Accept better solutions
-                current_grid = neighbor_grid.copy()
+            if delta_e > 0 or random.random() < math.exp(delta_e / temperature):
+                current_grid = neighbor_grid # Keep the copy
                 current_score = neighbor_score
                 if current_score > best_score:
                     best_grid = current_grid.copy()
                     best_score = current_score
-            else:
-                # Accept worse solutions with a probability
-                acceptance_probability = math.exp(delta_e / temperature)
-                if random.random() < acceptance_probability:
-                    current_grid = neighbor_grid.copy()
-                    current_score = neighbor_score
+            # else: discard neighbor_grid (it was just a copy)
 
-        # Cool down
         temperature *= cooling_rate
+    # --- End Annealing Loop ---
 
-    end_time = time.time()  # End timing
+    end_time = time.time()
     elapsed_time = end_time - start_time
-    print(f"INFO -- Simulated annealing finished. Best score found: {best_score:.2f} -- Time: {elapsed_time:.4f}s")
-    if best_grid is None or best_score == 0:
-        raise ValueError(
-            f"simulated_annealing solver failed to find a valid placement for ship: '{ship}' -- tech: '{tech}'."
-        )
+    print(f"INFO -- SA finished ({'Polish' if start_from_current_grid else 'Full'}). Best score: {best_score:.4f}. Time: {elapsed_time:.4f}s")
 
-    # print_grid(best_grid)
+    # Check for failure (important for polishing case too)
+    if best_grid is None or (best_score == 0 and any(m["bonus"] > 0 for m in modules_to_consider)):
+         # Check if score is 0 despite having modules with potential bonus
+         print(f"WARNING -- SA solver might have failed to find a valid placement for {ship}/{tech}. Score is {best_score}.")
+         # Return the initial grid state if polishing failed badly
+         if start_from_current_grid:
+             initial_score = calculate_grid_score(grid, tech)
+             print(f"INFO -- Returning original grid state with score {initial_score:.4f} due to potential SA failure.")
+             return grid.copy(), initial_score
+         else:
+             # For a full run, maybe return the cleared grid or raise error
+             cleared_grid = grid.copy()
+             clear_all_modules_of_tech(cleared_grid, tech)
+             return cleared_grid, 0.0
+
+
     return best_grid, best_score
-
 
 def get_swap_probability(
     temperature,
