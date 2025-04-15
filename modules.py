@@ -200,7 +200,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "gray",
+                    "color": "gray", 
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
@@ -1243,8 +1243,8 @@ modules = {
                     ],
                 },
             ],
-        },
-    }, 
+        }
+    },
 }
 
 solves = {

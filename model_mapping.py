@@ -23,7 +23,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "hyper": ("standard", "hyper"),
         "pulse": ("standard", "pulse"),   # Base mapping for pulse
         # <<< Add photonix as a potential target, but it's handled by logic >>>
-        # "photonix": ("standard", "photonix"), # Not strictly needed here
+        "photonix": ("standard", "photonix"), # Not strictly needed here
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
@@ -42,7 +42,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "hyper": ("standard", "hyper"),
         "pulse": ("standard", "pulse"),   # Base mapping for pulse
         # <<< Add photonix as a potential target, but it's handled by logic >>>
-        # "photonix": ("standard", "photonix"), # Not strictly needed here
+        "photonix": ("standard", "photonix"), # Not strictly needed here
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
