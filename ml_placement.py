@@ -301,7 +301,6 @@ def ml_placement(
             "iterations_per_temp": 30,
             "initial_swap_probability": 0.45,
             "final_swap_probability": 0.30,
-            # <<< Add the new flag and time limit >>>
             "start_from_current_grid": True,
             "max_processing_time": 5.0, # e.g., max 5 seconds for polish
         }
