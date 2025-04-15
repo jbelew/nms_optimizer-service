@@ -49,12 +49,17 @@ def get_technology_tree(ship_name):
         return jsonify({"error": str(e)}), 500
 
 
-@app.route("/ship_types", methods=["GET"])
+@app.route("/platforms", methods=["GET"])
 def get_ship_types():
-    """Endpoint to get the available ship types and their labels."""
+    """Endpoint to get the available ship types, their labels, and their types."""
     ship_types = {}
     for ship_key, ship_data in modules.items():
-        ship_types[ship_key] = ship_data.get("label")
+        # Create a dictionary containing both label and type
+        ship_info = {
+            "label": ship_data.get("label"),
+            "type": ship_data.get("type") # Get the 'type' field
+        }
+        ship_types[ship_key] = ship_info
 
     print(f"Ship types: {ship_types}")
     return jsonify(ship_types)

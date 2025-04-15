@@ -621,7 +621,7 @@ def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, oppo
         original_score = calculate_grid_score(grid_copy, tech)  # Recalculate score after restoration
         print(f"INFO -- Returning grid with original score after failed ML: {original_score:.4f}")
         # Return the grid_copy (which now matches the original state) and its score
-        return grid_copy, original_score
+        return None, 0.0
 
 
 # --- Existing function for SA/Refine opportunity ---
@@ -806,7 +806,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
 
         # --- Branch based on experimental flag ---
         if experimental:
-            # --- Use ML Refinement ---
+            print("INFO -- Experimental flag is True. Attempting ML refinement first.")
+            # --- Try ML Refinement ---
             refined_grid_candidate, refined_score_global = _handle_ml_opportunity(
                 grid_to_refine.copy(),  # Pass a copy to the handler
                 modules,
@@ -816,8 +817,25 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 opportunity_x,
                 opportunity_y,
             )
-            print_grid_compact(refined_grid_candidate)
-        else:
+            # print_grid_compact(refined_grid_candidate) # Optional: print ML result even if it fails
+
+            # --- Fallback to SA/Refine if ML failed ---
+            if refined_grid_candidate is None:
+                print("INFO -- ML refinement failed or model not found. Falling back to SA/Refine refinement.")
+                # --- Use SA/Refine Refinement as Fallback ---
+                refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
+                    grid_to_refine.copy(),  # Pass a fresh copy for SA/Refine
+                    modules,
+                    ship,
+                    tech,
+                    player_owned_rewards,
+                    opportunity_x,
+                    opportunity_y,
+                )
+            # else: ML refinement succeeded (or returned original grid), proceed with its result.
+
+        else: # Not experimental
+            print("INFO -- Experimental flag is False. Using SA/Refine refinement.")
             # --- Use SA/Refine Refinement ---
             refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
                 grid_to_refine.copy(),  # Pass a copy to the handler
@@ -829,31 +847,37 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 opportunity_y,
             )
 
-        # --- Compare and Update OR Fallback to SA (if experimental) ---
+        # --- Compare and Update (Handles result from ML, SA fallback, or standard SA) ---
         if refined_grid_candidate is not None and refined_score_global >= current_best_score:
             print(
-                f"INFO -- Opportunity refinement improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
+                f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if experimental else 'SA/Refine'}) improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
             )
             solved_grid = refined_grid_candidate  # Update solved_grid with the better one
             solved_bonus = refined_score_global  # Update the score
+            # Optional: Print the grid that resulted in the improvement
+            # print("INFO -- Grid after successful refinement:")
+            # print_grid_compact(solved_grid)
         else:
             # --- Refinement Failed or Did Not Improve ---
             if refined_grid_candidate is not None:
                  print(
-                     f"INFO -- Opportunity refinement did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f})."
+                     f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if experimental else 'SA/Refine'}) did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f})."
                  )
             else:
-                 print("INFO -- Opportunity refinement failed.")
+                 # This case should be less common now with the ML->SA fallback, but good to keep
+                 print(f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if experimental else 'SA/Refine'}) failed completely.")
 
-            # --- Fallback to Simulated Annealing ONLY IF experimental is True ---
+            # --- Fallback to Simulated Annealing (Original logic for when refinement *doesn't improve*) ---
+            # This part remains the same: if experimental is True AND the refinement didn't help,
+            # we still try one more SA run from the pre-refinement state.
             if experimental:
-                print("INFO -- Experimental flag is True, attempting fallback Simulated Annealing.")
+                print("INFO -- Experimental flag is True AND refinement didn't improve/failed. Attempting final fallback Simulated Annealing.")
                 # Run SA on the grid state *before* the failed/unimproved refinement attempt
                 grid_for_sa_fallback = grid_to_refine.copy() # Use the grid before refinement
-                clear_all_modules_of_tech(grid_for_sa_fallback, tech) # Clear before SA
+                # No need to clear here, _handle_sa_refine_opportunity does it
 
                 sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
-                    grid_for_sa_fallback.copy(),
+                    grid_for_sa_fallback.copy(), # Pass a copy
                     modules,
                     ship,
                     tech,
@@ -869,28 +893,29 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 )
 
                 if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
-                    print(f"INFO -- Fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
+                    print(f"INFO -- Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
                     solved_grid = sa_fallback_grid
                     solved_bonus = sa_fallback_bonus
                 elif sa_fallback_grid is not None:
-                    print_grid_compact(sa_fallback_grid)
-                    print(f"INFO -- Fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best.")
+                    # print_grid_compact(sa_fallback_grid) # Optional print
+                    print(f"INFO -- Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best.")
                     # solved_grid and solved_bonus remain unchanged (from before refinement attempt)
                 else:
-                     print(f"ERROR -- Fallback Simulated Annealing failed after opportunity refinement. Keeping previous best.")
+                     print(f"ERROR -- Final fallback Simulated Annealing failed after opportunity refinement. Keeping previous best.")
                      # solved_grid and solved_bonus remain unchanged
             else:
-                # Experimental is False, so don't run fallback SA
-                print("INFO -- Experimental flag is False, keeping previous best grid without fallback SA.")
+                # Experimental is False, so don't run the final fallback SA
+                print("INFO -- Experimental flag is False, keeping previous best grid without final fallback SA.")
                 # solved_grid and solved_bonus remain unchanged (from before refinement attempt)
 
-    else:
+    else: # No opportunity found
         print("INFO -- No supercharged opportunity found for refinement.")
         # solved_grid and solved_bonus remain unchanged from pattern/fallback SA
 
     # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
     # Check if all modules were placed after pattern matching and potential refinement
     all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
+    # ... (rest of the function remains the same)
 
     if not all_modules_placed:
         print(

@@ -4,6 +4,7 @@
 modules = {
     "standard": {
         "label": "Standard / Exotic Starships",
+        "type": "Starship",
         "types": {
             "Weaponry": [
                 {
@@ -157,7 +158,7 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Bobbleheads",
+                    "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
                     "color": "black",
@@ -198,7 +199,7 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Teleporter",
+                    "label": "Teleport Receiver",
                     "key": "teleporter",
                     "image": "teleport.webp",
                     "color": "black",
@@ -211,6 +212,7 @@ modules = {
     },
     "sentinel": {
         "label": "Sentinel Interceptors",
+        "type": "Starship",
         "types": {
             "Weaponry": [
                 {
@@ -364,7 +366,7 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Bobbleheads",
+                    "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
                     "color": "black",
@@ -414,7 +416,7 @@ modules = {
                      ],
                 },
                 {
-                    "label": "Teleporter",
+                    "label": "Teleport Receiver",
                     "key": "teleporter",
                     "image": "teleport.webp",
                     "color": "black",
@@ -427,6 +429,7 @@ modules = {
     },
     "living": {
         "label": "Living Starships",
+        "type": "Starship",
         "types": {
             "Weaponry": [
                 {
@@ -473,7 +476,7 @@ modules = {
                     "label": "Neural Assembly",
                     "key": "assembly",
                     "image": "assembly.webp",
-                    "color": "jade",
+                    "color": "iris",
                     "modules": [
                         { "id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "assembly.png", },
                         { "id": "Xa", "type": "bonus", "label": "Neural Assembly Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
@@ -519,7 +522,7 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Bobbleheads",
+                    "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
                     "color": "black",
@@ -561,8 +564,9 @@ modules = {
             ],
         },
     },
-    "multitool": {
-        "label": "Multi-Tools",
+    "standard-mt": {
+        "label": "Standard / Exotic Multi-Tools",
+        "type": "Multi-Tool",
         "types": {
             "Mining": [
                 {
@@ -577,104 +581,656 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
-                        { "id": "RL", "type": "reward", "label": "Runic Laser", "bonus": 0.10, "adjacency": "greater", "sc_eligible": True, "image": "runic-laser.png", },
+                        # { "id": "RL", "type": "reward", "label": "Runic Laser", "bonus": 0.10, "adjacency": "greater", "sc_eligible": True, "image": "runic-laser.png", },
                         { "id": "PR", "type": "reward", "label": "Plasma Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "plasma-resonator.png", },
                     ],
                 },
             ],
-            "Weapons": [
+            "Scanners": [
                 {
-                    "label": "Blaze Javelin",
-                    "key": "blaze",
-                    "image": "blaze-javelin.webp",
-                    "color": "red",
+                    "label": "Analysis Visor",
+                    "key": "analysis",
+                    "image": "analysis.webp",
+                    "color": "black",
                     "modules": [
-                        { "id": "SS", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
-                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": 6.5, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
-                        { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "waveform-osc.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 2.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 1.5, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
                     ],
                 },
-                {
-                    "label": "Boltcaster",
-                    "key": "boltcaster",
-                    "image": "boltcaster.webp",
-                    "color": "cyan",
-                    "modules": [
-                        { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
-                        { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
-                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.25, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
-                        { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.625, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.375, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
-                    ],
-                },
-            ],
-            "Secondary Weapons": [
-                {
-                    "label": "Neural Assembly",
-                    "key": "assembly",
-                    "image": "assembly.webp",
-                    "color": "jade",
-                    "modules": [
-                        { "id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "assembly.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Neural Assembly Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Neural Assembly Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Neural Assembly Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "assembly-upgrade.png", },
-                        { "id": "CM", "type": "bonus", "label": "Chroloplast Membrane", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "chloroplast.png", },
-                    ],
-                },
-                {
-                    "label": "Singularity Cortex",
-                    "key": "singularity",
-                    "image": "singularity.webp",
-                    "color": "sky",
-                    "modules": [
-                        { "id": "SC", "type": "core", "label": "Singularity Cortex", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "singularity.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "atlantid.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Singularity Cortex Upgrade Sigma", "bonus": 0.420, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Singularity Cortex Upgrade Tau", "bonus": 0.410, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Singularity Cortex Upgrade Theta", "bonus": 0.400, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
-                    ],
-                },
-                {
-                    "label": "Pulsing Heart",
-                    "key": "pulsing",
-                    "image": "pulsing.webp",
-                    "color": "orange",
-                    "modules": [
-                        { "id": "PH", "type": "core", "label": "Pulsing Heart", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "pulsing.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulsing Heart Upgrade Sigma", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulsing Heart Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulsing Heart Upgrade Theta", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
-                    ],
-                },
-            ],
-            "Scanner": [
                 {
                     "label": "Scanner",
                     "key": "scanner",
                     "image": "mt-scanner.webp",
                     "color": "yellow",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "mt-scanner.png", },
-                        { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": False, "image": "waveform.png", },
-                        { "id": "SH", "type": "reward", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": False, "image": "harmonizer.png", },
-                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": False, "image": "resonance.png", },
-                        { "id": "PC", "type": "reward", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": False, "image": "polyphonic.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": False, "image": "scanner-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": False, "image": "scanner-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": False, "image": "scanner-upgrade.png", },
+                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
+                        { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "waveform.png", },
+                        { "id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "harmonizer.png", },
+                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "resonance.png", }, 
+                    ],
+                },
+                {
+                    "label": "Survey Device",
+                    "key": "survey",
+                    "image": "survey.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                    ],
+                },
+            ],
+            "Weapons": [
+                {
+                    "label": "Blaze Javelin",
+                    "key": "blaze-javelin",
+                    "image": "blaze-javelin.webp",
+                    "color": "red",
+                    "modules": [
+                        { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Boltcaster",
+                    "key": "bolt-caster",
+                    "image": "boltcaster.webp",
+                    "color": "cyan",
+                    "modules": [
+                        { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
+                        { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
+                        { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
+                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Neutron Cannon",
+                    "key": "neutron",
+                    "image": "neutron.webp",
+                    "color": "purple",
+                    "modules": [
+                        { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Plasma Launcher",
+                    "key": "plasma-launcher",
+                    "image": "plasma-launcher.webp",
+                    "color": "purple",
+                    "modules": [
+                        { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Pulse Splitter",
+                    "key": "pulse-splitter",
+                    "image": "pulse-splitter.webp",
+                    "color": "jade",
+                    "modules": [
+                        { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "impact-ignitor.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Scatter Blaster",
+                    "key": "scatter",
+                    "image": "scatter.webp",
+                    "color": "amber",
+                    "modules": [
+                        { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
+                        { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                    ],
+                },
+            ],
+            "Secondary Weapons": [
+                {
+                    "label": "Cloaking Device",
+                    "key": "cloaking",
+                    "image": "cloaking.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                    ],
+                },
+                {
+                    "label": "Combat Scope",
+                    "key": "combat",
+                    "image": "combat.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                    ],
+                },
+                {
+                    "label": "Voltaic Amplifier",
+                    "key": "voltaic-amplifier",
+                    "image": "voltaic-amplifier.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                    ],
+                },
+                {
+                    "label": "Paralysis Mortar",
+                    "key": "paralysis",
+                    "image": "paralysis.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                    ],
+                },
+                {
+                    "label": "Personal Forcefield",
+                    "key": "personal",
+                    "image": "personal.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                    ],
+                },
+            ],
+            "Utilities": [
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                    ],
+                },
+                {
+                    "label": "Forbidden Modules",
+                    "key": "forbidden",
+                    "image": "forbidden.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "Fa", "type": "core", "label": "Forbidden Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fb", "type": "core", "label": "Forbidden Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fc", "type": "core", "label": "Forbidden Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                    ],
+                },
+                {
+                    "label": "Terrain Manipulator",
+                    "key": "terrian",
+                    "image": "terrian.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
                     ],
                 },
             ],
         },
     },
-    
+    "atlantid-mt": {
+        "label": "Atlantid Multi-Tools",
+        "type": "Multi-Tool",
+        "types": {
+            "Mining": [
+                {
+                    "label": "Mining Beam",
+                    "key": "mining",
+                    "image": "mining-beam.webp",
+                    "color": "green",
+                    "modules": [
+                        { "id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-laser.png", },
+                        { "id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "advanced-mining.png", },
+                        { "id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "optical.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
+                        { "id": "RL", "type": "bonus", "label": "Runic Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "runic-laser.png", },
+                        { "id": "PR", "type": "reward", "label": "Plasma Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "plasma-resonator.png", },
+                    ],
+                },
+            ],
+            "Scanners": [
+                {
+                    "label": "Analysis Visor",
+                    "key": "analysis",
+                    "image": "analysis.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                    ],
+                },
+                {
+                    "label": "Scanner",
+                    "key": "scanner",
+                    "image": "mt-scanner.webp",
+                    "color": "yellow",
+                    "modules": [
+                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
+                        { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "waveform.png", },
+                        { "id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "harmonizer.png", },
+                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "resonance.png", }, 
+                    ],
+                },
+                {
+                    "label": "Survey Device",
+                    "key": "survey",
+                    "image": "survey.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                    ],
+                },
+            ],
+            "Weapons": [
+                {
+                    "label": "Blaze Javelin",
+                    "key": "blaze-javelin",
+                    "image": "blaze-javelin.webp",
+                    "color": "red",
+                    "modules": [
+                        { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Boltcaster",
+                    "key": "bolt-caster",
+                    "image": "boltcaster.webp",
+                    "color": "cyan",
+                    "modules": [
+                        { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
+                        { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
+                        { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
+                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Neutron Cannon",
+                    "key": "neutron",
+                    "image": "neutron.webp",
+                    "color": "purple",
+                    "modules": [
+                        { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Plasma Launcher",
+                    "key": "plasma-launcher",
+                    "image": "plasma-launcher.webp",
+                    "color": "purple",
+                    "modules": [
+                        { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Pulse Splitter",
+                    "key": "pulse-splitter",
+                    "image": "pulse-splitter.webp",
+                    "color": "jade",
+                    "modules": [
+                        { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "impact-ignitor.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Scatter Blaster",
+                    "key": "scatter",
+                    "image": "scatter.webp",
+                    "color": "amber",
+                    "modules": [
+                        { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
+                        { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                    ],
+                },
+            ],
+            "Secondary Weapons": [
+                {
+                    "label": "Cloaking Device",
+                    "key": "cloaking",
+                    "image": "cloaking.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                    ],
+                },
+                {
+                    "label": "Combat Scope",
+                    "key": "combat",
+                    "image": "combat.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                    ],
+                },
+                {
+                    "label": "Voltaic Amplifier",
+                    "key": "voltaic-amplifier",
+                    "image": "voltaic-amplifier.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                    ],
+                },
+                {
+                    "label": "Paralysis Mortar",
+                    "key": "paralysis",
+                    "image": "paralysis.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                    ],
+                },
+                {
+                    "label": "Personal Forcefield",
+                    "key": "personal",
+                    "image": "personal.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                    ],
+                },
+            ],
+            "Utilities": [
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                    ],
+                },
+                {
+                    "label": "Forbidden Modules",
+                    "key": "forbidden",
+                    "image": "forbidden.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "Fa", "type": "core", "label": "Forbidden Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fb", "type": "core", "label": "Forbidden Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fc", "type": "core", "label": "Forbidden Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                    ],
+                },
+                {
+                    "label": "Terrain Manipulator",
+                    "key": "terrian",
+                    "image": "terrian.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
+                    ],
+                },
+            ],
+        },
+    }, 
+    "sentinel-mt": {
+        "label": "Sentinel Multi-Tools",
+        "type": "Multi-Tool",
+        "types": {
+            "Mining": [
+                {
+                    "label": "Hijacked Laser",
+                    "key": "mining",
+                    "image": "hijacked.webp",
+                    "color": "green",
+                    "modules": [
+                        { "id": "MB", "type": "core", "label": "Hijacked Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "hijacked.png", },
+                        { "id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "advanced-mining.png", },
+                        { "id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "optical.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
+                        { "id": "PR", "type": "reward", "label": "Plasma Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "plasma-resonator.png", },
+                    ],
+                },
+            ],
+            "Scanners": [
+                {
+                    "label": "Analysis Visor",
+                    "key": "analysis",
+                    "image": "analysis.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                    ],
+                },
+                {
+                    "label": "Scanner",
+                    "key": "scanner",
+                    "image": "mt-scanner.webp",
+                    "color": "yellow",
+                    "modules": [
+                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
+                        { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "waveform.png", },
+                        { "id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "harmonizer.png", },
+                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
+                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "resonance.png", }, 
+                    ],
+                },
+                {
+                    "label": "Survey Device",
+                    "key": "survey",
+                    "image": "survey.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                    ],
+                },
+            ],
+            "Weapons": [
+                {
+                    "label": "Blaze Javelin",
+                    "key": "blaze-javelin",
+                    "image": "blaze-javelin.webp",
+                    "color": "red",
+                    "modules": [
+                        { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Boltcaster",
+                    "key": "bolt-caster",
+                    "image": "boltcaster.webp",
+                    "color": "cyan",
+                    "modules": [
+                        { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
+                        { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
+                        { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
+                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Neutron Cannon",
+                    "key": "neutron",
+                    "image": "neutron.webp",
+                    "color": "purple",
+                    "modules": [
+                        { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Plasma Launcher",
+                    "key": "plasma-launcher",
+                    "image": "plasma-launcher.webp",
+                    "color": "purple",
+                    "modules": [
+                        { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Pulse Splitter",
+                    "key": "pulse-splitter",
+                    "image": "pulse-splitter.webp",
+                    "color": "jade",
+                    "modules": [
+                        { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "impact-ignitor.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                    ],
+                },
+                {
+                    "label": "Scatter Blaster",
+                    "key": "scatter",
+                    "image": "scatter.webp",
+                    "color": "amber",
+                    "modules": [
+                        { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
+                        { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                    ],
+                },
+            ],
+            "Secondary Weapons": [
+                {
+                    "label": "Cloaking Device",
+                    "key": "cloaking",
+                    "image": "cloaking.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                    ],
+                },
+                {
+                    "label": "Combat Scope",
+                    "key": "combat",
+                    "image": "combat.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                    ],
+                },
+                {
+                    "label": "Voltaic Amplifier",
+                    "key": "voltaic-amplifier",
+                    "image": "voltaic-amplifier.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                    ],
+                },
+                {
+                    "label": "Paralysis Mortar",
+                    "key": "paralysis",
+                    "image": "paralysis.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                    ],
+                },
+                {
+                    "label": "Personal Forcefield",
+                    "key": "personal",
+                    "image": "personal.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                    ],
+                },
+            ],
+            "Utilities": [
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                    ],
+                },
+                {
+                    "label": "Forbidden Modules",
+                    "key": "forbidden",
+                    "image": "forbidden.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "Fa", "type": "core", "label": "Forbidden Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fb", "type": "core", "label": "Forbidden Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fc", "type": "core", "label": "Forbidden Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                    ],
+                },
+                {
+                    "label": "Terrain Manipulator",
+                    "key": "terrian",
+                    "image": "terrian.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
+                    ],
+                },
+            ],
+        },
+    }, 
 }
+
 solves = {
     "standard": {
         "cyclotron": {
@@ -1029,59 +1585,337 @@ solves = {
             "score": 0.162
         }
     }, 
-    "multitool": {
+    "standard-mt": {
         "mining": {
             "map": {
-                (0, 0): "RL",
+                (0, 0): "PR",
                 (1, 0): "Xa",
-                (2, 0): "PR",
-                (0, 1): "OD",
+                (2, 0): "OD",
+                (0, 1): "Xc",
                 (1, 1): "MB",
-                (2, 1): "Xb",
-                (0, 2): "AM",
+                (2, 1): "AM",
+                (0, 2): "None",
+                (1, 2): "Xb",
+                (2, 2): "None",
+            },
+            "score": 11.4592
+        },
+        "blaze-javelin": {
+            "map": {
+                (0, 0): "WO",
+                (1, 0): "Xb",
+                (2, 0): "None",
+                (0, 1): "MA",
+                (1, 1): "BJ",
+                (2, 1): "Xa",
+                (0, 2): "None",
                 (1, 2): "Xc",
                 (2, 2): "None",
             },
-            "score": 13.23
+            "score": 5.5829
         },
-        "blaze": {
+        "bolt-caster": {
             "map": {
-                (0, 0): "SS",
-                (1, 0): "WO",
-                (0, 1): "Xa",
-                (1, 1): "MA",
-                (0, 2): "Xc",
-                (1, 2): "Xb",
-            },
-            "score": 3279.00
-        },
-        "boltcaster": {
-            "map": {
-                (0, 0): "BC",
+                (0, 0): "Xa",
                 (1, 0): "Xb",
                 (2, 0): "SM",
-                (0, 1): "BI",
-                (1, 1): "Xa",
-                (2, 1): "Xc",
+                (0, 1): "Xc",
+                (1, 1): "BC",
+                (2, 1): "BI",
                 (0, 2): "None",
                 (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 29.85
-        },    
+            "score": 4.01
+        },
+        "neutron": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "PF",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (2, 1): "NC",
+            },
+            "score": 391.17
+        },
+        "plasma-launcher": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PL",
+                (1, 1): "Xc",
+            },
+            "score": 10.9620
+        },
+        "pulse-splitter": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (2, 0): "Xc",
+                (0, 1): "II",
+                (1, 1): "PS",
+                (2, 1): "RM",
+                (0, 2): "None",
+                (1, 2): "AC",
+                (2, 2): "None",
+            },
+            "score": 11.6034
+        },
+        "scatter": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "SB",
+                (2, 1): "SG",
+            },
+            "score": 11.22
+        },
         "scanner": {
             "map": {
-                (0, 0): "WR",
+                (0, 0): "SH",
                 (1, 0): "Xb",
-                (2, 0): "SH",
+                (2, 0): "PC",
                 (0, 1): "Xc",
                 (1, 1): "Xa",
                 (2, 1): "RA",
                 (0, 2): "SC",
-                (1, 2): "PC",
+                (1, 2): "WR",
                 (2, 2): "None",
             },
-            "score": 321.25
+            "score": 321.2527
+        },
+        "forbidden": {
+            "map": {
+                (0, 0): "Fa",
+                (0, 1): "Fc",
+                (0, 2): "Fb",
+            },
+            "score": 3.0882
+        },
+    },
+    "atlantid-mt": {
+        "mining": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "AM",
+                (2, 0): "None",
+                (0, 1): "MB",
+                (1, 1): "RL",
+                (2, 1): "Xb",
+                (0, 2): "Xc",
+                (1, 2): "OD",
+                (2, 2): "PR",
+            },
+            "score": 32.5016
+        },
+        "blaze-javelin": {
+            "map": {
+                (0, 0): "WO",
+                (1, 0): "Xb",
+                (2, 0): "None",
+                (0, 1): "MA",
+                (1, 1): "BJ",
+                (2, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "None",
+            },
+            "score": 5.5829
+        },
+        "bolt-caster": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (2, 0): "SM",
+                (0, 1): "Xc",
+                (1, 1): "BC",
+                (2, 1): "BI",
+                (0, 2): "None",
+                (1, 2): "RM",
+                (2, 2): "None",
+            },
+            "score": 4.01
+        },
+        "neutron": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "PF",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (2, 1): "NC",
+            },
+            "score": 391.17
+        },
+        "plasma-launcher": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PL",
+                (1, 1): "Xc",
+            },
+            "score": 10.9620
+        },
+        "pulse-splitter": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (2, 0): "Xc",
+                (0, 1): "II",
+                (1, 1): "PS",
+                (2, 1): "RM",
+                (0, 2): "None",
+                (1, 2): "AC",
+                (2, 2): "None",
+            },
+            "score": 11.6034
+        },
+        "scatter": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "SB",
+                (2, 1): "SG",
+            },
+            "score": 11.22
+        },
+        "scanner": {
+            "map": {
+                (0, 0): "SH",
+                (1, 0): "Xb",
+                (2, 0): "PC",
+                (0, 1): "Xc",
+                (1, 1): "Xa",
+                (2, 1): "RA",
+                (0, 2): "SC",
+                (1, 2): "WR",
+                (2, 2): "None",
+            },
+            "score": 321.2527
+        },
+        "forbidden": {
+            "map": {
+                (0, 0): "Fa",
+                (0, 1): "Fc",
+                (0, 2): "Fb",
+            },
+            "score": 3.0882
+        },
+    },
+    "sentinel-mt": {
+        "mining": {
+            "map": {
+                (0, 0): "PR",
+                (1, 0): "Xa",
+                (2, 0): "OD",
+                (0, 1): "Xc",
+                (1, 1): "MB",
+                (2, 1): "AM",
+                (0, 2): "None",
+                (1, 2): "Xb",
+                (2, 2): "None",
+            },
+            "score": 11.4592
+        },
+        "blaze-javelin": {
+            "map": {
+                (0, 0): "WO",
+                (1, 0): "Xb",
+                (2, 0): "None",
+                (0, 1): "MA",
+                (1, 1): "BJ",
+                (2, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "None",
+            },
+            "score": 5.5829
+        },
+        "bolt-caster": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (2, 0): "SM",
+                (0, 1): "Xc",
+                (1, 1): "BC",
+                (2, 1): "BI",
+                (0, 2): "None",
+                (1, 2): "RM",
+                (2, 2): "None",
+            },
+            "score": 4.01
+        },
+        "neutron": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "PF",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (2, 1): "NC",
+            },
+            "score": 391.17
+        },
+        "plasma-launcher": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PL",
+                (1, 1): "Xc",
+            },
+            "score": 10.9620
+        },
+        "pulse-splitter": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (2, 0): "Xc",
+                (0, 1): "II",
+                (1, 1): "PS",
+                (2, 1): "RM",
+                (0, 2): "None",
+                (1, 2): "AC",
+                (2, 2): "None",
+            },
+            "score": 11.6034
+        },
+        "scatter": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "SB",
+                (2, 1): "SG",
+            },
+            "score": 11.22
+        },
+        "scanner": {
+            "map": {
+                (0, 0): "SH",
+                (1, 0): "Xb",
+                (2, 0): "PC",
+                (0, 1): "Xc",
+                (1, 1): "Xa",
+                (2, 1): "RA",
+                (0, 2): "SC",
+                (1, 2): "WR",
+                (2, 2): "None",
+            },
+            "score": 321.2527
+        },
+        "forbidden": {
+            "map": {
+                (0, 0): "Fa",
+                (0, 1): "Fc",
+                (0, 2): "Fb",
+            },
+            "score": 3.0882
         },
     },
 }

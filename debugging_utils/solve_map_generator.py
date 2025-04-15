@@ -34,7 +34,7 @@ def generate_solve_map(tech, grid_width=3, grid_height=3, player_owned_rewards=N
                 grid.set_supercharged(x, y, True)
 
     try:
-        optimized_grid, optimized_score = refine_placement(grid, "multitool", modules, tech, player_owned_rewards)
+        optimized_grid, optimized_score = refine_placement(grid, "atlantid-mt", modules, tech, player_owned_rewards)
         print_grid(optimized_grid)
         return optimized_grid, optimized_score
     except Exception as e:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
         "--rewards",
         type=str,
         nargs="*",
-        default=["PC", "SB", "SP", "TT", "PR", "RL", "SH", "RA", "SM"],
+        default=["PC", "SB", "SP", "TT", "PR", "RL", "SH", "RA"],
         help="List of player-owned reward module IDs",
     )
     parser.add_argument(
@@ -101,5 +101,5 @@ if __name__ == "__main__":
         for (x, y), module_id in solve_map_template.items():
             print(f"            ({x}, {y}): \"{module_id}\",")
         print("        },")
-        print(f'        "score": {solve_score:.2f}')
+        print(f'        "score": {solve_score:.4f}')
         print("    },")
