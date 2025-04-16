@@ -636,7 +636,7 @@ modules = {
                     ],
                 },
             ],
-            "Weapons": [
+            "Weaponry": [
                 {
                     "label": "Blaze Javelin",
                     "key": "blaze-javelin",
