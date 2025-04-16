@@ -284,7 +284,7 @@ def ml_placement(
     # --- 10. Calculate Initial Score ---
     predicted_score = calculate_grid_score(predicted_grid, tech)
     logging.info(f"INFO -- ML Placement: Initial Score (before polish): {predicted_score:.4f}")
-    # print_grid(predicted_grid) # Optional: print grid before polish
+    print_grid(predicted_grid) # Optional: print grid before polish
 
     # --- 11. Optional Polishing Step ---
     if polish_result:

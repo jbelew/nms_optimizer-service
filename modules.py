@@ -597,8 +597,6 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
-                        # { "id": "RL", "type": "reward", "label": "Runic Laser", "bonus": 0.10, "adjacency": "greater", "sc_eligible": True, "image": "runic-laser.png", },
-                        { "id": "PR", "type": "reward", "label": "Plasma Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "plasma-resonator.png", },
                     ],
                 },
             ],
@@ -625,7 +623,6 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
-                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "resonance.png", }, 
                     ],
                 },
                 {
@@ -662,7 +659,6 @@ modules = {
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
                         { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
-                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
                         { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
@@ -802,7 +798,7 @@ modules = {
             ],
         },
     },
-    "atlantid-mt": {
+    "atlantid": {
         "label": "Atlantid Multi-Tools",
         "type": "Multi-Tool",
         "types": {
@@ -820,7 +816,6 @@ modules = {
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "RL", "type": "bonus", "label": "Runic Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "runic-laser.png", },
-                        { "id": "PR", "type": "reward", "label": "Plasma Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "plasma-resonator.png", },
                     ],
                 },
             ],
@@ -847,7 +842,6 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
-                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "resonance.png", }, 
                     ],
                 },
                 {
@@ -860,7 +854,7 @@ modules = {
                     ],
                 },
             ],
-            "Weapons": [
+            "Weaponry": [
                 {
                     "label": "Blaze Javelin",
                     "key": "blaze-javelin",
@@ -884,7 +878,6 @@ modules = {
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
                         { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
-                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
                         { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
@@ -1041,7 +1034,6 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
-                        { "id": "PR", "type": "reward", "label": "Plasma Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "plasma-resonator.png", },
                     ],
                 },
             ],
@@ -1068,7 +1060,6 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
-                        { "id": "RA", "type": "reward", "label": "Resonance Amplifier", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "resonance.png", }, 
                     ],
                 },
                 {
@@ -1081,7 +1072,7 @@ modules = {
                     ],
                 },
             ],
-            "Weapons": [
+            "Weaponry": [
                 {
                     "label": "Blaze Javelin",
                     "key": "blaze-javelin",
@@ -1105,7 +1096,6 @@ modules = {
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
                         { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
-                        { "id": "SM", "type": "reward", "label": "Boltcaster SM", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-sm.png", },
                         { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
@@ -1618,14 +1608,14 @@ solves = {
     "standard-mt": {
         "mining": {
             "map": {
-                (0, 0): "PR",
-                (1, 0): "Xa",
-                (2, 0): "OD",
-                (0, 1): "Xc",
+                (0, 0): "OD",
+                (1, 0): "AM",
+                (2, 0): "None",
+                (0, 1): "Xa",
                 (1, 1): "MB",
-                (2, 1): "AM",
+                (2, 1): "Xb",
                 (0, 2): "None",
-                (1, 2): "Xb",
+                (1, 2): "Xc",
                 (2, 2): "None",
             },
             "score": 11.4592
@@ -1648,7 +1638,7 @@ solves = {
             "map": {
                 (0, 0): "Xa",
                 (1, 0): "Xb",
-                (2, 0): "SM",
+                (2, 0): "None",
                 (0, 1): "Xc",
                 (1, 1): "BC",
                 (2, 1): "BI",
@@ -1656,7 +1646,7 @@ solves = {
                 (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 4.01
+            "score": 4.0124
         },
         "neutron": {
             "map": {
@@ -1705,17 +1695,17 @@ solves = {
         },
         "scanner": {
             "map": {
-                (0, 0): "SH",
-                (1, 0): "Xb",
-                (2, 0): "PC",
-                (0, 1): "Xc",
+                (0, 0): "SC",
+                (1, 0): "SH",
+                (2, 0): "None",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "RA",
-                (0, 2): "SC",
-                (1, 2): "WR",
+                (2, 1): "PC",
+                (0, 2): "WR",
+                (1, 2): "Xc",
                 (2, 2): "None",
             },
-            "score": 321.2527
+            "score": 279.8527
         },
         "forbidden": {
             "map": {
@@ -1726,18 +1716,18 @@ solves = {
             "score": 3.0882
         },
     },
-    "atlantid-mt": {
+    "atlantid": {
         "mining": {
             "map": {
                 (0, 0): "Xa",
-                (1, 0): "AM",
-                (2, 0): "None",
-                (0, 1): "MB",
+                (1, 0): "MB",
+                (2, 0): "Xb",
+                (0, 1): "AM",
                 (1, 1): "RL",
-                (2, 1): "Xb",
-                (0, 2): "Xc",
-                (1, 2): "OD",
-                (2, 2): "PR",
+                (2, 1): "OD",
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "None",
             },
             "score": 32.5016
         },
@@ -1759,7 +1749,7 @@ solves = {
             "map": {
                 (0, 0): "Xa",
                 (1, 0): "Xb",
-                (2, 0): "SM",
+                (2, 0): "None",
                 (0, 1): "Xc",
                 (1, 1): "BC",
                 (2, 1): "BI",
@@ -1767,7 +1757,7 @@ solves = {
                 (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 4.01
+            "score": 4.0124
         },
         "neutron": {
             "map": {
@@ -1816,17 +1806,17 @@ solves = {
         },
         "scanner": {
             "map": {
-                (0, 0): "SH",
-                (1, 0): "Xb",
-                (2, 0): "PC",
-                (0, 1): "Xc",
+                (0, 0): "SC",
+                (1, 0): "SH",
+                (2, 0): "None",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "RA",
-                (0, 2): "SC",
-                (1, 2): "WR",
+                (2, 1): "PC",
+                (0, 2): "WR",
+                (1, 2): "Xc",
                 (2, 2): "None",
             },
-            "score": 321.2527
+            "score": 279.8527
         },
         "forbidden": {
             "map": {
@@ -1840,14 +1830,14 @@ solves = {
     "sentinel-mt": {
         "mining": {
             "map": {
-                (0, 0): "PR",
-                (1, 0): "Xa",
-                (2, 0): "OD",
-                (0, 1): "Xc",
+                (0, 0): "OD",
+                (1, 0): "AM",
+                (2, 0): "None",
+                (0, 1): "Xa",
                 (1, 1): "MB",
-                (2, 1): "AM",
+                (2, 1): "Xb",
                 (0, 2): "None",
-                (1, 2): "Xb",
+                (1, 2): "Xc",
                 (2, 2): "None",
             },
             "score": 11.4592
@@ -1870,7 +1860,7 @@ solves = {
             "map": {
                 (0, 0): "Xa",
                 (1, 0): "Xb",
-                (2, 0): "SM",
+                (2, 0): "None",
                 (0, 1): "Xc",
                 (1, 1): "BC",
                 (2, 1): "BI",
@@ -1878,7 +1868,7 @@ solves = {
                 (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 4.01
+            "score": 4.0124
         },
         "neutron": {
             "map": {
@@ -1927,17 +1917,17 @@ solves = {
         },
         "scanner": {
             "map": {
-                (0, 0): "SH",
-                (1, 0): "Xb",
-                (2, 0): "PC",
-                (0, 1): "Xc",
+                (0, 0): "SC",
+                (1, 0): "SH",
+                (2, 0): "None",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "RA",
-                (0, 2): "SC",
-                (1, 2): "WR",
+                (2, 1): "PC",
+                (0, 2): "WR",
+                (1, 2): "Xc",
                 (2, 2): "None",
             },
-            "score": 321.2527
+            "score": 279.8527
         },
         "forbidden": {
             "map": {
