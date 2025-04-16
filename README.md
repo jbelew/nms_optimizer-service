@@ -10,7 +10,8 @@ This repository contains the code for the `nms_optimizer-service`, a service des
 
 - **Module Placement Optimization:** Optimizes the placement of modules within a grid to maximize adjacency bonuses and supercharged slot utilization.
 - **Pattern Matching:** Utilizes pre-defined patterns (solves) for known optimal configurations and adapts them to the user's grid.
-- **Simulated Annealing:** Employs a simulated annealing algorithm to refine module placement and explore alternative configurations for improved scores.
+- **TensorFlow Models ** Attempts to solve placement using a collection of TensorFlow models.  
+- **Simulated Annealing:** Employs a simulated annealing algorithm to polish and refine module placement and explore alternative configurations for improved scores.
 - **Technology Tree Generation:** Generates a technology tree for a given ship, providing a structured view of available technologies and their relationships.
 - **REST API:** Provides REST API endpoints for grid optimization and technology tree retrieval.
 
