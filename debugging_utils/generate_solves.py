@@ -25,7 +25,7 @@ def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owne
         supercharged_positions (list, optional): List of (x, y) tuples for supercharged cells. Defaults to None.
     """
     if player_owned_rewards is None:
-        player_owned_rewards = ["PC", "SB", "SP", "TT"]
+        player_owned_rewards = ["SB", "SP", "TT"]
 
     grid = Grid(width=grid_width, height=grid_height)
 

@@ -69,7 +69,7 @@ def ml_placement(
                                        and its calculated score, or (None, 0.0) on failure.
     """
     start_time = time.time()
-    logging.info(f"INFO -- Attempting ML placement for UI keys: ship='{ship}', tech='{tech}' (Polish: {polish_result})")
+    # logging.info(f"INFO -- Attempting ML placement for UI keys: ship='{ship}', tech='{tech}' (Polish: {polish_result})")
 
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -301,7 +301,7 @@ def ml_placement(
             "start_from_current_grid": True,
             "max_processing_time": 5.0,
         }
-        logging.info(f"INFO -- ML Placement: Using SA polish params: {polish_params}")
+        # logging.info(f"INFO -- ML Placement: Using SA polish params: {polish_params}")
 
         try:
             # Run SA starting from the ML-generated grid, using UI keys

@@ -665,6 +665,18 @@ modules = {
                     ],
                 },
                 {
+                    "label": "Geology Cannon",
+                    "key": "geology",
+                    "image": "geology.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                    ],
+                },
+                {
                     "label": "Neutron Cannon",
                     "key": "neutron",
                     "image": "neutron.webp",
@@ -681,7 +693,7 @@ modules = {
                     "label": "Plasma Launcher",
                     "key": "plasma-launcher",
                     "image": "plasma-launcher.webp",
-                    "color": "purple",
+                    "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
                         { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
@@ -698,7 +710,7 @@ modules = {
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
                         { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
-                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "impact-ignitor.png", },
+                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
@@ -884,6 +896,18 @@ modules = {
                     ],
                 },
                 {
+                    "label": "Geology Cannon",
+                    "key": "geology",
+                    "image": "geology.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                    ],
+                },
+                {
                     "label": "Neutron Cannon",
                     "key": "neutron",
                     "image": "neutron.webp",
@@ -900,7 +924,7 @@ modules = {
                     "label": "Plasma Launcher",
                     "key": "plasma-launcher",
                     "image": "plasma-launcher.webp",
-                    "color": "purple",
+                    "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
                         { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
@@ -917,7 +941,7 @@ modules = {
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
                         { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
-                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "impact-ignitor.png", },
+                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
@@ -1102,6 +1126,18 @@ modules = {
                     ],
                 },
                 {
+                    "label": "Geology Cannon",
+                    "key": "geology",
+                    "image": "geology.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                    ],
+                },
+                {
                     "label": "Neutron Cannon",
                     "key": "neutron",
                     "image": "neutron.webp",
@@ -1118,7 +1154,7 @@ modules = {
                     "label": "Plasma Launcher",
                     "key": "plasma-launcher",
                     "image": "plasma-launcher.webp",
-                    "color": "purple",
+                    "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
                         { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
@@ -1135,7 +1171,7 @@ modules = {
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
                         { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
-                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "impact-ignitor.png", },
+                        { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
@@ -1648,6 +1684,15 @@ solves = {
             },
             "score": 4.0124
         },
+        "geology": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "GC",
+                (1, 1): "Xc",
+            },
+            "score": 10.9620
+        },
         "neutron": {
             "map": {
                 (0, 0): "Xc",
@@ -1670,17 +1715,17 @@ solves = {
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (2, 0): "Xc",
-                (0, 1): "II",
+                (0, 0): "II",
+                (1, 0): "Xc",
+                (2, 0): "Xa",
+                (0, 1): "AC",
                 (1, 1): "PS",
-                (2, 1): "RM",
+                (2, 1): "Xb",
                 (0, 2): "None",
-                (1, 2): "AC",
+                (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 11.6034
+            "score": 11.4771
         },
         "scatter": {
             "map": {
@@ -1759,6 +1804,15 @@ solves = {
             },
             "score": 4.0124
         },
+        "geology": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "GC",
+                (1, 1): "Xc",
+            },
+            "score": 10.9620
+        },
         "neutron": {
             "map": {
                 (0, 0): "Xc",
@@ -1781,17 +1835,17 @@ solves = {
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (2, 0): "Xc",
-                (0, 1): "II",
+                (0, 0): "II",
+                (1, 0): "Xc",
+                (2, 0): "Xa",
+                (0, 1): "AC",
                 (1, 1): "PS",
-                (2, 1): "RM",
+                (2, 1): "Xb",
                 (0, 2): "None",
-                (1, 2): "AC",
+                (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 11.6034
+            "score": 11.4771
         },
         "scatter": {
             "map": {
@@ -1870,6 +1924,15 @@ solves = {
             },
             "score": 4.0124
         },
+        "geology": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "GC",
+                (1, 1): "Xc",
+            },
+            "score": 10.9620
+        },    
         "neutron": {
             "map": {
                 (0, 0): "Xc",
@@ -1892,17 +1955,17 @@ solves = {
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (2, 0): "Xc",
-                (0, 1): "II",
+                (0, 0): "II",
+                (1, 0): "Xc",
+                (2, 0): "Xa",
+                (0, 1): "AC",
                 (1, 1): "PS",
-                (2, 1): "RM",
+                (2, 1): "Xb",
                 (0, 2): "None",
-                (1, 2): "AC",
+                (1, 2): "RM",
                 (2, 2): "None",
             },
-            "score": 11.6034
+            "score": 11.4771
         },
         "scatter": {
             "map": {
