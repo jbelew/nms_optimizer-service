@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# File bump
 rsync -vrt --progress generated_batches/ /mnt/media/projects/nms_optimizer/training/
 rm -rf generated_batches/
 
