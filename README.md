@@ -1,10 +1,10 @@
-# No Man's Sky Starship Optimizer (Service Layer)
+# No Man's Sky Neural Technology Optimizer (Service Layer)
 
 ## CI/CD Status
 
 ![Tests](https://github.com/jbelew/nms_optimizer-service/actions/workflows/main.yml/badge.svg?branch=main) ![Deployment](https://img.shields.io/badge/Deployment-Heroku-blue?logo=heroku)
 
-This repository contains the code for the `nms_optimizer-service`, a service designed to optimize the placement of technology modules within the inventory grid of No Man's Sky starships. It leverages various algorithms, including pattern matching and simulated annealing, to maximize adjacency bonuses and overall effectiveness of the installed technologies.
+This repository contains the code for the `nms_optimizer-service`, a service designed to optimize the placement of technology modules within the technology grid of No Man's Sky starships and multi-tools. It leverages various algorithms, including pattern matching, ML (AI), and simulated annealing, to maximize adjacency bonuses and overall effectiveness of the installed technologies.
 
 ## Key Features
 
