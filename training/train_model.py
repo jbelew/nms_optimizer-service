@@ -129,8 +129,7 @@ def train_model(
         optimizer,
         mode=metric_mode,
         factor=scheduler_factor,
-        patience=scheduler_patience,
-        verbose=True
+        patience=scheduler_patience
     )
 
     # Ensure the specific model save directory exists

@@ -130,7 +130,7 @@ def ml_placement(
     # Count how many of each module ID we need to place
     modules_needed_count = Counter(m['id'] for m in modules_to_place_list)
     total_modules_to_place = len(modules_to_place_list)
-    logging.info(f"INFO -- ML Placement: Need to place {total_modules_to_place} modules based on UI keys/rewards: {dict(modules_needed_count)}")
+    # logging.info(f"INFO -- ML Placement: Need to place {total_modules_to_place} modules based on UI keys/rewards: {dict(modules_needed_count)}")
     # --- End UI Module Setup ---
 
     # --- 5. Load Model ---
@@ -293,7 +293,7 @@ def ml_placement(
     # --- 10. Calculate Initial Score ---
     predicted_score = calculate_grid_score(predicted_grid, tech)
     logging.info(f"INFO -- ML Placement: Initial Score (before polish): {predicted_score:.4f}")
-    # print_grid(predicted_grid) # Optional: print grid before polish
+    print_grid(predicted_grid) # Optional: print grid before polish
 
     # --- 11. Optional Polishing Step ---
     if polish_result:
@@ -324,7 +324,8 @@ def ml_placement(
             )
 
             if polished_grid is not None and polished_bonus > predicted_score:
-                logging.info(f"INFO -- ML Placement: SA polish improved score from {predicted_score:.4f} to {polished_bonus:.4f}. Updating grid.")
+                logging.info(f"INFO -- ML Placement: SA polish improved score from {predicted_score:.4f} to {polished_bonus:.4f}. Updating grid.")    
+                print_grid(polished_grid) # Optional: print grid before polish
                 predicted_grid = polished_grid
                 predicted_score = polished_bonus
             elif polished_grid is not None:

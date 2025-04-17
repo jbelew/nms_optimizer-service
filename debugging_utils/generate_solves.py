@@ -7,7 +7,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from grid_utils import Grid
-from modules import modules
+from modules_for_training import modules
 from optimization_algorithms import refine_placement
 from grid_display import print_grid, print_grid_compact
 
