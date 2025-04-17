@@ -3,7 +3,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
-from torch.optim.lr_scheduler import StepLR
+# <<< Import ReduceLROnPlateau >>>
+from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
 from torch.utils.tensorboard import SummaryWriter
 import sys
 import os
@@ -82,8 +83,11 @@ def train_model(
     weight_decay,
     log_dir,
     model_save_path,
-    scheduler_step_size,
-    scheduler_gamma,
+    # <<< Removed scheduler_step_size, scheduler_gamma as ReduceLROnPlateau doesn't use them directly >>>
+    # scheduler_step_size,
+    # scheduler_gamma,
+    scheduler_factor: float = 0.5, # <<< Added factor for ReduceLROnPlateau >>>
+    scheduler_patience: int = 5,   # <<< Added patience for ReduceLROnPlateau >>>
     criterion_weights: Optional[torch.Tensor] = None, # <<< Added for class weights
     early_stopping_patience: int = 10,
     early_stopping_metric: str = "val_loss",
@@ -95,7 +99,8 @@ def train_model(
     print(f"  Grid Dimensions: {grid_height}x{grid_width}")
     print(f"  Num Output Classes: {num_output_classes}")
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
-    print(f"  Scheduler Step: {scheduler_step_size}, Gamma: {scheduler_gamma}")
+    # <<< Updated scheduler info >>>
+    print(f"  Scheduler: ReduceLROnPlateau, Factor: {scheduler_factor}, Patience: {scheduler_patience}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Training device: {device}")
@@ -113,9 +118,20 @@ def train_model(
         criterion_placement = nn.CrossEntropyLoss()
     # <<< End class weights usage >>>
 
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
-    # <<< Enable the scheduler >>>
-    scheduler = StepLR(optimizer, step_size=scheduler_step_size, gamma=scheduler_gamma)
+    # <<< Use AdamW optimizer >>>
+    optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+
+    # <<< Determine metric mode for scheduler based on early stopping metric >>>
+    metric_mode = "min" if early_stopping_metric == "val_loss" else "max"
+
+    # <<< Use ReduceLROnPlateau scheduler >>>
+    scheduler = ReduceLROnPlateau(
+        optimizer,
+        mode=metric_mode,
+        factor=scheduler_factor,
+        patience=scheduler_patience,
+        verbose=True
+    )
 
     # Ensure the specific model save directory exists
     os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
@@ -150,10 +166,10 @@ def train_model(
             f"Warning: Cannot monitor 'val_miou' as torchmetrics failed or is not installed. Defaulting to 'val_loss'."
         )
         early_stopping_metric = "val_loss"
+        metric_mode = "min" # Ensure metric_mode matches the actual metric
 
     epochs_no_improve = 0
-    best_metric_value = float("inf") if early_stopping_metric == "val_loss" else float("-inf")
-    metric_mode = "min" if early_stopping_metric == "val_loss" else "max"
+    best_metric_value = float("inf") if metric_mode == "min" else float("-inf")
     early_stop_triggered = False
     # --- End Early Stopping Initialization ---
 
@@ -180,6 +196,7 @@ def train_model(
         avg_val_loss = float("nan")
         epoch_val_accuracy = 0.0
         epoch_val_iou = 0.0
+        current_metric_value = None # <<< Initialize metric value for the epoch >>>
 
         if val_loader:
             model.eval()
@@ -203,6 +220,16 @@ def train_model(
             avg_val_loss = running_val_loss / len(val_loader) if len(val_loader) > 0 else 0.0
             epoch_val_accuracy = val_accuracy.compute() if metrics_available and val_accuracy else 0.0
             epoch_val_iou = val_iou.compute() if metrics_available and val_iou else 0.0
+
+            # <<< Determine the current metric value for scheduler/early stopping >>>
+            if early_stopping_metric == "val_miou":
+                if metrics_available:
+                    current_metric_value = epoch_val_iou
+                else: # Fallback if metrics failed mid-training (shouldn't happen with initial check)
+                    current_metric_value = avg_val_loss
+            else: # Default to val_loss
+                current_metric_value = avg_val_loss
+
         # --- End Validation Loop ---
 
         epoch_time = time.time() - start_epoch_time
@@ -227,18 +254,7 @@ def train_model(
         writer.add_scalar("Time/epoch", epoch_time, epoch)
 
         # --- Early Stopping Check ---
-        if val_loader:
-            current_metric_value = avg_val_loss
-            if early_stopping_metric == "val_miou":
-                if metrics_available:
-                    current_metric_value = epoch_val_iou
-                else:
-                    print("Warning: Trying to use val_miou for early stopping, but metrics unavailable. Using val_loss.")
-                    current_metric_value = avg_val_loss
-                    early_stopping_metric = "val_loss"
-                    metric_mode = "min"
-                    best_metric_value = min(best_metric_value, float("inf"))
-
+        if val_loader and current_metric_value is not None:
             improved = False
             if metric_mode == "min" and current_metric_value < best_metric_value:
                 improved = True
@@ -263,11 +279,16 @@ def train_model(
             if epochs_no_improve >= early_stopping_patience:
                 print(f"\nEarly stopping triggered after {epoch + 1} epochs!")
                 early_stop_triggered = True
-                break
+                # <<< Step scheduler before breaking to reflect potential LR change based on this epoch >>>
+                scheduler.step(current_metric_value)
+                break # Exit epoch loop
         # --- End Early Stopping Check ---
 
-        # <<< Step the scheduler after validation and logging >>>
-        scheduler.step()
+        # <<< Step the scheduler using the validation metric value >>>
+        if val_loader and current_metric_value is not None:
+            scheduler.step(current_metric_value)
+        # <<< If no validation, you might want a different scheduler like StepLR or CosineAnnealingLR >>>
+        # <<< or just let the LR stay constant. For now, it does nothing if no val_loader. >>>
 
     if not early_stop_triggered:
         print(f"Finished Training for {num_epochs} epochs.")
@@ -312,8 +333,11 @@ def run_training_from_files(
     base_log_dir,
     base_model_save_dir,
     base_data_source_dir,
-    scheduler_step_size,
-    scheduler_gamma,
+    # <<< Removed scheduler_step_size, scheduler_gamma >>>
+    # scheduler_step_size,
+    # scheduler_gamma,
+    scheduler_factor, # <<< Added scheduler factor >>>
+    scheduler_patience, # <<< Added scheduler patience >>>
     validation_split=0.2,
     early_stopping_patience=10,
     early_stopping_metric="val_loss",
@@ -321,6 +345,7 @@ def run_training_from_files(
     """
     Orchestrates the training process, loading data and saving models
     using ship/tech subdirectories. Includes class weight calculation.
+    Uses AdamW and ReduceLROnPlateau.
     """
     # --- Get Tech Keys ---
     try:
@@ -520,7 +545,9 @@ def run_training_from_files(
         model = train_model(
             train_loader, val_loader, grid_height, grid_width, num_output_classes,
             num_epochs, learning_rate, weight_decay, log_dir, model_save_path,
-            scheduler_step_size, scheduler_gamma,
+            # <<< Pass scheduler factor and patience >>>
+            scheduler_factor=scheduler_factor,
+            scheduler_patience=scheduler_patience,
             criterion_weights=class_weights_tensor, # <<< Pass calculated weights
             early_stopping_patience=effective_patience,
             early_stopping_metric=early_stopping_metric,
@@ -543,8 +570,11 @@ if __name__ == "__main__":
     parser.add_argument("--wd", type=float, default=1e-4, help="Weight decay (L2 regularization). Try lower values like 1e-4 or 0.") # Adjusted default WD
     parser.add_argument("--epochs", type=int, default=100, help="Maximum number of training epochs.")
     parser.add_argument("--batch_size", type=int, default=64, help="Training batch size.")
-    parser.add_argument("--scheduler_step", type=int, default=20, help="StepLR: Number of epochs before decaying LR.") # Adjusted default step
-    parser.add_argument("--scheduler_gamma", type=float, default=0.5, help="StepLR: Multiplicative factor of LR decay.") # Adjusted default gamma
+    # <<< Removed StepLR args, added ReduceLROnPlateau args >>>
+    # parser.add_argument("--scheduler_step", type=int, default=20, help="StepLR: Number of epochs before decaying LR.")
+    # parser.add_argument("--scheduler_gamma", type=float, default=0.5, help="StepLR: Multiplicative factor of LR decay.")
+    parser.add_argument("--scheduler_factor", type=float, default=0.5, help="ReduceLROnPlateau: Factor by which the LR is reduced.")
+    parser.add_argument("--scheduler_patience", type=int, default=5, help="ReduceLROnPlateau: Number of epochs with no improvement after which LR is reduced.")
     parser.add_argument("--log_dir", type=str, default=DEFAULT_LOG_DIR, help="Base directory for TensorBoard logs (ship/tech subdirs will be created).")
     parser.add_argument("--model_dir", type=str, default=DEFAULT_MODEL_SAVE_DIR, help="Base directory to save best trained models.")
     parser.add_argument("--data_source_dir", type=str, default=DEFAULT_DATA_SOURCE_DIR, help="Base directory containing generated .npz data files (expects ship/tech subdirs).")
@@ -566,7 +596,8 @@ if __name__ == "__main__":
         "grid_width": args.width, "grid_height": args.height, "ship": args.ship,
         "tech_category_to_train": args.category, "learning_rate": args.lr,
         "weight_decay": args.wd, "num_epochs": args.epochs, "batch_size": args.batch_size,
-        "scheduler_step_size": args.scheduler_step, "scheduler_gamma": args.scheduler_gamma,
+        # <<< Updated scheduler config >>>
+        "scheduler_factor": args.scheduler_factor, "scheduler_patience": args.scheduler_patience,
         "base_log_dir": args.log_dir, "base_model_save_dir": args.model_dir,
         "base_data_source_dir": args.data_source_dir,
         "validation_split": args.val_split, "early_stopping_patience": args.es_patience,
@@ -592,8 +623,9 @@ if __name__ == "__main__":
         base_log_dir=config["base_log_dir"],
         base_model_save_dir=config["base_model_save_dir"],
         base_data_source_dir=config["base_data_source_dir"],
-        scheduler_step_size=config["scheduler_step_size"],
-        scheduler_gamma=config["scheduler_gamma"],
+        # <<< Pass new scheduler args >>>
+        scheduler_factor=config["scheduler_factor"],
+        scheduler_patience=config["scheduler_patience"],
         validation_split=config["validation_split"],
         early_stopping_patience=config["early_stopping_patience"],
         early_stopping_metric=config["early_stopping_metric"],
