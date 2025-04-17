@@ -19,8 +19,12 @@ from collections import Counter
 # --- Imports from your project ---
 try:
     from training.model_definition import ModulePlacementCNN
+    # <<< Import both module definition sources >>>
     from modules_data import get_tech_modules, get_tech_modules_for_training
-    from module_placement import place_module, clear_all_modules_of_tech # <<< Added clear_all_modules_of_tech
+    from modules_for_training import modules as modules_for_training_defs # For model loading
+    # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
+    # <<< End import changes >>>
+    from module_placement import place_module, clear_all_modules_of_tech
     from bonus_calculations import calculate_grid_score
     from grid_utils import Grid
     from model_mapping import get_model_keys # Import the modified get_model_keys
@@ -39,7 +43,7 @@ DEFAULT_MODEL_GRID_HEIGHT = 3
 def ml_placement(
     grid: Grid,
     ship: str, # This is the UI ship key
-    modules_data: dict,
+    modules_data: dict, # <<< This should be the user-facing modules dict (from modules.py)
     tech: str, # This is the UI tech key
     player_owned_rewards: Optional[List[str]] = None,
     model_dir: str = DEFAULT_MODEL_DIR,
@@ -56,7 +60,7 @@ def ml_placement(
     Args:
         grid (Grid): The input grid state (active/inactive, supercharged).
         ship (str): The UI ship key.
-        modules_data (dict): The main modules dictionary.
+        modules_data (dict): The main modules dictionary (user-facing definitions).
         tech (str): The UI tech key.
         player_owned_rewards (Optional[List[str]]): List of reward module IDs owned.
         model_dir (str): Directory containing trained models.
@@ -90,13 +94,17 @@ def ml_placement(
         logging.warning(f"INFO -- ML Placement: Model file not found at '{model_path}'. Cannot use ML.")
         return None, 0.0
 
-    # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) ---
-    # Use the model keys to get the list of modules the *model was trained on*.
-    training_modules_list = get_tech_modules_for_training(modules_data, model_ship_key, model_tech_key)
+    # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) --- # <<< MODIFIED SECTION
+    # <<< Use the TRAINING definitions to get the list of modules the model was trained on >>>
+    training_modules_list = get_tech_modules_for_training(modules_for_training_defs, model_ship_key, model_tech_key)
+    # <<< End change >>>
+
     if not training_modules_list:
+        # Use f-string for cleaner formatting
         logging.error(f"ERROR -- ML Placement: No TRAINING modules found for MODEL keys {model_ship_key}/{model_tech_key}. Cannot define model outputs.")
         return None, 0.0
 
+    # --- Sort modules and create mappings (No change needed here) ---
     training_modules_list.sort(key=lambda m: m['id'])
     module_id_mapping = {module["id"]: i + 1 for i, module in enumerate(training_modules_list)}
     num_output_classes = len(module_id_mapping) + 1 # +1 for background
@@ -106,9 +114,10 @@ def ml_placement(
     # --- End Model Loading Setup ---
 
     # --- 4. Get ACTUAL modules to place & their UI definitions (using UI keys + rewards) --- # <<< MODIFIED SECTION
-    # Use the original UI keys and player rewards to determine which modules
-    # are *actually available* to be placed for this specific user request.
+    # <<< Use the USER-FACING modules_data passed into the function >>>
     modules_to_place_list = get_tech_modules(modules_data, ship, tech, player_owned_rewards)
+    # <<< End change >>>
+
     if not modules_to_place_list:
         logging.warning(f"WARNING -- ML Placement: No placeable modules found for UI keys '{ship}/{tech}' with rewards {player_owned_rewards}. Returning empty grid.")
         cleared_grid = grid.copy()
@@ -131,7 +140,7 @@ def ml_placement(
             input_channels=2,
             grid_height=model_grid_height,
             grid_width=model_grid_width,
-            num_output_classes=num_output_classes
+            num_output_classes=num_output_classes # <<< This should now be correct
         )
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         state_dict = torch.load(model_path, map_location=device)
@@ -284,7 +293,7 @@ def ml_placement(
     # --- 10. Calculate Initial Score ---
     predicted_score = calculate_grid_score(predicted_grid, tech)
     logging.info(f"INFO -- ML Placement: Initial Score (before polish): {predicted_score:.4f}")
-    print_grid(predicted_grid) # Optional: print grid before polish
+    # print_grid(predicted_grid) # Optional: print grid before polish
 
     # --- 11. Optional Polishing Step ---
     if polish_result:

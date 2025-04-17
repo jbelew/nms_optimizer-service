@@ -23,7 +23,7 @@ if project_root not in sys.path:
 # --- Imports from your project ---
 from model_definition import ModulePlacementCNN # Import model definition
 from modules_data import get_tech_modules_for_training
-from modules import modules
+from modules_for_training import modules
 from sklearn.model_selection import train_test_split
 
 try:
