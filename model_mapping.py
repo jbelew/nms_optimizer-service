@@ -21,9 +21,8 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "shield": ("standard", "shield"),
         "launch": ("standard", "launch"),
         "hyper": ("standard", "hyper"),
-        "pulse": ("standard", "pulse"),   # Base mapping for pulse
-        # <<< Add photonix as a potential target, but it's handled by logic >>>
-        "photonix": ("standard", "photonix"), # Not strictly needed here
+        "pulse": ("standard", "pulse"),   
+        "photonix": ("standard", "photonix"), 
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
@@ -40,9 +39,8 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "shield": ("standard", "shield"),
         "launch": ("standard", "launch"),
         "hyper": ("standard", "hyper"),
-        "pulse": ("standard", "pulse"),   # Base mapping for pulse
-        # <<< Add photonix as a potential target, but it's handled by logic >>>
-        "photonix": ("standard", "photonix"), # Not strictly needed here
+        "pulse": ("standard", "pulse"),   
+        "photonix": ("standard", "photonix"),
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
