@@ -24,7 +24,7 @@ from optimization_algorithms import (
     get_all_unique_pattern_variations,
     refine_placement_for_training
 )
-from modules import modules, solves
+from modules_for_training import modules, solves
 from simulated_annealing import simulated_annealing
 from grid_display import print_grid
 from module_placement import place_module
