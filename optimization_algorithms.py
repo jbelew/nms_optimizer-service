@@ -805,7 +805,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 modules,
                 tech,
                 player_owned_rewards,
-                max_processing_time=20.0 # Limit initial SA time
+                max_processing_time=20.0
             )
             if solved_grid is None:
                 raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
@@ -844,7 +844,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
                     grid_to_refine.copy(), # Pass a fresh copy
                     modules, ship, tech, player_owned_rewards,
-                    opportunity_x, opportunity_y
+                    opportunity_x, opportunity_y,
+                    max_processing_time=20.0 
                 )
             # else: ML refinement succeeded (or returned original grid), proceed with its result.
 
