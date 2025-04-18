@@ -805,13 +805,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 modules,
                 tech,
                 player_owned_rewards,
-                 # Consider using slightly faster SA params here too
-                initial_temperature=3500,
-                cooling_rate=0.97,
-                iterations_per_temp=25,
-                initial_swap_probability=0.45,
-                final_swap_probability=0.35,
-                max_processing_time=10.0 # Limit initial SA time
+                max_processing_time=20.0 # Limit initial SA time
             )
             if solved_grid is None:
                 raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
@@ -945,13 +939,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             modules,
             tech,
             player_owned_rewards,
-            # Use standard SA parameters for final check
-            initial_temperature=4000,
-            cooling_rate=0.98,
-            iterations_per_temp=30,
-            initial_swap_probability=0.40,
-            final_swap_probability=0.3,
-            max_processing_time=15.0 # Limit final SA time
+            max_processing_time=20.0 # Limit final SA time
         )
 
         if temp_solved_grid is not None:
