@@ -99,37 +99,37 @@ modules = {
                 },
             ],
             "Hyperdrive": [
-                {
-                    "label": "Hyperdrive",
-                    "key": "hyper",
-                    "image": "hyper.webp",
-                    "color": "sky",
-                    "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "hyperdrive.png", },
-                        { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
-                        { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
-                        { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
-                        { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "indium.png", },
-                        { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emergency.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": .420, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .410, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .400, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
-                    ],
-                },
-                {
-                    "label": "Launch Thruster",
-                    "key": "launch",
-                    "image": "launch.webp",
-                    "color": "jade",
-                    "modules": [
-                        { "id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "launch.png", },
-                        { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "efficient.png", },
-                        { "id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "recharger.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
-                    ],
-                },
+                # {
+                #     "label": "Hyperdrive",
+                #     "key": "hyper",
+                #     "image": "hyper.webp",
+                #     "color": "sky",
+                #     "modules": [
+                #         { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "hyperdrive.png", },
+                #         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
+                #         { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
+                #         { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
+                #         { "id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "indium.png", },
+                #         { "id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "emergency.png", },
+                #         { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": .420, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
+                #         { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .410, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
+                #         { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .400, "adjacency": "greater", "sc_eligible": True, "image": "hyper-upgrade.png", },
+                #     ],
+                # },
+                # {
+                #     "label": "Launch Thruster",
+                #     "key": "launch",
+                #     "image": "launch.webp",
+                #     "color": "jade",
+                #     "modules": [
+                #         { "id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "launch.png", },
+                #         { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "efficient.png", },
+                #         { "id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "recharger.png", },
+                #         { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
+                #         { "id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
+                #         { "id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
+                #     ],
+                # },
                 {
                     "label": "Pulse Engine",
                     "key": "pulse",
@@ -1378,31 +1378,31 @@ solves = {
         },
         "pulse": {
             "map": {
-                (0, 0): "PE",
-                (1, 0): "SL",
-                (2, 0): "None",
-                (0, 1): "Xb",
+                (0, 0): "ID",
+                (1, 0): "Xb",
+                (2, 0): "FA",
+                (0, 1): "Xc",
                 (1, 1): "Xa",
-                (2, 1): "ID",
-                (0, 2): "FA",
-                (1, 2): "Xc",
+                (2, 1): "SL",
+                (0, 2): "None",
+                (1, 2): "PE",
                 (2, 2): "None",
             },
-            "score": 8.7111
+            "score": 11.0805
         },
         "photonix": {
             "map": {
-                (0, 0): "FA",
-                (1, 0): "Xc",
-                (2, 0): "PE",
+                (0, 0): "PC",
+                (1, 0): "ID",
+                (2, 0): "None",
                 (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "ID",
-                (0, 2): "SL",
-                (1, 2): "PC",
-                (2, 2): "None",
+                (2, 1): "SL",
+                (0, 2): "FA",
+                (1, 2): "Xc",
+                (2, 2): "PE",
             },
-            "score": 12.5469
+            "score": 16.3332
         },
         "trails": {
             "map": {
@@ -1526,17 +1526,31 @@ solves = {
         },
         "pulse": {
             "map": {
-                (0, 0): "FA",
+                (0, 0): "ID",
                 (1, 0): "Xb",
-                (2, 0): "PC",
-                (0, 1): "SL",
+                (2, 0): "FA",
+                (0, 1): "Xc",
                 (1, 1): "Xa",
-                (2, 1): "Xc",
+                (2, 1): "SL",
                 (0, 2): "None",
-                (1, 2): "ID",
+                (1, 2): "PE",
+                (2, 2): "None",
+            },
+            "score": 11.0805
+        },
+        "photonix": {
+            "map": {
+                (0, 0): "PC",
+                (1, 0): "ID",
+                (2, 0): "None",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (2, 1): "SL",
+                (0, 2): "FA",
+                (1, 2): "Xc",
                 (2, 2): "PE",
             },
-            "score": 12.55
+            "score": 16.3332
         },
         "trails": {
             "map": {
