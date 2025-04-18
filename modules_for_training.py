@@ -601,15 +601,15 @@ modules = {
                 },
             ],
             "Scanners": [
-                {
-                    "label": "Analysis Visor",
-                    "key": "analysis",
-                    "image": "analysis.webp",
-                    "color": "black",
-                    "modules": [
-                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
-                    ],
-                },
+                # {
+                #     "label": "Analysis Visor",
+                #     "key": "analysis",
+                #     "image": "analysis.webp",
+                #     "color": "black",
+                #     "modules": [
+                #         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                #     ],
+                # },
                 {
                     "label": "Scanner",
                     "key": "scanner",
@@ -625,15 +625,15 @@ modules = {
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                     ],
                 },
-                {
-                    "label": "Survey Device",
-                    "key": "survey",
-                    "image": "survey.webp",
-                    "color": "black",
-                    "modules": [
-                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
-                    ],
-                },
+                # {
+                #     "label": "Survey Device",
+                #     "key": "survey",
+                #     "image": "survey.webp",
+                #     "color": "black",
+                #     "modules": [
+                #         { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                #     ],
+                # },
             ],
             "Weaponry": [
                 {
@@ -1062,15 +1062,15 @@ modules = {
                 },
             ],
             "Scanners": [
-                {
-                    "label": "Analysis Visor",
-                    "key": "analysis",
-                    "image": "analysis.webp",
-                    "color": "black",
-                    "modules": [
-                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
-                    ],
-                },
+                # {
+                #     "label": "Analysis Visor",
+                #     "key": "analysis",
+                #     "image": "analysis.webp",
+                #     "color": "black",
+                #     "modules": [
+                #         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                #     ],
+                # },
                 {
                     "label": "Scanner",
                     "key": "scanner",
@@ -1086,15 +1086,15 @@ modules = {
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                     ],
                 },
-                {
-                    "label": "Survey Device",
-                    "key": "survey",
-                    "image": "survey.webp",
-                    "color": "black",
-                    "modules": [
-                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
-                    ],
-                },
+                # {
+                #     "label": "Survey Device",
+                #     "key": "survey",
+                #     "image": "survey.webp",
+                #     "color": "black",
+                #     "modules": [
+                #         { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                #     ],
+                # },
             ],
             "Weaponry": [
                 {
