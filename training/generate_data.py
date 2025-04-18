@@ -193,10 +193,7 @@ def generate_training_batch(
                 else:
                     optimized_grid, best_bonus = simulated_annealing(
                         original_grid_layout, ship, modules, tech,
-                        player_owned_rewards=[], # SA for training uses all modules
-                        initial_temperature=4000, cooling_rate=0.995,
-                        stopping_temperature=1.5, iterations_per_temp=40,
-                        initial_swap_probability=0.55, final_swap_probability=0.4,
+                        player_owned_rewards=[]
                     )
                 if optimized_grid is None: sample_valid = False
             except ValueError as ve:
