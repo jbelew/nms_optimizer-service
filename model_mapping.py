@@ -46,7 +46,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "bobble": ("standard", "bobble"),
         "scanners": ("standard", "scanners"),
         "teleporter": ("standard", "teleporter"),
-        # pilot defaults to ("sentinel", "pilot")
+        "pilot": ("sentinel", "pilot"), 
     },
     # --- Multi-Tools ---
     "sentinel-mt": {

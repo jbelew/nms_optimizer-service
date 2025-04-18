@@ -3,7 +3,6 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
-# <<< Import ReduceLROnPlateau >>>
 from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
 from torch.utils.tensorboard import SummaryWriter
 import sys
@@ -12,7 +11,7 @@ import time
 import glob
 import argparse
 import numpy as np
-from typing import Optional # Added for type hinting
+from typing import Optional, List # <<< Added List for type hinting
 
 # --- Add project root to sys.path ---
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -83,12 +82,9 @@ def train_model(
     weight_decay,
     log_dir,
     model_save_path,
-    # <<< Removed scheduler_step_size, scheduler_gamma as ReduceLROnPlateau doesn't use them directly >>>
-    # scheduler_step_size,
-    # scheduler_gamma,
-    scheduler_factor: float = 0.5, # <<< Added factor for ReduceLROnPlateau >>>
-    scheduler_patience: int = 5,   # <<< Added patience for ReduceLROnPlateau >>>
-    criterion_weights: Optional[torch.Tensor] = None, # <<< Added for class weights
+    scheduler_factor: float = 0.5,
+    scheduler_patience: int = 5,
+    criterion_weights: Optional[torch.Tensor] = None,
     early_stopping_patience: int = 10,
     early_stopping_metric: str = "val_loss",
 ):
@@ -99,7 +95,6 @@ def train_model(
     print(f"  Grid Dimensions: {grid_height}x{grid_width}")
     print(f"  Num Output Classes: {num_output_classes}")
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
-    # <<< Updated scheduler info >>>
     print(f"  Scheduler: ReduceLROnPlateau, Factor: {scheduler_factor}, Patience: {scheduler_patience}")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -109,22 +104,17 @@ def train_model(
         input_channels=2, grid_height=grid_height, grid_width=grid_width, num_output_classes=num_output_classes
     ).to(device)
 
-    # <<< Use class weights if provided >>>
     if criterion_weights is not None:
         print("  Using provided class weights for loss.")
         criterion_placement = nn.CrossEntropyLoss(weight=criterion_weights.to(device))
     else:
         print("  Using default CrossEntropyLoss (no class weights).")
         criterion_placement = nn.CrossEntropyLoss()
-    # <<< End class weights usage >>>
 
-    # <<< Use AdamW optimizer >>>
     optimizer = optim.AdamW(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
-    # <<< Determine metric mode for scheduler based on early stopping metric >>>
     metric_mode = "min" if early_stopping_metric == "val_loss" else "max"
 
-    # <<< Use ReduceLROnPlateau scheduler >>>
     scheduler = ReduceLROnPlateau(
         optimizer,
         mode=metric_mode,
@@ -132,7 +122,6 @@ def train_model(
         patience=scheduler_patience
     )
 
-    # Ensure the specific model save directory exists
     os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
     os.makedirs(log_dir, exist_ok=True)
     writer = SummaryWriter(log_dir=log_dir)
@@ -195,7 +184,7 @@ def train_model(
         avg_val_loss = float("nan")
         epoch_val_accuracy = 0.0
         epoch_val_iou = 0.0
-        current_metric_value = None # <<< Initialize metric value for the epoch >>>
+        current_metric_value = None
 
         if val_loader:
             model.eval()
@@ -220,13 +209,12 @@ def train_model(
             epoch_val_accuracy = val_accuracy.compute() if metrics_available and val_accuracy else 0.0
             epoch_val_iou = val_iou.compute() if metrics_available and val_iou else 0.0
 
-            # <<< Determine the current metric value for scheduler/early stopping >>>
             if early_stopping_metric == "val_miou":
                 if metrics_available:
                     current_metric_value = epoch_val_iou
-                else: # Fallback if metrics failed mid-training (shouldn't happen with initial check)
+                else:
                     current_metric_value = avg_val_loss
-            else: # Default to val_loss
+            else:
                 current_metric_value = avg_val_loss
 
         # --- End Validation Loop ---
@@ -264,10 +252,9 @@ def train_model(
                 best_metric_value = current_metric_value
                 epochs_no_improve = 0
                 try:
-                    # Save model to CPU to avoid GPU memory issues on load
                     model.to("cpu")
                     torch.save(model.state_dict(), model_save_path)
-                    model.to(device) # Move back to original device
+                    model.to(device)
                     print(f"  Saved new best model checkpoint (Epoch {epoch+1}, {early_stopping_metric}: {best_metric_value:.4f})")
                 except Exception as e:
                     print(f"  Error saving model checkpoint: {e}")
@@ -278,20 +265,15 @@ def train_model(
             if epochs_no_improve >= early_stopping_patience:
                 print(f"\nEarly stopping triggered after {epoch + 1} epochs!")
                 early_stop_triggered = True
-                # <<< Step scheduler before breaking to reflect potential LR change based on this epoch >>>
                 scheduler.step(current_metric_value)
-                break # Exit epoch loop
+                break
         # --- End Early Stopping Check ---
 
-        # <<< Step the scheduler using the validation metric value >>>
         if val_loader and current_metric_value is not None:
             scheduler.step(current_metric_value)
-        # <<< If no validation, you might want a different scheduler like StepLR or CosineAnnealingLR >>>
-        # <<< or just let the LR stay constant. For now, it does nothing if no val_loader. >>>
 
     if not early_stop_triggered:
         print(f"Finished Training for {num_epochs} epochs.")
-        # Save the final model state if no validation was performed or early stopping didn't trigger
         if not val_loader:
             try:
                 print(f"Saving final model state (no validation performed) to {model_save_path}")
@@ -303,14 +285,12 @@ def train_model(
 
     writer.close()
 
-    # --- Load Best Model State After Training (if validation was used) ---
     if val_loader:
         try:
             print(f"Loading best model state from {model_save_path} (Metric: {early_stopping_metric}, Value: {best_metric_value:.4f})")
             if os.path.exists(model_save_path):
-                # Load state dict onto the correct device directly
                 model.load_state_dict(torch.load(model_save_path, map_location=device))
-                model.to(device) # Ensure model is on the correct device
+                model.to(device)
             else:
                 print(f"Warning: Best model file {model_save_path} not found. Returning last state.")
         except Exception as e:
@@ -319,10 +299,10 @@ def train_model(
     return model
 
 
-# --- Training Orchestration Function (Modified for Class Weights) ---
+# --- Training Orchestration Function (Modified for Class Weights, All Categories, Data Validation) ---
 def run_training_from_files(
     ship,
-    tech_category_to_train,
+    tech_category_to_train: Optional[str],
     grid_width,
     grid_height,
     learning_rate,
@@ -332,11 +312,8 @@ def run_training_from_files(
     base_log_dir,
     base_model_save_dir,
     base_data_source_dir,
-    # <<< Removed scheduler_step_size, scheduler_gamma >>>
-    # scheduler_step_size,
-    # scheduler_gamma,
-    scheduler_factor, # <<< Added scheduler factor >>>
-    scheduler_patience, # <<< Added scheduler patience >>>
+    scheduler_factor,
+    scheduler_patience,
     validation_split=0.2,
     early_stopping_patience=10,
     early_stopping_metric="val_loss",
@@ -345,233 +322,301 @@ def run_training_from_files(
     Orchestrates the training process, loading data and saving models
     using ship/tech subdirectories. Includes class weight calculation.
     Uses AdamW and ReduceLROnPlateau.
+    If tech_category_to_train is None, trains for all categories for the ship.
+    Includes data validation checks during loading.
     """
-    # --- Get Tech Keys ---
+    # --- Get Ship Data ---
     try:
         ship_data = modules.get(ship)
         if not ship_data or "types" not in ship_data or not isinstance(ship_data["types"], dict):
             raise KeyError(f"Ship '{ship}' or its 'types' dictionary not found/invalid.")
-        category_data = ship_data["types"].get(tech_category_to_train)
-        if not category_data or not isinstance(category_data, list):
-            raise KeyError(f"Category '{tech_category_to_train}' not found or invalid for ship '{ship}'.")
-        tech_keys_to_train = [
-            tech_data["key"] for tech_data in category_data if isinstance(tech_data, dict) and "key" in tech_data
-        ]
     except KeyError as e:
         print(f"Error accessing module data: {e}")
         return
     except Exception as e:
-        print(f"An unexpected error occurred while getting tech keys: {e}")
+        print(f"An unexpected error occurred while getting ship data: {e}")
         return
-    if not tech_keys_to_train:
-        print(f"Error: No valid tech keys found for ship '{ship}', category '{tech_category_to_train}'.")
-        return
-    print(f"Planning to train models for techs: {tech_keys_to_train}")
+
+    # --- Determine Categories to Train ---
+    categories_to_process: List[str] = []
+    if tech_category_to_train is None:
+        # Train all categories
+        categories_to_process = list(ship_data["types"].keys())
+        print(f"No category specified. Planning to train all categories for ship '{ship}': {categories_to_process}")
+    else:
+        # Train a single specified category
+        if tech_category_to_train not in ship_data["types"]:
+             print(f"Error: Category '{tech_category_to_train}' not found for ship '{ship}'.")
+             return
+        categories_to_process = [tech_category_to_train]
+        print(f"Planning to train category: {tech_category_to_train}")
+
     print(f"Looking for data files in subdirectories under: {os.path.abspath(base_data_source_dir)}")
-    # --- End Get Tech Keys ---
+    # --- End Determine Categories ---
 
     trained_models = {}
 
-    for tech in tech_keys_to_train:
-        print(f"\n{'='*10} Processing Tech: {tech} {'='*10}")
-
-        # --- 1. Find and Load Data ---
-        tech_data_source_dir = os.path.join(base_data_source_dir, ship, tech)
-        file_pattern = os.path.join(tech_data_source_dir, f"data_{ship}_{tech}_{grid_width}x{grid_height}_*.npz")
-        data_files = glob.glob(file_pattern)
-        if not data_files:
-            print(f"Warning: No data files found matching pattern '{file_pattern}'. Skipping tech '{tech}'.")
+    # --- Loop through Categories ---
+    for category in categories_to_process:
+        print(f"\n{'='*15} Processing Category: {category} {'='*15}")
+        category_data = ship_data["types"].get(category)
+        if not category_data or not isinstance(category_data, list):
+            print(f"Warning: Category data for '{category}' is invalid or empty. Skipping.")
             continue
-        print(f"Found {len(data_files)} data files for tech '{tech}'. Loading...")
 
-        all_X_supercharge_data, all_X_inactive_mask_data, all_y_data = [], [], []
-        total_loaded_samples = 0
-        load_start_time = time.time()
-        for filepath in data_files:
-            try:
-                with np.load(filepath) as npz_file:
-                    if "X_supercharge" not in npz_file or "X_inactive_mask" not in npz_file or "y" not in npz_file:
-                        print(f"Warning: Required keys not found in {filepath}. Skipping file.")
-                        continue
+        tech_keys_to_train = [
+            tech_data["key"] for tech_data in category_data if isinstance(tech_data, dict) and "key" in tech_data
+        ]
+        if not tech_keys_to_train:
+            print(f"Warning: No valid tech keys found in category '{category}'. Skipping.")
+            continue
+        print(f"Found techs in category '{category}': {tech_keys_to_train}")
 
-                    x_sc_batch, x_inactive_batch, y_batch = (
-                        npz_file["X_supercharge"], npz_file["X_inactive_mask"], npz_file["y"]
-                    )
+        # --- Loop through Techs within the Category ---
+        for tech in tech_keys_to_train:
+            print(f"\n--- Processing Tech: {tech} ---")
 
-                    # Basic shape and consistency validation
-                    if len(x_sc_batch.shape) < 3 or len(x_inactive_batch.shape) < 3 or len(y_batch.shape) < 3:
-                        print(f"Warning: Unexpected array dimensions in {filepath}. Skipping file.")
-                        continue
-                    if (
-                        x_sc_batch.shape[1:] != (grid_height, grid_width)
-                        or x_inactive_batch.shape[1:] != (grid_height, grid_width)
-                        or y_batch.shape[1:] != (grid_height, grid_width)
-                    ):
-                        print(f"Warning: Shape mismatch in {filepath} (Expected {grid_height}x{grid_width}). Skipping file.")
-                        continue
-                    if not (x_sc_batch.shape[0] == x_inactive_batch.shape[0] == y_batch.shape[0]):
-                        print(f"Warning: Sample count mismatch in {filepath}. Skipping file.")
-                        continue
+            # <<< Determine num_output_classes BEFORE loading files >>>
+            tech_modules_for_class_count = get_tech_modules_for_training(modules, ship, tech)
+            if not tech_modules_for_class_count:
+                print(f"Warning: Could not get modules for tech '{tech}' to determine class count. Skipping.")
+                continue
+            num_output_classes = len(tech_modules_for_class_count) + 1
+            if num_output_classes <= 1:
+                print(f"Skipping tech '{tech}': Not enough output classes ({num_output_classes}).")
+                continue
+            print(f"  Expected number of output classes (incl. background): {num_output_classes}")
+            # <<< End Determine num_output_classes >>>
 
-                    all_X_supercharge_data.append(x_sc_batch)
-                    all_X_inactive_mask_data.append(x_inactive_batch)
-                    all_y_data.append(y_batch)
-                    total_loaded_samples += x_sc_batch.shape[0]
-            except Exception as e:
-                print(f"Error loading data from {filepath}: {e}. Skipping file.")
+            # --- 1. Find and Load Data ---
+            tech_data_source_dir = os.path.join(base_data_source_dir, ship, tech)
+            file_pattern = os.path.join(tech_data_source_dir, f"data_{ship}_{tech}_{grid_width}x{grid_height}_*.npz")
+            data_files = glob.glob(file_pattern)
+            if not data_files:
+                print(f"Warning: No data files found matching pattern '{file_pattern}'. Skipping tech '{tech}'.")
+                continue
+            print(f"Found {len(data_files)} data files for tech '{tech}'. Loading and validating...") # <<< Updated print
+
+            all_X_supercharge_data, all_X_inactive_mask_data, all_y_data = [], [], []
+            total_loaded_samples = 0
+            invalid_files_count = 0 # <<< Track invalid files
+            load_start_time = time.time()
+
+            for filepath in data_files:
+                try:
+                    with np.load(filepath) as npz_file:
+                        if "X_supercharge" not in npz_file or "X_inactive_mask" not in npz_file or "y" not in npz_file:
+                            print(f"Warning: Required keys not found in {filepath}. Skipping file.")
+                            invalid_files_count += 1
+                            continue
+
+                        x_sc_batch, x_inactive_batch, y_batch = (
+                            npz_file["X_supercharge"], npz_file["X_inactive_mask"], npz_file["y"]
+                        )
+
+                        # --- Data Validation Checks ---
+                        valid_file = True
+                        if len(x_sc_batch.shape) < 3 or len(x_inactive_batch.shape) < 3 or len(y_batch.shape) < 3:
+                            print(f"Warning: Unexpected array dimensions in {filepath}. Skipping file.")
+                            valid_file = False
+                        elif (
+                            x_sc_batch.shape[1:] != (grid_height, grid_width)
+                            or x_inactive_batch.shape[1:] != (grid_height, grid_width)
+                            or y_batch.shape[1:] != (grid_height, grid_width)
+                        ):
+                            print(f"Warning: Shape mismatch in {filepath} (Expected {grid_height}x{grid_width}). Skipping file.")
+                            valid_file = False
+                        elif not (x_sc_batch.shape[0] == x_inactive_batch.shape[0] == y_batch.shape[0]):
+                            print(f"Warning: Sample count mismatch in {filepath}. Skipping file.")
+                            valid_file = False
+                        # <<< Add Label Validation >>>
+                        elif np.any(y_batch < 0):
+                            print(f"Warning: Found negative labels in 'y' array in {filepath}. Skipping file.")
+                            valid_file = False
+                        elif np.any(y_batch >= num_output_classes):
+                            max_label = np.max(y_batch)
+                            print(f"Warning: Found labels >= num_output_classes ({num_output_classes}) in 'y' array (max label: {max_label}) in {filepath}. Skipping file.")
+                            valid_file = False
+                        # <<< End Label Validation >>>
+
+                        if not valid_file:
+                            invalid_files_count += 1
+                            continue
+                        # --- End Data Validation Checks ---
+
+                        all_X_supercharge_data.append(x_sc_batch)
+                        all_X_inactive_mask_data.append(x_inactive_batch)
+                        all_y_data.append(y_batch)
+                        total_loaded_samples += x_sc_batch.shape[0]
+
+                except Exception as e:
+                    print(f"Error loading or validating data from {filepath}: {e}. Skipping file.")
+                    invalid_files_count += 1
+                    continue
+
+            if invalid_files_count > 0:
+                 print(f"  Skipped {invalid_files_count} invalid or problematic data files for tech '{tech}'.")
+
+            if not all_X_supercharge_data:
+                print(f"Warning: No valid data could be loaded for tech '{tech}' after validation. Skipping.")
                 continue
 
-        if not all_X_supercharge_data:
-            print(f"Warning: No valid data could be loaded for tech '{tech}'. Skipping.")
-            continue
-
-        try:
-            X_supercharge_data_np = np.concatenate(all_X_supercharge_data, axis=0)
-            X_inactive_mask_data_np = np.concatenate(all_X_inactive_mask_data, axis=0)
-            y_data_np = np.concatenate(all_y_data, axis=0)
-            load_time = time.time() - load_start_time
-            print(f"Loaded and concatenated {total_loaded_samples} total samples for tech '{tech}' in {load_time:.2f}s.")
-        except Exception as e:
-            print(f"Error concatenating data arrays for tech '{tech}': {e}. Skipping.")
-            continue
-        # --- End Load Data ---
-
-        # --- Determine num_output_classes ---
-        tech_modules = get_tech_modules_for_training(modules, ship, tech)
-        if not tech_modules:
-            print(f"Warning: Could not get modules for tech '{tech}'. Skipping.")
-            continue
-        num_output_classes = len(tech_modules) + 1
-        if num_output_classes <= 1:
-            print(f"Skipping tech '{tech}': Not enough output classes ({num_output_classes}).")
-            continue
-        # --- End Determine num_output_classes ---
-
-        # --- 2. Perform Train/Validation Split ---
-        X_train_sc_np, X_val_sc_np = None, None
-        X_train_in_np, X_val_in_np = None, None
-        y_train_np, y_val_np = None, None
-        val_loader = None
-
-        if len(X_supercharge_data_np) < 2:
-            print(f"Warning: Not enough samples ({len(X_supercharge_data_np)}) for tech '{tech}' for validation.")
-            X_train_sc_np, X_train_in_np, y_train_np = X_supercharge_data_np, X_inactive_mask_data_np, y_data_np
-        elif validation_split <= 0 or validation_split >= 1:
-            print(f"Warning: Invalid validation_split ({validation_split}). Training without validation.")
-            X_train_sc_np, X_train_in_np, y_train_np = X_supercharge_data_np, X_inactive_mask_data_np, y_data_np
-        else:
             try:
-                num_samples = len(X_supercharge_data_np)
-                indices = np.arange(num_samples)
-                train_indices, val_indices = train_test_split(
-                    indices, test_size=validation_split, random_state=42, shuffle=True
-                )
-                X_train_sc_np, X_val_sc_np = X_supercharge_data_np[train_indices], X_supercharge_data_np[val_indices]
-                X_train_in_np, X_val_in_np = X_inactive_mask_data_np[train_indices], X_inactive_mask_data_np[val_indices]
-                y_train_np, y_val_np = y_data_np[train_indices], y_data_np[val_indices]
-                print(f"Split data: {len(X_train_sc_np)} train, {len(X_val_sc_np)} validation samples.")
+                X_supercharge_data_np = np.concatenate(all_X_supercharge_data, axis=0)
+                X_inactive_mask_data_np = np.concatenate(all_X_inactive_mask_data, axis=0)
+                y_data_np = np.concatenate(all_y_data, axis=0)
+                load_time = time.time() - load_start_time
+                print(f"Loaded and concatenated {total_loaded_samples} total valid samples for tech '{tech}' in {load_time:.2f}s.")
             except Exception as e:
-                print(f"Error during train/val split for tech '{tech}': {e}. Training without validation.")
+                print(f"Error concatenating data arrays for tech '{tech}': {e}. Skipping.")
+                continue
+            # --- End Load Data ---
+
+            # --- Determine num_output_classes (Redundant check, keep for safety) ---
+            # tech_modules = get_tech_modules_for_training(modules, ship, tech) # Already got this list
+            # if not tech_modules:
+            #     print(f"Warning: Could not get modules for tech '{tech}'. Skipping.")
+            #     continue
+            # num_output_classes = len(tech_modules) + 1
+            # if num_output_classes <= 1:
+            #     print(f"Skipping tech '{tech}': Not enough output classes ({num_output_classes}).")
+            #     continue
+            # --- End Determine num_output_classes ---
+
+            # --- 2. Perform Train/Validation Split ---
+            X_train_sc_np, X_val_sc_np = None, None
+            X_train_in_np, X_val_in_np = None, None
+            y_train_np, y_val_np = None, None
+            val_loader = None
+
+            if len(X_supercharge_data_np) < 2:
+                print(f"Warning: Not enough samples ({len(X_supercharge_data_np)}) for tech '{tech}' for validation.")
                 X_train_sc_np, X_train_in_np, y_train_np = X_supercharge_data_np, X_inactive_mask_data_np, y_data_np
-        # --- End Split ---
-
-        # --- Calculate Class Weights (using y_train_np) ---
-        print("Calculating class weights...")
-        class_weights_tensor = None
-        if y_train_np is not None and y_train_np.size > 0:
-            flat_labels = y_train_np.flatten()
-            class_counts = np.bincount(flat_labels, minlength=num_output_classes)
-            # Prevent division by zero and handle classes not present
-            total_pixels = flat_labels.size
-            # Inverse frequency weighting: weight = total / (num_classes * count)
-            class_weights = np.where(
-                class_counts > 0,
-                total_pixels / (num_output_classes * class_counts),
-                0 # Assign 0 weight if class is not present
-            )
-            # Optional: Normalize weights (can help stability)
-            # class_weights = class_weights / np.sum(class_weights) * num_output_classes
-
-            class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32)
-            print(f"Calculated class weights: {class_weights_tensor.cpu().numpy()}")
-        else:
-            print("Warning: y_train_np not available or empty. Cannot calculate class weights.")
-        # --- End Calculate Class Weights ---
-
-        # --- 3. Prepare Datasets and DataLoaders ---
-        try:
-            train_dataset = PlacementDataset(X_train_sc_np, X_train_in_np, y_train_np)
-            if X_val_sc_np is not None and X_val_in_np is not None and y_val_np is not None and len(X_val_sc_np) > 0:
-                val_dataset = PlacementDataset(X_val_sc_np, X_val_in_np, y_val_np)
-                val_batch_size = min(batch_size, len(val_dataset))
-                if val_batch_size > 0:
-                    val_loader = data.DataLoader(
-                        val_dataset, batch_size=val_batch_size, shuffle=False,
-                        num_workers=min(2, os.cpu_count()), pin_memory=torch.cuda.is_available()
-                    )
-                else:
-                    print(f"Warning: Validation dataset for tech '{tech}' is empty. Skipping validation.")
-                    val_loader = None
+            elif validation_split <= 0 or validation_split >= 1:
+                print(f"Warning: Invalid validation_split ({validation_split}). Training without validation.")
+                X_train_sc_np, X_train_in_np, y_train_np = X_supercharge_data_np, X_inactive_mask_data_np, y_data_np
             else:
-                print(f"Info: No validation data available for tech '{tech}'. Skipping validation.")
-                val_loader = None
-        except Exception as e:
-            print(f"Error creating Datasets/Tensors for tech '{tech}': {e}. Skipping.")
-            continue
+                try:
+                    num_samples = len(X_supercharge_data_np)
+                    indices = np.arange(num_samples)
+                    train_indices, val_indices = train_test_split(
+                        indices, test_size=validation_split, random_state=42, shuffle=True
+                    )
+                    X_train_sc_np, X_val_sc_np = X_supercharge_data_np[train_indices], X_supercharge_data_np[val_indices]
+                    X_train_in_np, X_val_in_np = X_inactive_mask_data_np[train_indices], X_inactive_mask_data_np[val_indices]
+                    y_train_np, y_val_np = y_data_np[train_indices], y_data_np[val_indices]
+                    print(f"Split data: {len(X_train_sc_np)} train, {len(X_val_sc_np)} validation samples.")
+                except Exception as e:
+                    print(f"Error during train/val split for tech '{tech}': {e}. Training without validation.")
+                    X_train_sc_np, X_train_in_np, y_train_np = X_supercharge_data_np, X_inactive_mask_data_np, y_data_np
+            # --- End Split ---
 
-        effective_batch_size = min(batch_size, len(train_dataset))
-        if effective_batch_size == 0:
-            print(f"Warning: Train dataset for tech '{tech}' is empty. Skipping.")
-            continue
+            # --- Calculate Class Weights (using y_train_np) ---
+            print("Calculating class weights...")
+            class_weights_tensor = None
+            if y_train_np is not None and y_train_np.size > 0:
+                flat_labels = y_train_np.flatten()
+                class_counts = np.bincount(flat_labels, minlength=num_output_classes)
+                total_pixels = flat_labels.size
 
-        train_loader = data.DataLoader(
-            train_dataset, batch_size=effective_batch_size, shuffle=True,
-            num_workers=min(4, os.cpu_count()), pin_memory=torch.cuda.is_available()
-        )
-        # --- End Prepare DataLoaders ---
+                # --- Option 1: Assign weight 1.0 to missing classes ---
+                class_weights = np.where(
+                    class_counts > 0,
+                    total_pixels / (num_output_classes * class_counts),
+                    1.0 # Use 1.0 for missing classes
+                )
+                if np.any(class_counts == 0):
+                    zero_count_classes = np.where(class_counts == 0)[0]
+                    print(f"  Warning: Classes {zero_count_classes} not found in training data for {tech}. Assigning weight 1.0.")
+                class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32)
+                print(f"  Calculated class weights: {class_weights_tensor.cpu().numpy()}")
 
-        # --- 4. Train Model ---
-        log_dir = os.path.join(base_log_dir, ship, tech)
-        # Save model directly in the base model directory, named appropriately
-        model_filename = f"model_{ship}_{tech}.pth"
-        model_save_path = os.path.join(base_model_save_dir, model_filename)
+                # --- Option 2: Disable weighting if any class is missing ---
+                # if np.any(class_counts == 0):
+                #     zero_count_classes = np.where(class_counts == 0)[0]
+                #     print(f"  Warning: Classes {zero_count_classes} not found in training data for {tech}. Disabling class weighting for this tech.")
+                #     class_weights_tensor = None
+                # else:
+                #     class_weights = total_pixels / (num_output_classes * class_counts)
+                #     class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32)
+                #     print(f"  Calculated class weights: {class_weights_tensor.cpu().numpy()}")
 
-        can_early_stop = val_loader is not None
-        effective_patience = early_stopping_patience if can_early_stop else num_epochs
-        if not can_early_stop:
-            print("Info: No validation loader available. Early stopping disabled for this tech.")
+            else:
+                print("Warning: y_train_np not available or empty. Cannot calculate class weights.")
+            # --- End Calculate Class Weights ---
 
-        model = train_model(
-            train_loader, val_loader, grid_height, grid_width, num_output_classes,
-            num_epochs, learning_rate, weight_decay, log_dir, model_save_path,
-            # <<< Pass scheduler factor and patience >>>
-            scheduler_factor=scheduler_factor,
-            scheduler_patience=scheduler_patience,
-            criterion_weights=class_weights_tensor, # <<< Pass calculated weights
-            early_stopping_patience=effective_patience,
-            early_stopping_metric=early_stopping_metric,
-        )
-        # --- End Train Model ---
+            # --- 3. Prepare Datasets and DataLoaders ---
+            try:
+                train_dataset = PlacementDataset(X_train_sc_np, X_train_in_np, y_train_np)
+                if X_val_sc_np is not None and X_val_in_np is not None and y_val_np is not None and len(X_val_sc_np) > 0:
+                    val_dataset = PlacementDataset(X_val_sc_np, X_val_in_np, y_val_np)
+                    val_batch_size = min(batch_size, len(val_dataset))
+                    if val_batch_size > 0:
+                        val_loader = data.DataLoader(
+                            val_dataset, batch_size=val_batch_size, shuffle=False,
+                            num_workers=min(2, os.cpu_count()), pin_memory=torch.cuda.is_available()
+                        )
+                    else:
+                        print(f"Warning: Validation dataset for tech '{tech}' is empty. Skipping validation.")
+                        val_loader = None
+                else:
+                    print(f"Info: No validation data available for tech '{tech}'. Skipping validation.")
+                    val_loader = None
+            except Exception as e:
+                print(f"Error creating Datasets/Tensors for tech '{tech}': {e}. Skipping.")
+                continue
 
-        trained_models[tech] = model
+            effective_batch_size = min(batch_size, len(train_dataset))
+            if effective_batch_size == 0:
+                print(f"Warning: Train dataset for tech '{tech}' is empty. Skipping.")
+                continue
 
-    print(f"\n{'='*10} Training Pipeline Complete for Category: {tech_category_to_train} {'='*10}")
+            train_loader = data.DataLoader(
+                train_dataset, batch_size=effective_batch_size, shuffle=True,
+                num_workers=min(4, os.cpu_count()), pin_memory=torch.cuda.is_available()
+            )
+            # --- End Prepare DataLoaders ---
+
+            # --- 4. Train Model ---
+            log_dir = os.path.join(base_log_dir, ship, tech)
+            model_filename = f"model_{ship}_{tech}.pth"
+            model_save_path = os.path.join(base_model_save_dir, model_filename)
+
+            can_early_stop = val_loader is not None
+            effective_patience = early_stopping_patience if can_early_stop else num_epochs
+            if not can_early_stop:
+                print("Info: No validation loader available. Early stopping disabled for this tech.")
+
+            model = train_model(
+                train_loader, val_loader, grid_height, grid_width, num_output_classes,
+                num_epochs, learning_rate, weight_decay, log_dir, model_save_path,
+                scheduler_factor=scheduler_factor,
+                scheduler_patience=scheduler_patience,
+                criterion_weights=class_weights_tensor,
+                early_stopping_patience=effective_patience,
+                early_stopping_metric=early_stopping_metric,
+            )
+            # --- End Train Model ---
+
+            trained_models[tech] = model
+        # --- End Tech Loop ---
+    # --- End Category Loop ---
+
+    print(f"\n{'='*10} Training Pipeline Complete {'='*10}")
 
 
 # --- Main Execution (Modified) ---
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train NMS Optimizer models with validation and early stopping.")
-    parser.add_argument("--category", type=str, required=True, help="Technology category to train models for.")
+    # <<< Make category optional >>>
+    parser.add_argument("--category", type=str, default=None, help="Technology category to train models for (optional, trains all if omitted).")
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
     parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
     parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
     parser.add_argument("--lr", type=float, default=3e-4, help="Initial learning rate.")
-    parser.add_argument("--wd", type=float, default=1e-4, help="Weight decay (L2 regularization). Try lower values like 1e-4 or 0.") # Adjusted default WD
+    parser.add_argument("--wd", type=float, default=1e-4, help="Weight decay (L2 regularization).")
     parser.add_argument("--epochs", type=int, default=100, help="Maximum number of training epochs.")
     parser.add_argument("--batch_size", type=int, default=64, help="Training batch size.")
-    # <<< Removed StepLR args, added ReduceLROnPlateau args >>>
-    # parser.add_argument("--scheduler_step", type=int, default=20, help="StepLR: Number of epochs before decaying LR.")
-    # parser.add_argument("--scheduler_gamma", type=float, default=0.5, help="StepLR: Multiplicative factor of LR decay.")
     parser.add_argument("--scheduler_factor", type=float, default=0.5, help="ReduceLROnPlateau: Factor by which the LR is reduced.")
     parser.add_argument("--scheduler_patience", type=int, default=5, help="ReduceLROnPlateau: Number of epochs with no improvement after which LR is reduced.")
     parser.add_argument("--log_dir", type=str, default=DEFAULT_LOG_DIR, help="Base directory for TensorBoard logs (ship/tech subdirs will be created).")
@@ -593,9 +638,10 @@ if __name__ == "__main__":
 
     config = {
         "grid_width": args.width, "grid_height": args.height, "ship": args.ship,
-        "tech_category_to_train": args.category, "learning_rate": args.lr,
+        # <<< Pass the potentially None category >>>
+        "tech_category_to_train": args.category,
+        "learning_rate": args.lr,
         "weight_decay": args.wd, "num_epochs": args.epochs, "batch_size": args.batch_size,
-        # <<< Updated scheduler config >>>
         "scheduler_factor": args.scheduler_factor, "scheduler_patience": args.scheduler_patience,
         "base_log_dir": args.log_dir, "base_model_save_dir": args.model_dir,
         "base_data_source_dir": args.data_source_dir,
@@ -607,12 +653,11 @@ if __name__ == "__main__":
     print(f"Starting model training process...")
     print(f"Configuration: {config}")
 
-    # Ensure the base model save directory exists
     os.makedirs(config["base_model_save_dir"], exist_ok=True)
 
     run_training_from_files(
         ship=config["ship"],
-        tech_category_to_train=config["tech_category_to_train"],
+        tech_category_to_train=config["tech_category_to_train"], # <<< Pass the value from args
         grid_width=config["grid_width"],
         grid_height=config["grid_height"],
         learning_rate=config["learning_rate"],
@@ -622,7 +667,6 @@ if __name__ == "__main__":
         base_log_dir=config["base_log_dir"],
         base_model_save_dir=config["base_model_save_dir"],
         base_data_source_dir=config["base_data_source_dir"],
-        # <<< Pass new scheduler args >>>
         scheduler_factor=config["scheduler_factor"],
         scheduler_patience=config["scheduler_patience"],
         validation_split=config["validation_split"],
@@ -634,3 +678,4 @@ if __name__ == "__main__":
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     print(f"Best models saved directly in: {os.path.abspath(config['base_model_save_dir'])}")
+
