@@ -843,8 +843,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
                     grid_to_refine.copy(), # Pass a fresh copy
                     modules, ship, tech, player_owned_rewards,
-                    opportunity_x, opportunity_y,
-                    max_processing_time=20.0 
+                    opportunity_x, opportunity_y
                 )
             # else: ML refinement succeeded (or returned original grid), proceed with its result.
 

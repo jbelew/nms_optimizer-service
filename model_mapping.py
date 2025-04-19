@@ -69,7 +69,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "forbidden": ("standard-mt", "forbidden"),
         "terrian": ("standard-mt", "terrian"),
     },
-    "atlantid-mt": {
+    "atlantid": {
         "mining": ("atlantid-mt", "mining"),
         "analysis": ("standard-mt", "analysis"),
         "scanner": ("standard-mt", "scanner"),
