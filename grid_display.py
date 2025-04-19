@@ -15,7 +15,7 @@ def print_grid(grid: Grid) -> None:
             is_shield = cell_data["tech"] == "shield"
             is_infra = cell_data["tech"] == "infra"
             active_state = (
-                " +" if cell_data["active"] else " -"
+                "\u00A0+" if cell_data["active"] else "\u00A0-"
             )  # what to show if there is no module
 
             formatted_row.append(
