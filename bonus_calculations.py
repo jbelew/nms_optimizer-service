@@ -3,9 +3,9 @@ from grid_utils import Grid
 import math
 
 # Global weights
-core_weight_greater = 0.06  # Core weight for greater adjacency
+core_weight_greater = 0.060  # Core weight for greater adjacency
 core_weight_lesser = 0.037  # Core weight for lesser adjacency
-greater_weight = 0.04  # Default greater adjacency weight (formerly bonus_weight)
+greater_weight = 0.040  # Default greater adjacency weight (formerly bonus_weight)
 lesser_weight = 0.030  # Default lesser adjacency weight
 
 # Constants for adjacency types

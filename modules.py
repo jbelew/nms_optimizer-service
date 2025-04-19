@@ -138,9 +138,9 @@ modules = {
                     "modules": [
                         { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "pulse.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
-                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
-                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
-                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
+                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
+                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.15, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
+                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.55, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.54, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.53, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
@@ -346,8 +346,8 @@ modules = {
                     "modules": [
                         { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "luminance.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
-                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
-                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
+                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
+                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.15, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
                         { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
@@ -1363,30 +1363,28 @@ solves = {
         "pulse": {
             "map": {
                 (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "PE",
-                (0, 1): "Xb",
+                (1, 0): "Xb",
+                (2, 0): "SL",
+                (3, 0): "None",
+                (0, 1): "FA",
                 (1, 1): "Xa",
-                (2, 1): "SL",
-                (0, 2): "FA",
-                (1, 2): "PC",
-                (2, 2): "None",
+                (2, 1): "Xc",
+                (3, 1): "PE",
             },
-            "score": 16.3332
+            "score": 12.8276
         },
         "photonix": {
             "map": {
-                (0, 0): "PC",
-                (1, 0): "ID",
-                (2, 0): "None",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (2, 1): "SL",
-                (0, 2): "FA",
-                (1, 2): "Xc",
-                (2, 2): "PE",
+                (0, 0): "PE",
+                (1, 0): "PC",
+                (2, 0): "Xc",
+                (3, 0): "FA",
+                (0, 1): "ID",
+                (1, 1): "Xb",
+                (2, 1): "Xa",
+                (3, 1): "SL",
             },
-            "score": 16.3332
+            "score": 17.9211
         },
         "trails": {
             "map": {
@@ -1511,30 +1509,28 @@ solves = {
         "pulse": {
             "map": {
                 (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "PE",
-                (0, 1): "Xb",
+                (1, 0): "Xb",
+                (2, 0): "SL",
+                (3, 0): "None",
+                (0, 1): "FA",
                 (1, 1): "Xa",
-                (2, 1): "SL",
-                (0, 2): "FA",
-                (1, 2): "PC",
-                (2, 2): "None",
+                (2, 1): "Xc",
+                (3, 1): "PE",
             },
-            "score": 16.3332
+            "score": 12.8276
         },
         "photonix": {
             "map": {
-                (0, 0): "PC",
-                (1, 0): "ID",
-                (2, 0): "None",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (2, 1): "SL",
-                (0, 2): "FA",
-                (1, 2): "Xc",
-                (2, 2): "PE",
+                (0, 0): "PE",
+                (1, 0): "PC",
+                (2, 0): "Xc",
+                (3, 0): "FA",
+                (0, 1): "ID",
+                (1, 1): "Xb",
+                (2, 1): "Xa",
+                (3, 1): "SL",
             },
-            "score": 16.3332
+            "score": 17.9211
         },
         "trails": {
             "map": {

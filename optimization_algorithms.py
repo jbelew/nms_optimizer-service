@@ -305,7 +305,6 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         best_positions = [available_positions[i] for i in best_placement_indices]
         reconstruction_successful = True
         for index, (x, y) in enumerate(best_positions):
-            # ... (rest of reconstruction logic is the same as your previous version) ...
             if index >= len(tech_modules):
                 reconstruction_successful = False
                 break
@@ -698,7 +697,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
 
     if player_owned_rewards is None:
         player_owned_rewards = []
-
+                
     # --- Early Check: Any Empty, Active Slots? ---
     has_empty_active_slots = False
     for y in range(grid.height):

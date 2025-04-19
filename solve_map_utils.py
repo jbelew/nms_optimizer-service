@@ -18,7 +18,14 @@ def filter_solves(solves, ship, modules, tech, player_owned_rewards=None):
     
     filtered_solves = {}
     if ship in solves and tech in solves[ship]:
-        solve_data = solves[ship][tech]
+        
+        # TODO: A complete mess of a hack for Photonix Core! No more reward module support!
+        if player_owned_rewards == ["PC"] and tech == "pulse":
+            solve_data = solves[ship]["photonix"]
+            print(f"INFO -- Forcing tech to 'photonix' for PC")
+        else:
+            solve_data = solves[ship][tech]
+
         filtered_solves[ship] = {tech: {}}
         tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
         if tech_modules is None:
