@@ -161,6 +161,7 @@ def train_model(
     early_stop_triggered = False
     # --- End Early Stopping Initialization ---
 
+    torch.autograd.set_detect_anomaly(True) # Keep this here
     for epoch in range(num_epochs):
         # --- Training Loop ---
         model.train()
@@ -172,9 +173,34 @@ def train_model(
             outputs_placement = model(inputs)
             loss_placement = criterion_placement(outputs_placement, targets_placement.long())
             loss = loss_placement
-            loss.backward()
+
+            # >>>>> ADD THIS IMMEDIATE CHECK <<<<<
+            if torch.isnan(loss):
+                print(f"!!! WARNING: NaN detected *immediately* after loss calculation (Epoch {epoch+1}, Batch {i}) !!!")
+                # Optionally print model output min/max/mean too
+                print(f"  Output Logits min/max/mean: {outputs_placement.min():.4f} / {outputs_placement.max():.4f} / {outputs_placement.mean():.4f}")
+                early_stop_triggered = True
+                break # Exit inner loop
+            # >>>>> END ADDED CHECK <<<<<
+
+            # Check for NaN loss before backward pass (keep your original check too, though the one above might catch it first)
+            if torch.isnan(loss):
+                print(f"ERROR: NaN loss detected at Epoch {epoch+1}, Batch {i}. Stopping training.")
+                early_stop_triggered = True # Treat as early stop
+                break # Exit inner loop
+
+            loss.backward() # Anomaly detection hooks in here if NaN occurs during gradient calculation
+
+            # --- Add Gradient Clipping ---
+            torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=0.1)
+            # ---------------------------
+
             optimizer.step()
             running_train_loss += loss_placement.item()
+
+        if early_stop_triggered: # Check if NaN loss caused break
+            break # Exit outer loop
+
         # --- End Training Loop ---
 
         avg_train_loss = running_train_loss / len(train_loader) if len(train_loader) > 0 else 0.0
@@ -198,12 +224,23 @@ def train_model(
                     inputs, targets_placement = inputs.to(device), targets_placement.to(device)
                     outputs_placement = model(inputs)
                     loss_placement = criterion_placement(outputs_placement, targets_placement.long())
+
+                    # Check for NaN validation loss
+                    if torch.isnan(loss_placement):
+                         print(f"ERROR: NaN validation loss detected at Epoch {epoch+1}. Stopping training.")
+                         avg_val_loss = float('nan') # Mark validation loss as NaN
+                         early_stop_triggered = True
+                         break # Exit validation inner loop
+
                     running_val_loss += loss_placement.item()
 
                     if metrics_available:
                         preds = torch.argmax(outputs_placement, dim=1)
                         if val_accuracy: val_accuracy.update(preds, targets_placement)
                         if val_iou: val_iou.update(preds, targets_placement)
+
+            if early_stop_triggered: # Check if NaN loss caused break
+                 break # Exit outer loop
 
             avg_val_loss = running_val_loss / len(val_loader) if len(val_loader) > 0 else 0.0
             epoch_val_accuracy = val_accuracy.compute() if metrics_available and val_accuracy else 0.0
@@ -213,8 +250,9 @@ def train_model(
                 if metrics_available:
                     current_metric_value = epoch_val_iou
                 else:
+                    # Fallback to val_loss if metrics aren't available (already handled at init, but safe check)
                     current_metric_value = avg_val_loss
-            else:
+            else: # early_stopping_metric == "val_loss"
                 current_metric_value = avg_val_loss
 
         # --- End Validation Loop ---
@@ -241,7 +279,12 @@ def train_model(
         writer.add_scalar("Time/epoch", epoch_time, epoch)
 
         # --- Early Stopping Check ---
-        if val_loader and current_metric_value is not None:
+        # Only perform check if validation happened and didn't result in NaN
+        is_nan_check = False # Default to False
+        if current_metric_value is not None: # Check if metric was calculated
+             is_nan_check = torch.isnan(current_metric_value) if isinstance(current_metric_value, torch.Tensor) else np.isnan(current_metric_value)
+
+        if val_loader and current_metric_value is not None and not is_nan_check:
             improved = False
             if metric_mode == "min" and current_metric_value < best_metric_value:
                 improved = True
@@ -252,9 +295,10 @@ def train_model(
                 best_metric_value = current_metric_value
                 epochs_no_improve = 0
                 try:
+                    # Save model to CPU to avoid potential GPU memory issues during saving
                     model.to("cpu")
                     torch.save(model.state_dict(), model_save_path)
-                    model.to(device)
+                    model.to(device) # Move back to original device
                     print(f"  Saved new best model checkpoint (Epoch {epoch+1}, {early_stopping_metric}: {best_metric_value:.4f})")
                 except Exception as e:
                     print(f"  Error saving model checkpoint: {e}")
@@ -265,15 +309,26 @@ def train_model(
             if epochs_no_improve >= early_stopping_patience:
                 print(f"\nEarly stopping triggered after {epoch + 1} epochs!")
                 early_stop_triggered = True
-                scheduler.step(current_metric_value)
-                break
+                # Step scheduler one last time before breaking
+                is_nan_check_scheduler_final = False # Default to False
+                if current_metric_value is not None:
+                    is_nan_check_scheduler_final = torch.isnan(current_metric_value) if isinstance(current_metric_value, torch.Tensor) else np.isnan(current_metric_value)
+                if not is_nan_check_scheduler_final:
+                    scheduler.step(current_metric_value)
+                break # Exit outer loop
         # --- End Early Stopping Check ---
 
-        if val_loader and current_metric_value is not None:
+        # Step the scheduler based on the validation metric (if available and not NaN)
+        is_nan_check_scheduler = False # Default to False
+        if current_metric_value is not None:
+             is_nan_check_scheduler = torch.isnan(current_metric_value) if isinstance(current_metric_value, torch.Tensor) else np.isnan(current_metric_value)
+        if val_loader and current_metric_value is not None and not is_nan_check_scheduler:
             scheduler.step(current_metric_value)
 
+    # --- Post-Training ---
     if not early_stop_triggered:
         print(f"Finished Training for {num_epochs} epochs.")
+        # If training finished normally without validation, save the final state
         if not val_loader:
             try:
                 print(f"Saving final model state (no validation performed) to {model_save_path}")
@@ -285,19 +340,31 @@ def train_model(
 
     writer.close()
 
+    # Load the best model state if validation was performed and a best model was saved
     if val_loader:
         try:
-            print(f"Loading best model state from {model_save_path} (Metric: {early_stopping_metric}, Value: {best_metric_value:.4f})")
+            # <<< Convert best_metric_value to CPU float BEFORE checking/printing >>>
+            best_metric_value_float = best_metric_value
+            if isinstance(best_metric_value, torch.Tensor):
+                best_metric_value_float = best_metric_value.cpu().item() # Get Python float from tensor
+
+            # Now use the float version for checks and printing
+            is_best_invalid = np.isinf(best_metric_value_float) or np.isnan(best_metric_value_float)
+            best_metric_str = f"{best_metric_value_float:.4f}" if not is_best_invalid else "N/A (or NaN/Inf)"
+            # <<< End conversion >>>
+
+            print(f"Loading best model state from {model_save_path} (Metric: {early_stopping_metric}, Value: {best_metric_str})") # Use best_metric_str
             if os.path.exists(model_save_path):
+                # Load state dict onto the correct device directly
                 model.load_state_dict(torch.load(model_save_path, map_location=device))
-                model.to(device)
+                model.to(device) # Ensure model is on the correct device
             else:
                 print(f"Warning: Best model file {model_save_path} not found. Returning last state.")
         except Exception as e:
-            print(f"Warning: Could not load best model state after training: {e}. Returning last state.")
+            # <<< Modify warning message slightly for clarity >>>
+            print(f"Warning: Could not load or process best model state after training: {e}. Returning last state.")
 
     return model
-
 
 # --- Training Orchestration Function (Modified for Class Weights, All Categories, Data Validation) ---
 def run_training_from_files(
@@ -613,18 +680,18 @@ if __name__ == "__main__":
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
     parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
     parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
-    parser.add_argument("--lr", type=float, default=3e-4, help="Initial learning rate.")
-    parser.add_argument("--wd", type=float, default=1e-4, help="Weight decay (L2 regularization).")
-    parser.add_argument("--epochs", type=int, default=100, help="Maximum number of training epochs.")
-    parser.add_argument("--batch_size", type=int, default=64, help="Training batch size.")
-    parser.add_argument("--scheduler_factor", type=float, default=0.5, help="ReduceLROnPlateau: Factor by which the LR is reduced.")
-    parser.add_argument("--scheduler_patience", type=int, default=5, help="ReduceLROnPlateau: Number of epochs with no improvement after which LR is reduced.")
+    parser.add_argument("--lr", type=float, default=2e-5, help="Initial learning rate.")
+    parser.add_argument("--wd", type=float, default=5e-5, help="Weight decay (L2 regularization).")
+    parser.add_argument("--epochs", type=int, default=200, help="Maximum number of training epochs.")
+    parser.add_argument("--batch_size", type=int, default=32, help="Training batch size.")
+    parser.add_argument("--scheduler_factor", type=float, default=0.2, help="ReduceLROnPlateau: Factor by which the LR is reduced.")
+    parser.add_argument("--scheduler_patience", type=int, default=8, help="ReduceLROnPlateau: Number of epochs with no improvement after which LR is reduced.")
     parser.add_argument("--log_dir", type=str, default=DEFAULT_LOG_DIR, help="Base directory for TensorBoard logs (ship/tech subdirs will be created).")
     parser.add_argument("--model_dir", type=str, default=DEFAULT_MODEL_SAVE_DIR, help="Base directory to save best trained models.")
     parser.add_argument("--data_source_dir", type=str, default=DEFAULT_DATA_SOURCE_DIR, help="Base directory containing generated .npz data files (expects ship/tech subdirs).")
     parser.add_argument("--val_split", type=float, default=0.2, help="Fraction of data to use for validation (0.0 to 1.0).")
-    parser.add_argument("--es_patience", type=int, default=15, help="Early Stopping: Number of epochs to wait for improvement.")
-    parser.add_argument("--es_metric", type=str, default="val_loss", choices=["val_loss", "val_miou"], help="Early Stopping: Metric to monitor ('val_loss' or 'val_miou').")
+    parser.add_argument("--es_patience", type=int, default=16, help="Early Stopping: Number of epochs to wait for improvement.")
+    parser.add_argument("--es_metric", type=str, default="val_miou", choices=["val_loss", "val_miou"], help="Early Stopping: Metric to monitor ('val_loss' or 'val_miou').")
 
     args = parser.parse_args()
 
@@ -678,4 +745,3 @@ if __name__ == "__main__":
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     print(f"Best models saved directly in: {os.path.abspath(config['base_model_save_dir'])}")
-
