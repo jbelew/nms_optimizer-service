@@ -61,7 +61,7 @@ def get_ship_types():
         }
         ship_types[ship_key] = ship_info
 
-    print(f"Ship types: {ship_types}")
+    # print(f"Ship types: {ship_types}")
     return jsonify(ship_types)
 
 
