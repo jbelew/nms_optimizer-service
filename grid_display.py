@@ -18,7 +18,6 @@ COLOR_MAP = {
     "jade": "\033[38;5;35m",     # Jade green / teal
     "orange": "\033[38;5;202m",  # True orange
     "gray": "\033[38;5;245m",    # Medium gray
-    "black": "\033[38;5;16m",    # True black (you can also leave this blank if using default)
 }
 RESET_COLOR = "\033[0m"
 SUPERCHARGED_COLOR = "\033[93m" # Keep supercharged distinct (Light Yellow)
