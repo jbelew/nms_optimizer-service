@@ -70,7 +70,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "terrian": ("standard-mt", "terrian"),
     },
     "atlantid": {
-        "mining": ("atlantid-mt", "mining"),
+        "mining": ("atlantid", "mining"),
         "analysis": ("standard-mt", "analysis"),
         "scanner": ("standard-mt", "scanner"),
         "survey": ("standard-mt", "survey"),
