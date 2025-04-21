@@ -304,7 +304,7 @@ def ml_placement(
             "initial_temperature": 2000,       # Start a bit hotter
             "cooling_rate": 0.985,             # Cool down slower
             "stopping_temperature": 1.0,       # Stop when cooler
-            "iterations_per_temp": 35,         # More iterations at each step
+            "iterations_per_temp": 40,         # More iterations at each step
             "initial_swap_probability": 0.45,  # Slightly higher chance to swap initially
             "final_swap_probability": 0.30,    # Slightly higher chance to swap at the end
             "start_from_current_grid": True,   # Keep this True for polishing

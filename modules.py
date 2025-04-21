@@ -105,7 +105,7 @@ modules = {
                     "image": "hyper.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "hyperdrive.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "hyperdrive.png", },
                         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
                         { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
                         { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
@@ -136,7 +136,7 @@ modules = {
                     "image": "pulse.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "pulse.png", },
+                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "pulse.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.15, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
@@ -327,7 +327,7 @@ modules = {
                     "image": "crimson.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "crimson.png", },
+                        { "id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "crimson.png", },
                         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
                         { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
                         { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
@@ -344,7 +344,7 @@ modules = {
                     "image": "luminance.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "luminance.png", },
+                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "luminance.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.15, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
@@ -491,7 +491,7 @@ modules = {
                     "image": "singularity.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Singularity Cortex", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "singularity.png", },
+                        { "id": "SC", "type": "core", "label": "Singularity Cortex", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "singularity.png", },
                         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "atlantid.png", },
                         { "id": "Xa", "type": "bonus", "label": "Singularity Cortex Upgrade Theta", "bonus": 0.420, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Singularity Cortex Upgrade Tau", "bonus": 0.410, "adjacency": "greater", "sc_eligible": True, "image": "singularity-upgrade.png", },
@@ -504,7 +504,7 @@ modules = {
                     "image": "pulsing.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PH", "type": "core", "label": "Pulsing Heart", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": True, "image": "pulsing.png", },
+                        { "id": "PH", "type": "core", "label": "Pulsing Heart", "bonus": 0.1, "adjacency": "greater", "sc_eligible": True, "image": "pulsing.png", },
                         { "id": "Xa", "type": "bonus", "label": "Pulsing Heart Upgrade Theta", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Pulsing Heart Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Pulsing Heart Upgrade Sigma", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulsing-upgrade.png", },
@@ -1335,19 +1335,17 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "HD",
-                (2, 0): "ID",
-                (3, 0): "None",                
-                (0, 1): "CD",
+                (0, 0): "EW",
+                (1, 0): "Xc",
+                (2, 0): "ED",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "Xb",
-                (3, 1): "AD",
-                (0, 2): "ED",
-                (1, 2): "Xc",
-                (2, 2): "EW",
+                (2, 1): "HD",
+                (0, 2): "ID",
+                (1, 2): "AD",
+                (2, 2): "CD",
             },
-            "score": 5.44
+            "score": 4.1059
         },
         "launch": {
             "map": {
@@ -1492,19 +1490,17 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "HD",
-                (2, 0): "ID",
-                (3, 0): "None",                
-                (0, 1): "CD",
+                (0, 0): "EW",
+                (1, 0): "Xc",
+                (2, 0): "ED",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "Xb",
-                (3, 1): "AD",
-                (0, 2): "ED",
-                (1, 2): "Xc",
-                (2, 2): "EW",
+                (2, 1): "HD",
+                (0, 2): "ID",
+                (1, 2): "AD",
+                (2, 2): "CD",
             },
-            "score": 5.44
+            "score": 4.1059
         },
         "pulse": {
             "map": {
