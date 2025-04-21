@@ -19,7 +19,7 @@ def optimize_grid():
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
-    print(f"Received request for ship: {ship}, tech: {tech}, player_owned_rewards: {player_owned_rewards}")
+    # print(f"Received request for ship: {ship}, tech: {tech}, player_owned_rewards: {player_owned_rewards}")
 
     if tech is None:
         return jsonify({"error": "No tech specified"}), 400
