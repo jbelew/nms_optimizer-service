@@ -312,12 +312,12 @@ def generate_training_batch(
                     optimized_grid, best_bonus = simulated_annealing(
                         original_grid_layout, ship, modules, tech,
                         player_owned_rewards=[], # SA for training uses all modules
-                        initial_temperature=6500,      # Moderately increased
-                        cooling_rate=0.997,            # Moderately increased (slower cooling)
-                        stopping_temperature=1.0,      # Moderately decreased
-                        iterations_per_temp=60,        # Moderately increased
-                        initial_swap_probability=0.55, # Keep similar
-                        final_swap_probability=0.4,    # Keep similar
+                        # initial_temperature=6500,      # Moderately increased
+                        # cooling_rate=0.997,            # Moderately increased (slower cooling)
+                        # stopping_temperature=1.0,      # Moderately decreased
+                        # iterations_per_temp=60,        # Moderately increased
+                        # initial_swap_probability=0.55, # Keep similar
+                        # final_swap_probability=0.4,    # Keep similar
                         max_processing_time=90.0       # Adjusted time limit (e.g., 45 seconds)
                     )
                 if optimized_grid is None: sample_valid = False
