@@ -656,12 +656,15 @@ modules = {
                     "image": "boltcaster.webp",
                     "color": "cyan",
                     "modules": [
-                        { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.png", },
+                        { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster.png", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.png", },
-                        { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.10, "adjacency": "greater", "sc_eligible": True, "image": "barrel-ionizer.png", },               
+                        { "id": "Xa", "type": "bonus", "label": "Boltcaster Upgrade Theta", "bonus": 0.15, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Boltcaster Upgrade Tau", "bonus": 0.14, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Boltcaster Upgrade Sigma", "bonus": 0.13, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-upgrade.png", },
+                        { "id": "Fa", "type": "bonus", "label": "Forbidden Module Theta", "bonus": 0.22, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fb", "type": "bonus", "label": "Forbidden Module Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
+                        { "id": "Fc", "type": "bonus", "label": "Forbidden Module Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": True, "image": "forbidden.png", },
                     ],
                 },
                 {
@@ -1664,14 +1667,17 @@ solves = {
         },
         "bolt-caster": {
             "map": {
-                (0, 0): "BI",
-                (1, 0): "Xc",
-                (0, 1): "BC",
+                (0, 0): "RM",
+                (1, 0): "BC",
+                (2, 0): "BI",
+                (0, 1): "Fa",
                 (1, 1): "Xa",
-                (0, 2): "RM",
-                (1, 2): "Xb"
+                (2, 1): "Fb",
+                (0, 2): "Xb",
+                (1, 2): "Fc",
+                (2, 2): "Xc",
             },
-            "score": 1.382123
+            "score": 1.1775
         },
         "geology": {
             "map": {

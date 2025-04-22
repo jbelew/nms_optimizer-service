@@ -21,7 +21,7 @@ try:
     from training.model_definition import ModulePlacementCNN
     # <<< Import both module definition sources >>>
     from modules_data import get_tech_modules, get_tech_modules_for_training
-    from modules_for_training import modules as modules_for_training_defs # For model loading
+    from modules import modules as modules_for_training_defs # For model loading
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
     from module_placement import place_module, clear_all_modules_of_tech

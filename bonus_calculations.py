@@ -16,15 +16,15 @@ class ModuleType(Enum):
     BONUS = "bonus"
 
 # Weights (These now represent the *factor* by which the base bonus is boosted per interaction)
-CORE_WEIGHT_GREATER = 0.080
+CORE_WEIGHT_GREATER = 0.08
 CORE_WEIGHT_LESSER = 0.03
 # TODO: A hack tp ensure that a core module doesn't over do the weightings.
-BONUS_BONUS_GREATER_WEIGHT = 0.085
+BONUS_BONUS_GREATER_WEIGHT = .08
 BONUS_BONUS_LESSER_WEIGHT = 0.02
 BONUS_BONUS_MIXED_WEIGHT = 0.02 # Lesser GIVES TO Greater (Boost factor applied to Greater)
 
 # Supercharge Multiplier
-SUPERCHARGE_MULTIPLIER = 1.25
+SUPERCHARGE_MULTIPLIER = 1.50
 
 # --- Helper Functions ---
 
@@ -45,7 +45,7 @@ def _get_orthogonal_neighbors(grid: Grid, x: int, y: int) -> list[dict]:
 
 # --- Core Calculation Functions ---
 
-def populate_module_bonuses(grid: Grid, x: int, y: int, apply_supercharge_first: bool = False) -> float:
+def populate_module_bonuses(grid: Grid, x: int, y: int, apply_supercharge_first: bool = True) -> float:
     """
     Calculates the total bonus for a single module.
     Adjacency effects boost the module's own base bonus.
@@ -148,7 +148,7 @@ def populate_module_bonuses(grid: Grid, x: int, y: int, apply_supercharge_first:
     return total_bonus
 
 
-def populate_all_module_bonuses(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> None:
+def populate_all_module_bonuses(grid: Grid, tech: str, apply_supercharge_first: bool = True) -> None:
     """
     Populates the total bonuses for all modules of a given tech in the grid.
     Passes the apply_supercharge_first flag to populate_module_bonuses.
@@ -182,7 +182,7 @@ def clear_scores(grid: Grid, tech: str) -> None:
                 cell["adjacency_bonus"] = 0.0
 
 
-def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> float:
+def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = True) -> float:
     """
     Calculates the total grid score for a given technology by summing module totals.
     Relies on populate_all_module_bonuses to handle adjacency boost internally,
