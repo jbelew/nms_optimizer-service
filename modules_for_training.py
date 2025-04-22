@@ -322,14 +322,14 @@ modules = {
                     ],
                 },
             ],
-            "Hyperdrive": [
+        "Hyperdrive": [
                 {
                     "label": "Anti-Gravity Well",
                     "key": "launch",
                     "image": "anti-gravity.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "anti-gravity.png", },
+                        { "id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": False, "image": "anti-gravity.png", },
                         { "id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "efficient.png", },
                         { "id": "RC", "type": "bonus", "label": "Launch Atuo-Charger", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "recharger.png", },
                         { "id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "launch-upgrade.png", },
@@ -343,7 +343,7 @@ modules = {
                     "image": "crimson.webp",
                     "color": "sky",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "crimson.png", },
+                        { "id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": False, "image": "crimson.png", },
                         { "id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "atlantid.png", },
                         { "id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "cadmium.png", },
                         { "id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "emeril.png", },
@@ -360,7 +360,7 @@ modules = {
                     "image": "luminance.webp",
                     "color": "orange",
                     "modules": [
-                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "luminance.png", },
+                        { "id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": False, "image": "luminance.png", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
                         { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.01, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
