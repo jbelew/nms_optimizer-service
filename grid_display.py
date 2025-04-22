@@ -61,9 +61,9 @@ def print_grid(grid: Grid) -> None:
             formatted_cell = (
                 f"{color_code}"
                 f"{display_text} "
-                f"(T: {cell_data['total']:.4f}) "
-                f"(B: {cell_data['bonus']:.2f}) "
-                f"(A: {cell_data['adjacency_bonus']:.2f})"
+                f"(T: {cell_data['total']:.3f}) "
+                f"(B: {cell_data['bonus']:.3f}) "
+                f"(A: {cell_data['adjacency_bonus']:.3f})"
                 f"{RESET_COLOR}"
             )
             formatted_row.append(formatted_cell)

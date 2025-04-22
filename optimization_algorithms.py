@@ -719,7 +719,6 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     highest_pattern_bonus = -float("inf")
     best_pattern_adjacency_score = 0
     solve_score = 0  # Official score from the solve map, if available
-    pattern_applied = False # Flag if a pattern was successfully applied
     sa_was_initial_placement = False # Flag if SA was the direct initial placement method
 
     # Filter the solves dictionary based on player-owned rewards
@@ -787,7 +786,6 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}' that fits."
             )
             print_grid_compact(solved_grid)
-            pattern_applied = True
             sa_was_initial_placement = False # Pattern was applied, not SA
         else:
             # --- Case 2b: Solve Map Exists, but No Pattern Fits ---

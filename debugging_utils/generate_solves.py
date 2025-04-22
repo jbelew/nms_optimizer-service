@@ -1,3 +1,4 @@
+# /home/jbelew/projects/nms_optimizer/nms_optimizer-service/debugging_utils/generate_solves.py
 import argparse
 import sys
 import os
@@ -7,7 +8,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from grid_utils import Grid
-from modules_for_training import modules
+from modules import modules
 from optimization_algorithms import refine_placement
 from grid_display import print_grid, print_grid_compact
 
@@ -75,11 +76,21 @@ def generate_all_solves(modules, tech_to_generate=None, weapon_to_generate=None)
 
                 module_count = len(weapon["modules"])
 
+                # <<< Add check to skip if only 1 module >>>
+                if module_count <= 1:
+                    print(f"Skipping {tech_key} - {weapon_key} because it has {module_count} module(s).")
+                    continue
+                # <<< End check >>>
+
                 # Determine grid dimensions based on module count
                 if module_count < 4:
                     grid_width, grid_height = 1, 3
+                elif module_count < 5:
+                    grid_width, grid_height = 2, 2
                 elif module_count < 7:
                     grid_width, grid_height = 2, 3
+                elif module_count < 9:
+                    grid_width, grid_height = 4, 2
                 elif module_count < 10:
                     grid_width, grid_height = 3, 3
                 else:
@@ -178,3 +189,4 @@ if __name__ == "__main__":
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     else:
         print("Please use the --generate-all flag to generate all solves, the --tech flag to generate a specific tech, or the --tech and --weapon flags to generate a specific weapon within a tech.")
+

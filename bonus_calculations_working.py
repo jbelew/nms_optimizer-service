@@ -17,9 +17,9 @@ class ModuleType(Enum):
 
 # Weights (These now represent the *factor* by which the base bonus is boosted per interaction)
 CORE_WEIGHT_GREATER = 0.080
-CORE_WEIGHT_LESSER = 0.03
-BONUS_BONUS_GREATER_WEIGHT = 0.080
-BONUS_BONUS_LESSER_WEIGHT = 0.02
+CORE_WEIGHT_LESSER = 0.02
+BONUS_BONUS_GREATER_WEIGHT = 0.060
+BONUS_BONUS_LESSER_WEIGHT = 0.020
 BONUS_BONUS_MIXED_WEIGHT = 0.02 # Lesser GIVES TO Greater (Boost factor applied to Greater)
 
 # Supercharge Multiplier
