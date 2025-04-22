@@ -662,6 +662,7 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
         # Calculate the new score of the entire grid
         new_score_global = calculate_grid_score(grid, tech)
         print(f"INFO -- Score after SA/Refine refinement: {new_score_global:.4f}")
+        print_grid(temp_refined_grid)  # Print the modified grid (grid)
         return grid, new_score_global  # Return the modified grid and its new global score
     else:
         print("INFO -- SA/Refine refinement failed. No changes applied.")

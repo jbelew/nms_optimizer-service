@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm -rf generated_batches/
+
 while true; do
     python generate_data.py --ship standard --category Weaponry
     # python generate_data.py --ship standard --category Hyperdrive

@@ -154,7 +154,6 @@ def simulated_annealing(
              clear_all_modules_of_tech(cleared_grid, tech)
              return cleared_grid, 0.0
 
-
     return best_grid, best_score
 
 def get_swap_probability(
