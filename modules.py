@@ -146,6 +146,22 @@ modules = {
                         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
                     ],
                 },
+                # {
+                #     "label": "Pulse Engine",
+                #     "key": "photonix",
+                #     "image": "pulse.webp",
+                #     "color": "orange",
+                #     "modules": [
+                #         { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": False, "image": "pulse.png", },
+                #         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.png", },
+                #         { "id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.png", },
+                #         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "sublight.png", },
+                #         { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "instability.png", },
+                #         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
+                #         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
+                #         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.png", },
+                #     ],
+                # },
             ],
             "Utilities": [
                 {
@@ -600,10 +616,10 @@ modules = {
                     "image": "mt-scanner.webp",
                     "color": "yellow",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
+                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
                         { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "waveform.png", },
                         { "id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "harmonizer.png", },
-                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
+                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
                         { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
@@ -831,10 +847,10 @@ modules = {
                     "image": "mt-scanner.webp",
                     "color": "yellow",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
+                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
                         { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "waveform.png", },
                         { "id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "harmonizer.png", },
-                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
+                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
                         { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
@@ -1061,10 +1077,10 @@ modules = {
                     "image": "mt-scanner.webp",
                     "color": "yellow",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
+                        { "id": "SC", "type": "core", "label": "Scanner", "bonus": 0.0001, "adjacency": "lesser", "sc_eligible": True, "image": "mt-scanner.png", },
                         { "id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "waveform.png", },
                         { "id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "harmonizer.png", },
-                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
+                        { "id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": True, "image": "polyphonic.png", },
                         { "id": "Xa", "type": "bonus", "label": "Scanner Upgrade Theta", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Scanner Upgrade Sigma", "bonus": 1.40, "adjacency": "greater", "sc_eligible": True, "image": "scanner-upgrade.png", },
@@ -1261,58 +1277,58 @@ solves = {
     "standard": {
         "cyclotron": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
+                (0, 0): "Xc",
+                (1, 0): "Xa",
                 (0, 1): "CB",
-                (1, 1): "Xc",
+                (1, 1): "Xb",
                 (0, 2): "QR",
                 (1, 2): "None"
             },
-            "score": 2.6404
+            "score": 2.64825
         },
         "infra": {
             "map": {
-                (0, 0): "Xb",
+                (0, 0): "Xc",
                 (1, 0): "Xa",
-                (0, 1): "Xc",
-                (1, 1): "IK",
-                (0, 2): "None",
-                (1, 2): "QR"
+                (0, 1): "IK",
+                (1, 1): "Xb",
+                (0, 2): "QR",
+                (1, 2): "None"
             },
-            "score": 2.5972
+            "score": 2.63745
         },
         "phase": {
             "map": {
-                (0, 0): "FD",
-                (1, 0): "None",
+                (0, 0): "Xb",
+                (1, 0): "Xa",
                 (0, 1): "PB",
+                (1, 1): "Xc",
+                (0, 2): "FD",
+                (1, 2): "None"
+            },
+            "score": 2.58865
+        },
+        "photon": {
+            "map": {
+                (0, 0): "NO",
+                (1, 0): "None",
+                (0, 1): "PC",
                 (1, 1): "Xc",
                 (0, 2): "Xb",
                 (1, 2): "Xa"
             },
-            "score": 2.5808
-        },
-        "photon": {
-            "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "Xb",
-                (1, 1): "PC",
-                (0, 2): "None",
-                (1, 2): "NO"
-            },
-            "score": 2.6404
+            "score": 2.64825
         },
         "positron": {
             "map": {
-                (0, 0): "FS",
-                (1, 0): "None",
-                (0, 1): "PE",
-                (1, 1): "Xa",
-                (0, 2): "Xc",
-                (1, 2): "Xb"
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "PE",
+                (0, 2): "None",
+                (1, 2): "FS"
             },
-            "score": 2.6404
+            "score": 2.64825
         },
         "rocket": {
             "map": {
@@ -1325,27 +1341,27 @@ solves = {
         "shield": {
             "map": {
                 (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "AA",
-                (0, 2): "DS",
-                (1, 2): "None"
+                (1, 0): "AA",
+                (0, 1): "Xc",
+                (1, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "DS"
             },
-            "score": 1.099508
+            "score": 1.108908
         },
         "hyper": {
             "map": {
                 (0, 0): "ED",
-                (1, 0): "Xc",
-                (2, 0): "EW",
-                (0, 1): "CD",
+                (1, 0): "HD",
+                (2, 0): "AD",
+                (0, 1): "Xb",
                 (1, 1): "Xa",
-                (2, 1): "Xb",
-                (0, 2): "AD",
-                (1, 2): "HD",
+                (2, 1): "CD",
+                (0, 2): "EW",
+                (1, 2): "Xc",
                 (2, 2): "ID"
             },
-            "score": 1.107644
+            "score": 1.116945
         },
         "launch": {
             "map": {
@@ -1356,33 +1372,33 @@ solves = {
                 (0, 2): "Xc",
                 (1, 2): "RC"
             },
-            "score": 1.042243
+            "score": 1.0524445
         },
         "pulse": {
             "map": {
                 (0, 0): "ID",
-                (1, 0): "Xb",
+                (1, 0): "Xa",
                 (2, 0): "FA",
                 (3, 0): "None",
                 (0, 1): "SL",
-                (1, 1): "Xa",
+                (1, 1): "Xb",
                 (2, 1): "Xc",
                 (3, 1): "PE"
             },
-            "score": 1.92674
+            "score": 1.947492
         },
         "photonix": {
             "map": {
-                (0, 0): "ID",
+                (0, 0): "FA",
                 (1, 0): "Xa",
-                (2, 0): "Xb",
-                (3, 0): "SL",
-                (0, 1): "PE",
-                (1, 1): "PC",
+                (2, 0): "PC",
+                (3, 0): "PE",
+                (0, 1): "SL",
+                (1, 1): "Xb",
                 (2, 1): "Xc",
-                (3, 1): "FA"
+                (3, 1): "ID"
             },
-            "score": 2.260143
+            "score": 2.2858945
         },
         "trails": {
             "map": {
@@ -1407,45 +1423,45 @@ solves = {
             "map": {
                 (0, 0): "Xb",
                 (1, 0): "Xa",
-                (0, 1): "Xc",
-                (1, 1): "CB",
-                (0, 2): "None",
-                (1, 2): "QR"
-            },
-            "score": 2.6404
-        },
-        "infra": {
-            "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (0, 1): "IK",
+                (0, 1): "CB",
                 (1, 1): "Xc",
                 (0, 2): "QR",
                 (1, 2): "None"
             },
-            "score": 2.6404
+            "score": 2.64825
+        },
+        "infra": {
+            "map": {
+                (0, 0): "QR",
+                (1, 0): "None",
+                (0, 1): "IK",
+                (1, 1): "Xc",
+                (0, 2): "Xb",
+                (1, 2): "Xa"
+            },
+            "score": 2.64825
         },
         "phase": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "PB",
-                (0, 2): "None",
-                (1, 2): "FD"
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PB",
+                (1, 1): "Xc",
+                (0, 2): "FD",
+                (1, 2): "None"
             },
-            "score": 2.5808
+            "score": 2.58865
         },
         "positron": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
+                (0, 0): "Xc",
+                (1, 0): "Xa",
                 (0, 1): "PE",
-                (1, 1): "Xc",
+                (1, 1): "Xb",
                 (0, 2): "FS",
                 (1, 2): "None"
             },
-            "score": 2.6404
+            "score": 2.64825
         },
         "rocket": {
             "map": {
@@ -1457,76 +1473,63 @@ solves = {
         },
         "photon": {
             "map": {
-                (0, 0): "Xb",
+                (0, 0): "Xa",
                 (1, 0): "Xc",
-                (0, 1): "Xa",
+                (0, 1): "Xb",
                 (1, 1): "PC",
                 (0, 2): "None",
                 (1, 2): "NO"
             },
-            "score": 2.6404
+            "score": 2.64825
         },
         "shield": {
             "map": {
-                (0, 0): "DS",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "Xc",
-                (0, 2): "AA",
-                (1, 2): "Xb"
+                (0, 0): "AA",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "DS"
             },
-            "score": 1.099508
+            "score": 1.108908
         },
         "launch": {
             "map": {
-                (0, 0): "RC",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "EF",
-                (1, 2): "LT"
+                (0, 0): "Xc",
+                (1, 0): "EF",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (0, 2): "LT",
+                (1, 2): "RC"
             },
-            "score": 1.042243
+            "score": 1.0524445
         },
         "hyper": {
             "map": {
-                (0, 0): "ED",
-                (1, 0): "CD",
-                (2, 0): "ID",
+                (0, 0): "EW",
+                (1, 0): "Xc",
+                (2, 0): "CD",
                 (0, 1): "Xb",
                 (1, 1): "Xa",
                 (2, 1): "HD",
-                (0, 2): "EW",
-                (1, 2): "Xc",
-                (2, 2): "AD"
+                (0, 2): "AD",
+                (1, 2): "ED",
+                (2, 2): "ID"
             },
-            "score": 1.1076556
+            "score": 1.1169567
         },
         "pulse": {
             "map": {
                 (0, 0): "FA",
-                (1, 0): "Xb",
-                (2, 0): "ID",
-                (3, 0): "None",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
-                (2, 1): "PE",
-                (3, 1): "SL"
-            },
-            "score": 3.1744
-        },
-        "photonix": {
-            "map": {
-                (0, 0): "ID",
                 (1, 0): "Xa",
-                (2, 0): "Xb",
-                (3, 0): "SL",
-                (0, 1): "PE",
-                (1, 1): "PC",
-                (2, 1): "Xc",
-                (3, 1): "FA"
+                (2, 0): "Xc",
+                (3, 0): "PE",
+                (0, 1): "ID",
+                (1, 1): "Xb",
+                (2, 1): "SL",
+                (3, 1): "None"
             },
-            "score": 2.260143
+            "score": 1.970658
         },
         "trails": {
             "map": {
@@ -1550,60 +1553,60 @@ solves = {
         "grafted": {
             "map": {
                 (0, 0): "Xa",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "GE"
             },
-            "score": 2.4787
+            "score": 2.48655
         },
         "spewing": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
-                (0, 1): "Xa",
-                (1, 1): "SV"
-            },
-            "score": 2.5172
-        },
-        "scream": {
-            "map": {
-                (0, 0): "SS",
+                (0, 0): "SV",
                 (1, 0): "Xc",
                 (0, 1): "Xb",
                 (1, 1): "Xa"
             },
-            "score": 0.980816
+            "score": 2.52505
+        },
+        "scream": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "SS",
+                (0, 1): "Xa",
+                (1, 1): "Xb"
+            },
+            "score": 0.986666
         },
         "assembly": {
             "map": {
-                (0, 0): "NA",
-                (1, 0): "None",
+                (0, 0): "Xb",
+                (1, 0): "Xc",
                 (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "Xc",
-                (1, 2): "CM"
+                (1, 1): "CM",
+                (0, 2): "NA",
+                (1, 2): "None"
             },
-            "score": 1.018424
+            "score": 1.027125
         },
         "singularity": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
-                (0, 1): "AD",
-                (1, 1): "Xa",
-                (0, 2): "None",
-                (1, 2): "SC"
+                (0, 0): "SC",
+                (1, 0): "None",
+                (0, 1): "Xa",
+                (1, 1): "Xc",
+                (0, 2): "AD",
+                (1, 2): "Xb"
             },
-            "score": 1.088624
+            "score": 1.097925
         },
         "pulsing": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "PH"
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "PH",
+                (1, 1): "Xb"
             },
-            "score": 1.656816
+            "score": 1.666666
         },
         "trails": {
             "map": {
@@ -1626,58 +1629,58 @@ solves = {
     "standard-mt": {
         "mining": {
             "map": {
-                (0, 0): "AM",
+                (0, 0): "Xc",
                 (1, 0): "Xb",
                 (0, 1): "MB",
                 (1, 1): "OD",
-                (0, 2): "Xc",
-                (1, 2): "Xa"
+                (0, 2): "Xa",
+                (1, 2): "AM"
             },
-            "score": 2.324348
+            "score": 2.33335
         },
         "scanner": {
             "map": {
-                (0, 0): "SC",
-                (1, 0): "Xc",
-                (2, 0): "WR",
-                (3, 0): "None",
-                (0, 1): "PC",
-                (1, 1): "Xb",
-                (2, 1): "Xa",
-                (3, 1): "SH"
+                (0, 0): "PC",
+                (1, 0): "Xb",
+                (2, 0): "Xc",
+                (3, 0): "SC",
+                (0, 1): "SH",
+                (1, 1): "Xa",
+                (2, 1): "WR",
+                (3, 1): "None"
             },
-            "score": 6.8525
+            "score": 5.639875
         },
         "blaze-javelin": {
             "map": {
-                (0, 0): "WO",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "BJ",
-                (0, 2): "Xa",
-                (1, 2): "MA"
+                (0, 0): "Xb",
+                (1, 0): "MA",
+                (0, 1): "BJ",
+                (1, 1): "Xa",
+                (0, 2): "Xc",
+                (1, 2): "WO"
             },
-            "score": 1.6088
+            "score": 1.61125
         },
         "bolt-caster": {
             "map": {
-                (0, 0): "RM",
+                (0, 0): "BI",
                 (1, 0): "Xc",
                 (0, 1): "BC",
                 (1, 1): "Xa",
-                (0, 2): "BI",
+                (0, 2): "RM",
                 (1, 2): "Xb"
             },
-            "score": 1.380922
+            "score": 1.382123
         },
         "geology": {
             "map": {
-                (0, 0): "GC",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "Xb"
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "GC"
             },
-            "score": 2.1692
+            "score": 2.17505
         },
         "neutron": {
             "map": {
@@ -1688,7 +1691,7 @@ solves = {
                 (0, 2): "Xc",
                 (1, 2): "NC"
             },
-            "score": 7.404
+            "score": 7.4475
         },
         "plasma-launcher": {
             "map": {
@@ -1697,7 +1700,110 @@ solves = {
                 (0, 1): "PL",
                 (1, 1): "Xb"
             },
-            "score": 2.1692
+            "score": 2.17505
+        },
+        "pulse-splitter": {
+            "map": {
+                (0, 0): "II",
+                (1, 0): "AC",
+                (2, 0): "PS",
+                (3, 0): "RM",
+                (0, 1): "None",
+                (1, 1): "Xc",
+                (2, 1): "Xa",
+                (3, 1): "Xb"
+            },
+            "score": 2.282133
+        },
+        "scatter": {
+            "map": {
+                (0, 0): "SG",
+                (1, 0): "None",
+                (0, 1): "SB",
+                (1, 1): "Xc",
+                (0, 2): "Xb",
+                (1, 2): "Xa"
+            },
+            "score": 2.255158
+        }
+    },
+    "atlantid": {
+        "mining": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "MB",
+                (2, 0): "Xb",
+                (3, 0): "None",
+                (0, 1): "AM",
+                (1, 1): "OD",
+                (2, 1): "RL",
+                (3, 1): "Xa"
+            },
+            "score": 3.5883415
+        },
+        "scanner": {
+            "map": {
+                (0, 0): "SH",
+                (1, 0): "Xb",
+                (2, 0): "Xc",
+                (3, 0): "SC",
+                (0, 1): "PC",
+                (1, 1): "Xa",
+                (2, 1): "WR",
+                (3, 1): "None"
+            },
+            "score": 5.639875
+        },
+        "blaze-javelin": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "MA",
+                (0, 1): "BJ",
+                (1, 1): "Xa",
+                (0, 2): "Xc",
+                (1, 2): "WO"
+            },
+            "score": 1.61125
+        },
+        "bolt-caster": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "BI",
+                (0, 1): "Xa",
+                (1, 1): "BC",
+                (0, 2): "Xb",
+                (1, 2): "RM"
+            },
+            "score": 1.382123
+        },
+        "geology": {
+            "map": {
+                (0, 0): "GC",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "Xa"
+            },
+            "score": 2.17505
+        },
+        "neutron": {
+            "map": {
+                (0, 0): "NC",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "Xa",
+                (0, 2): "None",
+                (1, 2): "PF"
+            },
+            "score": 7.4475
+        },
+        "plasma-launcher": {
+            "map": {
+                (0, 0): "PL",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "Xa"
+            },
+            "score": 2.17505
         },
         "pulse-splitter": {
             "map": {
@@ -1710,222 +1816,119 @@ solves = {
                 (2, 1): "RM",
                 (3, 1): "II"
             },
-            "score": 2.273432
+            "score": 2.282133
         },
         "scatter": {
             "map": {
-                (0, 0): "SG",
-                (1, 0): "None",
-                (0, 1): "SB",
-                (1, 1): "Xc",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
-            },
-            "score": 2.249308
-        }
-    },
-    "atlantid": {
-        "mining": {
-            "map": {
-                (0, 0): "AM",
-                (1, 0): "MB",
-                (2, 0): "OD",
-                (3, 0): "Xa",
-                (0, 1): "Xb",
-                (1, 1): "RL",
-                (2, 1): "Xc",
-                (3, 1): "None"
-            },
-            "score": 3.56434
-        },
-        "scanner": {
-            "map": {
-                (0, 0): "PC",
-                (1, 0): "Xa",
-                (2, 0): "Xb",
-                (3, 0): "SH",
-                (0, 1): "SC",
-                (1, 1): "Xc",
-                (2, 1): "WR",
-                (3, 1): "None"
-            },
-            "score": 6.8525
-        },
-        "blaze-javelin": {
-            "map": {
-                (0, 0): "WO",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "BJ",
-                (0, 2): "MA",
-                (1, 2): "Xa"
-            },
-            "score": 1.6088
-        },
-        "bolt-caster": {
-            "map": {
-                (0, 0): "RM",
+                (0, 0): "Xa",
                 (1, 0): "Xb",
-                (0, 1): "BC",
-                (1, 1): "Xa",
-                (0, 2): "BI",
-                (1, 2): "Xc"
-            },
-            "score": 1.380922
-        },
-        "geology": {
-            "map": {
-                (0, 0): "Xb",
-                (1, 0): "GC",
-                (0, 1): "Xa",
-                (1, 1): "Xc"
-            },
-            "score": 2.1692
-        },
-        "neutron": {
-            "map": {
-                (0, 0): "NC",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (0, 2): "None",
-                (1, 2): "PF"
-            },
-            "score": 7.404
-        },
-        "plasma-launcher": {
-            "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (0, 1): "PL",
-                (1, 1): "Xc"
-            },
-            "score": 2.1692
-        },
-        "pulse-splitter": {
-            "map": {
-                (0, 0): "II",
-                (1, 0): "Xc",
-                (2, 0): "Xa",
-                (3, 0): "Xb",
-                (0, 1): "None",
-                (1, 1): "RM",
-                (2, 1): "PS",
-                (3, 1): "AC"
-            },
-            "score": 2.273432
-        },
-        "scatter": {
-            "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "SB",
                 (0, 2): "None",
                 (1, 2): "SG"
             },
-            "score": 2.249308
+            "score": 2.255158
         }
     },
     "sentinel-mt": {
         "mining": {
             "map": {
                 (0, 0): "AM",
-                (1, 0): "Xb",
+                (1, 0): "Xa",
                 (0, 1): "OD",
                 (1, 1): "MB",
                 (0, 2): "Xc",
-                (1, 2): "Xa"
+                (1, 2): "Xb"
             },
-            "score": 2.324348
+            "score": 2.33335
         },
         "scanner": {
             "map": {
-                (0, 0): "SH",
-                (1, 0): "Xa",
+                (0, 0): "SC",
+                (1, 0): "Xc",
                 (2, 0): "Xb",
-                (3, 0): "PC",
-                (0, 1): "SC",
-                (1, 1): "Xc",
-                (2, 1): "WR",
-                (3, 1): "None"
+                (3, 0): "WR",
+                (0, 1): "None",
+                (1, 1): "PC",
+                (2, 1): "Xa",
+                (3, 1): "SH"
             },
-            "score": 6.8525
+            "score": 5.639875
         },
         "blaze-javelin": {
             "map": {
-                (0, 0): "WO",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "BJ",
-                (0, 2): "Xa",
-                (1, 2): "MA"
+                (0, 0): "Xb",
+                (1, 0): "MA",
+                (0, 1): "BJ",
+                (1, 1): "Xa",
+                (0, 2): "Xc",
+                (1, 2): "WO"
             },
-            "score": 1.6088
+            "score": 1.61125
         },
         "bolt-caster": {
             "map": {
                 (0, 0): "BI",
-                (1, 0): "Xb",
+                (1, 0): "Xc",
                 (0, 1): "BC",
                 (1, 1): "Xa",
                 (0, 2): "RM",
-                (1, 2): "Xc"
+                (1, 2): "Xb"
             },
-            "score": 1.380922
+            "score": 1.382123
         },
         "geology": {
             "map": {
-                (0, 0): "GC",
-                (1, 0): "Xa",
-                (0, 1): "Xb",
-                (1, 1): "Xc"
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "GC"
             },
-            "score": 2.1692
+            "score": 2.17505
         },
         "neutron": {
             "map": {
-                (0, 0): "NC",
-                (1, 0): "Xb",
+                (0, 0): "PF",
+                (1, 0): "None",
                 (0, 1): "Xa",
                 (1, 1): "Xc",
-                (0, 2): "PF",
-                (1, 2): "None"
+                (0, 2): "Xb",
+                (1, 2): "NC"
             },
-            "score": 7.404
+            "score": 7.4475
         },
         "plasma-launcher": {
             "map": {
-                (0, 0): "Xb",
+                (0, 0): "Xc",
                 (1, 0): "Xa",
-                (0, 1): "Xc",
-                (1, 1): "PL"
+                (0, 1): "PL",
+                (1, 1): "Xb"
             },
-            "score": 2.1692
+            "score": 2.17505
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "II",
-                (1, 0): "Xb",
-                (2, 0): "Xa",
-                (3, 0): "Xc",
-                (0, 1): "None",
-                (1, 1): "AC",
-                (2, 1): "PS",
-                (3, 1): "RM"
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (2, 0): "Xb",
+                (3, 0): "II",
+                (0, 1): "RM",
+                (1, 1): "PS",
+                (2, 1): "AC",
+                (3, 1): "None"
             },
-            "score": 2.273432
+            "score": 2.282133
         },
         "scatter": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
+                (0, 0): "SG",
+                (1, 0): "None",
                 (0, 1): "SB",
                 (1, 1): "Xb",
-                (0, 2): "SG",
-                (1, 2): "None"
+                (0, 2): "Xc",
+                (1, 2): "Xa"
             },
-            "score": 2.249308
+            "score": 2.255158
         }
     }
 }
