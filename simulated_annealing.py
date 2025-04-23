@@ -14,10 +14,10 @@ def simulated_annealing(
     modules,
     tech,
     player_owned_rewards=None,
-    initial_temperature=4000,
+    initial_temperature=4500,
     cooling_rate=0.995,
     stopping_temperature=1.5,
-    iterations_per_temp=35,
+    iterations_per_temp=40,
     initial_swap_probability=0.55,
     final_swap_probability=0.4,
     # <<< Add a flag to indicate polishing mode >>>
@@ -469,7 +469,8 @@ def move_module(grid, tech, tech_modules):
         grid.cells[y][x]["sc_eligible"] = False
         grid.cells[y][x]["image"] = None
         grid.cells[y][x]["module_position"] = None
-
+        grid.cells[y][x]["total"] = 0.0
+        grid.cells[y][x]["adjacency_bonus"] = 0.0
 
 def is_adjacent(x1, y1, x2, y2):
     """Checks if two positions are adjacent."""
