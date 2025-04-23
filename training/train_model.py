@@ -23,6 +23,8 @@ if project_root not in sys.path:
 from model_definition import ModulePlacementCNN # Import model definition
 from modules_data import get_tech_modules_for_training
 from modules_for_training import modules
+# <<< Import determine_window_dimensions >>>
+from optimization_algorithms import determine_window_dimensions
 from sklearn.model_selection import train_test_split
 
 try:
@@ -74,8 +76,8 @@ class PlacementDataset(data.Dataset):
 def train_model(
     train_loader,
     val_loader,
-    grid_height,
-    grid_width,
+    grid_height, # <<< Still needed for model definition
+    grid_width,  # <<< Still needed for model definition
     num_output_classes,
     num_epochs,
     learning_rate,
@@ -92,7 +94,7 @@ def train_model(
     print(f"Starting training for {log_dir}...")
     print(f"  Saving best model to: {model_save_path}")
     print(f"  Early Stopping: Patience={early_stopping_patience}, Metric='{early_stopping_metric}'")
-    print(f"  Grid Dimensions: {grid_height}x{grid_width}")
+    print(f"  Grid Dimensions: {grid_height}x{grid_width}") # <<< Use passed-in dynamic dimensions
     print(f"  Num Output Classes: {num_output_classes}")
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
     print(f"  Scheduler: ReduceLROnPlateau, Factor: {scheduler_factor}, Patience: {scheduler_patience}")
@@ -100,6 +102,7 @@ def train_model(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Training device: {device}")
 
+    # <<< Initialize model with dynamic dimensions >>>
     model = ModulePlacementCNN(
         input_channels=2, grid_height=grid_height, grid_width=grid_width, num_output_classes=num_output_classes
     ).to(device)
@@ -370,8 +373,9 @@ def train_model(
 def run_training_from_files(
     ship,
     tech_category_to_train: Optional[str],
-    grid_width,
-    grid_height,
+    # <<< Remove grid_width, grid_height as direct parameters >>>
+    # grid_width,
+    # grid_height,
     learning_rate,
     weight_decay,
     num_epochs,
@@ -391,6 +395,7 @@ def run_training_from_files(
     Uses AdamW and ReduceLROnPlateau.
     If tech_category_to_train is None, trains for all categories for the ship.
     Includes data validation checks during loading.
+    Dynamically determines grid dimensions for each tech.
     """
     # --- Get Ship Data ---
     try:
@@ -443,20 +448,26 @@ def run_training_from_files(
         for tech in tech_keys_to_train:
             print(f"\n--- Processing Tech: {tech} ---")
 
-            # <<< Determine num_output_classes BEFORE loading files >>>
+            # <<< Determine num_output_classes AND grid dimensions >>>
             tech_modules_for_class_count = get_tech_modules_for_training(modules, ship, tech)
             if not tech_modules_for_class_count:
-                print(f"Warning: Could not get modules for tech '{tech}' to determine class count. Skipping.")
+                print(f"Warning: Could not get modules for tech '{tech}' to determine class count/size. Skipping.")
                 continue
-            num_output_classes = len(tech_modules_for_class_count) + 1
+
+            module_count = len(tech_modules_for_class_count)
+            grid_width, grid_height = determine_window_dimensions(module_count) # <<< Dynamic dimensions
+            print(f"  Determined dynamic grid size: {grid_width}x{grid_height}")
+
+            num_output_classes = module_count + 1
             if num_output_classes <= 1:
                 print(f"Skipping tech '{tech}': Not enough output classes ({num_output_classes}).")
                 continue
             print(f"  Expected number of output classes (incl. background): {num_output_classes}")
-            # <<< End Determine num_output_classes >>>
+            # <<< End Determine num_output_classes & dimensions >>>
 
             # --- 1. Find and Load Data ---
             tech_data_source_dir = os.path.join(base_data_source_dir, ship, tech)
+            # <<< Use dynamic dimensions in file pattern >>>
             file_pattern = os.path.join(tech_data_source_dir, f"data_{ship}_{tech}_{grid_width}x{grid_height}_*.npz")
             data_files = glob.glob(file_pattern)
             if not data_files:
@@ -486,6 +497,7 @@ def run_training_from_files(
                         if len(x_sc_batch.shape) < 3 or len(x_inactive_batch.shape) < 3 or len(y_batch.shape) < 3:
                             print(f"Warning: Unexpected array dimensions in {filepath}. Skipping file.")
                             valid_file = False
+                        # <<< Use dynamic dimensions for shape check >>>
                         elif (
                             x_sc_batch.shape[1:] != (grid_height, grid_width)
                             or x_inactive_batch.shape[1:] != (grid_height, grid_width)
@@ -539,17 +551,6 @@ def run_training_from_files(
                 continue
             # --- End Load Data ---
 
-            # --- Determine num_output_classes (Redundant check, keep for safety) ---
-            # tech_modules = get_tech_modules_for_training(modules, ship, tech) # Already got this list
-            # if not tech_modules:
-            #     print(f"Warning: Could not get modules for tech '{tech}'. Skipping.")
-            #     continue
-            # num_output_classes = len(tech_modules) + 1
-            # if num_output_classes <= 1:
-            #     print(f"Skipping tech '{tech}': Not enough output classes ({num_output_classes}).")
-            #     continue
-            # --- End Determine num_output_classes ---
-
             # --- 2. Perform Train/Validation Split ---
             X_train_sc_np, X_val_sc_np = None, None
             X_train_in_np, X_val_in_np = None, None
@@ -598,16 +599,6 @@ def run_training_from_files(
                 class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32)
                 print(f"  Calculated class weights: {class_weights_tensor.cpu().numpy()}")
 
-                # --- Option 2: Disable weighting if any class is missing ---
-                # if np.any(class_counts == 0):
-                #     zero_count_classes = np.where(class_counts == 0)[0]
-                #     print(f"  Warning: Classes {zero_count_classes} not found in training data for {tech}. Disabling class weighting for this tech.")
-                #     class_weights_tensor = None
-                # else:
-                #     class_weights = total_pixels / (num_output_classes * class_counts)
-                #     class_weights_tensor = torch.tensor(class_weights, dtype=torch.float32)
-                #     print(f"  Calculated class weights: {class_weights_tensor.cpu().numpy()}")
-
             else:
                 print("Warning: y_train_np not available or empty. Cannot calculate class weights.")
             # --- End Calculate Class Weights ---
@@ -654,6 +645,7 @@ def run_training_from_files(
             if not can_early_stop:
                 print("Info: No validation loader available. Early stopping disabled for this tech.")
 
+            # <<< Pass dynamic dimensions to train_model >>>
             model = train_model(
                 train_loader, val_loader, grid_height, grid_width, num_output_classes,
                 num_epochs, learning_rate, weight_decay, log_dir, model_save_path,
@@ -678,8 +670,9 @@ if __name__ == "__main__":
     # <<< Make category optional >>>
     parser.add_argument("--category", type=str, default=None, help="Technology category to train models for (optional, trains all if omitted).")
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
-    parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
-    parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
+    # <<< Remove width and height arguments >>>
+    # parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
+    # parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
     parser.add_argument("--lr", type=float, default=2e-5, help="Initial learning rate.")
     parser.add_argument("--wd", type=float, default=5e-5, help="Weight decay (L2 regularization).")
     parser.add_argument("--epochs", type=int, default=200, help="Maximum number of training epochs.")
@@ -704,7 +697,9 @@ if __name__ == "__main__":
         effective_es_metric = "val_loss"
 
     config = {
-        "grid_width": args.width, "grid_height": args.height, "ship": args.ship,
+        # <<< Remove width and height from config >>>
+        # "grid_width": args.width, "grid_height": args.height,
+        "ship": args.ship,
         # <<< Pass the potentially None category >>>
         "tech_category_to_train": args.category,
         "learning_rate": args.lr,
@@ -722,11 +717,12 @@ if __name__ == "__main__":
 
     os.makedirs(config["base_model_save_dir"], exist_ok=True)
 
+    # <<< Remove width and height from function call >>>
     run_training_from_files(
         ship=config["ship"],
         tech_category_to_train=config["tech_category_to_train"], # <<< Pass the value from args
-        grid_width=config["grid_width"],
-        grid_height=config["grid_height"],
+        # grid_width=config["grid_width"], # Removed
+        # grid_height=config["grid_height"], # Removed
         learning_rate=config["learning_rate"],
         weight_decay=config["weight_decay"],
         num_epochs=config["num_epochs"],
@@ -745,3 +741,4 @@ if __name__ == "__main__":
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     print(f"Best models saved directly in: {os.path.abspath(config['base_model_save_dir'])}")
+

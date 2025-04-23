@@ -301,14 +301,14 @@ def ml_placement(
         grid_to_polish = predicted_grid.copy()
 
         polish_params = {
-            "initial_temperature": 2000,       # Start a bit hotter
-            "cooling_rate": 0.985,             # Cool down slower
-            "stopping_temperature": 1.0,       # Stop when cooler
-            "iterations_per_temp": 40,         # More iterations at each step
-            "initial_swap_probability": 0.45,  # Slightly higher chance to swap initially
-            "final_swap_probability": 0.30,    # Slightly higher chance to swap at the end
+            "initial_temperature": 1000,       # Lower starting temp
+            "cooling_rate": 0.98,              # Cool down a bit faster
+            "stopping_temperature": 0.5,       # Stop a bit earlier
+            "iterations_per_temp": 20,         # Fewer iterations per temperature step
+            "initial_swap_probability": 0.40,  # Slightly lower swap chance
+            "final_swap_probability": 0.25,    # Lower swap chance at the end
             "start_from_current_grid": True,   # Keep this True for polishing
-            "max_processing_time": 15.0,       # Allow more time (e.g., 15 seconds)
+            "max_processing_time": 5.0,        # Significantly reduce max time (e.g., 5 seconds)
         }
         # logging.info(f"INFO -- ML Placement: Using SA polish params: {polish_params}")
 

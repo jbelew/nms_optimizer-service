@@ -357,6 +357,38 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     return optimal_grid, highest_bonus
 
+def determine_window_dimensions(module_count: int) -> tuple[int, int]:
+    """
+    Determines the window width and height based on the number of modules.
+
+    This defines the size of the grid window used for placement calculations.
+
+    Args:
+        module_count: The total number of modules for a given technology.
+
+    Returns:
+        A tuple containing the calculated window_width and window_height.
+    """
+    if module_count < 1:
+        # Handle cases with zero or negative modules (optional, but good practice)
+        print(f"Warning: Module count is {module_count}. Returning default 1x1 window.")
+        return 1, 1
+    elif module_count < 3:
+        window_width, window_height = 1, 2
+    elif module_count < 4:
+        window_width, window_height = 1, 3
+    elif module_count < 5:
+        window_width, window_height = 2, 2
+    elif module_count < 7:
+        window_width, window_height = 2, 3
+    elif module_count < 9:
+        window_width, window_height = 4, 2
+    elif module_count < 10:
+        window_width, window_height = 3, 3
+    else: # module_count >= 10
+        window_width, window_height = 4, 3
+
+    return window_width, window_height
 
 def rotate_pattern(pattern):
     """Rotates a pattern 90 degrees clockwise."""
@@ -556,88 +588,79 @@ def calculate_pattern_adjacency_score(grid, tech):
 
 
 # --- Helper function for ML opportunity refinement ---
-def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y):
+def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y, window_width, window_height):
     """Handles the ML-based refinement within an opportunity window."""
-    from ml_placement import ml_placement
+    from ml_placement import ml_placement # Keep import local if possible
 
     if player_owned_rewards is None:
         player_owned_rewards = []
 
-    print(f"INFO -- Using ML for opportunity refinement at ({opportunity_x}, {opportunity_y})")
-    # 1. Create localized grid specifically for ML (handles other techs)
-    #    Pass the ORIGINAL grid here to gather localization info.
+    print(f"INFO -- Using ML for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}")
+    # 1. Create localized grid specifically for ML
+    # <<< Pass window dimensions to create_localized_grid_ml >>>
     localized_grid_ml, start_x, start_y, original_state_map = create_localized_grid_ml(
-        grid, opportunity_x, opportunity_y, tech
+        grid, opportunity_x, opportunity_y, tech, window_width, window_height # <<< Pass dimensions
     )
 
     # 2. Run ML placement on the localized grid
     #    Make sure player_owned_rewards is passed correctly!
+    # <<< Pass localized grid dimensions to ml_placement >>>
     ml_refined_grid, ml_refined_score_local = ml_placement(
         localized_grid_ml,
         ship,
         modules,
         tech,
-        player_owned_rewards=player_owned_rewards,  # <<< Pass player_owned_rewards
-        # Pass model_dir, model_grid_width, model_grid_height if needed
+        player_owned_rewards=player_owned_rewards,
+        model_grid_width=localized_grid_ml.width,   # <<< Use actual localized width
+        model_grid_height=localized_grid_ml.height, # <<< Use actual localized height
+        polish_result=True # Usually don't polish within the main polish step
     )
 
-    # 3. Process ML result
+    # 3. Process ML result (logic remains the same)
     if ml_refined_grid is not None:
         print(f"INFO -- ML refinement produced a grid. Applying changes...")
-
-        # --- *** Modification Start *** ---
-        # Create the working copy NOW, *after* localization info is gathered
-        # This copy will be modified and potentially returned.
         grid_copy = grid.copy()
-
-        # Clear ALL modules of the target tech from the *entire* grid copy
-        # This ensures we don't keep modules outside the refinement window.
-        # print(f"DEBUG -- Clearing all '{tech}' modules from the full grid copy before applying ML changes.")
         clear_all_modules_of_tech(grid_copy, tech)
-        # --- *** Modification End *** ---
-
-        # Apply ML changes (from the small ml_refined_grid) to the cleared grid copy
-        # This places the modules found by ML into the correct positions within the window
-        # on the otherwise empty (for this tech) grid_copy.
         apply_localized_grid_changes(grid_copy, ml_refined_grid, tech, start_x, start_y)
-
-        # Restore the original state of cells (other techs) that were temporarily removed during localization
-        # Apply restoration to the grid_copy.
         restore_original_state(grid_copy, original_state_map)
-
-        # Recalculate the score of the *entire* modified grid copy
         new_score_global = calculate_grid_score(grid_copy, tech)
         print(f"INFO -- Score after ML refinement and restoration: {new_score_global:.4f}")
-        #print_grid_compact(grid_copy)
-        return grid_copy, new_score_global  # Return the modified grid copy and its new global score
+        return grid_copy, new_score_global
     else:
-        # Handle ML failure
+        # Handle ML failure (logic remains the same)
         print("INFO -- ML refinement failed or returned None. No changes applied.")
-        # If ML failed, we still need to restore the original state onto a copy
-        # to ensure consistency, especially if create_localized_grid_ml had side effects.
-        grid_copy = grid.copy()  # Create a fresh copy from the original grid
+        grid_copy = grid.copy()
         restore_original_state(grid_copy, original_state_map)
-        # Return the restored grid and its score (which should be the original score)
-        original_score = calculate_grid_score(grid_copy, tech)  # Recalculate score after restoration
+        original_score = calculate_grid_score(grid_copy, tech)
         print(f"INFO -- Returning grid with original score after failed ML: {original_score:.4f}")
-        # Return the grid_copy (which now matches the original state) and its score
         return None, 0.0
 
-
 # --- Existing function for SA/Refine opportunity ---
-def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y):
+def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y, window_width, window_height):
     """Handles the SA/Refine-based refinement within an opportunity window."""
-    print(f"INFO -- Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y})")
-    clear_all_modules_of_tech(grid, tech)
-    # Create a localized grid (preserves other tech modules)
-    localized_grid, start_x, start_y = create_localized_grid(grid, opportunity_x, opportunity_y, tech)
-    # print_grid(localized_grid)
+    print(f"INFO -- Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}")
 
-    # Get the number of modules for the given tech
+    # --- *** Modification Start *** ---
+    # Create a copy of the grid *before* clearing, to preserve the original state for localization
+    grid_copy_for_localization = grid.copy()
+
+    # Clear the target tech from the original grid passed in (or a copy if preferred, but this modifies the copy passed from optimize_placement)
+    clear_all_modules_of_tech(grid_copy_for_localization, tech)
+    # --- *** Modification End *** ---
+
+    # Create a localized grid (preserves other tech modules)
+    # <<< Pass window dimensions to create_localized_grid >>>
+    # <<< Use the copy made *before* clearing for localization info >>>
+    localized_grid, start_x, start_y = create_localized_grid(
+        grid_copy_for_localization, opportunity_x, opportunity_y, tech, window_width, window_height # <<< Pass dimensions
+    )
+    # print_grid(localized_grid) # Optional debug
+
+    # Get the number of modules for the given tech (no change)
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     num_modules = len(tech_modules) if tech_modules else 0
 
-    # Refine the localized grid
+    # Refine the localized grid (no change in logic here)
     if num_modules < 6:
         print(f"INFO -- {tech} has less than 6 modules, running refine_placement")
         temp_refined_grid, temp_refined_bonus_local = refine_placement(
@@ -649,24 +672,19 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
             localized_grid, ship, modules, tech, player_owned_rewards
         )
 
-    # Process SA/Refine result
+    # Process SA/Refine result (logic remains the same)
     if temp_refined_grid is not None:
-        # Recalculate local score just to be sure
         temp_refined_bonus_local = calculate_grid_score(temp_refined_grid, tech)
-        # print(f"INFO -- SA/Refine local score: {temp_refined_bonus_local:.4f}")
-        # print_grid_compact(temp_refined_grid)
-
-        # Apply changes back to the main grid copy (grid)
+        # Apply changes back to the main grid copy (grid - which was cleared earlier)
         apply_localized_grid_changes(grid, temp_refined_grid, tech, start_x, start_y)
-
-        # Calculate the new score of the entire grid
         new_score_global = calculate_grid_score(grid, tech)
         print(f"INFO -- Score after SA/Refine refinement: {new_score_global:.4f}")
-        print_grid(temp_refined_grid)  # Print the modified grid (grid)
-        return grid, new_score_global  # Return the modified grid and its new global score
+        # print_grid(grid) # Print the modified grid (grid)
+        return grid, new_score_global
     else:
         print("INFO -- SA/Refine refinement failed. No changes applied.")
-        return grid, -1.0  # Indicate failure or no improvement
+        # Return the grid (which was cleared of the tech) and indicate failure
+        return grid, -1.0
 
 
 def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, experimental=False):
@@ -814,13 +832,19 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     # --- Opportunity Refinement Stage ---
     # Start refinement from the best state achieved so far (pattern or initial SA)
     grid_to_refine = solved_grid.copy()
+
     current_best_score = calculate_grid_score(grid_to_refine, tech) # Score *before* refinement
+    clear_all_modules_of_tech(grid_to_refine, tech)
 
-    opportunity = find_supercharged_opportunities(grid_to_refine, modules, ship, tech)
+    # <<< Pass player_owned_rewards to find_supercharged_opportunities >>>
+    opportunity_result = find_supercharged_opportunities(grid_to_refine, modules, ship, tech, player_owned_rewards) # <<< Pass rewards
 
-    if opportunity:
-        print(f"INFO -- Found opportunity for refinement at window starting: {opportunity}")
-        opportunity_x, opportunity_y = opportunity
+    if opportunity_result:
+        # <<< Unpack all four values >>>
+        opportunity_x, opportunity_y, window_width, window_height = opportunity_result
+        print(f"INFO -- Found opportunity for refinement at window starting: ({opportunity_x}, {opportunity_y}) with size {window_width}x{window_height}")
+        # <<< End unpacking change >>>
+
         refined_grid_candidate = None
         refined_score_global = -1.0
         sa_was_ml_fallback = False # Flag for ML->SA fallback
@@ -829,35 +853,38 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         if experimental:
             print("INFO -- Experimental flag is True. Attempting ML refinement first.")
             # --- Try ML Refinement ---
+            # <<< Pass window dimensions to handler >>>
             refined_grid_candidate, refined_score_global = _handle_ml_opportunity(
                 grid_to_refine.copy(), # Pass a copy
                 modules, ship, tech, player_owned_rewards,
-                opportunity_x, opportunity_y
+                opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
             )
 
             # --- Fallback to SA/Refine if ML failed ---
             if refined_grid_candidate is None:
                 print("INFO -- ML refinement failed or model not found. Falling back to SA/Refine refinement.")
                 sa_was_ml_fallback = True # Mark that SA is running due to ML failure
+                # <<< Pass window dimensions to handler >>>
                 refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
                     grid_to_refine.copy(), # Pass a fresh copy
                     modules, ship, tech, player_owned_rewards,
-                    opportunity_x, opportunity_y
+                    opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
                 )
             # else: ML refinement succeeded (or returned original grid), proceed with its result.
 
         else: # Not experimental
             print("INFO -- Experimental flag is False. Using SA/Refine refinement directly.")
             # --- Use SA/Refine Refinement ---
+            # <<< Pass window dimensions to handler >>>
             refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
                 grid_to_refine.copy(), # Pass a copy
                 modules, ship, tech, player_owned_rewards,
-                opportunity_x, opportunity_y
+                opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
             )
 
         # --- Compare and Update based on Refinement Result ---
         if refined_grid_candidate is not None and refined_score_global >= current_best_score:
-            # --- Refinement Improved Score ---
+            # ... (rest of the comparison logic remains the same)
             print(
                 f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
             )
@@ -865,34 +892,25 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             solved_bonus = refined_score_global # Update the score
             sa_was_initial_placement = False # Grid state changed by refinement
         else:
-            # --- Refinement Failed or Did Not Improve ---
+            # ... (rest of the failure/no improvement logic remains the same)
             if refined_grid_candidate is not None:
-                 # Refinement ran but didn't improve
-                 print(
-                     f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f})."
-                 )
+                print(
+                    f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f})."
+                )
             else:
-                 # Refinement failed completely (either ML failed and its SA fallback failed, or standard SA failed)
-                 print(f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) failed completely.")
+                print(f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) failed completely.")
 
-            # --- Final Fallback SA Logic (Only if experimental and NOT already an ML->SA fallback) ---
-            # Run this ONLY IF:
-            # 1. Experimental flag is True
-            # 2. AND the refinement attempt that failed/didn't improve was NOT the SA run triggered by ML failing.
+            # --- Final Fallback SA Logic ---
             if experimental and not sa_was_ml_fallback:
                 print("INFO -- Experimental flag is True AND refinement didn't improve/failed (and was not ML->SA fallback). Attempting final fallback Simulated Annealing.")
-                # Run SA on the grid state *before* the failed/unimproved refinement attempt
-                grid_for_sa_fallback = grid_to_refine.copy() # Use the grid state before this refinement attempt
-
-                # Call _handle_sa_refine_opportunity again for the fallback
+                grid_for_sa_fallback = grid_to_refine.copy()
+                # <<< Pass window dimensions to handler >>>
                 sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
                     grid_for_sa_fallback.copy(), # Pass a copy
                     modules, ship, tech, player_owned_rewards,
-                    opportunity_x, opportunity_y,
-                    # Optional: different SA params
+                    opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
                 )
-
-                # Check if the final fallback improved the score compared to the pre-refinement state
+                # ... (rest of fallback comparison logic)
                 if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
                     print(f"INFO -- Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
                     solved_grid = sa_fallback_grid
@@ -900,22 +918,13 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                     sa_was_initial_placement = False # Grid state changed by fallback SA
                 elif sa_fallback_grid is not None:
                     print(f"INFO -- Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best.")
-                    # solved_grid, solved_bonus, sa_was_initial_placement remain unchanged
                 else:
-                     print(f"ERROR -- Final fallback Simulated Annealing failed. Keeping previous best.")
-                     # solved_grid, solved_bonus, sa_was_initial_placement remain unchanged
-            elif sa_was_ml_fallback:
-                # Experimental is True, ML failed, SA fallback ran and didn't improve. Do nothing more.
-                print("INFO -- Skipping final fallback SA because ML failed and its SA fallback didn't improve.")
-                # sa_was_initial_placement remains unchanged
-            else: # experimental is False
-                # Experimental is False, refinement failed/didn't improve. Do nothing more.
-                print("INFO -- Experimental flag is False, keeping previous best grid without final fallback SA.")
-                # sa_was_initial_placement remains unchanged
+                    print(f"ERROR -- Final fallback Simulated Annealing failed. Keeping previous best.")
+    
 
     else: # No opportunity found
         print("INFO -- No supercharged opportunity found for refinement.")
-        # solved_grid, solved_bonus, sa_was_initial_placement remain unchanged
+        # ... (rest of the code)
 
     # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
     # Check if all modules were placed after pattern matching and potential refinement
@@ -1030,57 +1039,48 @@ def count_empty_in_localized(localized_grid):
     return count
 
 
-def find_supercharged_opportunities(grid, modules, ship, tech):
+def _scan_grid_with_window(grid_copy, window_width, window_height, module_count, tech):
     """
-    Scans the entire grid with a sliding window to find the highest-scoring
-    window containing available supercharged slots. Prioritizes supercharged
-    slots away from the edges of the window.
+    Helper function to scan the grid with a specific window size and find the best opportunity.
 
     Args:
-        grid (Grid): The current grid layout.
-        modules (dict): The module data.
-        ship (str): The ship type.
-        tech (str): The technology type.
+        grid_copy (Grid): A copy of the main grid (with target tech cleared).
+        window_width (int): The width of the scanning window.
+        window_height (int): The height of the scanning window.
+        module_count (int): The number of modules for the tech.
+        tech (str): The technology key.
 
     Returns:
-        tuple or None: A tuple (opportunity_x, opportunity_y) representing the
-                       top-left corner of the best window, or None if no
-                       suitable window is found or if all supercharged slots
-                       are occupied.
+        tuple: (best_score, best_start_pos) where best_start_pos is (x, y) or None.
+               Returns (-1, None) if the window size is invalid for the grid.
     """
-    grid_copy = grid.copy()
-    clear_all_modules_of_tech(grid_copy, tech)
+    best_score = -1
+    best_start_pos = None
 
-    # Check if there are any unoccupied supercharged slots
-    unoccupied_supercharged_slots = False
-    for y in range(grid_copy.height):
-        for x in range(grid_copy.width):
-            cell = grid_copy.get_cell(x, y)
-            if cell["supercharged"] and cell["module"] is None and cell["active"]:
-                unoccupied_supercharged_slots = True
-                break
-        if unoccupied_supercharged_slots:
-            break
+    # Check if window dimensions are valid for the grid size
+    if window_width > grid_copy.width or window_height > grid_copy.height:
+        print(f"Warning: Window size ({window_width}x{window_height}) is larger than grid ({grid_copy.width}x{grid_copy.height}). Cannot scan with this size.")
+        return -1, None
 
-    if not unoccupied_supercharged_slots:
-        print("INFO -- No unoccupied supercharged slots found.")
-        return None  # Return None if all supercharged slots are occupied
-
-    window_width = 4
-    window_height = 3
-
-    best_window_score = -1
-    best_window_start_x, best_window_start_y = None, None
-
+    # Iterate through possible top-left corners for the window
     for start_y in range(grid_copy.height - window_height + 1):
         for start_x in range(grid_copy.width - window_width + 1):
+            # Create a temporary window grid reflecting the current slice
             window_grid = Grid(window_width, window_height)
             for y in range(window_height):
                 for x in range(window_width):
                     grid_x = start_x + x
                     grid_y = start_y + y
-                    cell = grid_copy.get_cell(grid_x, grid_y)
-                    window_grid.cells[y][x] = cell.copy()
+                    # Bounds check (should be handled by outer loops, but safety)
+                    if 0 <= grid_x < grid_copy.width and 0 <= grid_y < grid_copy.height:
+                        cell = grid_copy.get_cell(grid_x, grid_y)
+                        # Copy relevant data to the window grid cell
+                        window_grid.cells[y][x]["active"] = cell["active"]
+                        window_grid.cells[y][x]["supercharged"] = cell["supercharged"]
+                        window_grid.cells[y][x]["module"] = cell["module"] # Keep module info for checks
+                        window_grid.cells[y][x]["tech"] = cell["tech"]
+                    else:
+                        window_grid.cells[y][x]["active"] = False # Mark as inactive if out of bounds
 
             # Check if the window has at least one available supercharged slot
             has_available_supercharged = False
@@ -1092,37 +1092,126 @@ def find_supercharged_opportunities(grid, modules, ship, tech):
                         break
                 if has_available_supercharged:
                     break
-
             if not has_available_supercharged:
-                continue  # Skip this window if it doesn't have an available supercharged slot
+                continue # Skip this window
 
-            # Check if the number of available cells in the current window is less than the number of modules
-            tech_modules = get_tech_modules(modules, ship, tech)
-            if tech_modules is None:
-                print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
-                return None
-
+            # Check if the number of available cells in the current window is sufficient
             available_cells_in_window = 0
             for y in range(window_height):
                 for x in range(window_width):
                     cell = window_grid.get_cell(x, y)
                     if cell["active"] and cell["module"] is None:
                         available_cells_in_window += 1
+            if available_cells_in_window < module_count:
+                continue # Skip this window
 
-            if available_cells_in_window < len(tech_modules):
-                # print(f"INFO -- Not enough available cells in the window ({available_cells_in_window}) for all modules ({len(tech_modules)}). Skipping this window.")
-                continue  # Skip this window and move to the next one
-
+            # Calculate score and update best if this window is better
             window_score = calculate_window_score(window_grid, tech)
-            if window_score > best_window_score:
-                best_window_score = window_score
-                best_window_start_x, best_window_start_y = start_x, start_y
+            if window_score > best_score:
+                best_score = window_score
+                best_start_pos = (start_x, start_y)
 
-    if best_window_start_x is not None and best_window_start_y is not None:
-        return best_window_start_x, best_window_start_y  # Return the top-left of the best window
-    else:
+    return best_score, best_start_pos
+
+def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewards=None):
+    """
+    Scans the entire grid with a sliding window (dynamically sized, including rotation
+    if non-square) to find the highest-scoring window containing available
+    supercharged slots.
+
+    Args:
+        grid (Grid): The current grid layout.
+        modules (dict): The module data.
+        ship (str): The ship type.
+        tech (str): The technology type.
+        player_owned_rewards (list, optional): List of reward module IDs owned. Defaults to None.
+
+    Returns:
+        tuple or None: A tuple (opportunity_x, opportunity_y, best_width, best_height)
+                       representing the top-left corner and dimensions of the best window,
+                       or None if no suitable window is found or if all supercharged slots
+                       are occupied.
+    """
+    grid_copy = grid.copy()
+    # Clear the target tech modules to evaluate potential placement areas
+    clear_all_modules_of_tech(grid_copy, tech)
+
+    # Check if there are any unoccupied supercharged slots (no change needed)
+    unoccupied_supercharged_slots = False
+    for y in range(grid_copy.height):
+        for x in range(grid_copy.width):
+            cell = grid_copy.get_cell(x, y)
+            if cell["supercharged"] and cell["module"] is None and cell["active"]:
+                unoccupied_supercharged_slots = True
+                break
+        if unoccupied_supercharged_slots:
+            break
+    if not unoccupied_supercharged_slots:
+        print("INFO -- No unoccupied supercharged slots found.")
         return None
 
+    # Determine Dynamic Window Size (no change needed)
+    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        print(f"Error: No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
+        return None
+    module_count = len(tech_modules)
+    window_width, window_height = determine_window_dimensions(module_count)
+    print(f"INFO -- Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
+
+    # --- Scan with Original Dimensions ---
+    best_score1, best_pos1 = _scan_grid_with_window(
+        grid_copy, window_width, window_height, module_count, tech
+    )
+
+    # --- Scan with Rotated Dimensions (if needed) ---
+    best_score2 = -1
+    best_pos2 = None
+    rotated_needed = (window_width != window_height) # Check if width and height are different
+    rotated_width, rotated_height = 0, 0 # Initialize for print statement clarity
+
+    if rotated_needed:
+        rotated_width, rotated_height = window_height, window_width # Swap dimensions
+        print(f"INFO -- Also checking rotated window size {rotated_width}x{rotated_height}.")
+        best_score2, best_pos2 = _scan_grid_with_window(
+            grid_copy, rotated_width, rotated_height, module_count, tech
+        )
+
+    # --- Compare Results and Determine Best Dimensions ---
+    overall_best_score = -1
+    overall_best_pos = None
+    overall_best_width = 0 # <<< Store best width
+    overall_best_height = 0 # <<< Store best height
+
+    # Check original scan result
+    if best_score1 > overall_best_score:
+        overall_best_score = best_score1
+        overall_best_pos = best_pos1
+        overall_best_width = window_width   # <<< Store original dimensions
+        overall_best_height = window_height # <<< Store original dimensions
+
+    # Check rotated scan result (if performed)
+    if best_score2 > overall_best_score:
+        overall_best_score = best_score2
+        overall_best_pos = best_pos2
+        overall_best_width = rotated_width   # <<< Store rotated dimensions
+        overall_best_height = rotated_height # <<< Store rotated dimensions
+        print(f"INFO -- Rotated window ({rotated_width}x{rotated_height}) provided a better score ({overall_best_score:.2f}).")
+    elif best_score1 > -1 and rotated_needed: # Only print if original scan found something and rotation was checked
+         print(f"INFO -- Original window ({window_width}x{window_height}) provided the best score ({overall_best_score:.2f}).")
+    elif best_score1 > -1 and not rotated_needed: # Square window case
+         print(f"INFO -- Best score found with square window ({window_width}x{window_height}): {overall_best_score:.2f}.")
+
+
+    # --- Return the Overall Best Result ---
+    if overall_best_pos is not None:
+        best_x, best_y = overall_best_pos
+        print(f"INFO -- Best opportunity window found starting at: ({best_x}, {best_y}) with dimensions {overall_best_width}x{overall_best_height}")
+        # <<< Return position AND dimensions >>>
+        return best_x, best_y, overall_best_width, overall_best_height
+    else:
+        print(f"INFO -- No suitable opportunity window found for {tech} after scanning (original and rotated).")
+        return None
 
 def calculate_window_score(window_grid, tech):
     """Calculates a score for a given window based on supercharged and empty slots,
@@ -1140,8 +1229,8 @@ def calculate_window_score(window_grid, tech):
                     if cell["module"] is None or cell["tech"] == tech:
                         supercharged_count += 1
                         # Check if the supercharged slot is on the horizontal edge of the window
-                        if x == 0 or x == window_grid.width - 1:
-                            edge_penalty += 1  # Apply a penalty for edge supercharged slots
+                    if window_grid.width > 1 and (x == 0 or x == window_grid.width - 1):
+                        edge_penalty += 1
                 if cell["module"] is None:
                     empty_count += 1
 
@@ -1149,17 +1238,19 @@ def calculate_window_score(window_grid, tech):
     return (supercharged_count * 3) + (empty_count * 1) - (edge_penalty * 0.5)
 
 
-def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
+def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
     """
     Creates a localized grid around a given opportunity, ensuring it stays within
     the bounds of the main grid and preserves modules of other tech types.
-    Now directly uses the opportunity point as the top-left corner, with clamping.
+    Uses the provided dimensions for the localized grid size.
 
     Args:
         grid (Grid): The main grid.
         opportunity_x (int): The x-coordinate of the opportunity (top-left corner).
         opportunity_y (int): The y-coordinate of the opportunity (top-left corner).
         tech (str): The technology type being optimized.
+        localized_width (int): The desired width of the localized window. # <<< New
+        localized_height (int): The desired height of the localized window. # <<< New
 
     Returns:
         tuple: A tuple containing:
@@ -1167,8 +1258,9 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
             - start_x (int): The starting x-coordinate of the localized grid in the main grid.
             - start_y (int): The starting y-coordinate of the localized grid in the main grid.
     """
-    localized_width = 4
-    localized_height = 3
+    # <<< Remove hardcoded dimensions >>>
+    # localized_width = 4
+    # localized_height = 3
 
     # Directly use opportunity_x and opportunity_y as the starting position
     start_x = opportunity_x
@@ -1178,7 +1270,7 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
     start_x = max(0, start_x)
     start_y = max(0, start_y)
 
-    # Calculate the end position based on the clamped start position
+    # Calculate the end position based on the clamped start position and desired dimensions
     end_x = min(grid.width, start_x + localized_width)
     end_y = min(grid.height, start_y + localized_height)
 
@@ -1186,10 +1278,10 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
     actual_localized_width = end_x - start_x
     actual_localized_height = end_y - start_y
 
-    # Create the localized grid with the adjusted size
+    # Create the localized grid with the actual calculated size
     localized_grid = Grid(actual_localized_width, actual_localized_height)
 
-    # Copy the grid structure (active/inactive, supercharged) AND module data
+    # Copy the grid structure and module data (logic remains the same)
     for y in range(start_y, end_y):
         for x in range(start_x, end_x):
             localized_x = x - start_x
@@ -1208,7 +1300,6 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
                 localized_grid.cells[localized_y][localized_x]["adjacency"] = cell["adjacency"]
                 localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell["sc_eligible"]
                 localized_grid.cells[localized_y][localized_x]["image"] = cell["image"]
-                # Only copy module_position if it exists
                 if "module_position" in cell:
                     localized_grid.cells[localized_y][localized_x]["module_position"] = cell["module_position"]
 
@@ -1216,9 +1307,10 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech):
 
 
 # --- NEW ML-Specific Function ---
-def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
+def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
     """
-    Creates a localized grid (4x3) around a given opportunity for ML processing.
+    Creates a localized grid around a given opportunity for ML processing,
+    using the provided dimensions.
 
     Modules of *other* tech types within the localized area are temporarily
     removed, and their corresponding cells in the localized grid are marked
@@ -1230,6 +1322,8 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
         opportunity_x (int): The x-coordinate of the opportunity (top-left corner).
         opportunity_y (int): The y-coordinate of the opportunity (top-left corner).
         tech (str): The technology type being optimized (modules of this tech are kept).
+        localized_width (int): The desired width of the localized window. # <<< New
+        localized_height (int): The desired height of the localized window. # <<< New
 
     Returns:
         tuple: A tuple containing:
@@ -1240,8 +1334,9 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
                                          (x, y) to their original cell data for cells
                                          that were modified (other tech removed).
     """
-    localized_width = 4
-    localized_height = 3
+    # <<< Remove hardcoded dimensions >>>
+    # localized_width = 4
+    # localized_height = 3
 
     # Directly use opportunity_x and opportunity_y as the starting position
     start_x = opportunity_x
@@ -1251,7 +1346,7 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
     start_x = max(0, start_x)
     start_y = max(0, start_y)
 
-    # Calculate the end position based on the clamped start position
+    # Calculate the end position based on the clamped start position and desired dimensions
     end_x = min(grid.width, start_x + localized_width)
     end_y = min(grid.height, start_y + localized_height)
 
@@ -1259,11 +1354,11 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
     actual_localized_width = end_x - start_x
     actual_localized_height = end_y - start_y
 
-    # Create the localized grid with the adjusted size
+    # Create the localized grid with the actual calculated size
     localized_grid = Grid(actual_localized_width, actual_localized_height)
     original_state_map = {}  # To store original state of modified cells
 
-    # Copy the grid structure and module data, modifying for other techs
+    # Copy the grid structure and module data, modifying for other techs (logic remains the same)
     for y_main in range(start_y, end_y):
         for x_main in range(start_x, end_x):
             localized_x = x_main - start_x
@@ -1277,11 +1372,7 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
             # Check the module and its tech in the main grid
             if main_cell["module"] is not None and main_cell["tech"] != tech:
                 # --- Other Tech Found ---
-                # 1. Store the original state using main grid coordinates
-                #    Use deepcopy to ensure modifications to main_cell later don't affect the stored state
                 original_state_map[(x_main, y_main)] = deepcopy(main_cell)
-
-                # 2. Clear module info in the local grid cell
                 local_cell["module"] = None
                 local_cell["label"] = ""
                 local_cell["tech"] = None
@@ -1293,14 +1384,10 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
                 local_cell["total"] = 0.0
                 local_cell["adjacency_bonus"] = 0.0
                 if "module_position" in local_cell:
-                    del local_cell["module_position"]  # Or set to None
-
-                # 3. Mark the local cell as inactive
+                    del local_cell["module_position"]
                 local_cell["active"] = False
-
             elif not main_cell["active"]:
                 # --- Inactive Cell in Main Grid ---
-                # Keep it inactive in the local grid and ensure module info is cleared
                 local_cell["active"] = False
                 local_cell["module"] = None
                 local_cell["label"] = ""
@@ -1314,16 +1401,13 @@ def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech):
                 local_cell["adjacency_bonus"] = 0.0
                 if "module_position" in local_cell:
                     del local_cell["module_position"]
-
             else:
                 # --- Target Tech, Empty Active Cell ---
-                # Copy the cell data directly (preserves target tech modules and empty active state)
-                # Use deepcopy here as well for safety, although update might be sufficient
                 local_cell.update(deepcopy(main_cell))
-                # Ensure 'active' is explicitly True if copied from an active main cell
                 local_cell["active"] = True
 
     return localized_grid, start_x, start_y, original_state_map
+
 
 
 # --- Restoration Function (Keep as is from previous response) ---

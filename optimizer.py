@@ -4,7 +4,7 @@ from modules_data import get_tech_modules, get_tech_modules_for_training, get_te
 # --- Remove these imports to break the cycle ---
 # from optimization_algorithms import optimize_placement, refine_placement, refine_placement_for_training, calculate_grid_score
 # --- Keep imports for functions defined elsewhere or used directly if any ---
-from bonus_calculations import populate_module_bonuses, calculate_grid_score # Keep calculate_grid_score only if optimizer.py uses it directly
+from bonus_calculations import calculate_grid_score # Keep calculate_grid_score only if optimizer.py uses it directly
 from grid_display import print_grid, print_grid_compact
 
 
@@ -21,7 +21,6 @@ __all__ = [
     "calculate_grid_score",
     "populate_adjacency_count",
     "calculate_module_bonus",
-    "populate_module_bonuses",
     "calculate_core_bonus",
     "populate_core_bonus",
     "place_module",

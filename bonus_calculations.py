@@ -18,10 +18,10 @@ class ModuleType(Enum):
 
 # --- Weights (Based on Neighbor Type and Adjacency) ---
 # Weight applied TO the current module FROM the neighbor
-WEIGHT_FROM_GREATER_BONUS = 0.08
+WEIGHT_FROM_GREATER_BONUS = 0.085
 WEIGHT_FROM_LESSER_BONUS = 0.04
-WEIGHT_FROM_GREATER_CORE = 0.06
-WEIGHT_FROM_LESSER_CORE = 0.04
+WEIGHT_FROM_GREATER_CORE = 0.07
+WEIGHT_FROM_LESSER_CORE = 0.05
 
 # Supercharge Multiplier
 SUPERCHARGE_MULTIPLIER = 1.25
@@ -86,7 +86,8 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int) -> float:
 
             # Rule: Greater neighbor cannot give bonus to Lesser receiver
             if cell_adj_type == AdjacencyType.LESSER.value and adj_cell_adj_type == AdjacencyType.GREATER.value:
-                weight_from_this_neighbor = 0.0
+                # Hack to ensure that the UI shows a lesser module as still being adjacent to the group.
+                weight_from_this_neighbor = 0.0001
             else:
                 # Determine weight based on the NEIGHBOR's type and adjacency
                 if adj_cell_type == ModuleType.CORE.value:
@@ -140,90 +141,59 @@ def populate_all_module_bonuses(grid: Grid, tech: str, apply_supercharge_first: 
     for x, y in tech_module_coords:
          module_adj_factors[(x, y)] = _calculate_adjacency_factor(grid, x, y)
 
-    # Calculate final bonuses using pre-calculated factors
+ # Calculate final bonuses using pre-calculated factors
     for x, y in tech_module_coords:
         cell = grid.get_cell(x, y)
         base_bonus = cell.get("bonus", 0.0)
         is_supercharged = cell.get("supercharged", False)
         is_sc_eligible = cell.get("sc_eligible", False)
         adj_factor = module_adj_factors[(x, y)] # This is the raw factor (sum of weights)
+        module_type = cell.get("type") # Get module type
 
         total_bonus = 0.0
-        # final_adjacency_boost_display = 0.0 # No longer needed for this purpose
 
         if apply_supercharge_first:
             # Apply SC to base *before* calculating boost amount
             calculation_base = base_bonus
             if is_supercharged and is_sc_eligible:
                 calculation_base *= SUPERCHARGE_MULTIPLIER
-            adjacency_boost_amount = calculation_base * adj_factor
-            # Final total is original base + boost (calculated on potentially SC base)
+
+            # --- Modified Boost Calculation ---
+            if module_type == ModuleType.CORE.value:
+                 # For core, the boost amount *is* the adjacency factor itself
+                 adjacency_boost_amount = adj_factor
+            else:
+                 # For non-core, boost is based on its own (potentially SC) base
+                 adjacency_boost_amount = calculation_base * adj_factor
+            # --- End Modification ---
+
+            # Final total is original base + boost amount
+            # For core, base_bonus is 0, so total_bonus becomes adj_factor
             total_bonus = base_bonus + adjacency_boost_amount
-            # final_adjacency_boost_display = adjacency_boost_amount # Old logic
-        else:
-            # Calculate boost on original base *first* (DEFAULT BEHAVIOR)
-            adjacency_boost_amount_on_base = base_bonus * adj_factor
+
+        else: # Default behavior (apply_supercharge_first=False)
+            # Calculate boost amount based on module type
+            # --- Modified Boost Calculation ---
+            if module_type == ModuleType.CORE.value:
+                 # For core, the boost amount *is* the adjacency factor itself
+                 adjacency_boost_amount_on_base = adj_factor
+            else:
+                 # For non-core, boost is based on its original base
+                 adjacency_boost_amount_on_base = base_bonus * adj_factor
+            # --- End Modification ---
+
             # Preliminary total
+            # For core, base_bonus is 0, so total_bonus becomes adj_factor here
             total_bonus = base_bonus + adjacency_boost_amount_on_base
+
             # Apply SC multiplier to the combined total *after* adding boost
+            # For core, this multiplies the adj_factor by the SC multiplier if applicable
             if is_supercharged and is_sc_eligible:
                 total_bonus *= SUPERCHARGE_MULTIPLIER
-            # final_adjacency_boost_display = adjacency_boost_amount_on_base # Old logic
 
         grid.set_total(x, y, total_bonus)
-        # --- Store the raw adjacency factor for display ---
+        # Store the raw adjacency factor for display (no change needed here)
         grid.get_cell(x, y)["adjacency_bonus"] = adj_factor
-        # --- End change --
-
-
-def populate_module_bonuses(grid: Grid, x: int, y: int, apply_supercharge_first: bool = False) -> float:
-    """
-    Calculates the total bonus for a single module. Consistent with populate_all_module_bonuses.
-    (Kept for potential single-module updates, but generally populate_all is preferred).
-
-    Args:
-        grid: The Grid object.
-        x: The x-coordinate of the module.
-        y: The y-coordinate of the module.
-        apply_supercharge_first (bool): Controls supercharge order. Defaults to False.
-
-    Returns:
-        The calculated total bonus for the module.
-    """
-    cell = grid.get_cell(x, y)
-    if cell.get("module") is None:
-        grid.set_total(x, y, 0.0)
-        cell["adjacency_bonus"] = 0.0
-        return 0.0
-
-    base_bonus = cell.get("bonus", 0.0)
-    is_supercharged = cell.get("supercharged", False)
-    is_sc_eligible = cell.get("sc_eligible", False)
-
-    adj_factor = _calculate_adjacency_factor(grid, x, y)
-
-    total_bonus = 0.0
-    final_adjacency_boost_display = 0.0
-
-    if apply_supercharge_first:
-        calculation_base = base_bonus
-        if is_supercharged and is_sc_eligible:
-            calculation_base *= SUPERCHARGE_MULTIPLIER
-        adjacency_boost_amount = calculation_base * adj_factor
-        total_bonus = base_bonus + adjacency_boost_amount
-        final_adjacency_boost_display = adjacency_boost_amount
-    else: # Default behavior
-        adjacency_boost_amount_on_base = base_bonus * adj_factor
-        total_bonus = base_bonus + adjacency_boost_amount_on_base
-        if is_supercharged and is_sc_eligible:
-            total_bonus *= SUPERCHARGE_MULTIPLIER
-        final_adjacency_boost_display = adjacency_boost_amount_on_base
-
-    grid.set_total(x, y, total_bonus)
-    cell["adjacency_bonus"] = final_adjacency_boost_display
-
-    return total_bonus
-
 
 def clear_scores(grid: Grid, tech: str) -> None:
     """
