@@ -18,7 +18,7 @@ class ModuleType(Enum):
 
 # --- Weights (Based on Neighbor Type and Adjacency) ---
 # Weight applied TO the current module FROM the neighbor
-WEIGHT_FROM_GREATER_BONUS = 0.07
+WEIGHT_FROM_GREATER_BONUS = 0.08
 WEIGHT_FROM_LESSER_BONUS = 0.04
 WEIGHT_FROM_GREATER_CORE = 0.06
 WEIGHT_FROM_LESSER_CORE = 0.04
