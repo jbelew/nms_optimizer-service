@@ -21,7 +21,7 @@ try:
     from training.model_definition import ModulePlacementCNN
     # <<< Import both module definition sources >>>
     from modules_data import get_tech_modules, get_tech_modules_for_training
-    from modules import modules as modules_for_training_defs # For model loading
+    from modules_for_training import modules as modules_for_training_defs # For model loading
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
     from module_placement import place_module, clear_all_modules_of_tech
@@ -301,15 +301,16 @@ def ml_placement(
         grid_to_polish = predicted_grid.copy()
 
         polish_params = {
-            "initial_temperature": 1000,       # Lower starting temp
-            "cooling_rate": 0.98,              # Cool down a bit faster
-            "stopping_temperature": 0.5,       # Stop a bit earlier
-            "iterations_per_temp": 20,         # Fewer iterations per temperature step
-            "initial_swap_probability": 0.40,  # Slightly lower swap chance
-            "final_swap_probability": 0.25,    # Lower swap chance at the end
+            "initial_temperature": 1000,       # Keep starting temp
+            "cooling_rate": 0.98,              # Slow down cooling slightly (was 0.98)
+            "stopping_temperature": 0.5,       # Keep stopping temp
+            "iterations_per_temp": 35,         # More iterations per step (was 20)
+            "initial_swap_probability": 0.40,  # Keep initial swap chance
+            "final_swap_probability": 0.25,    # Keep final swap chance
             "start_from_current_grid": True,   # Keep this True for polishing
-            "max_processing_time": 5.0,        # Significantly reduce max time (e.g., 5 seconds)
+            "max_processing_time": 10.0,       # Increase max time slightly (was 5.0)
         }
+
         # logging.info(f"INFO -- ML Placement: Using SA polish params: {polish_params}")
 
         try:
