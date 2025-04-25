@@ -357,7 +357,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     return optimal_grid, highest_bonus
 
-def determine_window_dimensions(module_count: int) -> tuple[int, int]:
+def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules.
 
@@ -381,6 +381,8 @@ def determine_window_dimensions(module_count: int) -> tuple[int, int]:
         window_width, window_height = 2, 2
     elif module_count < 7:
         window_width, window_height = 2, 3
+    elif module_count < 8 and tech == "pulse-splitter":
+        window_width, window_height = 3, 3
     elif module_count < 9:
         window_width, window_height = 4, 2
     elif module_count < 10:
@@ -1250,7 +1252,7 @@ def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewa
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
         return None
     module_count = len(tech_modules)
-    window_width, window_height = determine_window_dimensions(module_count)
+    window_width, window_height = determine_window_dimensions(module_count, tech)
     print(f"INFO -- Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
 
     # --- Scan with Original Dimensions ---

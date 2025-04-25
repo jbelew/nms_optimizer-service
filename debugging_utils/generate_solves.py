@@ -89,6 +89,8 @@ def generate_all_solves(modules, tech_to_generate=None, weapon_to_generate=None)
                     grid_width, grid_height = 2, 2
                 elif module_count < 7:
                     grid_width, grid_height = 2, 3
+                elif module_count < 8 and weapon_key == "pulse-splitter":
+                    grid_width, grid_height = 3, 3
                 elif module_count < 9:
                     grid_width, grid_height = 4, 2
                 elif module_count < 10:

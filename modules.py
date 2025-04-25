@@ -800,8 +800,8 @@ modules = {
                     "color": "green",
                     "modules": [
                         { "id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-laser.png", },
-                        { "id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "advanced-mining.png", },
-                        { "id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "optical.png", },
+                        { "id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "advanced-mining.png", },
+                        { "id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "optical.png", },
                         { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "mining-upgrade.png", },
@@ -851,11 +851,11 @@ modules = {
                     "color": "red",
                     "modules": [
                         { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
-                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .03, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
                         { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
                     ],
                 },
                 {
@@ -882,9 +882,9 @@ modules = {
                     "color": "iris",
                     "modules": [
                         { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
                     ],
                 },
                 {
@@ -894,10 +894,10 @@ modules = {
                     "color": "purple",
                     "modules": [
                         { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
-                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": .40, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": .39, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": .38, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
                     ],
                 },
                 {
@@ -907,9 +907,9 @@ modules = {
                     "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
                     ],
                 },
                 {
@@ -919,12 +919,12 @@ modules = {
                     "color": "jade",
                     "modules": [
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
-                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                     ],
                 },
                 {
@@ -935,9 +935,9 @@ modules = {
                     "modules": [
                         { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
                         { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
                     ],
                 },
             ],
@@ -1074,11 +1074,11 @@ modules = {
                     "color": "red",
                     "modules": [
                         { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
-                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .03, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
                         { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
                     ],
                 },
                 {
@@ -1105,9 +1105,9 @@ modules = {
                     "color": "iris",
                     "modules": [
                         { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
                     ],
                 },
                 {
@@ -1117,10 +1117,10 @@ modules = {
                     "color": "purple",
                     "modules": [
                         { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
-                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": .40, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": .39, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": .38, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
                     ],
                 },
                 {
@@ -1130,9 +1130,9 @@ modules = {
                     "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
                     ],
                 },
                 {
@@ -1142,12 +1142,12 @@ modules = {
                     "color": "jade",
                     "modules": [
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
-                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                     ],
                 },
                 {
@@ -1158,9 +1158,9 @@ modules = {
                     "modules": [
                         { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
                         { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
                     ],
                 },
             ],
@@ -1296,11 +1296,11 @@ modules = {
                     "color": "red",
                     "modules": [
                         { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
-                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .03, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
                         { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
                     ],
                 },
                 {
@@ -1327,9 +1327,9 @@ modules = {
                     "color": "iris",
                     "modules": [
                         { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
                     ],
                 },
                 {
@@ -1339,10 +1339,10 @@ modules = {
                     "color": "purple",
                     "modules": [
                         { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
-                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": .40, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": .39, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": .38, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
                     ],
                 },
                 {
@@ -1352,9 +1352,9 @@ modules = {
                     "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
                     ],
                 },
                 {
@@ -1364,12 +1364,12 @@ modules = {
                     "color": "jade",
                     "modules": [
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
-                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                     ],
                 },
                 {
@@ -1380,9 +1380,9 @@ modules = {
                     "modules": [
                         { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
                         { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
                     ],
                 },
             ],
@@ -1518,11 +1518,11 @@ modules = {
                     "color": "red",
                     "modules": [
                         { "id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "blaze-javelin.png", },
-                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .20, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
+                        { "id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": .03, "adjacency": "greater", "sc_eligible": True, "image": "mass-accelerator.png", },
                         { "id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "waveform-osc.png", },               
-                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "blaze-upgrade.png", },
                     ],
                 },
                 {
@@ -1549,9 +1549,9 @@ modules = {
                     "color": "iris",
                     "modules": [
                         { "id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "geology.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Geology Cannon Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Geology Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "geology-upgrade.png", },
                     ],
                 },
                 {
@@ -1561,10 +1561,10 @@ modules = {
                     "color": "purple",
                     "modules": [
                         { "id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "neutron.png", },
-                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.5, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": 1.70, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": 1.60, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": 1.50, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "p-field.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Neutron Cannon Upgrade Theta", "bonus": .40, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Neutron Cannon Upgrade Tau", "bonus": .39, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Neutron Cannon Upgrade Sigma", "bonus": .38, "adjacency": "greater", "sc_eligible": True, "image": "neutron-upgrade.png", },
                     ],
                 },
                 {
@@ -1574,9 +1574,9 @@ modules = {
                     "color": "sky",
                     "modules": [
                         { "id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "plasma-launcher.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "plasma-upgrade.png", },
                     ],
                 },
                 {
@@ -1586,12 +1586,12 @@ modules = {
                     "color": "jade",
                     "modules": [
                         { "id": "PS", "type": "core", "label": "Pulse Splitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.png", },
-                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
+                        { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.png", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.png", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Splitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Splitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Splitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.png", },
                     ],
                 },
                 {
@@ -1602,9 +1602,9 @@ modules = {
                     "modules": [
                         { "id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "scatter.png", },
                         { "id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "shell-greaser.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "scatter-upgrade.png", },
                     ],
                 },
             ],
@@ -1683,45 +1683,45 @@ solves = {
     "standard": {
         "cyclotron": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "CB",
-                (0, 2): "None",
-                (1, 2): "QR"
+                (0, 0): "QR",
+                (1, 0): "None",
+                (0, 1): "CB",
+                (1, 1): "Xb",
+                (0, 2): "Xc",
+                (1, 2): "Xa"
             },
             "score": 2.65515
         },
         "infra": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "QR",
-                (0, 1): "Xb",
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "IK",
-                (0, 2): "Xa",
-                (1, 2): "Xc"
+                (0, 2): "None",
+                (1, 2): "QR"
             },
             "score": 2.64445
         },
         "phase": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "PB",
-                (1, 1): "Xb",
-                (0, 2): "FD",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "PB",
+                (0, 2): "None",
+                (1, 2): "FD"
             },
             "score": 2.45565
         },
         "photon": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (0, 1): "PC",
-                (1, 1): "Xc",
-                (0, 2): "NO",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "PC",
+                (0, 2): "None",
+                (1, 2): "NO"
             },
             "score": 2.65515
         },
@@ -1746,9 +1746,9 @@ solves = {
         },
         "shield": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "AA",
+                (0, 0): "AA",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "Xa",
                 (0, 2): "None",
                 (1, 2): "DS"
@@ -1757,10 +1757,10 @@ solves = {
         },
         "hyper": {
             "map": {
-                (0, 0): "AD",
-                (1, 0): "CD",
-                (2, 0): "ID",
-                (0, 1): "HD",
+                (0, 0): "CD",
+                (1, 0): "HD",
+                (2, 0): "AD",
+                (0, 1): "ID",
                 (1, 1): "Xa",
                 (2, 1): "Xb",
                 (0, 2): "ED",
@@ -1771,38 +1771,38 @@ solves = {
         },
         "launch": {
             "map": {
-                (0, 0): "EF",
-                (1, 0): "Xc",
-                (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "RC",
-                (1, 2): "LT"
+                (0, 0): "LT",
+                (1, 0): "RC",
+                (0, 1): "Xb",
+                (1, 1): "Xa",
+                (0, 2): "Xc",
+                (1, 2): "EF"
             },
             "score": 1.0681
         },
         "pulse": {
             "map": {
-                (0, 0): "PE",
-                (1, 0): "Xc",
-                (2, 0): "Xa",
-                (3, 0): "ID",
-                (0, 1): "SL",
-                (1, 1): "Xb",
-                (2, 1): "FA",
-                (3, 1): "None"
+                (0, 0): "SL",
+                (1, 0): "Xa",
+                (2, 0): "FA",
+                (3, 0): "None",
+                (0, 1): "PE",
+                (1, 1): "Xc",
+                (2, 1): "Xb",
+                (3, 1): "ID"
             },
             "score": 1.96695
         },
         "photonix": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "Xb",
-                (3, 0): "FA",
+                (0, 0): "SL",
+                (1, 0): "Xb",
+                (2, 0): "Xa",
+                (3, 0): "ID",
                 (0, 1): "PE",
                 (1, 1): "PC",
-                (2, 1): "Xa",
-                (3, 1): "SL"
+                (2, 1): "Xc",
+                (3, 1): "FA"
             },
             "score": 2.30095
         },
@@ -1827,34 +1827,34 @@ solves = {
     "sentinel": {
         "cyclotron": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (0, 1): "CB",
-                (1, 1): "Xc",
-                (0, 2): "QR",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "CB",
+                (0, 2): "None",
+                (1, 2): "QR"
             },
             "score": 2.65515
         },
         "infra": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "QR",
-                (0, 1): "Xa",
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
                 (1, 1): "IK",
-                (0, 2): "Xb",
-                (1, 2): "Xc"
+                (0, 2): "None",
+                (1, 2): "QR"
             },
-            "score": 2.655
+            "score": 2.65515
         },
         "phase": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "PB",
-                (0, 2): "None",
-                (1, 2): "FD"
+                (0, 0): "FD",
+                (1, 0): "None",
+                (0, 1): "PB",
+                (1, 1): "Xb",
+                (0, 2): "Xc",
+                (1, 2): "Xa"
             },
             "score": 2.45565
         },
@@ -1871,8 +1871,8 @@ solves = {
         },
         "rocket": {
             "map": {
-                (0, 0): "RL",
-                (0, 1): "LR",
+                (0, 0): "LR",
+                (0, 1): "RL",
                 (0, 2): "None"
             },
             "score": 1.14492
@@ -1890,10 +1890,10 @@ solves = {
         },
         "shield": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xb",
+                (0, 0): "Xb",
+                (1, 0): "AA",
                 (0, 1): "Xa",
-                (1, 1): "AA",
+                (1, 1): "Xc",
                 (0, 2): "DS",
                 (1, 2): "None"
             },
@@ -1901,52 +1901,52 @@ solves = {
         },
         "launch": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "EF",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (0, 2): "LT",
-                (1, 2): "RC"
+                (0, 0): "RC",
+                (1, 0): "Xc",
+                (0, 1): "Xa",
+                (1, 1): "Xb",
+                (0, 2): "EF",
+                (1, 2): "LT"
             },
             "score": 1.0681
         },
         "hyper": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "HD",
-                (2, 0): "ED",
-                (0, 1): "AD",
+                (0, 0): "CD",
+                (1, 0): "Xb",
+                (2, 0): "EW",
+                (0, 1): "ID",
                 (1, 1): "Xa",
-                (2, 1): "Xb",
-                (0, 2): "CD",
-                (1, 2): "Xc",
-                (2, 2): "EW"
+                (2, 1): "Xc",
+                (0, 2): "ED",
+                (1, 2): "HD",
+                (2, 2): "AD"
             },
             "score": 1.2314
         },
         "pulse": {
             "map": {
-                (0, 0): "ID",
+                (0, 0): "SL",
                 (1, 0): "Xa",
                 (2, 0): "Xc",
                 (3, 0): "PE",
                 (0, 1): "None",
                 (1, 1): "FA",
                 (2, 1): "Xb",
-                (3, 1): "SL"
+                (3, 1): "ID"
             },
             "score": 1.96695
         },
         "photonix": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "Xb",
-                (3, 0): "FA",
+                (0, 0): "SL",
+                (1, 0): "Xb",
+                (2, 0): "Xa",
+                (3, 0): "ID",
                 (0, 1): "PE",
                 (1, 1): "PC",
-                (2, 1): "Xa",
-                (3, 1): "SL"
+                (2, 1): "Xc",
+                (3, 1): "FA"
             },
             "score": 2.30095
         },
@@ -1971,56 +1971,56 @@ solves = {
     "solar": {
         "cyclotron": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "CB",
-                (0, 2): "None",
-                (1, 2): "QR"
+                (0, 0): "Xc",
+                (1, 0): "Xa",
+                (0, 1): "CB",
+                (1, 1): "Xb",
+                (0, 2): "QR",
+                (1, 2): "None"
             },
             "score": 2.65515
         },
         "infra": {
             "map": {
-                (0, 0): "None",
-                (1, 0): "QR",
-                (0, 1): "Xb",
-                (1, 1): "IK",
-                (0, 2): "Xa",
-                (1, 2): "Xc"
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "IK",
+                (1, 1): "Xc",
+                (0, 2): "QR",
+                (1, 2): "None"
             },
             "score": 2.64445
         },
         "phase": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "PB",
-                (1, 1): "Xb",
-                (0, 2): "FD",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "PB",
+                (0, 2): "None",
+                (1, 2): "FD"
             },
             "score": 2.45565
         },
         "photon": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (0, 1): "PC",
-                (1, 1): "Xc",
-                (0, 2): "NO",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "PC",
+                (0, 2): "None",
+                (1, 2): "NO"
             },
             "score": 2.65515
         },
         "positron": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "PE",
-                (1, 1): "Xb",
-                (0, 2): "FS",
-                (1, 2): "None"
+                (0, 0): "None",
+                (1, 0): "FS",
+                (0, 1): "Xb",
+                (1, 1): "PE",
+                (0, 2): "Xa",
+                (1, 2): "Xc"
             },
             "score": 2.65515
         },
@@ -2034,118 +2034,88 @@ solves = {
         },
         "shield": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xc",
-                (0, 1): "AA",
-                (1, 1): "Xa",
-                (0, 2): "None",
-                (1, 2): "DS"
+                (0, 0): "DS",
+                (1, 0): "None",
+                (0, 1): "Xa",
+                (1, 1): "Xc",
+                (0, 2): "AA",
+                (1, 2): "Xb"
             },
             "score": 1.1249
         },
         "hyper": {
             "map": {
-                (0, 0): "AD",
-                (1, 0): "CD",
-                (2, 0): "ID",
-                (0, 1): "HD",
+                (0, 0): "EW",
+                (1, 0): "Xb",
+                (2, 0): "ED",
+                (0, 1): "Xc",
                 (1, 1): "Xa",
-                (2, 1): "Xb",
-                (0, 2): "ED",
-                (1, 2): "Xc",
-                (2, 2): "EW"
+                (2, 1): "HD",
+                (0, 2): "AD",
+                (1, 2): "ID",
+                (2, 2): "CD"
             },
             "score": 1.2314
         },
         "launch": {
             "map": {
-                (0, 0): "EF",
-                (1, 0): "Xc",
+                (0, 0): "RC",
+                (1, 0): "LT",
                 (0, 1): "Xa",
                 (1, 1): "Xb",
-                (0, 2): "RC",
-                (1, 2): "LT"
+                (0, 2): "EF",
+                (1, 2): "Xc"
             },
             "score": 1.0681
         },
-        "pulse": {
-            "map": {
-                (0, 0): "PE",
-                (1, 0): "Xc",
-                (2, 0): "Xa",
-                (3, 0): "ID",
-                (0, 1): "SL",
-                (1, 1): "Xb",
-                (2, 1): "FA",
-                (3, 1): "None"
-            },
-            "score": 1.96695
-        },
         "photonix": {
             "map": {
-                (0, 0): "ID",
-                (1, 0): "Xc",
-                (2, 0): "Xb",
+                (0, 0): "PE",
+                (1, 0): "PC",
+                (2, 0): "Xc",
                 (3, 0): "FA",
-                (0, 1): "PE",
-                (1, 1): "PC",
+                (0, 1): "ID",
+                (1, 1): "Xb",
                 (2, 1): "Xa",
                 (3, 1): "SL"
             },
             "score": 2.30095
-        },
-        "trails": {
-            "map": {
-                (0, 0): "None",
-                (1, 0): "RT",
-                (2, 0): "CT",
-                (3, 0): "TT",
-                (0, 1): "SB",
-                (1, 1): "AB",
-                (2, 1): "PB",
-                (3, 1): "ET",
-                (0, 2): "None",
-                (1, 2): "GT",
-                (2, 2): "ST",
-                (3, 2): "SP"
-            },
-            "score": 0.162
         }
     },
     "living": {
         "grafted": {
             "map": {
                 (0, 0): "Xa",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
                 (1, 1): "GE"
             },
             "score": 2.34215
         },
         "spewing": {
             "map": {
-                (0, 0): "Xb",
+                (0, 0): "Xc",
                 (1, 0): "SV",
                 (0, 1): "Xa",
-                (1, 1): "Xc"
+                (1, 1): "Xb"
             },
             "score": 2.52735
         },
         "scream": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "SS",
-                (0, 1): "Xa",
-                (1, 1): "Xb"
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "SS"
             },
             "score": 1.00815
         },
         "assembly": {
             "map": {
                 (0, 0): "Xc",
-                (1, 0): "Xb",
+                (1, 0): "CM",
                 (0, 1): "Xa",
-                (1, 1): "CM",
+                (1, 1): "Xb",
                 (0, 2): "NA",
                 (1, 2): "None"
             },
@@ -2154,9 +2124,9 @@ solves = {
         "singularity": {
             "map": {
                 (0, 0): "Xc",
-                (1, 0): "Xb",
+                (1, 0): "AD",
                 (0, 1): "Xa",
-                (1, 1): "AD",
+                (1, 1): "Xb",
                 (0, 2): "SC",
                 (1, 2): "None"
             },
@@ -2164,10 +2134,10 @@ solves = {
         },
         "pulsing": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "PH"
+                (0, 0): "PH",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "Xa"
             },
             "score": 1.69615
         },
@@ -2193,71 +2163,71 @@ solves = {
         "mining": {
             "map": {
                 (0, 0): "Xa",
-                (1, 0): "AM",
+                (1, 0): "Xc",
                 (0, 1): "MB",
-                (1, 1): "OD",
-                (0, 2): "Xb",
-                (1, 2): "Xc"
+                (1, 1): "AM",
+                (0, 2): "OD",
+                (1, 2): "Xb"
             },
-            "score": 2.343
+            "score": 1.875
         },
         "scanner": {
             "map": {
                 (0, 0): "PC",
-                (1, 0): "Xb",
+                (1, 0): "Xa",
                 (2, 0): "Xc",
                 (3, 0): "SC",
-                (0, 1): "SH",
-                (1, 1): "Xa",
-                (2, 1): "WR",
+                (0, 1): "WR",
+                (1, 1): "Xb",
+                (2, 1): "SH",
                 (3, 1): "None"
             },
             "score": 5.67775
         },
         "blaze-javelin": {
             "map": {
-                (0, 0): "MA",
-                (1, 0): "Xa",
+                (0, 0): "WO",
+                (1, 0): "MA",
                 (0, 1): "Xb",
                 (1, 1): "BJ",
-                (0, 2): "WO",
+                (0, 2): "Xa",
                 (1, 2): "Xc"
             },
-            "score": 1.62505
+            "score": 2.64445
         },
         "bolt-caster": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Fb",
-                (2, 0): "BI",
-                (0, 1): "Xb",
+                (0, 0): "RM",
+                (1, 0): "Xb",
+                (2, 0): "BC",
+                (0, 1): "Fb",
                 (1, 1): "Fa",
-                (2, 1): "Fc",
-                (0, 2): "BC",
-                (1, 2): "Xa",
-                (2, 2): "RM"
+                (2, 1): "Xa",
+                (0, 2): "Xc",
+                (1, 2): "Fc",
+                (2, 2): "BI"
             },
             "score": 2.43245
         },
         "geology": {
             "map": {
-                (0, 0): "GC",
+                (0, 0): "Xa",
                 (1, 0): "Xb",
                 (0, 1): "Xc",
-                (1, 1): "Xa"
+                (1, 1): "GC"
             },
-            "score": 2.17935
+            "score": 2.52735
         },
         "neutron": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "NC",
-                (0, 1): "Xa",
+                (0, 0): "PF",
+                (1, 0): "None",
+                (0, 1): "NC",
                 (1, 1): "Xb",
-                (0, 2): "PF",
-                (1, 2): "None"
+                (0, 2): "Xc",
+                (1, 2): "Xa"
             },
-            "score": 7.4265
+            "score": 2.64445
         },
         "plasma-launcher": {
             "map": {
@@ -2266,126 +2236,21 @@ solves = {
                 (0, 1): "Xb",
                 (1, 1): "PL"
             },
-            "score": 2.17935
+            "score": 2.52735
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "AC",
-                (1, 0): "PS",
-                (2, 0): "RM",
-                (3, 0): "II",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
+                (0, 0): "II",
+                (1, 0): "AC",
+                (2, 0): "None",
+                (0, 1): "RM",
+                (1, 1): "PS",
                 (2, 1): "Xb",
-                (3, 1): "None"
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "Xa",
             },
-            "score": 2.2939
-        },
-        "scatter": {
-            "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "SB",
-                (1, 1): "Xb",
-                (0, 2): "SG",
-                (1, 2): "None"
-            },
-            "score": 2.26435
-        }
-    },
-    "atlantid": {
-        "mining": {
-            "map": {
-                (0, 0): "Xb",
-                (1, 0): "MB",
-                (2, 0): "Xc",
-                (3, 0): "None",
-                (0, 1): "AM",
-                (1, 1): "OD",
-                (2, 1): "RL",
-                (3, 1): "Xa"
-            },
-            "score": 3.598
-        },
-        "scanner": {
-            "map": {
-                (0, 0): "PC",
-                (1, 0): "Xa",
-                (2, 0): "SH",
-                (3, 0): "None",
-                (0, 1): "WR",
-                (1, 1): "Xb",
-                (2, 1): "Xc",
-                (3, 1): "SC"
-            },
-            "score": 5.67775
-        },
-        "blaze-javelin": {
-            "map": {
-                (0, 0): "Xb",
-                (1, 0): "MA",
-                (0, 1): "BJ",
-                (1, 1): "Xa",
-                (0, 2): "Xc",
-                (1, 2): "WO"
-            },
-            "score": 1.62505
-        },
-        "bolt-caster": {
-            "map": {
-                (0, 0): "BI",
-                (1, 0): "Fb",
-                (2, 0): "Xc",
-                (0, 1): "Fc",
-                (1, 1): "Fa",
-                (2, 1): "Xb",
-                (0, 2): "RM",
-                (1, 2): "Xa",
-                (2, 2): "BC"
-            },
-            "score": 2.43245
-        },
-        "geology": {
-            "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (0, 1): "GC",
-                (1, 1): "Xc"
-            },
-            "score": 2.17935
-        },
-        "neutron": {
-            "map": {
-                (0, 0): "PF",
-                (1, 0): "None",
-                (0, 1): "Xa",
-                (1, 1): "Xc",
-                (0, 2): "Xb",
-                (1, 2): "NC"
-            },
-            "score": 7.4265
-        },
-        "plasma-launcher": {
-            "map": {
-                (0, 0): "PL",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
-                (1, 1): "Xa"
-            },
-            "score": 2.17935
-        },
-        "pulse-splitter": {
-            "map": {
-                (0, 0): "AC",
-                (1, 0): "PS",
-                (2, 0): "RM",
-                (3, 0): "II",
-                (0, 1): "Xb",
-                (1, 1): "Xa",
-                (2, 1): "Xc",
-                (3, 1): "None"
-            },
-            "score": 2.2939
+            "score": 2.7616
         },
         "scatter": {
             "map": {
@@ -2396,20 +2261,22 @@ solves = {
                 (0, 2): "None",
                 (1, 2): "SG"
             },
-            "score": 2.26435
+            "score": 2.61235
         }
     },
-    "sentinel-mt": {
+    "atlantid": {
         "mining": {
             "map": {
                 (0, 0): "AM",
-                (1, 0): "Xc",
-                (0, 1): "OD",
-                (1, 1): "MB",
-                (0, 2): "Xa",
-                (1, 2): "Xb"
+                (1, 0): "RL",
+                (2, 0): "Xc",
+                (3, 0): "None",
+                (0, 1): "Xa",
+                (1, 1): "OD",
+                (2, 1): "MB",
+                (3, 1): "Xb"
             },
-            "score": 2.343
+            "score": 3.598
         },
         "scanner": {
             "map": {
@@ -2418,78 +2285,184 @@ solves = {
                 (2, 0): "Xa",
                 (3, 0): "SH",
                 (0, 1): "None",
-                (1, 1): "PC",
+                (1, 1): "WR",
                 (2, 1): "Xb",
-                (3, 1): "WR"
+                (3, 1): "PC"
+            },
+            "score": 5.67775
+        },
+        "blaze-javelin": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "BJ",
+                (0, 2): "WO",
+                (1, 2): "MA"
+            },
+            "score": 2.64445
+        },
+        "bolt-caster": {
+            "map": {
+                (0, 0): "RM",
+                (1, 0): "Fc",
+                (2, 0): "Xc",
+                (0, 1): "Xa",
+                (1, 1): "Fa",
+                (2, 1): "Fb",
+                (0, 2): "BC",
+                (1, 2): "Xb",
+                (2, 2): "BI"
+            },
+            "score": 2.43245
+        },
+        "geology": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "GC",
+                (0, 1): "Xa",
+                (1, 1): "Xb"
+            },
+            "score": 2.52735
+        },
+        "neutron": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "NC",
+                (0, 2): "None",
+                (1, 2): "PF"
+            },
+            "score": 2.64445
+        },
+        "plasma-launcher": {
+            "map": {
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "PL",
+                (1, 1): "Xc"
+            },
+            "score": 2.52735
+        },
+        "pulse-splitter": {
+            "map": {
+                (0, 0): "II",
+                (1, 0): "AC",
+                (2, 0): "None",
+                (0, 1): "RM",
+                (1, 1): "PS",
+                (2, 1): "Xb",
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "Xa",
+            },
+            "score": 2.7616
+        },
+        "scatter": {
+            "map": {
+                (0, 0): "SG",
+                (1, 0): "None",
+                (0, 1): "SB",
+                (1, 1): "Xb",
+                (0, 2): "Xc",
+                (1, 2): "Xa"
+            },
+            "score": 2.61235
+        }
+    },
+    "sentinel-mt": {
+        "mining": {
+            "map": {
+                (0, 0): "Xc",
+                (1, 0): "AM",
+                (0, 1): "MB",
+                (1, 1): "OD",
+                (0, 2): "Xa",
+                (1, 2): "Xb"
+            },
+            "score": 2.343
+        },
+        "scanner": {
+            "map": {
+                (0, 0): "SH",
+                (1, 0): "Xa",
+                (2, 0): "WR",
+                (3, 0): "None",
+                (0, 1): "PC",
+                (1, 1): "Xb",
+                (2, 1): "Xc",
+                (3, 1): "SC"
             },
             "score": 5.67775
         },
         "blaze-javelin": {
             "map": {
                 (0, 0): "MA",
-                (1, 0): "Xb",
-                (0, 1): "Xa",
-                (1, 1): "BJ",
-                (0, 2): "WO",
-                (1, 2): "Xc"
+                (1, 0): "WO",
+                (0, 1): "BJ",
+                (1, 1): "Xc",
+                (0, 2): "Xb",
+                (1, 2): "Xa"
             },
-            "score": 1.62505
+            "score": 2.64445
         },
         "bolt-caster": {
             "map": {
                 (0, 0): "BC",
-                (1, 0): "Xb",
-                (2, 0): "Xc",
-                (0, 1): "Xa",
+                (1, 0): "Xa",
+                (2, 0): "RM",
+                (0, 1): "Xb",
                 (1, 1): "Fa",
                 (2, 1): "Fc",
-                (0, 2): "BI",
+                (0, 2): "Xc",
                 (1, 2): "Fb",
-                (2, 2): "RM"
+                (2, 2): "BI"
             },
             "score": 2.43245
         },
         "geology": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "GC",
-                (0, 1): "Xa",
-                (1, 1): "Xc"
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "GC"
             },
-            "score": 2.17935
+            "score": 2.52735
         },
         "neutron": {
             "map": {
                 (0, 0): "None",
                 (1, 0): "PF",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
-                (0, 2): "NC",
-                (1, 2): "Xb"
+                (0, 1): "Xb",
+                (1, 1): "NC",
+                (0, 2): "Xa",
+                (1, 2): "Xc"
             },
-            "score": 7.4265
+            "score": 2.64445
         },
         "plasma-launcher": {
             "map": {
-                (0, 0): "PL",
+                (0, 0): "Xa",
                 (1, 0): "Xb",
                 (0, 1): "Xc",
-                (1, 1): "Xa"
+                (1, 1): "PL"
             },
-            "score": 2.17935
+            "score": 2.52735
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "Xb",
-                (1, 0): "Xa",
-                (2, 0): "Xc",
-                (3, 0): "II",
-                (0, 1): "AC",
+                (0, 0): "II",
+                (1, 0): "AC",
+                (2, 0): "None",
+                (0, 1): "RM",
                 (1, 1): "PS",
-                (2, 1): "RM",
-                (3, 1): "None"
+                (2, 1): "Xb",
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "Xa",
             },
-            "score": 2.2939
+            "score": 2.7616
         },
         "scatter": {
             "map": {
@@ -2500,56 +2473,56 @@ solves = {
                 (0, 2): "SG",
                 (1, 2): "None"
             },
-            "score": 2.26435
+            "score": 2.61235
         }
     },
     "staves": {
         "mining": {
             "map": {
-                (0, 0): "Xa",
-                (1, 0): "AM",
-                (0, 1): "MB",
-                (1, 1): "OD",
-                (0, 2): "Xb",
+                (0, 0): "Xb",
+                (1, 0): "Xa",
+                (0, 1): "OD",
+                (1, 1): "MB",
+                (0, 2): "AM",
                 (1, 2): "Xc"
             },
             "score": 2.343
         },
         "scanner": {
             "map": {
-                (0, 0): "PC",
-                (1, 0): "Xb",
-                (2, 0): "Xc",
-                (3, 0): "SC",
-                (0, 1): "SH",
-                (1, 1): "Xa",
-                (2, 1): "WR",
-                (3, 1): "None"
+                (0, 0): "SC",
+                (1, 0): "Xc",
+                (2, 0): "Xb",
+                (3, 0): "WR",
+                (0, 1): "None",
+                (1, 1): "PC",
+                (2, 1): "Xa",
+                (3, 1): "SH"
             },
             "score": 5.67775
         },
         "blaze-javelin": {
             "map": {
                 (0, 0): "MA",
-                (1, 0): "Xa",
-                (0, 1): "Xb",
-                (1, 1): "BJ",
-                (0, 2): "WO",
-                (1, 2): "Xc"
+                (1, 0): "WO",
+                (0, 1): "BJ",
+                (1, 1): "Xc",
+                (0, 2): "Xb",
+                (1, 2): "Xa"
             },
-            "score": 1.62505
+            "score": 2.64445
         },
         "bolt-caster": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Fb",
-                (2, 0): "BI",
-                (0, 1): "Xb",
+                (0, 0): "BC",
+                (1, 0): "Xb",
+                (2, 0): "RM",
+                (0, 1): "Xa",
                 (1, 1): "Fa",
-                (2, 1): "Fc",
-                (0, 2): "BC",
-                (1, 2): "Xa",
-                (2, 2): "RM"
+                (2, 1): "Fb",
+                (0, 2): "Xc",
+                (1, 2): "Fc",
+                (2, 2): "BI"
             },
             "score": 2.43245
         },
@@ -2560,51 +2533,52 @@ solves = {
                 (0, 1): "Xc",
                 (1, 1): "Xa"
             },
-            "score": 2.17935
+            "score": 2.52735
         },
         "neutron": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "NC",
-                (0, 1): "Xa",
-                (1, 1): "Xb",
-                (0, 2): "PF",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "NC",
+                (0, 2): "None",
+                (1, 2): "PF"
             },
-            "score": 7.4265
+            "score": 2.64445
         },
         "plasma-launcher": {
             "map": {
                 (0, 0): "Xa",
-                (1, 0): "Xc",
-                (0, 1): "Xb",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
                 (1, 1): "PL"
             },
-            "score": 2.17935
+            "score": 2.52735
         },
         "pulse-splitter": {
             "map": {
-                (0, 0): "AC",
-                (1, 0): "PS",
-                (2, 0): "RM",
-                (3, 0): "II",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
+                (0, 0): "II",
+                (1, 0): "AC",
+                (2, 0): "None",
+                (0, 1): "RM",
+                (1, 1): "PS",
                 (2, 1): "Xb",
-                (3, 1): "None"
+                (0, 2): "None",
+                (1, 2): "Xc",
+                (2, 2): "Xa",
             },
-            "score": 2.2939
+            "score": 2.7616
         },
         "scatter": {
             "map": {
-                (0, 0): "Xc",
-                (1, 0): "Xa",
-                (0, 1): "SB",
-                (1, 1): "Xb",
-                (0, 2): "SG",
-                (1, 2): "None"
+                (0, 0): "Xa",
+                (1, 0): "Xc",
+                (0, 1): "Xb",
+                (1, 1): "SB",
+                (0, 2): "None",
+                (1, 2): "SG"
             },
-            "score": 2.26435
+            "score": 2.61235
         }
     }
 }
