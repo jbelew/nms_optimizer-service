@@ -83,7 +83,7 @@ def generate_training_batch(
         return 0, 0, None
 
     module_count = len(tech_modules)
-    grid_width, grid_height = determine_window_dimensions(module_count)
+    grid_width, grid_height = determine_window_dimensions(module_count, tech)
     print(f"INFO -- Determined dynamic grid size for {tech} ({module_count} modules): {grid_width}x{grid_height}")
     # --- End Determine Dynamic Grid Dimensions ---
 
