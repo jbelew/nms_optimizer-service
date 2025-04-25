@@ -1,6 +1,4 @@
-# These value are highly generalized and do not reepresent the actual values in 
-# the game. They are ratios derrived from in-game experimentation and used for 
-# properly seeding the solving allgorithm.
+# These value are highly generalized and do not reepresent the actual values in the game. They are ratios derrived from in-game experimentation and used for properly seeding the solving allgorithm.
 
 # fmt: off
 modules = {
