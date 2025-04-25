@@ -73,7 +73,7 @@ def ml_placement(
                                        and its calculated score, or (None, 0.0) on failure.
     """
     start_time = time.time()
-    # logging.info(f"INFO -- Attempting ML placement for UI keys: ship='{ship}', tech='{tech}' (Polish: {polish_result})")
+    # logging.info(f"INFO -- Attempting ML placement for UI keys: ship='{ship}', tech='{tech}' (Polish: {polish_result})") # <<< COMMENT OUT: Redundant with optimize_placement start >>>
 
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -83,6 +83,7 @@ def ml_placement(
     model_ship_key, model_tech_key = get_model_keys(
         ship, tech, player_owned_rewards
     )
+    # <<< KEEP: Important mapping info >>>
     logging.info(f"INFO -- ML Placement: Mapping UI keys ('{ship}', '{tech}') to final model keys ('{model_ship_key}', '{model_tech_key}')")
 
     # --- 2. Determine Model Path & Check Existence ---
@@ -91,6 +92,7 @@ def ml_placement(
     model_path = os.path.join(project_root, model_dir, model_filename)
 
     if not os.path.exists(model_path):
+        # <<< KEEP: Important failure condition >>>
         logging.warning(f"INFO -- ML Placement: Model file not found at '{model_path}'. Cannot use ML.")
         return None, 0.0
 
@@ -101,6 +103,7 @@ def ml_placement(
 
     if not training_modules_list:
         # Use f-string for cleaner formatting
+        # <<< KEEP: Important failure condition >>>
         logging.error(f"ERROR -- ML Placement: No TRAINING modules found for MODEL keys {model_ship_key}/{model_tech_key}. Cannot define model outputs.")
         return None, 0.0
 
@@ -110,7 +113,7 @@ def ml_placement(
     num_output_classes = len(module_id_mapping) + 1 # +1 for background
     reverse_module_mapping = {v: k for k, v in module_id_mapping.items()}
     reverse_module_mapping[0] = None # Background class is 0
-    logging.info(f"INFO -- ML Placement: Determined num_output_classes = {num_output_classes} based on MODEL keys '{model_ship_key}/{model_tech_key}'.")
+    # logging.info(f"INFO -- ML Placement: Determined num_output_classes = {num_output_classes} based on MODEL keys '{model_ship_key}/{model_tech_key}'.") # <<< COMMENT OUT: Less critical detail >>>
     # --- End Model Loading Setup ---
 
     # --- 4. Get ACTUAL modules to place & their UI definitions (using UI keys + rewards) --- # <<< MODIFIED SECTION
@@ -119,6 +122,7 @@ def ml_placement(
     # <<< End change >>>
 
     if not modules_to_place_list:
+        # <<< KEEP: Important warning >>>
         logging.warning(f"WARNING -- ML Placement: No placeable modules found for UI keys '{ship}/{tech}' with rewards {player_owned_rewards}. Returning empty grid.")
         cleared_grid = grid.copy()
         clear_all_modules_of_tech(cleared_grid, tech) # Clear the target tech
@@ -130,11 +134,11 @@ def ml_placement(
     # Count how many of each module ID we need to place
     modules_needed_count = Counter(m['id'] for m in modules_to_place_list)
     total_modules_to_place = len(modules_to_place_list)
-    # logging.info(f"INFO -- ML Placement: Need to place {total_modules_to_place} modules based on UI keys/rewards: {dict(modules_needed_count)}")
+    # logging.info(f"INFO -- ML Placement: Need to place {total_modules_to_place} modules based on UI keys/rewards: {dict(modules_needed_count)}") # <<< COMMENT OUT: Less critical detail >>>
     # --- End UI Module Setup ---
 
     # --- 5. Load Model ---
-    logging.info(f"INFO -- ML Placement: Loading model from {model_path}...")
+    # logging.info(f"INFO -- ML Placement: Loading model from {model_path}...") # <<< COMMENT OUT: Redundant with next message >>>
     try:
         model = ModulePlacementCNN(
             input_channels=2,
@@ -147,11 +151,14 @@ def ml_placement(
         model.load_state_dict(state_dict)
         model.to(device)
         model.eval()
+        # <<< KEEP: Important success/device info >>>
         logging.info(f"INFO -- ML Placement: Model '{model_filename}' loaded successfully onto {device}.")
     except FileNotFoundError:
+        # <<< KEEP: Important failure condition >>>
         logging.error(f"ERROR -- ML Placement: Model file confirmed missing at {model_path}.")
         return None, 0.0
     except Exception as e:
+        # <<< KEEP: Important failure condition >>>
         logging.error(f"ERROR -- ML Placement: Failed to load model state_dict from {model_path}: {e}")
         logging.error("       Check if model architecture (grid size, channels, classes) matches the saved file.")
         return None, 0.0
@@ -176,12 +183,13 @@ def ml_placement(
     input_tensor = torch.stack([input_supercharge_tensor, input_inactive_tensor], dim=1).to(device)
 
     # --- 7. Get Prediction ---
-    logging.info("INFO -- ML Placement: Generating prediction...")
+    # logging.info("INFO -- ML Placement: Generating prediction...") # <<< COMMENT OUT: Less critical step >>>
     try:
         with torch.no_grad():
             output_logits = model(input_tensor)
             output_probs = F.softmax(output_logits, dim=1)
     except Exception as e:
+        # <<< KEEP: Important failure condition >>>
         logging.error(f"ERROR -- ML Placement: Error during model prediction: {e}")
         return None, 0.0
 
@@ -209,7 +217,7 @@ def ml_placement(
                      continue
 
     potential_placements.sort(key=lambda p: p["score"], reverse=True)
-    logging.info(f"INFO -- ML Placement: Generated {len(potential_placements)} potential placements for needed modules.")
+    # logging.info(f"INFO -- ML Placement: Generated {len(potential_placements)} potential placements for needed modules.") # <<< COMMENT OUT: Less critical detail >>>
 
     # --- 9. Build Output Grid (Confidence-Based Assignment) ---
     predicted_grid = Grid(model_grid_width, model_grid_height)
@@ -232,7 +240,7 @@ def ml_placement(
                  logging.warning(f"Warning: Index out of bounds ({y},{x}) during predicted_grid initialization.")
                  continue
 
-    logging.info(f"INFO -- ML Placement: Assigning modules based on confidence...")
+    # logging.info(f"INFO -- ML Placement: Assigning modules based on confidence...") # <<< COMMENT OUT: Less critical step >>>
     current_modules_needed = modules_needed_count.copy()
 
     for placement in potential_placements:
@@ -268,9 +276,10 @@ def ml_placement(
                 used_cells.add(cell_coord)
                 current_modules_needed[predicted_module_id] -= 1
                 placed_module_count += 1
-                logging.debug(f"ML Placement: Placed {predicted_module_id} at ({x},{y}) with score {placement['score']:.4f}")
+                # logging.debug(f"ML Placement: Placed {predicted_module_id} at ({x},{y}) with score {placement['score']:.4f}") # <<< DEBUG level >>>
 
             except Exception as e:
+                # <<< KEEP: Important error >>>
                 logging.error(f"ML Placement: Error placing module {predicted_module_id} at ({x},{y}): {e}")
                 try:
                     predicted_grid.set_module(x, y, None)
@@ -279,12 +288,15 @@ def ml_placement(
         else:
             # This warning indicates the predicted module ID isn't in the list of modules
             # the user actually has available for this tech/reward combo.
+            # <<< KEEP: Important warning >>>
             logging.warning(f"ML Placement: Predicted module ID '{predicted_module_id}' not found in UI module definitions map. Skipping placement.")
 
     # --- Final Check and Logging ---
+    # <<< KEEP: Important outcome >>>
     logging.info(f"INFO -- ML Placement: Placed {placed_module_count} modules.")
     if placed_module_count < total_modules_to_place:
         remaining_needed = {k: v for k, v in current_modules_needed.items() if v > 0}
+        # <<< KEEP: Important warning >>>
         logging.warning(
             f"WARNING -- ML Placement: Could only place {placed_module_count} out of {total_modules_to_place} expected modules for {tech}. "
             f"Remaining needed: {remaining_needed}"
@@ -292,11 +304,13 @@ def ml_placement(
 
     # --- 10. Calculate Initial Score ---
     predicted_score = calculate_grid_score(predicted_grid, tech)
+    # <<< KEEP: Important score info >>>
     logging.info(f"INFO -- ML Placement: Initial Score (before polish): {predicted_score:.4f}")
-    print_grid(predicted_grid) # Optional: print grid before polish
+    # print_grid(predicted_grid) # Optional: print grid before polish
 
     # --- 11. Optional Polishing Step ---
     if polish_result:
+        # <<< KEEP: Indicates polishing is starting >>>
         logging.info("INFO -- ML Placement: Attempting SA polish on ML result...")
         grid_to_polish = predicted_grid.copy()
 
@@ -311,7 +325,7 @@ def ml_placement(
             "max_processing_time": 10.0,       # Increase max time slightly (was 5.0)
         }
 
-        # logging.info(f"INFO -- ML Placement: Using SA polish params: {polish_params}")
+        # logging.info(f"INFO -- ML Placement: Using SA polish params: {polish_params}") # <<< COMMENT OUT: Less critical detail >>>
 
         try:
             # Run SA starting from the ML-generated grid, using UI keys
@@ -325,23 +339,29 @@ def ml_placement(
             )
 
             if polished_grid is not None and polished_bonus > predicted_score:
-                logging.info(f"INFO -- ML Placement: SA polish improved score from {predicted_score:.4f} to {polished_bonus:.4f}. Updating grid.")    
-                print_grid(polished_grid) # Optional: print grid before polish
+                # <<< KEEP: Important score improvement >>>
+                logging.info(f"INFO -- ML Placement: SA polish improved score from {predicted_score:.4f} to {polished_bonus:.4f}. Updating grid.")
+                # print_grid(polished_grid) # Optional: print grid after polish
                 predicted_grid = polished_grid
                 predicted_score = polished_bonus
             elif polished_grid is not None:
+                # <<< KEEP: Important outcome >>>
                 logging.info(f"INFO -- ML Placement: SA polish did not improve score ({polished_bonus:.4f} vs {predicted_score:.4f}). Keeping ML result.")
             else:
+                # <<< KEEP: Important failure condition >>>
                 logging.warning("INFO -- ML Placement: SA polish failed or returned None. Keeping ML result.")
 
         except ValueError as e:
+            # <<< KEEP: Important warning >>>
             logging.warning(f"WARNING -- ML Placement: SA polishing step failed with ValueError: {e}. Skipping polish.")
         except Exception as e:
+            # <<< KEEP: Important warning >>>
             logging.warning(f"WARNING -- ML Placement: Unexpected error during SA polishing: {e}. Skipping polish.")
     # --- End Optional Polishing Step ---
 
     # --- 12. Return Result ---
     end_time = time.time()
+    # <<< KEEP: Final result >>>
     logging.info(f"INFO -- ML Placement finished in {end_time - start_time:.2f} seconds. Final Score: {predicted_score:.4f}")
     # print_grid(predicted_grid) # Optional: print final grid
 

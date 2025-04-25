@@ -690,7 +690,9 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
 def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, experimental=False):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
-    Uses pre-defined solve maps first, then refines based on supercharged opportunities.
+    Uses pre-defined solve maps first, then refines based on supercharged opportunities,
+    prioritizing the pattern's location if its opportunity score is high and it contains
+    an available supercharged slot.
     Includes an experimental path using ML placement with SA fallback.
 
     Args:
@@ -710,13 +712,13 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     Raises:
         ValueError: If no empty, active slots are available or if critical steps fail.
     """
-    print(
+    print( # <<< KEEP: Start of process >>>
         f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}' -- Experimental: {experimental}"
     )
 
     if player_owned_rewards is None:
         player_owned_rewards = []
-                
+
     # --- Early Check: Any Empty, Active Slots? ---
     has_empty_active_slots = False
     for y in range(grid.height):
@@ -730,45 +732,46 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
 
     # Initialize variables for tracking best results
-    # best_grid = grid.copy() # Start with a copy of the input grid # Not needed, solved_grid tracks best
-    # best_bonus = -float("inf") # Not needed, solved_bonus tracks best
     solved_grid = grid.copy() # Grid state after initial pattern/SA fallback
     solved_bonus = -float("inf")
     best_pattern_grid = grid.copy() # Best grid found using pattern matching
     highest_pattern_bonus = -float("inf")
     best_pattern_adjacency_score = 0
-    solve_score = 0  # Official score from the solve map, if available
-    sa_was_initial_placement = False # Flag if SA was the direct initial placement method
+    best_pattern_start_x = -1
+    best_pattern_start_y = -1
+    best_pattern_width = -1
+    best_pattern_height = -1
+    solve_score = 0
+    sa_was_initial_placement = False
 
-    # Filter the solves dictionary based on player-owned rewards
     filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
 
     # --- Initial Placement Strategy ---
-    # Check if a solve map exists for this ship/tech combination after filtering
-    # --- Special Case: No Solve Available --- # <<< THIS BLOCK IS UNCHANGED >>>
     if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
-        print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.")
+        # --- Special Case: No Solve Available ---
+        print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.") # <<< KEEP: Important outcome >>>
+        # Assuming place_all_modules_in_empty_slots is defined elsewhere
         solved_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
+        # <<< KEEP: Final result for this path >>>
         print(
             f"SUCCESS -- Final Score (No Solve Map): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) for ship: '{ship}' -- tech: '{tech}'"
         )
         print_grid_compact(solved_grid)
-        return solved_grid, percentage, solved_bonus # Adjusted return to match function signature
-
-    # --- Case 2: Solve Map Exists ---
+        return solved_grid, percentage, solved_bonus
     else:
+        # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
         original_pattern = solve_data["map"]
-        solve_score = solve_data["score"] # Get the official solve score
+        solve_score = solve_data["score"]
 
-        print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.")
+        print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.") # <<< KEEP: Important outcome >>>
+        # Assuming get_all_unique_pattern_variations is defined elsewhere
         patterns_to_try = get_all_unique_pattern_variations(original_pattern)
-        grid_dict = grid.to_dict() # Store original grid state
+        grid_dict = grid.to_dict()
 
-        # Try applying all pattern variations
         for pattern in patterns_to_try:
             x_coords = [coord[0] for coord in pattern.keys()]
             y_coords = [coord[1] for coord in pattern.keys()]
@@ -778,186 +781,271 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
 
             for start_x in range(grid.width - pattern_width + 1):
                 for start_y in range(grid.height - pattern_height + 1):
-                    # Use a fresh copy of the original grid for each pattern attempt
                     temp_grid_pattern = Grid.from_dict(grid_dict)
+                    # Assuming apply_pattern_to_grid is defined elsewhere
                     temp_result_grid, adjacency_score = apply_pattern_to_grid(
                         temp_grid_pattern, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards
                     )
                     if temp_result_grid is not None:
                         current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
-                        # Track the best pattern found so far
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
+                            best_pattern_start_x = start_x
+                            best_pattern_start_y = start_y
+                            best_pattern_width = pattern_width
+                            best_pattern_height = pattern_height
                         elif (
                             current_pattern_bonus == highest_pattern_bonus
                             and adjacency_score >= best_pattern_adjacency_score
                         ):
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
+                            best_pattern_start_x = start_x
+                            best_pattern_start_y = start_y
+                            best_pattern_width = pattern_width
+                            best_pattern_height = pattern_height
 
-        # Check if any pattern was successfully applied and resulted in a valid score
         if highest_pattern_bonus > -float("inf"):
-            solved_grid = best_pattern_grid # Use the best pattern found
-            solved_bonus = highest_pattern_bonus # Use its score
+            solved_grid = best_pattern_grid
+            solved_bonus = highest_pattern_bonus
+            # <<< KEEP: Best pattern result >>>
             print(
-                f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) for ship: '{ship}' -- tech: '{tech}' that fits."
+                f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) found at ({best_pattern_start_x},{best_pattern_start_y}) with size {best_pattern_width}x{best_pattern_height} for ship: '{ship}' -- tech: '{tech}' that fits."
             )
             print_grid_compact(solved_grid)
-            sa_was_initial_placement = False # Pattern was applied, not SA
+            sa_was_initial_placement = False
         else:
-            # --- Case 2b: Solve Map Exists, but No Pattern Fits ---
+            # --- Case 2b: No Pattern Fits ---
+            # <<< KEEP: Important fallback >>>
             print(
                 f"WARNING -- Solve map exists for {ship}/{tech}, but no pattern variation fits the grid. Falling back to initial Simulated Annealing."
             )
-            # Clear the grid for the target tech before running SA
             initial_sa_grid = grid.copy()
             clear_all_modules_of_tech(initial_sa_grid, tech)
-            # Run SA as the fallback placement method
             solved_grid, solved_bonus = simulated_annealing(
-                initial_sa_grid,
-                ship,
-                modules,
-                tech,
-                player_owned_rewards,
-                max_processing_time=20.0
+                initial_sa_grid, ship, modules, tech, player_owned_rewards, max_processing_time=20.0
             )
             if solved_grid is None:
                 raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
-            print(f"INFO -- Fallback SA score (no pattern fit): {solved_bonus:.4f}")
-            pattern_applied = False # Mark that a pattern wasn't the final result
-            sa_was_initial_placement = True # SA was the initial placement method
+            print(f"INFO -- Fallback SA score (no pattern fit): {solved_bonus:.4f}") # <<< KEEP: Result of fallback >>>
+            sa_was_initial_placement = True
 
     # --- Opportunity Refinement Stage ---
-    # Start refinement from the best state achieved so far (pattern or initial SA)
-    grid_to_refine = solved_grid.copy()
+    grid_after_initial_placement = solved_grid.copy() # Grid state before refinement starts
+    current_best_score = calculate_grid_score(grid_after_initial_placement, tech)
 
-    current_best_score = calculate_grid_score(grid_to_refine, tech) # Score *before* refinement
-    clear_all_modules_of_tech(grid_to_refine, tech)
+    # Prepare grid for opportunity scanning (clear target tech)
+    grid_for_opportunity_scan = grid_after_initial_placement.copy()
+    clear_all_modules_of_tech(grid_for_opportunity_scan, tech)
 
-    # <<< Pass player_owned_rewards to find_supercharged_opportunities >>>
-    opportunity_result = find_supercharged_opportunities(grid_to_refine, modules, ship, tech, player_owned_rewards) # <<< Pass rewards
-
-    if opportunity_result:
-        # <<< Unpack all four values >>>
-        opportunity_x, opportunity_y, window_width, window_height = opportunity_result
-        print(f"INFO -- Found opportunity for refinement at window starting: ({opportunity_x}, {opportunity_y}) with size {window_width}x{window_height}")
-        # <<< End unpacking change >>>
-
-        refined_grid_candidate = None
-        refined_score_global = -1.0
-        sa_was_ml_fallback = False # Flag for ML->SA fallback
-
-        # --- Branch based on experimental flag ---
-        if experimental:
-            print("INFO -- Experimental flag is True. Attempting ML refinement first.")
-            # --- Try ML Refinement ---
-            # <<< Pass window dimensions to handler >>>
-            refined_grid_candidate, refined_score_global = _handle_ml_opportunity(
-                grid_to_refine.copy(), # Pass a copy
-                modules, ship, tech, player_owned_rewards,
-                opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
+    # --- Calculate Pattern Window Score (if applicable) ---
+    pattern_window_score = -1.0
+    pattern_opportunity_result = None
+    if highest_pattern_bonus > -float("inf") and best_pattern_start_x != -1 and best_pattern_width > 0:
+        try:
+            # Assuming create_localized_grid and calculate_window_score are defined elsewhere
+            pattern_window_grid, _, _ = create_localized_grid(
+                grid_for_opportunity_scan, # Use the grid with tech cleared
+                best_pattern_start_x,
+                best_pattern_start_y,
+                tech,
+                best_pattern_width,
+                best_pattern_height
             )
+            pattern_window_score = calculate_window_score(pattern_window_grid, tech)
+            pattern_opportunity_result = (best_pattern_start_x, best_pattern_start_y, best_pattern_width, best_pattern_height)
+            # print(f"DEBUG -- Calculated opportunity score for pattern area ({best_pattern_width}x{best_pattern_height} at {best_pattern_start_x},{best_pattern_start_y}): {pattern_window_score:.2f}") # <<< COMMENT OUT/DEBUG >>>
+        except Exception as e:
+            print(f"Warning: Error calculating pattern window score: {e}")
+            pattern_window_score = -1.0
+            pattern_opportunity_result = None
 
-            # --- Fallback to SA/Refine if ML failed ---
-            if refined_grid_candidate is None:
-                print("INFO -- ML refinement failed or model not found. Falling back to SA/Refine refinement.")
-                sa_was_ml_fallback = True # Mark that SA is running due to ML failure
-                # <<< Pass window dimensions to handler >>>
+    # --- Find Scanned Supercharged Opportunities ---
+    # Assuming find_supercharged_opportunities is defined elsewhere
+    scanned_opportunity_result = find_supercharged_opportunities(
+        grid_for_opportunity_scan, modules, ship, tech, player_owned_rewards
+    )
+
+    # --- Calculate Scanned Window Score (if applicable) ---
+    scanned_window_score = -1.0
+    if scanned_opportunity_result:
+        scan_x, scan_y, scan_w, scan_h = scanned_opportunity_result
+        try:
+            # Assuming create_localized_grid and calculate_window_score are defined elsewhere
+            scanned_window_grid, _, _ = create_localized_grid(
+                grid_for_opportunity_scan, # Use the grid with tech cleared
+                scan_x, scan_y, tech, scan_w, scan_h
+            )
+            scanned_window_score = calculate_window_score(scanned_window_grid, tech)
+            # print(f"DEBUG -- Calculated opportunity score for best scanned area ({scan_w}x{scan_h} at {scan_x},{scan_y}): {scanned_window_score:.2f}") # <<< COMMENT OUT/DEBUG >>>
+        except Exception as e:
+            print(f"Warning: Error calculating scanned window score: {e}")
+            scanned_window_score = -1.0
+            scanned_opportunity_result = None # Invalidate if score calculation failed
+
+    # --- Compare Scores and Select Final Opportunity ---
+    final_opportunity_result = None
+    opportunity_source = "None" # For logging
+    if pattern_window_score >= scanned_window_score and pattern_opportunity_result is not None:
+        # print("INFO -- Using pattern location as the refinement opportunity window (score >= scanned).") # <<< COMMENT OUT >>>
+        final_opportunity_result = pattern_opportunity_result
+        opportunity_source = "Pattern"
+    elif scanned_opportunity_result is not None:
+        # print("INFO -- Using scanned location as the refinement opportunity window (score > pattern or pattern invalid).") # <<< COMMENT OUT >>>
+        final_opportunity_result = scanned_opportunity_result
+        opportunity_source = "Scan"
+    elif pattern_opportunity_result is not None: # Fallback if scanning failed but pattern exists
+        # print("INFO -- Using pattern location as the refinement opportunity window (scanning failed).") # <<< COMMENT OUT >>>
+        final_opportunity_result = pattern_opportunity_result
+        opportunity_source = "Pattern (Fallback)"
+    # else: # <<< COMMENT OUT >>>
+        # print("INFO -- No suitable opportunity window found from pattern or scanning.")
+
+    # --- Perform Refinement using the Selected Opportunity ---
+    if final_opportunity_result:
+        opportunity_x, opportunity_y, window_width, window_height = final_opportunity_result
+        # <<< KEEP: Selected window info >>>
+        print(f"INFO -- Selected opportunity window ({opportunity_source}): Start ({opportunity_x}, {opportunity_y}), Size {window_width}x{window_height}")
+
+        # <<< --- Add Check for Available Supercharged Slot in Window --- >>>
+        window_has_available_sc = False
+        # Use grid_for_opportunity_scan as it has the tech cleared
+        for y_win in range(opportunity_y, opportunity_y + window_height):
+            for x_win in range(opportunity_x, opportunity_x + window_width):
+                # Bounds check for safety
+                if 0 <= x_win < grid_for_opportunity_scan.width and 0 <= y_win < grid_for_opportunity_scan.height:
+                    cell = grid_for_opportunity_scan.get_cell(x_win, y_win)
+                    if cell["active"] and cell["supercharged"] and cell["module"] is None:
+                        window_has_available_sc = True
+                        break
+            if window_has_available_sc:
+                break
+        # <<< --- End Check --- >>>
+
+        # <<< --- Only proceed if the check passes --- >>>
+        if window_has_available_sc:
+            # print("INFO -- Opportunity window contains at least one available supercharged slot. Proceeding with refinement.") # <<< COMMENT OUT >>>
+
+            refined_grid_candidate = None
+            refined_score_global = -1.0
+            sa_was_ml_fallback = False
+            refinement_method = "" # For logging
+
+            # --- Branch based on experimental flag ---
+            # Pass grid_after_initial_placement (state *before* clearing) to handlers
+            if experimental:
+                # print("INFO -- Experimental flag is True. Attempting ML refinement first.") # <<< COMMENT OUT >>>
+                refinement_method = "ML"
+                # Assuming _handle_ml_opportunity is defined elsewhere
+                refined_grid_candidate, refined_score_global = _handle_ml_opportunity(
+                    grid_after_initial_placement.copy(), # Pass a copy of the pre-cleared state
+                    modules, ship, tech, player_owned_rewards,
+                    opportunity_x, opportunity_y, window_width, window_height
+                )
+                if refined_grid_candidate is None:
+                    print("INFO -- ML refinement failed or model not found. Falling back to SA/Refine refinement.") # <<< KEEP: Important fallback >>>
+                    sa_was_ml_fallback = True
+                    refinement_method = "ML->SA/Refine Fallback"
+                    # Assuming _handle_sa_refine_opportunity is defined elsewhere
+                    refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
+                        grid_after_initial_placement.copy(), # Pass a fresh copy
+                        modules, ship, tech, player_owned_rewards,
+                        opportunity_x, opportunity_y, window_width, window_height
+                    )
+            else: # Not experimental
+                # print("INFO -- Experimental flag is False. Using SA/Refine refinement directly.") # <<< COMMENT OUT >>>
+                refinement_method = "SA/Refine"
+                # Assuming _handle_sa_refine_opportunity is defined elsewhere
                 refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
-                    grid_to_refine.copy(), # Pass a fresh copy
+                    grid_after_initial_placement.copy(), # Pass a copy
                     modules, ship, tech, player_owned_rewards,
-                    opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
+                    opportunity_x, opportunity_y, window_width, window_height
                 )
-            # else: ML refinement succeeded (or returned original grid), proceed with its result.
 
-        else: # Not experimental
-            print("INFO -- Experimental flag is False. Using SA/Refine refinement directly.")
-            # --- Use SA/Refine Refinement ---
-            # <<< Pass window dimensions to handler >>>
-            refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
-                grid_to_refine.copy(), # Pass a copy
-                modules, ship, tech, player_owned_rewards,
-                opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
-            )
-
-        # --- Compare and Update based on Refinement Result ---
-        if refined_grid_candidate is not None and refined_score_global >= current_best_score:
-            # ... (rest of the comparison logic remains the same)
-            print(
-                f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
-            )
-            solved_grid = refined_grid_candidate # Update solved_grid with the better one
-            solved_bonus = refined_score_global # Update the score
-            sa_was_initial_placement = False # Grid state changed by refinement
-        else:
-            # ... (rest of the failure/no improvement logic remains the same)
-            if refined_grid_candidate is not None:
+            # --- Compare and Update based on Refinement Result ---
+            if refined_grid_candidate is not None and refined_score_global >= current_best_score:
+                # <<< KEEP: Score improvement >>>
                 print(
-                    f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f})."
+                    f"INFO -- Opportunity refinement ({refinement_method}) improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
                 )
+                solved_grid = refined_grid_candidate
+                solved_bonus = refined_score_global
+                sa_was_initial_placement = False
             else:
-                print(f"INFO -- Opportunity refinement (using {'ML/SA Fallback' if sa_was_ml_fallback else ('ML' if experimental else 'SA/Refine')}) failed completely.")
-
-            # --- Final Fallback SA Logic ---
-            if experimental and not sa_was_ml_fallback:
-                print("INFO -- Experimental flag is True AND refinement didn't improve/failed (and was not ML->SA fallback). Attempting final fallback Simulated Annealing.")
-                grid_for_sa_fallback = grid_to_refine.copy()
-                # <<< Pass window dimensions to handler >>>
-                sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
-                    grid_for_sa_fallback.copy(), # Pass a copy
-                    modules, ship, tech, player_owned_rewards,
-                    opportunity_x, opportunity_y, window_width, window_height # <<< Pass dimensions
-                )
-                # ... (rest of fallback comparison logic)
-                if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
-                    print(f"INFO -- Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
-                    solved_grid = sa_fallback_grid
-                    solved_bonus = sa_fallback_bonus
-                    sa_was_initial_placement = False # Grid state changed by fallback SA
-                elif sa_fallback_grid is not None:
-                    print(f"INFO -- Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best.")
+                # Refinement didn't improve or failed, keep grid_after_initial_placement
+                if refined_grid_candidate is not None:
+                    # <<< KEEP: Score did not improve >>>
+                    print(
+                        f"INFO -- Opportunity refinement ({refinement_method}) did not improve score ({refined_score_global:.4f} vs {current_best_score:.4f}). Keeping previous best."
+                    )
                 else:
-                    print(f"ERROR -- Final fallback Simulated Annealing failed. Keeping previous best.")
-    
+                     # <<< KEEP: Refinement failed >>>
+                     print(f"INFO -- Opportunity refinement ({refinement_method}) failed completely. Keeping previous best.")
+                # solved_grid remains grid_after_initial_placement
+                solved_bonus = current_best_score
 
-    else: # No opportunity found
-        print("INFO -- No supercharged opportunity found for refinement.")
-        # ... (rest of the code)
+                # --- Final Fallback SA Logic (No change needed here) ---
+                if experimental and not sa_was_ml_fallback:
+                    # <<< KEEP: Important fallback >>>
+                    print("INFO -- Experimental flag is True AND refinement didn't improve/failed (and was not ML->SA fallback). Attempting final fallback Simulated Annealing.")
+                    grid_for_sa_fallback = grid_after_initial_placement.copy()
+                    # Assuming _handle_sa_refine_opportunity is defined elsewhere
+                    sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
+                        grid_for_sa_fallback.copy(), # Pass a copy
+                        modules, ship, tech, player_owned_rewards,
+                        opportunity_x, opportunity_y, window_width, window_height
+                    )
+                    if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
+                        # <<< KEEP: Score improvement >>>
+                        print(f"INFO -- Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
+                        solved_grid = sa_fallback_grid
+                        solved_bonus = sa_fallback_bonus
+                        sa_was_initial_placement = False
+                    elif sa_fallback_grid is not None:
+                        # <<< KEEP: Score did not improve >>>
+                        print(f"INFO -- Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best.")
+                    else:
+                        print(f"ERROR -- Final fallback Simulated Annealing failed. Keeping previous best.")
+
+        # <<< --- Else block for the supercharged check --- >>>
+        else:
+            # <<< KEEP: Reason for skipping refinement >>>
+            print("INFO -- Skipping refinement: Selected opportunity window does not contain any available supercharged slots.")
+            # solved_grid remains grid_after_initial_placement
+            solved_bonus = current_best_score
+        # <<< --- End supercharged check block --- >>>
+
+    else: # No final_opportunity_result found
+        # <<< KEEP: Reason for skipping refinement >>>
+        print("INFO -- No refinement performed as no suitable opportunity window was selected.")
+        # solved_grid remains grid_after_initial_placement
+        solved_bonus = current_best_score
 
     # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
-    # Check if all modules were placed after pattern matching and potential refinement
+    # Assuming check_all_modules_placed is defined elsewhere (or imported)
     all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
-
-    # Run final SA check ONLY if modules aren't placed AND the current state didn't come directly from initial SA
     if not all_modules_placed and not sa_was_initial_placement:
+        # <<< KEEP: Important fallback >>>
         print(
             f"WARNING! -- Not all modules placed AND initial placement wasn't SA. Running final SA."
         )
-
-        # Start SA from the current state of solved_grid, but clear the tech first
         grid_for_final_sa = solved_grid.copy()
         clear_all_modules_of_tech(grid_for_final_sa, tech)
-
-        temp_solved_grid, temp_solved_bonus = simulated_annealing(
-            grid_for_final_sa,
-            ship,
-            modules,
-            tech,
-            player_owned_rewards,
-            max_processing_time=20.0 # Limit final SA time
+        temp_solved_grid, temp_solved_bonus_sa = simulated_annealing(
+            grid_for_final_sa, ship, modules, tech, player_owned_rewards, max_processing_time=20.0
         )
-
         if temp_solved_grid is not None:
-            # Recalculate score after final SA
             final_sa_score = calculate_grid_score(temp_solved_grid, tech)
-            # Only update if the final SA score is better than the current solved_bonus
+            # Use solved_bonus which holds the score *after* potential refinement
             if final_sa_score > solved_bonus:
+                # <<< KEEP: Score improvement >>>
                 print(f"INFO -- Final SA (due to unplaced modules) improved score from {solved_bonus:.4f} to {final_sa_score:.4f}")
                 solved_grid = temp_solved_grid
                 solved_bonus = final_sa_score
             else:
+                # <<< KEEP: Score did not improve >>>
                 print(
                     f"INFO -- Final SA (due to unplaced modules) did not improve score ({final_sa_score:.4f} vs {solved_bonus:.4f}). Keeping previous best."
                 )
@@ -965,30 +1053,36 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             print(
                 f"ERROR -- Final simulated_annealing solver (due to unplaced modules) failed for ship: '{ship}' -- tech: '{tech}'. Returning previous best grid."
             )
-            # Keep the existing solved_grid and solved_bonus
     elif not all_modules_placed and sa_was_initial_placement:
+         # <<< KEEP: Important warning >>>
          print(
              f"WARNING! -- Not all modules placed, but initial placement WAS SA. Skipping final SA check."
          )
-    # else: # All modules placed, no need for final SA check
 
     # --- Final Result Calculation ---
-    best_grid = solved_grid # The final state of solved_grid is our best result
-    best_bonus = calculate_grid_score(best_grid, tech) # Recalculate final score for certainty
+    best_grid = solved_grid
+    # Use the final solved_bonus calculated through the process
+    best_bonus = solved_bonus # This holds the score after refinement/fallbacks
 
-    # Calculate the percentage of the official solve score achieved
-    if solve_score > 1e-9: # Use a small epsilon to avoid division by zero/near-zero
+    # Recalculate just in case, but should match solved_bonus
+    final_check_score = calculate_grid_score(best_grid, tech)
+    if abs(final_check_score - best_bonus) > 1e-6:
+         print(f"Warning: Final check score {final_check_score:.4f} differs from tracked best_bonus {best_bonus:.4f}. Using check score.")
+         best_bonus = final_check_score
+
+
+    if solve_score > 1e-9:
         percentage = (best_bonus / solve_score) * 100
     else:
-        # Handle cases where solve_score is 0 or very close to it
         percentage = 100.0 if best_bonus > 1e-9 else 0.0
 
+    # <<< KEEP: Final result >>>
     print(
         f"SUCCESS -- Final Score: {best_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) for ship: '{ship}' -- tech: '{tech}'"
     )
-    print_grid_compact(best_grid) # Print the final best grid
+    print_grid_compact(best_grid)
 
-    return best_grid, percentage, best_bonus # Return the final best grid, percentage, and score
+    return best_grid, percentage, best_bonus
 
 
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
@@ -1235,7 +1329,7 @@ def calculate_window_score(window_grid, tech):
                     empty_count += 1
 
     # Prioritize supercharged slots, then empty slots, and slightly prefer edge supercharged slots
-    return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
+    return (supercharged_count * 3) + (empty_count * 1) #+ (edge_penalty * 0.25)
 
 
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
