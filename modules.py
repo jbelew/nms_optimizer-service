@@ -170,7 +170,7 @@ modules = {
                     "image": "aquajet.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "aquajets.png", },
+                        { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "aquajets.png", },
                     ],
                 },
                 {
@@ -378,7 +378,7 @@ modules = {
                     "image": "aquajet.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "aquajets.png", },
+                        { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "aquajets.png", },
                     ],
                 },
                 {
@@ -595,7 +595,7 @@ modules = {
                     "image": "aquajet.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "aquajets.png", },
+                        { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "aquajets.png", },
                     ],
                 },
                 {
@@ -742,7 +742,7 @@ modules = {
                     "image": "saline.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Saline Catapace", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "saline.png", },
+                        { "id": "SC", "type": "core", "label": "Saline Catapace", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "saline.png", },
                     ],
                 },
                 {
@@ -815,7 +815,7 @@ modules = {
                     "image": "analysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.png", },
                     ],
                 },
                 {
@@ -839,7 +839,7 @@ modules = {
                     "image": "survey.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.png", },
                     ],
                 },
             ],
@@ -948,7 +948,7 @@ modules = {
                     "image": "cloaking.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.png", },
                     ],
                 },
                 {
@@ -957,7 +957,7 @@ modules = {
                     "image": "combat.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.png", },
                     ],
                 },
                 {
@@ -966,7 +966,7 @@ modules = {
                     "image": "voltaic-amplifier.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.png", },
                     ],
                 },
                 {
@@ -975,7 +975,7 @@ modules = {
                     "image": "paralysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.png", },
                     ],
                 },
                 {
@@ -984,7 +984,7 @@ modules = {
                     "image": "personal.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.png", },
                     ],
                 },
             ],
@@ -995,7 +995,7 @@ modules = {
                     "image": "fishing.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.png", },
                     ],
                 },
                 {
@@ -1004,7 +1004,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.png", },
                     ],
                 },
             ],
@@ -1038,7 +1038,7 @@ modules = {
                     "image": "analysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.png", },
                     ],
                 },
                 {
@@ -1062,7 +1062,7 @@ modules = {
                     "image": "survey.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.png", },
                     ],
                 },
             ],
@@ -1171,7 +1171,7 @@ modules = {
                     "image": "cloaking.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.png", },
                     ],
                 },
                 {
@@ -1180,7 +1180,7 @@ modules = {
                     "image": "combat.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.png", },
                     ],
                 },
                 {
@@ -1189,7 +1189,7 @@ modules = {
                     "image": "voltaic-amplifier.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.png", },
                     ],
                 },
                 {
@@ -1198,7 +1198,7 @@ modules = {
                     "image": "paralysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.png", },
                     ],
                 },
                 {
@@ -1207,7 +1207,7 @@ modules = {
                     "image": "personal.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.png", },
                     ],
                 },
             ],
@@ -1218,7 +1218,7 @@ modules = {
                     "image": "fishing.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.png", },
                     ],
                 },
                 {
@@ -1227,7 +1227,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.png", },
                     ],
                 },
             ],
@@ -1260,7 +1260,7 @@ modules = {
                     "image": "analysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.png", },
                     ],
                 },
                 {
@@ -1284,7 +1284,7 @@ modules = {
                     "image": "survey.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.png", },
                     ],
                 },
             ],
@@ -1393,7 +1393,7 @@ modules = {
                     "image": "cloaking.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.png", },
                     ],
                 },
                 {
@@ -1402,7 +1402,7 @@ modules = {
                     "image": "combat.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.png", },
                     ],
                 },
                 {
@@ -1411,7 +1411,7 @@ modules = {
                     "image": "voltaic-amplifier.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.png", },
                     ],
                 },
                 {
@@ -1420,7 +1420,7 @@ modules = {
                     "image": "paralysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.png", },
                     ],
                 },
                 {
@@ -1429,7 +1429,7 @@ modules = {
                     "image": "personal.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.png", },
                     ],
                 },
             ],
@@ -1440,7 +1440,7 @@ modules = {
                     "image": "fishing.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.png", },
                     ],
                 },
                 {
@@ -1449,7 +1449,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.png", },
                     ],
                 },
             ],
@@ -1482,7 +1482,7 @@ modules = {
                     "image": "analysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "analysis.png", },
+                        { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.png", },
                     ],
                 },
                 {
@@ -1506,7 +1506,7 @@ modules = {
                     "image": "survey.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "survey.png", },
+                        { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.png", },
                     ],
                 },
             ],
@@ -1615,7 +1615,7 @@ modules = {
                     "image": "cloaking.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cloaking.png", },
+                        { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.png", },
                     ],
                 },
                 {
@@ -1624,7 +1624,7 @@ modules = {
                     "image": "combat.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "combat.png", },
+                        { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.png", },
                     ],
                 },
                 {
@@ -1633,7 +1633,7 @@ modules = {
                     "image": "voltaic-amplifier.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "voltaic-amplifier.png", },
+                        { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.png", },
                     ],
                 },
                 {
@@ -1642,7 +1642,7 @@ modules = {
                     "image": "paralysis.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "paralysis.png", },
+                        { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.png", },
                     ],
                 },
                 {
@@ -1651,7 +1651,7 @@ modules = {
                     "image": "personal.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "personal.png", },
+                        { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.png", },
                     ],
                 },
             ],
@@ -1662,7 +1662,7 @@ modules = {
                     "image": "fishing.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "fishing.png", },
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.png", },
                     ],
                 },
                 {
@@ -1671,7 +1671,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "terrian.png", },
+                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.png", },
                     ],
                 },
             ],
