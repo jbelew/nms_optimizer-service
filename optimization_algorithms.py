@@ -641,7 +641,7 @@ def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, oppo
 def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y, window_width, window_height):
     """Handles the SA/Refine-based refinement within an opportunity window."""
     print(f"INFO -- Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}")
-
+    
     # --- *** Modification Start *** ---
     # Create a copy of the grid *before* clearing, to preserve the original state for localization
     grid_copy_for_localization = grid.copy()
@@ -678,6 +678,7 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
     if temp_refined_grid is not None:
         temp_refined_bonus_local = calculate_grid_score(temp_refined_grid, tech)
         # Apply changes back to the main grid copy (grid - which was cleared earlier)
+        clear_all_modules_of_tech(grid, tech)
         apply_localized_grid_changes(grid, temp_refined_grid, tech, start_x, start_y)
         new_score_global = calculate_grid_score(grid, tech)
         print(f"INFO -- Score after SA/Refine refinement: {new_score_global:.4f}")

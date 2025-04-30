@@ -30,8 +30,6 @@ WEIGHT_FROM_LESSER_CORE = 0.05
 SUPERCHARGE_MULTIPLIER = 1.25
 
 # --- Helper Functions ---
-
-
 def _get_orthogonal_neighbors(grid: Grid, x: int, y: int) -> list[dict]:
     """Gets valid orthogonal neighbor cells with modules of the same tech."""
     neighbors = []
