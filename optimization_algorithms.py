@@ -20,7 +20,7 @@ from copy import deepcopy
 from modules import (
     solves,
 )
-from solve_map_utils import filter_solves  # Import the new functio
+from solve_map_utils import filter_solves 
 
 
 def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
