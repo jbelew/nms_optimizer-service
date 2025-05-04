@@ -261,7 +261,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_calculate_score.return_value = 5.0
 
         # Act
-        result_grid, percentage, solved_bonus = optimize_placement(
+        result_grid, percentage, solved_bonus, solve_method= optimize_placement(
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
         )
 
@@ -342,7 +342,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_check_placed.return_value = True
 
         # Act
-        result_grid, percentage, solved_bonus = optimize_placement(
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
         )
 
