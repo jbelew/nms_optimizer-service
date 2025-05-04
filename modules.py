@@ -1821,7 +1821,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.8120
+            "score": 0.6650
         }
     },
     "sentinel": {
@@ -1965,7 +1965,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.8120
+            "score": 0.6650
         }
     },
     "solar": {
@@ -2096,7 +2096,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.8120
+            "score": 0.6650
         }
     },
     "living": {
@@ -2173,7 +2173,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.8120
+            "score": 0.6650
         }
     },
     "standard-mt": {
