@@ -1037,7 +1037,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         grid_for_final_sa = solved_grid.copy()
         clear_all_modules_of_tech(grid_for_final_sa, tech)
         temp_solved_grid, temp_solved_bonus_sa = simulated_annealing(
-            grid_for_final_sa, ship, modules, tech, player_owned_rewards, max_processing_time=20.0
+            grid_for_final_sa, ship, modules, tech, player_owned_rewards, iterations_per_temp=25, initial_swap_probability=0.70, final_swap_probability=0.25, max_processing_time=20.0
         )
         if temp_solved_grid is not None:
             final_sa_score = calculate_grid_score(temp_solved_grid, tech)
