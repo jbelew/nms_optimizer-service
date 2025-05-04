@@ -897,19 +897,19 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     final_opportunity_result = None
     opportunity_source = "None" # For logging
     if pattern_window_score >= scanned_window_score and pattern_opportunity_result is not None:
-        # print("INFO -- Using pattern location as the refinement opportunity window (score >= scanned).") # <<< COMMENT OUT >>>
+        print("INFO -- Using pattern location as the refinement opportunity window (score >= scanned).") # <<< COMMENT OUT >>>
         final_opportunity_result = pattern_opportunity_result
         opportunity_source = "Pattern"
     elif scanned_opportunity_result is not None:
-        # print("INFO -- Using scanned location as the refinement opportunity window (score > pattern or pattern invalid).") # <<< COMMENT OUT >>>
+        print("INFO -- Using scanned location as the refinement opportunity window (score > pattern or pattern invalid).") # <<< COMMENT OUT >>>
         final_opportunity_result = scanned_opportunity_result
         opportunity_source = "Scan"
     elif pattern_opportunity_result is not None: # Fallback if scanning failed but pattern exists
-        # print("INFO -- Using pattern location as the refinement opportunity window (scanning failed).") # <<< COMMENT OUT >>>
+        print("INFO -- Using pattern location as the refinement opportunity window (scanning failed).") # <<< COMMENT OUT >>>
         final_opportunity_result = pattern_opportunity_result
         opportunity_source = "Pattern (Fallback)"
     # else: # <<< COMMENT OUT >>>
-        # print("INFO -- No suitable opportunity window found from pattern or scanning.")
+        print("INFO -- No suitable opportunity window found from pattern or scanning.")
 
     # --- Perform Refinement using the Selected Opportunity ---
     if final_opportunity_result:
@@ -1343,7 +1343,7 @@ def calculate_window_score(window_grid, tech):
                     empty_count += 1
 
     # Prioritize supercharged slots, then empty slots, and slightly prefer edge supercharged slots
-    return (supercharged_count * 3) + (empty_count * 1) #+ (edge_penalty * 0.25)
+    return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 
 
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
