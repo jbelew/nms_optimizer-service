@@ -31,8 +31,8 @@ def optimize_grid():
     grid = Grid.from_dict(grid_data)
 
     try:
-        grid, percentage, solved_bonus = optimize_placement(grid, ship, modules, tech, player_owned_rewards, True)
-        return jsonify({"grid": grid.to_dict(), "max_bonus": percentage, "solved_bonus": solved_bonus})
+        grid, percentage, solved_bonus, solve_method = optimize_placement(grid, ship, modules, tech, player_owned_rewards, True)
+        return jsonify({"grid": grid.to_dict(), "max_bonus": percentage, "solved_bonus": solved_bonus, "solve_method": solve_method})
     except ValueError as e:
         print(f"ERROR -- {str(e)}")
         print_grid_compact(grid)

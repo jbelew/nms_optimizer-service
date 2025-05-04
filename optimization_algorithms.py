@@ -708,10 +708,11 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                              with SA as a fallback. If False, uses SA/Refine directly.
 
     Returns:
-        tuple: (best_grid, percentage, best_bonus)
+        tuple: (best_grid, percentage, best_bonus, solve_method)
                - best_grid (Grid): The optimized grid.
                - percentage (float): The percentage of the official solve score achieved.
                - best_bonus (float): The actual score achieved by the best grid.
+               - solve_method (str): The name of the method used to generate the final grid.
     Raises:
         ValueError: If no empty, active slots are available or if critical steps fail.
     """
@@ -746,6 +747,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     best_pattern_height = -1
     solve_score = 0
     sa_was_initial_placement = False
+    solve_method = "Unknown" # <<< Initialize solve_method >>>
 
     filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
 
@@ -753,6 +755,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
         # --- Special Case: No Solve Available ---
         print(f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots.") # <<< KEEP: Important outcome >>>
+        solve_method = "Initial Placement (No Solve)" # <<< Set method >>>
         # Assuming place_all_modules_in_empty_slots is defined elsewhere
         solved_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
         solved_bonus = calculate_grid_score(solved_grid, tech)
@@ -760,10 +763,10 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
         # <<< KEEP: Final result for this path >>>
         print(
-            f"SUCCESS -- Final Score (No Solve Map): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) for ship: '{ship}' -- tech: '{tech}'"
+            f"SUCCESS -- Final Score (No Solve Map): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
         )
         print_grid_compact(solved_grid)
-        return solved_grid, percentage, solved_bonus
+        return solved_grid, percentage, solved_bonus, solve_method # <<< Return solve_method >>>
     else:
         # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
@@ -813,6 +816,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         if highest_pattern_bonus > -float("inf"):
             solved_grid = best_pattern_grid
             solved_bonus = highest_pattern_bonus
+            solve_method = "Pattern Match" # <<< Set method >>>
             # <<< KEEP: Best pattern result >>>
             print(
                 f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) found at ({best_pattern_start_x},{best_pattern_start_y}) with size {best_pattern_width}x{best_pattern_height} for ship: '{ship}' -- tech: '{tech}' that fits."
@@ -833,6 +837,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             if solved_grid is None:
                 raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
             print(f"INFO -- Fallback SA score (no pattern fit): {solved_bonus:.4f}") # <<< KEEP: Result of fallback >>>
+            solve_method = "Initial SA (No Pattern Fit)" # <<< Set method >>>
             sa_was_initial_placement = True
 
     # --- Opportunity Refinement Stage ---
@@ -975,6 +980,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 )
                 solved_grid = refined_grid_candidate
                 solved_bonus = refined_score_global
+                solve_method = refinement_method # <<< Update method based on successful refinement >>>
                 sa_was_initial_placement = False
             else:
                 # Refinement didn't improve or failed, keep grid_after_initial_placement
@@ -988,6 +994,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                      print(f"INFO -- Opportunity refinement ({refinement_method}) failed completely. Keeping previous best.")
                 # solved_grid remains grid_after_initial_placement
                 solved_bonus = current_best_score
+                # solve_method remains what it was before refinement
 
                 # --- Final Fallback SA Logic (No change needed here) ---
                 if experimental and not sa_was_ml_fallback:
@@ -1005,6 +1012,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                         print(f"INFO -- Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}")
                         solved_grid = sa_fallback_grid
                         solved_bonus = sa_fallback_bonus
+                        solve_method = "Final Fallback SA (Experimental)" # <<< Update method >>>
                         sa_was_initial_placement = False
                     elif sa_fallback_grid is not None:
                         # <<< KEEP: Score did not improve >>>
@@ -1018,6 +1026,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             print("INFO -- Skipping refinement: Selected opportunity window does not contain any available supercharged slots.")
             # solved_grid remains grid_after_initial_placement
             solved_bonus = current_best_score
+            # solve_method remains what it was before refinement
         # <<< --- End supercharged check block --- >>>
 
     else: # No final_opportunity_result found
@@ -1025,6 +1034,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         print("INFO -- No refinement performed as no suitable opportunity window was selected.")
         # solved_grid remains grid_after_initial_placement
         solved_bonus = current_best_score
+        # solve_method remains what it was before refinement
 
     # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
     # Assuming check_all_modules_placed is defined elsewhere (or imported)
@@ -1047,6 +1057,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                 print(f"INFO -- Final SA (due to unplaced modules) improved score from {solved_bonus:.4f} to {final_sa_score:.4f}")
                 solved_grid = temp_solved_grid
                 solved_bonus = final_sa_score
+                solve_method = "Final SA (Unplaced Modules)" # <<< Update method >>>
             else:
                 # <<< KEEP: Score did not improve >>>
                 print(
@@ -1081,11 +1092,11 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
 
     # <<< KEEP: Final result >>>
     print(
-        f"SUCCESS -- Final Score: {best_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) for ship: '{ship}' -- tech: '{tech}'"
+        f"SUCCESS -- Final Score: {best_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
     )
     print_grid_compact(best_grid)
 
-    return best_grid, percentage, best_bonus
+    return best_grid, percentage, best_bonus, solve_method # <<< Return solve_method >>>
 
 
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
