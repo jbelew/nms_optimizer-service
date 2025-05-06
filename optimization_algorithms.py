@@ -378,7 +378,7 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
     elif module_count < 4:
         window_width, window_height = 1, 3
     elif module_count < 5:
-        window_width, window_height = 2, 2
+        window_width, window_height = 2, 3
     elif module_count < 7:
         window_width, window_height = 2, 3
     elif module_count < 8 and tech == "pulse-splitter":
