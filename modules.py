@@ -1,4 +1,4 @@
-# These value are highly generalized and do not reepresent the actual values in the game. They are ratios derrived from in-game experimentation and used for properly seeding the solving allgorithm.
+# These value are highly generalized and do not represent the actual values in the game. They are ratios derived from in-game experimentation and used for properly seeding the solving algorithm.
 
 # fmt: off
 modules = {
@@ -203,7 +203,7 @@ modules = {
                     "color": "gray", 
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.webp", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.webp", },
                         { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.webp", },
@@ -419,8 +419,8 @@ modules = {
                     "image": "trails.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
+                        { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.webp", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.webp", },
                         { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.webp", },
@@ -627,8 +627,8 @@ modules = {
                     "image": "trails.webp",
                     "color": "gray", 
                     "modules": [
-                        { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
+                        { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.webp", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.webp", },
                         { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.webp", },
@@ -773,7 +773,7 @@ modules = {
                     "image": "trails.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
+                        { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.webp", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.webp", },
@@ -1821,7 +1821,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.6650
+            "score": 0.4620
         }
     },
     "sentinel": {
@@ -1965,7 +1965,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.6650
+            "score": 0.4620
         }
     },
     "solar": {
@@ -2096,7 +2096,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.6650
+            "score": 0.4620
         }
     },
     "living": {
@@ -2173,7 +2173,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.6650
+            "score": 0.4620
         }
     },
     "standard-mt": {

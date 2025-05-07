@@ -203,7 +203,7 @@ modules = {
                     "color": "gray", 
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
                         { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
@@ -420,7 +420,7 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
                         { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },
@@ -628,7 +628,7 @@ modules = {
                     "color": "gray", 
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.png", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.png", },
                         { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.png", },
                         { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.png", },
                         { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.png", },

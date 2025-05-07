@@ -19,6 +19,7 @@ def optimize_grid():
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
+    forced_solve = data.get("forced", False) # Get the 'forced' flag, default to False
     # print(f"Received request for ship: {ship}, tech: {tech}, player_owned_rewards: {player_owned_rewards}")
 
     if tech is None:
@@ -31,8 +32,20 @@ def optimize_grid():
     grid = Grid.from_dict(grid_data)
 
     try:
-        grid, percentage, solved_bonus, solve_method = optimize_placement(grid, ship, modules, tech, player_owned_rewards, True)
-        return jsonify({"grid": grid.to_dict(), "max_bonus": percentage, "solved_bonus": solved_bonus, "solve_method": solve_method})
+        # Pass the forced_solve flag to optimize_placement
+        optimized_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            grid, ship, modules, tech, player_owned_rewards, True, forced=forced_solve
+        )
+
+        if solve_method == "Pattern No Fit":
+            return jsonify({
+                "grid": None, # No grid to return in this specific case
+                "max_bonus": 0.0,
+                "solved_bonus": 0.0,
+                "solve_method": "Pattern No Fit",
+                "message": "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve."
+            }), 200 # 200 OK, but with a specific message for the UI
+        return jsonify({"grid": optimized_grid.to_dict(), "max_bonus": percentage, "solved_bonus": solved_bonus, "solve_method": solve_method})
     except ValueError as e:
         print(f"ERROR -- {str(e)}")
         print_grid_compact(grid)

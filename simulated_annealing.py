@@ -183,16 +183,24 @@ def simulated_annealing(
         # Return a copy of the original grid and 0 score if modules aren't found
         return grid.copy(), 0.0
 
+    current_grid = grid.copy() # Work on a copy from the start
+
     # --- Determine modules to consider ---
     modules_to_consider = []
     if not start_from_current_grid:
-        # Original logic: Figure out which modules fit in empty slots
+        # Clear the target tech from our working copy *before* counting slots
+        clear_all_modules_of_tech(current_grid, tech)
+
+        # Now, count empty active slots on the *cleared* current_grid
         active_slots_count = 0
-        for y in range(grid.height):
-            for x in range(grid.width):
-                cell = grid.get_cell(x, y)
-                if cell["module"] is None and cell["active"]:
+        for y in range(current_grid.height): # Iterate over current_grid
+            for x in range(current_grid.width):
+                cell = current_grid.get_cell(x, y)
+                # This condition is now correct because current_grid has target tech cleared
+                if cell["module"] is None and cell["active"]: # Count empty & active
                     active_slots_count += 1
+
+        print(f"Active slots count: {active_slots_count}")  
 
         core_module = next((m for m in tech_modules if m["type"] == "core"), None)
         bonus_modules = [m for m in tech_modules if m["type"] != "core"]
@@ -229,12 +237,9 @@ def simulated_annealing(
              return grid.copy(), calculate_grid_score(grid, tech)
 
 
-    # --- Initialize the current state ---
-    current_grid = grid.copy() # Always start with a copy
-
     if not start_from_current_grid:
-        # Clear any existing modules of the same tech from the grid.
-        clear_all_modules_of_tech(current_grid, tech)
+        # current_grid is already a copy and has been cleared of the target tech above.
+        # Now, place the selected modules.
         # Place modules using the updated priority function
         place_modules_with_supercharged_priority(current_grid, modules_to_consider, tech)
     # else: If start_from_current_grid is True, we use the grid as passed in.
@@ -291,6 +296,8 @@ def simulated_annealing(
                 current_score = neighbor_score
                 if current_score > best_score:
                     best_grid = current_grid.copy()
+                    # <<< Add your print statement here to check things >>>
+                    print(f"DEBUG SA -- New best score for {tech}: {current_score:.4f} (Temp: {temperature:.2f})")
                     best_score = current_score
 
         temperature *= cooling_rate

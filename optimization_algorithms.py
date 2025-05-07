@@ -440,53 +440,83 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
     """
     # Create a deep copy of the grid to avoid modifying the original
     new_grid = grid.copy()
-
-    # Check for overlap before applying the pattern
-    for pattern_x, pattern_y in pattern.keys():
-        grid_x = start_x + pattern_x
-        grid_y = start_y + pattern_y
-        if 0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height:
-            if (
-                new_grid.get_cell(grid_x, grid_y)["module"] is not None
-                and new_grid.get_cell(grid_x, grid_y)["tech"] != tech
-            ):
-                return None, 0  # Indicate a bad pattern with a score of 0
-
-    # Clear existing modules of the selected technology in the new grid
-    clear_all_modules_of_tech(new_grid, tech)
-
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
-    if tech_modules is None:
+    
+    tech_modules_available = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules_available is None: # Should not happen if filter_solves worked correctly
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
         return None, 0
-
     # Create a mapping from module id to module data
-    module_id_map = {module["id"]: module for module in tech_modules}
+    available_module_ids_map = {m["id"]: m for m in tech_modules_available}
 
-    for (pattern_x, pattern_y), module_id in pattern.items():
+    # --- Pre-check 1: Determine if the pattern is even placeable by the player and fits basic constraints ---
+    # Count how many modules the pattern *intends* to place that the player actually owns.
+    expected_module_placements_in_pattern = 0
+    for module_id_in_pattern_val in pattern.values(): # Iterate through values (module IDs)
+        if module_id_in_pattern_val is not None and module_id_in_pattern_val in available_module_ids_map:
+            expected_module_placements_in_pattern += 1
+
+    # If the pattern has defined module IDs, but none are owned by the player, this pattern is not applicable.
+    if expected_module_placements_in_pattern == 0 and any(pid is not None for pid in pattern.values()):
+        return None, 0
+
+    # --- Pre-check 2: Check for overlaps, off-grid, or inactive cells for REQUIRED modules ---
+    for pattern_x, pattern_y in pattern.keys(): # Iterate through keys (coordinates)
+        module_id_in_pattern = pattern.get((pattern_x, pattern_y))
         grid_x = start_x + pattern_x
         grid_y = start_y + pattern_y
 
-        if 0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height:
-            if module_id is None:
-                continue
-            if module_id in module_id_map:
-                module_data = module_id_map[module_id]
-                if new_grid.get_cell(grid_x, grid_y)["active"] and new_grid.get_cell(grid_x, grid_y)["module"] is None:
-                    place_module(
-                        new_grid,  # Apply changes to the new grid
-                        grid_x,
-                        grid_y,
-                        module_data["id"],
-                        module_data["label"],
-                        tech,
-                        module_data["type"],
-                        module_data["bonus"],
-                        module_data["adjacency"],
-                        module_data["sc_eligible"],
-                        module_data["image"],
-                    )
+        # Is this part of the pattern trying to place an owned module?
+        if module_id_in_pattern is not None and module_id_in_pattern in available_module_ids_map:
+            if not (0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height):
+                # A required module (owned, non-None) would be off-grid. This pattern variation doesn't fit.
+                return None, 0
+            
+            current_cell_on_new_grid = new_grid.get_cell(grid_x, grid_y)
+            if not current_cell_on_new_grid["active"]:
+                # Cannot place a required module on an inactive cell.
+                return None, 0
+            
+            if current_cell_on_new_grid["module"] is not None and current_cell_on_new_grid["tech"] != tech:
+                # Overlap with a module of a *different* technology.
+                return None, 0
+        # If module_id_in_pattern is None, or not in available_module_ids_map, we don't check its target cell strictly here,
+        # as it won't be placed anyway or it's an intentionally empty slot.
 
+    # If all pre-checks pass, proceed with actual placement attempt
+    clear_all_modules_of_tech(new_grid, tech) # Clear target tech modules for a clean placement
+
+    successfully_placed_this_variation = 0
+    for (pattern_x, pattern_y), module_id_in_pattern in pattern.items():
+        grid_x = start_x + pattern_x
+        grid_y = start_y + pattern_y
+
+        if not (0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height):
+            continue # Skip parts of the pattern that are off-grid
+
+        if module_id_in_pattern is None: # Intentionally empty slot in pattern
+            continue
+        
+        if module_id_in_pattern in available_module_ids_map:
+            module_data = available_module_ids_map[module_id_in_pattern]
+            # Cell activity and non-overlap with *other* tech already confirmed by pre-checks for these modules.
+            # The cell is also guaranteed to be empty of the *target* tech due to clear_all_modules_of_tech.
+            place_module(
+                new_grid, grid_x, grid_y,
+                module_data["id"], module_data["label"], tech, module_data["type"],
+                module_data["bonus"], module_data["adjacency"], module_data["sc_eligible"],
+                module_data["image"]
+            )
+            successfully_placed_this_variation += 1
+
+    # --- Post-placement Check: Did we place all *expected* modules? ---
+    # This ensures that if the pattern expected to place modules (that player owns), they were all placed.
+    # If `expected_module_placements_in_pattern` is 0 (e.g. pattern was all "None", or all unowned modules), this check is skipped.
+    if expected_module_placements_in_pattern > 0 and successfully_placed_this_variation < expected_module_placements_in_pattern:
+        # This implies some expected modules (owned, non-None in pattern) couldn't be placed.
+        # This should ideally be caught by pre-checks (e.g. inactive cell, off-grid).
+        return None, 0
+
+    # If we reach here, the pattern (or what's placeable from it according to ownership and grid constraints) was applied.
     adjacency_score = calculate_pattern_adjacency_score(new_grid, tech)
     return new_grid, adjacency_score  # Return the new grid
 
@@ -690,7 +720,7 @@ def _handle_sa_refine_opportunity(grid, modules, ship, tech, player_owned_reward
         return grid, -1.0
 
 
-def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, experimental=False):
+def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, experimental=False, forced=False): # <<< Added forced parameter
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
     Uses pre-defined solve maps first, then refines based on supercharged opportunities,
@@ -706,6 +736,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         player_owned_rewards (list, optional): List of reward module IDs owned. Defaults to None.
         experimental (bool): If True, attempts ML placement first during refinement,
                              with SA as a fallback. If False, uses SA/Refine directly.
+        forced (bool): If True and no pattern fits a solve map, forces SA.
+                       If False, returns "Pattern No Fit" to allow UI intervention.
 
     Returns:
         tuple: (best_grid, percentage, best_bonus, solve_method)
@@ -825,22 +857,31 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             sa_was_initial_placement = False
         else:
             # --- Case 2b: No Pattern Fits ---
-            # <<< KEEP: Important fallback >>>
-            print(
-                f"WARNING -- Solve map exists for {ship}/{tech}, but no pattern variation fits the grid. Falling back to initial Simulated Annealing."
-            )
-            initial_sa_grid = grid.copy()
-            clear_all_modules_of_tech(initial_sa_grid, tech)
-            solved_grid, solved_bonus = simulated_annealing(
-                initial_sa_grid, ship, modules, tech, player_owned_rewards, max_processing_time=20.0
-            )
-            if solved_grid is None:
-                raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
-            print(f"INFO -- Fallback SA score (no pattern fit): {solved_bonus:.4f}") # <<< KEEP: Result of fallback >>>
-            solve_method = "Initial SA (No Pattern Fit)" # <<< Set method >>>
-            sa_was_initial_placement = True
+            if not forced:
+                print(f"INFO -- Solve map exists for {ship}/{tech}, but no pattern variation fits. Returning 'Pattern No Fit'. UI can prompt to force SA.") # <<< KEEP: Important outcome >>>
+                return None, 0.0, 0.0, "Pattern No Fit"
+            else:
+                # <<< KEEP: Important fallback >>>
+                print(
+                    f"WARNING -- Solve map exists for {ship}/{tech}, but no pattern variation fits the grid. FORCING initial Simulated Annealing."
+                )
+                initial_sa_grid = grid.copy()
+                clear_all_modules_of_tech(initial_sa_grid, tech)
+                solved_grid, solved_bonus = simulated_annealing(
+                    initial_sa_grid, ship, modules, tech, player_owned_rewards, cooling_rate=0.999, iterations_per_temp=35, initial_swap_probability=0.55, max_processing_time=20.0
+                )
+                if solved_grid is None:
+                    raise ValueError(f"Forced fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
+                print(f"INFO -- Forced fallback SA score (no pattern fit): {solved_bonus:.4f}") # <<< KEEP: Result of fallback >>>
+                solve_method = "Forced Initial SA (No Pattern Fit)" # <<< Set method >>>
+                sa_was_initial_placement = True
 
     # --- Opportunity Refinement Stage ---
+    # Ensure solved_grid is not None before proceeding (it could be if "Pattern No Fit" was returned and this logic is ever reached without a prior assignment)
+    if solved_grid is None:
+        # This case should ideally not be hit if "Pattern No Fit" returns early.
+        # However, as a safeguard:
+        raise ValueError("optimize_placement: solved_grid is None before opportunity refinement, indicating an unexpected state.")
     grid_after_initial_placement = solved_grid.copy() # Grid state before refinement starts
     current_best_score = calculate_grid_score(grid_after_initial_placement, tech)
 
