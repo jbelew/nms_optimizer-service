@@ -281,47 +281,42 @@ class TestOptimizationAlgorithms(unittest.TestCase):
     @patch("optimization_algorithms.find_supercharged_opportunities")
     @patch("optimization_algorithms.check_all_modules_placed")
     @patch("optimization_algorithms.calculate_grid_score")
-    def test_optimize_solve_map_no_pattern_fits_initial_sa(
+    def test_optimize_solve_map_no_pattern_fits_returns_indicator_when_not_forced(
         self, mock_calculate_score, mock_check_placed, mock_find_opp, mock_sa, mock_apply_pattern
     ):
-        """Test fallback to initial SA when solve map exists but no pattern fits."""
-        # ... (Arrange steps remain the same) ...
-        initial_sa_grid = self.empty_grid.copy()
-        initial_sa_grid.set_module(0, 1, "PE")
-        initial_sa_grid.set_tech(0, 1, self.tech)
-        mock_sa.return_value = (initial_sa_grid, 10.0)  # Grid, Score
+        """Test returns 'Pattern No Fit' when solve map exists, no pattern fits, and not forced."""
+        # Arrange: Assume filter_solves finds a map (using real filter_solves for 'pulse').
+        # Arrange: Mock apply_pattern_to_grid to always return None (no fit)
+        mock_apply_pattern.return_value = (None, 0)
+        # SA and other mocks should NOT be called in this path if not forced.
 
-        # Arrange: Mock calculate_grid_score for the two calls
-        # 1. Before refinement check, 2. For final result calculation
-        mock_calculate_score.side_effect = [10.0, 10.0]  # <<< Use side_effect for multiple calls
-
-        mock_find_opp.return_value = None
-        mock_check_placed.return_value = True
-
-        # Act
-        result_grid, percentage, solved_bonus = optimize_placement(
-            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
+        # Act: Call with forced=False (default)
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=False
         )
 
         # Assert
-        mock_apply_pattern.assert_called()
-        mock_sa.assert_called_once()
-        mock_find_opp.assert_called_once()
-        mock_check_placed.assert_called_once()
-        # Expect 2 calls: before refinement check and for final result
-        self.assertEqual(mock_calculate_score.call_count, 2)  # <<< CHANGED from 1 to 2
-        self.assertEqual(result_grid, initial_sa_grid)
-        self.assertEqual(solved_bonus, 10.0)
+        mock_apply_pattern.assert_called() # Pattern application was attempted
+        mock_sa.assert_not_called()       # SA should NOT be called
+        mock_find_opp.assert_not_called() # No refinement opportunity finding
+        mock_check_placed.assert_not_called()
+        mock_calculate_score.assert_not_called()
+
+        self.assertIsNone(result_grid)
+        self.assertEqual(percentage, 0.0)
+        self.assertEqual(solved_bonus, 0.0)
+        self.assertEqual(solve_method, "Pattern No Fit")
+
 
     @patch("optimization_algorithms.apply_pattern_to_grid")
     @patch("optimization_algorithms.simulated_annealing")  # Mock the initial SA
     @patch("optimization_algorithms.find_supercharged_opportunities")
     @patch("optimization_algorithms.check_all_modules_placed")
     @patch("optimization_algorithms.calculate_grid_score")
-    def test_optimize_solve_map_no_pattern_fits_initial_sa(
+    def test_optimize_solve_map_no_pattern_fits_falls_back_to_sa_when_forced(
         self, mock_calculate_score, mock_check_placed, mock_find_opp, mock_sa, mock_apply_pattern
     ):
-        """Test fallback to initial SA when solve map exists but no pattern fits."""
+        """Test fallback to initial SA when solve map exists, no pattern fits, and forced=True."""
         # Arrange: Assume filter_solves finds a map (using real filter_solves).
         # Arrange: Mock apply_pattern_to_grid to always return None (no fit)
         mock_apply_pattern.return_value = (None, 0)
@@ -330,7 +325,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         # Simulate SA placing modules
         initial_sa_grid.set_module(0, 1, "PE")
         initial_sa_grid.set_tech(0, 1, self.tech)
-        mock_sa.return_value = (initial_sa_grid, 10.0)  # Grid, Score
+        mock_sa.return_value = (initial_sa_grid, 10.0)
 
         # Arrange: Mock calculate_grid_score for the two calls
         # 1. Before refinement check, 2. For final result calculation
@@ -342,8 +337,8 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_check_placed.return_value = True
 
         # Act
-        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement( # Call with forced=True
+            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=True
         )
 
         # Assert
@@ -354,6 +349,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         # Expect 2 calls: before refinement check and for final result
         self.assertEqual(mock_calculate_score.call_count, 2)  # <<< Correct assertion
         self.assertEqual(result_grid, initial_sa_grid)
+        self.assertEqual(solve_method, "Forced Initial SA (No Pattern Fit)")
         self.assertEqual(solved_bonus, 10.0)
 
 
