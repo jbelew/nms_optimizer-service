@@ -9,11 +9,12 @@ sys.path.insert(0, project_root)
 
 from grid_utils import Grid
 from modules import modules
-from optimization_algorithms import refine_placement
+# Import both solver options
+from optimization_algorithms import refine_placement 
 from grid_display import print_grid, print_grid_compact
+from simulated_annealing import simulated_annealing
 
-
-def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owned_rewards=None, supercharged_positions=None):
+def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owned_rewards=None, supercharged_positions=None, solver_choice="sa"):
     """
     Generates a single solve map for a given technology.
 
@@ -24,6 +25,7 @@ def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owne
         grid_height (int, optional): The height of the grid. Defaults to 2.
         player_owned_rewards (list, optional): List of player-owned reward module IDs. Defaults to ["PC", "SB", "SP", "TT"].
         supercharged_positions (list, optional): List of (x, y) tuples for supercharged cells. Defaults to None.
+        solver_choice (str, optional): The solver to use ('sa' or 'refine'). Defaults to 'sa'.
     """
     if player_owned_rewards is None:
         player_owned_rewards = ["SB", "SP", "TT"]
@@ -37,7 +39,28 @@ def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owne
                 grid.set_supercharged(x, y, True)
 
     try:
-        optimized_grid, optimized_score = refine_placement(grid, ship_type, modules, tech, player_owned_rewards)
+        if solver_choice == "sa":
+            # High-quality SA parameters
+            sa_params = {
+                "initial_temperature": 5000,
+                "cooling_rate": 0.999,
+                "stopping_temperature": 0.1,
+                "iterations_per_temp": 100,
+                "initial_swap_probability": 0.6,
+                "final_swap_probability": 0.1,
+                "start_from_current_grid": False,
+                "max_processing_time": 600.0 
+            }
+            print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
+            optimized_grid, optimized_score = simulated_annealing(
+                grid, ship_type, modules, tech, player_owned_rewards, **sa_params
+            )
+        elif solver_choice == "refine":
+            print(f"INFO -- Using refine_placement (brute-force) for {ship_type}/{tech}")
+            optimized_grid, optimized_score = refine_placement(grid, ship_type, modules, tech, player_owned_rewards)
+        else:
+            print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine'.")
+            return None, None
         return optimized_grid, optimized_score
     except Exception as e:
         print(f"Error generating solve map for {tech}: {e}")
@@ -55,7 +78,7 @@ def generate_solve_map_template(grid):
     return template
 
 
-def generate_all_solves(modules, tech_to_generate=None, weapon_to_generate=None):
+def generate_all_solves(modules, solver_choice="sa", tech_to_generate=None, weapon_to_generate=None):
     """Generates the solves object for all technologies and types."""
     all_solves = {}
     techs_to_process = [tech_to_generate] if tech_to_generate else modules.keys()
@@ -99,7 +122,7 @@ def generate_all_solves(modules, tech_to_generate=None, weapon_to_generate=None)
                     grid_width, grid_height = 4, 3
 
                 print(f"Generating solve map for {tech_key} - {weapon_key} ({module_count} modules) - Grid: {grid_width}x{grid_height}")
-                solve_map, solve_score = generate_solve_map(tech_key, weapon_key, grid_width, grid_height)
+                solve_map, solve_score = generate_solve_map(tech_key, weapon_key, grid_width, grid_height, solver_choice=solver_choice)
                 if solve_map:
                     solve_map_template = generate_solve_map_template(solve_map)
                     all_solves[tech_key][weapon_key] = {
@@ -178,17 +201,23 @@ if __name__ == "__main__":
         default=os.path.join(os.path.dirname(__file__), "trails_stub.json"),
         help="Path to the trails stub JSON file",
     )
+    parser.add_argument(
+        "--solver",
+        type=str,
+        default="sa",
+        choices=["sa", "refine"],
+        help="Solver to use: 'sa' for Simulated Annealing, 'refine' for refine_placement (brute-force permutations)"
+    )
     args = parser.parse_args()
 
     if args.generate_all:
-        all_solves = generate_all_solves(modules)
+        all_solves = generate_all_solves(modules, solver_choice=args.solver)
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     elif args.tech and args.weapon:
-        all_solves = generate_all_solves(modules, args.tech, args.weapon)
+        all_solves = generate_all_solves(modules, solver_choice=args.solver, tech_to_generate=args.tech, weapon_to_generate=args.weapon)
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     elif args.tech:
-        all_solves = generate_all_solves(modules, args.tech)
+        all_solves = generate_all_solves(modules, solver_choice=args.solver, tech_to_generate=args.tech)
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     else:
         print("Please use the --generate-all flag to generate all solves, the --tech flag to generate a specific tech, or the --tech and --weapon flags to generate a specific weapon within a tech.")
-

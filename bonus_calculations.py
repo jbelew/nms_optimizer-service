@@ -201,9 +201,9 @@ def populate_all_module_bonuses(grid: Grid, tech: str, apply_supercharge_first: 
             if is_supercharged and is_sc_eligible:
                 total_bonus *= SUPERCHARGE_MULTIPLIER
 
-        grid.set_total(x, y, total_bonus)
+        grid.set_total(x, y, round(total_bonus, 4))
         # Store the raw adjacency factor for display (no change needed here)
-        grid.get_cell(x, y)["adjacency_bonus"] = adj_factor
+        grid.get_cell(x, y)["adjacency_bonus"] = round(adj_factor, 4)
 
 
 def clear_scores(grid: Grid, tech: str) -> None:
@@ -250,4 +250,4 @@ def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = 
             if cell.get("module") is not None and cell.get("tech") == tech:
                 total_grid_score += cell.get("total", 0.0)
 
-    return round(total_grid_score, 8)
+    return round(total_grid_score, 4)

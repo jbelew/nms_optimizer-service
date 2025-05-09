@@ -1,8 +1,8 @@
 # app.py
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from optimization_algorithms import optimize_placement # Import directly from optimization_algorithms
-from optimizer import get_tech_tree_json, Grid # Keep these imports from optimizer
+from optimization_algorithms import optimize_placement  # Import directly from optimization_algorithms
+from optimizer import get_tech_tree_json, Grid  # Keep these imports from optimizer
 from modules import modules
 from grid_display import print_grid_compact
 import logging
@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
+
 @app.route("/optimize", methods=["POST"])
 def optimize_grid():
     """Endpoint to optimize the grid."""
@@ -19,7 +20,7 @@ def optimize_grid():
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
-    forced_solve = data.get("forced", False) # Get the 'forced' flag, default to False
+    forced_solve = data.get("forced", False)  # Get the 'forced' flag, default to False
     # print(f"Received request for ship: {ship}, tech: {tech}, player_owned_rewards: {player_owned_rewards}")
 
     if tech is None:
@@ -38,14 +39,26 @@ def optimize_grid():
         )
 
         if solve_method == "Pattern No Fit":
-            return jsonify({
-                "grid": None, # No grid to return in this specific case
-                "max_bonus": 0.0,
-                "solved_bonus": 0.0,
-                "solve_method": "Pattern No Fit",
-                "message": "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve."
-            }), 200 # 200 OK, but with a specific message for the UI
-        return jsonify({"grid": optimized_grid.to_dict(), "max_bonus": percentage, "solved_bonus": solved_bonus, "solve_method": solve_method})
+            return (
+                jsonify(
+                    {
+                        "grid": None,  # No grid to return in this specific case
+                        "max_bonus": 0.0,
+                        "solved_bonus": 0.0,
+                        "solve_method": "Pattern No Fit",
+                        "message": "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve.",
+                    }
+                ),
+                200,
+            )  # 200 OK, but with a specific message for the UI
+        return jsonify(
+            {
+                "grid": optimized_grid.to_dict(),
+                "max_bonus": percentage,
+                "solved_bonus": solved_bonus,
+                "solve_method": solve_method,
+            }
+        )
     except ValueError as e:
         print(f"ERROR -- {str(e)}")
         print_grid_compact(grid)
@@ -68,10 +81,7 @@ def get_ship_types():
     ship_types = {}
     for ship_key, ship_data in modules.items():
         # Create a dictionary containing both label and type
-        ship_info = {
-            "label": ship_data.get("label"),
-            "type": ship_data.get("type") # Get the 'type' field
-        }
+        ship_info = {"label": ship_data.get("label"), "type": ship_data.get("type")}  # Get the 'type' field
         ship_types[ship_key] = ship_info
 
     # print(f"Ship types: {ship_types}")

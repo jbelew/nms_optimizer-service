@@ -377,9 +377,7 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
         window_width, window_height = 1, 2
     elif module_count < 4:
         window_width, window_height = 1, 3
-    elif module_count < 5:
-        window_width, window_height = 2, 3
-    elif module_count < 7:
+    elif module_count < 7: # Covers module counts 4, 5, and 6
         window_width, window_height = 2, 3
     elif module_count < 8 and tech == "pulse-splitter":
         window_width, window_height = 3, 3
@@ -387,7 +385,7 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
         window_width, window_height = 4, 2
     elif module_count < 10:
         window_width, window_height = 3, 3
-    else: # module_count >= 10
+    elif module_count >= 10:
         window_width, window_height = 4, 3
 
     return window_width, window_height
@@ -797,8 +795,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         print(
             f"SUCCESS -- Final Score (No Solve Map): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
         )
-        print_grid_compact(solved_grid)
-        return solved_grid, percentage, solved_bonus, solve_method # <<< Return solve_method >>>
+        # print_grid_compact(solved_grid) # Optional: Can be noisy for many calls
+        return solved_grid, round(percentage, 4), solved_bonus, solve_method
     else:
         # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
@@ -1137,7 +1135,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     )
     print_grid_compact(best_grid)
 
-    return best_grid, percentage, best_bonus, solve_method # <<< Return solve_method >>>
+    return best_grid, round(percentage, 2), best_bonus, solve_method
 
 
 def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
@@ -1383,8 +1381,10 @@ def calculate_window_score(window_grid, tech):
                 if cell["module"] is None:
                     empty_count += 1
 
-    # Prioritize supercharged slots, then empty slots, and slightly prefer edge supercharged slots
-    return (supercharged_count * 3) + (empty_count * 1)# + (edge_penalty * 0.25)
+    if supercharged_count > 0:
+        return (supercharged_count * 3) + (empty_count * 1)
+    else:
+        return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 
 
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):

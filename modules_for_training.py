@@ -1677,6 +1677,84 @@ modules = {
             ],
         },
     },
+    "freighter": {
+        "label": "Freighter (beta)",
+        "type": "Freighter",
+        "types": {
+            "Hyperdrive": [
+                {
+                    "label": "Freighter Hyperdrive",
+                    "key": "hyper",
+                    "image": "freighter-hyper.webp",
+                    "color": "iris",
+                    "modules": [
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "freighter-hyperdrive.png", },
+                        { "id": "TW", "type": "bonus", "label": "Temporal Warp Computer", "bonus": 0.05, "adjacency": "greater", "sc_eligible": False, "image": "freighter-temporal.png", },
+                        { "id": "RD", "type": "bonus", "label": "Reality De-Threader", "bonus": 0.80, "adjacency": "greater", "sc_eligible": False, "image": "freighter-reality.png", },
+                        { "id": "RM", "type": "bonus", "label": "Resonance Matrix", "bonus": 0.05, "adjacency": "greater", "sc_eligible": False, "image": "freighter-resonance.png", },
+                        { "id": "PW", "type": "bonus", "label": "Plasmatic Warp Injector", "bonus": 0.30, "adjacency": "greater", "sc_eligible": False, "image": "freighter-plasmatic.png", },
+                        { "id": "AW", "type": "bonus", "label": "Amplified Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-amplified.png", },
+                        { "id": "WC", "type": "bonus", "label": "Warp Core Resonator", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-warp.png", },
+                        { "id": "CW", "type": "bonus", "label": "Chromatic Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-chromatic.png", },
+                        { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.png", },
+                        { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.png", },
+                        { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.png", },
+                    ],
+                },
+            ],
+            "Utilities": [
+                {
+                    "label": "Saline Carapace",
+                    "key": "saline",
+                    "image": "saline.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "SC", "type": "core", "label": "Saline Catapace", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "saline.webp", },
+                    ],
+                },
+                {
+                    "label": "Figurines",
+                    "key": "bobble",
+                    "image": "bobble.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "apollo.webp", },
+                        { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "atlas.webp", },
+                        { "id": "NA", "type": "bonus", "label": "Nada Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "nada.webp", },
+                        { "id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "null.webp", },
+                    ],
+                },
+                {
+                    "label": "Scanners",
+                    "key": "scanners",
+                    "image": "wormhole.webp",
+                    "color": "black",
+                    "modules": [
+                        { "id": "WB", "type": "core", "label": "Wormhole Brain", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "wormhole.webp", },
+                        { "id": "NS", "type": "core", "label": "Neural Shielding", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "neural.webp", },
+                    ],
+                },
+                {
+                    "label": "Starship Trails",
+                    "key": "trails",
+                    "image": "trails.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
+                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
+                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.webp", },
+                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.webp", },
+                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.webp", },
+                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "emeril-trail.webp", },
+                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "temporal-trail.webp", },
+                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "stealth-trail.webp", },
+                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "golden-trail.webp", },
+                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "chromatic-trail.webp", },
+                    ],
+                },
+            ],
+        },
+    },
 }
 
 solves = {

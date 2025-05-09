@@ -8,14 +8,14 @@ sys.path.insert(0, project_root)
 
 from grid_utils import Grid
 from modules import modules
-# <<< Remove unused imports >>>
-from optimization_algorithms import refine_placement, refine_placement_for_training
+# Import both solver options
+from optimization_algorithms import refine_placement_for_training # Keep for one option
 from grid_display import print_grid, print_grid_compact
 from simulated_annealing import simulated_annealing
 
 
 # <<< Update function signature to accept ship_type >>>
-def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owned_rewards=None, supercharged_positions=None):
+def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owned_rewards=None, supercharged_positions=None, solver_choice="sa"):
     """
     Generates a single solve map for a given technology and ship type.
 
@@ -26,6 +26,7 @@ def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owne
         grid_height (int, optional): The height of the grid. Defaults to 3.
         player_owned_rewards (list, optional): List of player-owned reward module IDs. Defaults to ["PC", "SB", "SP", "TT"].
         supercharged_positions (list, optional): List of (x, y) tuples for supercharged cells. Defaults to None.
+        solver_choice (str, optional): The solver to use ('sa' or 'refine_training'). Defaults to 'sa'.
     """
     if player_owned_rewards is None:
         # <<< Simplified default rewards list >>>
@@ -40,8 +41,27 @@ def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owne
                 grid.set_supercharged(x, y, True)
 
     try:
-        # <<< Pass ship_type to simulated_annealing >>>
-        optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, modules, tech)
+        if solver_choice == "sa":
+            sa_params = {
+                "initial_temperature": 5000,
+                "cooling_rate": 0.999,
+                "stopping_temperature": 0.1,
+                "iterations_per_temp": 50,
+                "initial_swap_probability": 0.6,
+                "final_swap_probability": 0.1,
+                "start_from_current_grid": False,
+                "max_processing_time": 600.0
+            }
+            print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
+            optimized_grid, optimized_score = simulated_annealing(
+                grid, ship_type, modules, tech, player_owned_rewards, **sa_params
+            )
+        elif solver_choice == "refine_training":
+            print(f"INFO -- Using refine_placement_for_training for {ship_type}/{tech}")
+            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, modules, tech)
+        else:
+            print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine_training'.")
+            return None, None
         print_grid(optimized_grid)
         return optimized_grid, optimized_score
     except Exception as e:
@@ -82,6 +102,13 @@ if __name__ == "__main__":
         nargs="*",
         help="List of supercharged positions as x y pairs (e.g., --supercharged 0 0 1 1)",
     )
+    parser.add_argument(
+        "--solver",
+        type=str,
+        default="sa",
+        choices=["sa", "refine_training"],
+        help="Solver to use: 'sa' for Simulated Annealing, 'refine_training' for refine_placement_for_training"
+    )
     args = parser.parse_args()
 
     # <<< Get ship type from args >>>
@@ -90,6 +117,7 @@ if __name__ == "__main__":
     grid_width = args.width
     grid_height = args.height
     player_owned_rewards = args.rewards
+    solver = args.solver
 
     # Parse supercharged positions from command line arguments
     supercharged_positions = []
@@ -101,7 +129,7 @@ if __name__ == "__main__":
             supercharged_positions.append((args.supercharged[i], args.supercharged[i + 1]))
 
     # <<< Pass ship_type to generate_solve_map >>>
-    solve_map, solve_score = generate_solve_map(ship_type, tech, grid_width, grid_height, player_owned_rewards, supercharged_positions=supercharged_positions)
+    solve_map, solve_score = generate_solve_map(ship_type, tech, grid_width, grid_height, player_owned_rewards, supercharged_positions=supercharged_positions, solver_choice=solver)
 
     if solve_map:
         # <<< Use ship_type in output >>>
@@ -124,4 +152,3 @@ if __name__ == "__main__":
         print(f'            "score": {solve_score:.4f}')
         print("        },")
         print("    },")
-
