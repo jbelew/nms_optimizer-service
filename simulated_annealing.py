@@ -148,7 +148,7 @@ def simulated_annealing(
     stopping_temperature=1.5,
     iterations_per_temp=35,
     initial_swap_probability=0.55,
-    final_swap_probability=0.4,
+    final_swap_probability=0.25,
     start_from_current_grid: bool = False,
     max_processing_time: float = 360.0
 ):
@@ -297,7 +297,7 @@ def simulated_annealing(
                 if current_score > best_score:
                     best_grid = current_grid.copy()
                     # <<< Add your print statement here to check things >>>
-                    # print(f"DEBUG SA -- New best score for {tech}: {current_score:.4f} (Temp: {temperature:.2f})")
+                    print(f"DEBUG SA -- New best score for {tech}: {current_score:.4f} (Temp: {temperature:.2f})")
                     best_score = current_score
 
         temperature *= cooling_rate

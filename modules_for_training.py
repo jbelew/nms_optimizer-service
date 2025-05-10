@@ -1688,69 +1688,106 @@ modules = {
                     "image": "freighter-hyper.webp",
                     "color": "iris",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "freighter-hyperdrive.png", },
-                        { "id": "TW", "type": "bonus", "label": "Temporal Warp Computer", "bonus": 0.05, "adjacency": "greater", "sc_eligible": False, "image": "freighter-temporal.png", },
-                        { "id": "RD", "type": "bonus", "label": "Reality De-Threader", "bonus": 0.80, "adjacency": "greater", "sc_eligible": False, "image": "freighter-reality.png", },
-                        { "id": "RM", "type": "bonus", "label": "Resonance Matrix", "bonus": 0.05, "adjacency": "greater", "sc_eligible": False, "image": "freighter-resonance.png", },
-                        { "id": "PW", "type": "bonus", "label": "Plasmatic Warp Injector", "bonus": 0.30, "adjacency": "greater", "sc_eligible": False, "image": "freighter-plasmatic.png", },
-                        { "id": "AW", "type": "bonus", "label": "Amplified Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-amplified.png", },
-                        { "id": "WC", "type": "bonus", "label": "Warp Core Resonator", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-warp.png", },
-                        { "id": "CW", "type": "bonus", "label": "Chromatic Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-chromatic.png", },
-                        { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.png", },
-                        { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.png", },
-                        { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.png", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.10, "adjacency": "lesser", "sc_eligible": True, "image": "freighter-hyperdrive.webp", },
+                        { "id": "TW", "type": "bonus", "label": "Temporal Warp Computer", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-temporal.webp", },
+                        { "id": "RD", "type": "bonus", "label": "Reality De-Threader", "bonus": 0.80, "adjacency": "greater", "sc_eligible": True, "image": "freighter-reality.webp", },
+                        { "id": "RM", "type": "bonus", "label": "Resonance Matrix", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-resonance.webp", },
+                        { "id": "PW", "type": "bonus", "label": "Plasmatic Warp Injector", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "freighter-plasmatic.webp", },
+                        { "id": "AW", "type": "bonus", "label": "Amplified Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-amplified.webp", },
+                        { "id": "WC", "type": "bonus", "label": "Warp Core Resonator", "bonus": 0.20, "adjacency": "greater", "sc_eligible": True, "image": "freighter-warpcore.webp", },
+                        { "id": "CW", "type": "bonus", "label": "Chromatic Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-chromatic.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .25, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .24, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Hyperdrive Upgrade Sigma", "bonus": .23, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.webp", },
                     ],
                 },
             ],
             "Utilities": [
                 {
-                    "label": "Saline Carapace",
-                    "key": "saline",
-                    "image": "saline.webp",
+                    "label": "Interstellar Scanner",
+                    "key": "interstellar",
+                    "image": "freighter-scanner.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "SC", "type": "core", "label": "Saline Catapace", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "saline.webp", },
+                        { "id": "IS", "type": "core", "label": "Interstellar Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "freighter-scanner.webp", },
                     ],
                 },
                 {
-                    "label": "Figurines",
-                    "key": "bobble",
-                    "image": "bobble.webp",
+                    "label": "Matter Beam",
+                    "key": "matterbeam",
+                    "image": "freighter-matter.webp",
                     "color": "black",
                     "modules": [
-                        { "id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "apollo.webp", },
-                        { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "atlas.webp", },
-                        { "id": "NA", "type": "bonus", "label": "Nada Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "nada.webp", },
-                        { "id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "null.webp", },
+                        { "id": "MB", "type": "core", "label": "Matter Beam", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "freighter-matter.webp", },
                     ],
                 },
+            ],
+            "Fleet Upgrades": [
                 {
-                    "label": "Scanners",
-                    "key": "scanners",
-                    "image": "wormhole.webp",
-                    "color": "black",
-                    "modules": [
-                        { "id": "WB", "type": "core", "label": "Wormhole Brain", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "wormhole.webp", },
-                        { "id": "NS", "type": "core", "label": "Neural Shielding", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "neural.webp", },
-                    ],
-                },
-                {
-                    "label": "Starship Trails",
-                    "key": "trails",
-                    "image": "trails.webp",
+                    "label": "Fuel Efficiency",
+                    "key": "fleet-fuel",
+                    "image": "fleet-fuel.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
-                        { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
-                        { "id": "SB", "type": "reward", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "squid.webp", },
-                        { "id": "SP", "type": "reward", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sputtering-trail.webp", },
-                        { "id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "cadmium-trail.webp", },
-                        { "id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "emeril-trail.webp", },
-                        { "id": "TT", "type": "reward", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "temporal-trail.webp", },
-                        { "id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "stealth-trail.webp", },
-                        { "id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "golden-trail.webp", },
-                        { "id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "chromatic-trail.webp", },
-                    ],
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Fuel EfficiencyUpgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
+                      ],
+                },
+                {
+                    "label": "Expedition Speed",
+                    "key": "fleet-speed",
+                    "image": "fleet-speed.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-speed.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-speed.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-speed.webp", },
+                      ],
+                },
+                {
+                    "label": "Combat and Defense",
+                    "key": "fleet-combat",
+                    "image": "fleet-combat.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-combat.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-combat.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-combat.webp", },
+                      ],
+                },
+                {
+                    "label": "Exploration and Science",
+                    "key": "fleet-exploration",
+                    "image": "fleet-exploration.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-exploration.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-exploration.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-exploration.webp", },
+                      ],
+                },
+                {
+                    "label": "Mining and Industrial",
+                    "key": "fleet-mining",
+                    "image": "fleet-mining.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-mining.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-mining.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-mining.webp", },
+                      ],
+                },
+                {
+                    "label": "Trade",
+                    "key": "fleet-trade",
+                    "image": "fleet-trade.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-trade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-trade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-trade.webp", },
+                      ],
                 },
             ],
         },
@@ -2658,6 +2695,79 @@ solves = {
             },
             "score": 2.61235
         }
+    },
+    "freighter": {
+        "hyper": {
+            "map": {
+                (0, 0): "None",
+                (1, 0): "CW",
+                (2, 0): "Xb",
+                (3, 0): "AW",
+                (0, 1): "RM",
+                (1, 1): "RD",
+                (2, 1): "PW",
+                (3, 1): "Xa",
+                (0, 2): "HD",
+                (1, 2): "WC",
+                (2, 2): "Xc",
+                (3, 2): "TW",
+            },
+            "score": 2.9541
+        },
+        "fleet-fuel": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "None",
+            },
+            "score": 0.9694
+        },
+        "fleet-speed": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "None",
+            },
+            "score": 0.9694
+        },
+        "fleet-combat": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "None",
+            },
+            "score": 0.9694
+        },
+        "fleet-exploration": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "None",
+            },
+            "score": 0.9694
+        },
+        "fleet-mining": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "None",
+            },
+            "score": 0.9694
+        },
+        "fleet-trade": {
+            "map": {
+                (0, 0): "Xa",
+                (1, 0): "Xb",
+                (0, 1): "Xc",
+                (1, 1): "None",
+            },
+            "score": 0.9694
+        },
     }
 }
 # fmt:on

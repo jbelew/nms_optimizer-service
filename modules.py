@@ -1688,13 +1688,13 @@ modules = {
                     "image": "freighter-hyper.webp",
                     "color": "iris",
                     "modules": [
-                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "freighter-hyperdrive.webp", },
+                        { "id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.10, "adjacency": "lesser", "sc_eligible": True, "image": "freighter-hyperdrive.webp", },
                         { "id": "TW", "type": "bonus", "label": "Temporal Warp Computer", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-temporal.webp", },
                         { "id": "RD", "type": "bonus", "label": "Reality De-Threader", "bonus": 0.80, "adjacency": "greater", "sc_eligible": True, "image": "freighter-reality.webp", },
                         { "id": "RM", "type": "bonus", "label": "Resonance Matrix", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-resonance.webp", },
                         { "id": "PW", "type": "bonus", "label": "Plasmatic Warp Injector", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "freighter-plasmatic.webp", },
                         { "id": "AW", "type": "bonus", "label": "Amplified Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-amplified.webp", },
-                        { "id": "WC", "type": "bonus", "label": "Warp Core Resonator", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-warpcore.webp", },
+                        { "id": "WC", "type": "bonus", "label": "Warp Core Resonator", "bonus": 0.20, "adjacency": "greater", "sc_eligible": True, "image": "freighter-warpcore.webp", },
                         { "id": "CW", "type": "bonus", "label": "Chromatic Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "freighter-chromatic.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Hyperdrive Upgrade Theta", "bonus": .25, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Hyperdrive Upgrade Tau", "bonus": .24, "adjacency": "greater", "sc_eligible": True, "image": "freighter-upgrade.webp", },
@@ -2716,20 +2716,20 @@ solves = {
     "freighter": {
         "hyper": {
             "map": {
-                (0, 0): "RM",
-                (1, 0): "Xb",
-                (2, 0): "WC",
-                (3, 0): "HD",
-                (0, 1): "Xc",
-                (1, 1): "PW",
-                (2, 1): "RD",
-                (3, 1): "TW",
-                (0, 2): "CW",
-                (1, 2): "Xa",
-                (2, 2): "AW",
-                (3, 2): "None",
+                (0, 0): "None",
+                (1, 0): "CW",
+                (2, 0): "Xb",
+                (3, 0): "AW",
+                (0, 1): "RM",
+                (1, 1): "RD",
+                (2, 1): "PW",
+                (3, 1): "Xa",
+                (0, 2): "HD",
+                (1, 2): "WC",
+                (2, 2): "Xc",
+                (3, 2): "TW",
             },
-            "score": 2.6811
+            "score": 2.9541
         },
         "fleet-fuel": {
             "map": {

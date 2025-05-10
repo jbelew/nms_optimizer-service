@@ -1382,7 +1382,7 @@ def calculate_window_score(window_grid, tech):
                     empty_count += 1
 
     if supercharged_count > 0:
-        return (supercharged_count * 3) + (empty_count * 1)
+        return (supercharged_count * 3)# + (empty_count * 1)
     else:
         return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 

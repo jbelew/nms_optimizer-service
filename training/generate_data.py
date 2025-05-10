@@ -333,10 +333,33 @@ def generate_training_batch(
         if not use_solve_map:
             optimized_grid = None
             best_bonus = -1.0
+            
+            sa_params = {
+                "initial_temperature": 5000,
+                "cooling_rate": 0.999,
+                "stopping_temperature": 0.1,
+                "iterations_per_temp": 50,
+                "initial_swap_probability": 0.6,
+                "final_swap_probability": 0.1,
+                "start_from_current_grid": False,
+                "max_processing_time": 600.0
+            }
+            
             try:
-                optimized_grid, best_bonus = refine_placement_for_training(
-                    original_grid_layout, ship, modules, tech
+                optimized_grid, optimized_score = simulated_annealing(
+                    original_grid_layout, # Use the correctly prepared grid for this sample
+                    ship,                 # Use the 'ship' variable
+                    modules,
+                    tech,
+                    None,                 # Pass None for player_owned_rewards in this context
+                    **sa_params
                 )
+                best_bonus = optimized_score # Update best_bonus with the score from SA
+                
+                # optimized_grid, best_bonus = refine_placement_for_training(
+                #     original_grid_layout, ship, modules, tech
+                # )
+                
                 if optimized_grid is None: sample_valid = False
             except ValueError as ve:
                  print(f"\nOptimization failed for attempt {attempt_count} with ValueError: {ve}. Skipping.")
@@ -515,4 +538,3 @@ if __name__ == "__main__":
     print(f"Total samples generated across all techs (incl. augmentations) in this run: {total_samples_generated_overall}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     print(f"Generated files saved in subdirectories under: {os.path.abspath(config['output_dir'])}")
-
