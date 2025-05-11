@@ -648,13 +648,13 @@ def _handle_ml_opportunity(grid, modules, ship, tech, player_owned_rewards, oppo
 
     # 3. Process ML result (logic remains the same)
     if ml_refined_grid is not None:
-        print(f"INFO -- ML refinement produced a grid. Applying changes...")
+        # print(f"INFO -- ML refinement produced a grid. Applying changes...")
         grid_copy = grid.copy()
         clear_all_modules_of_tech(grid_copy, tech)
         apply_localized_grid_changes(grid_copy, ml_refined_grid, tech, start_x, start_y)
         restore_original_state(grid_copy, original_state_map)
         new_score_global = calculate_grid_score(grid_copy, tech)
-        print(f"INFO -- Score after ML refinement and restoration: {new_score_global:.4f}")
+        # print(f"INFO -- Score after ML refinement and restoration: {new_score_global:.4f}")
         return grid_copy, new_score_global
     else:
         # Handle ML failure (logic remains the same)
@@ -803,7 +803,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
         original_pattern = solve_data["map"]
         solve_score = solve_data["score"]
 
-        print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.") # <<< KEEP: Important outcome >>>
+        # print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.") # <<< KEEP: Important outcome >>>
         # Assuming get_all_unique_pattern_variations is defined elsewhere
         patterns_to_try = get_all_unique_pattern_variations(original_pattern)
         grid_dict = grid.to_dict()
@@ -851,7 +851,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
             print(
                 f"INFO -- Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) found at ({best_pattern_start_x},{best_pattern_start_y}) with size {best_pattern_width}x{best_pattern_height} for ship: '{ship}' -- tech: '{tech}' that fits."
             )
-            print_grid_compact(solved_grid)
+            # print_grid_compact(solved_grid)
             sa_was_initial_placement = False
         else:
             # --- Case 2b: No Pattern Fits ---
@@ -954,7 +954,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
     if final_opportunity_result:
         opportunity_x, opportunity_y, window_width, window_height = final_opportunity_result
         # <<< KEEP: Selected window info >>>
-        print(f"INFO -- Selected opportunity window ({opportunity_source}): Start ({opportunity_x}, {opportunity_y}), Size {window_width}x{window_height}")
+        # print(f"INFO -- Selected opportunity window ({opportunity_source}): Start ({opportunity_x}, {opportunity_y}), Size {window_width}x{window_height}")
 
         # <<< --- Add Check for Available Supercharged Slot in Window --- >>>
         window_has_available_sc = False
@@ -1319,7 +1319,7 @@ def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewa
 
     if rotated_needed:
         rotated_width, rotated_height = window_height, window_width # Swap dimensions
-        print(f"INFO -- Also checking rotated window size {rotated_width}x{rotated_height}.")
+        # print(f"INFO -- Also checking rotated window size {rotated_width}x{rotated_height}.")
         best_score2, best_pos2 = _scan_grid_with_window(
             grid_copy, rotated_width, rotated_height, module_count, tech
         )
@@ -1353,7 +1353,7 @@ def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewa
     # --- Return the Overall Best Result ---
     if overall_best_pos is not None:
         best_x, best_y = overall_best_pos
-        print(f"INFO -- Best opportunity window found starting at: ({best_x}, {best_y}) with dimensions {overall_best_width}x{overall_best_height}")
+        # print(f"INFO -- Best opportunity window found starting at: ({best_x}, {best_y}) with dimensions {overall_best_width}x{overall_best_height}")
         # <<< Return position AND dimensions >>>
         return best_x, best_y, overall_best_width, overall_best_height
     else:

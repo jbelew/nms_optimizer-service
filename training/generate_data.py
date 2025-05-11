@@ -338,9 +338,9 @@ def generate_training_batch(
                 "initial_temperature": 5000,
                 "cooling_rate": 0.999,
                 "stopping_temperature": 0.1,
-                "iterations_per_temp": 50,
-                "initial_swap_probability": 0.6,
-                "final_swap_probability": 0.1,
+                "iterations_per_temp": 35,
+                "initial_swap_probability": 0.55,
+                "final_swap_probability": 0.25,
                 "start_from_current_grid": False,
                 "max_processing_time": 600.0
             }
