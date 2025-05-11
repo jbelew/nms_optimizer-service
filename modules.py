@@ -1679,7 +1679,7 @@ modules = {
     },
     "freighter": {
         "label": "Freighter (beta)",
-        "type": "Freighter",
+        "type": "Starship",
         "types": {
             "Hyperdrive": [
                 {
