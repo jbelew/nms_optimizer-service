@@ -573,13 +573,31 @@ modules = {
                 },
                 {
                     "label": "Pulse Engine",
+                    "key": "pulse",
+                    "image": "pulse.webp",
+                    "color": "orange",
+                    "modules": [
+                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "pulse.webp", },
+                        { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.webp", },
+                        { "id": "VS", "type": "bonus", "label": "Vesper Sail", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "vesper.webp", },
+                        { "id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.webp", },
+                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sublight.webp", },
+                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "instability.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 0.48, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.webp", },
+                    ],
+                },
+                {
+                    "label": "Pulse Engine",
                     "key": "photonix",
                     "image": "pulse.webp",
                     "color": "orange",
                     "modules": [
                         { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": True, "image": "pulse.webp", },
                         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 0.11, "adjacency": "greater", "sc_eligible": True, "image": "flight-assist.webp", },
-                        { "id": "PC", "type": "bonus", "label": "Vesper Sail", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "vesper.webp", },
+                        { "id": "VS", "type": "bonus", "label": "Vesper Sail", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "vesper.webp", },
+                        { "id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 0.26, "adjacency": "greater", "sc_eligible": True, "image": "photonix.webp", },
                         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "sublight.webp", },
                         { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "instability.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "pulse-upgrade.webp", },
@@ -2183,18 +2201,32 @@ solves = {
             },
             "score": 1.0681
         },
-        "photonix": {
+        "pulse": {
             "map": {
-                (0, 0): "PE",
-                (1, 0): "PC",
-                (2, 0): "Xc",
-                (3, 0): "FA",
-                (0, 1): "ID",
-                (1, 1): "Xb",
-                (2, 1): "Xa",
-                (3, 1): "SL"
+                (0, 0): "SL",
+                (1, 0): "Xb",
+                (2, 0): "Xa",
+                (3, 0): "ID",
+                (0, 1): "PE",
+                (1, 1): "VS",
+                (2, 1): "Xc",
+                (3, 1): "FA"
             },
             "score": 2.30095
+        },
+        "photonix": {
+            "map": {
+                (0, 0): "FA",
+                (1, 0): "Xc",
+                (2, 0): "ID",
+                (0, 1): "PC",
+                (1, 1): "Xa",
+                (2, 1): "Xb",
+                (0, 2): "PE",
+                (1, 2): "VS",
+                (2, 2): "SL",
+            },
+            "score": 2.6606
         },
         "trails": {
             "map": {
