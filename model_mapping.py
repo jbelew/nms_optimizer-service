@@ -58,7 +58,6 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "shield": ("standard", "shield"),
         "launch": ("standard", "launch"),
         "hyper": ("standard", "hyper"), 
-        "pulse": ("standard", "photonix"),
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
