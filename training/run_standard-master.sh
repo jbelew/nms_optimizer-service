@@ -11,8 +11,8 @@ while true; do
     # python generate_data.py --ship standard-mt --category Mining
     # python generate_data.py --ship standard-mt --category Scanners
     # python generate_data.py --ship atlantid --category Mining
-    python generate_data.py --ship solar --category Hyperdrive
-    # python generate_data.py --ship freighter --category Hyperdrive
+    # python generate_data.py --ship solar --category Hyperdrive
+    python generate_data.py --ship freighter --category Hyperdrive
     # rsync -avz 192.168.0.15:/volume1/media/projects/nms_optimizer/training/* /home/jbelew/projects/nms_optimizer/nms_optimizer-service/training/generated_batches
     echo "Program exited. Restarting..."
     sleep 5

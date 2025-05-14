@@ -587,12 +587,18 @@ def run_training_from_files(
                 class_counts = np.bincount(flat_labels, minlength=num_output_classes)
                 total_pixels = flat_labels.size
 
-                # --- Option 1: Assign weight 1.0 to missing classes ---
-                class_weights = np.where(
-                    class_counts > 0,
-                    total_pixels / (num_output_classes * class_counts),
-                    1.0 # Use 1.0 for missing classes
-                )
+                # Initialize weights to 1.0 (for missing classes or safe default)
+                class_weights = np.ones(num_output_classes, dtype=np.float32)
+
+                # Create a mask for classes that are present
+                present_classes_mask = class_counts > 0
+
+                # Calculate weights only for present classes to avoid division by zero
+                if np.any(present_classes_mask):
+                    class_weights[present_classes_mask] = total_pixels / (
+                        num_output_classes * class_counts[present_classes_mask]
+                    )
+
                 if np.any(class_counts == 0):
                     zero_count_classes = np.where(class_counts == 0)[0]
                     print(f"  Warning: Classes {zero_count_classes} not found in training data for {tech}. Assigning weight 1.0.")
@@ -741,4 +747,3 @@ if __name__ == "__main__":
     print(f"\n{'='*20} Model Training Complete {'='*20}")
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
     print(f"Best models saved directly in: {os.path.abspath(config['base_model_save_dir'])}")
-
