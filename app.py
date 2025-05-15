@@ -1,5 +1,6 @@
 # app.py
 from flask import Flask, jsonify, request
+from flask_compress import Compress  # Import Compress
 from flask_cors import CORS
 from optimization_algorithms import optimize_placement  # Import directly from optimization_algorithms
 from optimizer import get_tech_tree_json, Grid  # Keep these imports from optimizer
@@ -11,6 +12,7 @@ logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
+Compress(app)  # Initialize Flask-Compress
 
 
 @app.route("/optimize", methods=["POST"])
