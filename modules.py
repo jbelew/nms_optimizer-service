@@ -50,7 +50,7 @@ modules = {
                     "label": "Photon Cannon",
                     "key": "photon",
                     "image": "photon.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "PC", "type": "core", "label": "Photon Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "photon.webp", },
                         { "id": "NO", "type": "bonus", "label": "Nonlinear Optics", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "nonlinear.webp", },
@@ -168,7 +168,7 @@ modules = {
                     "label": "Aqua-Jets",
                     "key": "aqua",
                     "image": "aquajet.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "aquajets.webp", },
                     ],
@@ -177,7 +177,7 @@ modules = {
                     "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "apollo.webp", },
                         { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "atlas.webp", },
@@ -189,7 +189,7 @@ modules = {
                     "label": "Scanners",
                     "key": "scanners",
                     "image": "scanner.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", },
                         { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", },
@@ -200,7 +200,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "gray", 
+                    "color": "white", 
                     "modules": [
                         { "id": "AB", "type": "core", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
@@ -218,7 +218,7 @@ modules = {
                     "label": "Teleport Receiver",
                     "key": "teleporter",
                     "image": "teleport.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TP", "type": "core", "label": "Teleport Receiver", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "teleport.webp", },
                     ],
@@ -297,7 +297,7 @@ modules = {
                     "label": "Sentinel Cannon",
                     "key": "photon",
                     "image": "cannon.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "PC", "type": "core", "label": "Sentinel Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "cannon.webp", },
                         { "id": "NO", "type": "bonus", "label": "Nonlinear Optics", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "nonlinear.webp", },
@@ -376,7 +376,7 @@ modules = {
                     "label": "Aqua-Jets",
                     "key": "aqua",
                     "image": "aquajet.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "aquajets.webp", },
                     ],
@@ -385,7 +385,7 @@ modules = {
                     "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "apollo.webp", },
                         { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "atlas.webp", },
@@ -397,7 +397,7 @@ modules = {
                     "label": "Pilot Interface",
                     "key": "pilot",
                     "image": "pilot.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PI", "type": "bonus", "label": "Pilot Interface", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "pilot.webp", },
                     ],
@@ -406,7 +406,7 @@ modules = {
                     "label": "Scanners",
                     "key": "scanners",
                     "image": "scanner.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", },
                         { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", },
@@ -417,7 +417,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
@@ -435,7 +435,7 @@ modules = {
                     "label": "Teleport Receiver",
                     "key": "teleporter",
                     "image": "teleport.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TP", "type": "core", "label": "Teleport Receiver", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "teleport.webp", },
                     ],
@@ -491,7 +491,7 @@ modules = {
                     "label": "Photon Cannon",
                     "key": "photon",
                     "image": "photon.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "PC", "type": "core", "label": "Photon Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "photon.webp", },
                         { "id": "NO", "type": "bonus", "label": "Nonlinear Optics", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "nonlinear.webp", },
@@ -611,7 +611,7 @@ modules = {
                     "label": "Aqua-Jets",
                     "key": "aqua",
                     "image": "aquajet.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "aquajets.webp", },
                     ],
@@ -620,7 +620,7 @@ modules = {
                     "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "apollo.webp", },
                         { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "atlas.webp", },
@@ -632,7 +632,7 @@ modules = {
                     "label": "Scanners",
                     "key": "scanners",
                     "image": "scanner.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", },
                         { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", },
@@ -643,7 +643,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "gray", 
+                    "color": "white", 
                     "modules": [
                         { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
@@ -661,7 +661,7 @@ modules = {
                     "label": "Teleport Receiver",
                     "key": "teleporter",
                     "image": "teleport.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TP", "type": "core", "label": "Teleport Receiver", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "teleport.webp", },
                     ],
@@ -690,7 +690,7 @@ modules = {
                     "label": "Spewing Vents",
                     "key": "spewing",
                     "image": "spewing.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "SV", "type": "core", "label": "Spewing Vents", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "spewing.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Spewing Vents Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "spewing-upgrade.webp", },
@@ -758,7 +758,7 @@ modules = {
                     "label": "Saline Carapace",
                     "key": "saline",
                     "image": "saline.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "SC", "type": "core", "label": "Saline Catapace", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "saline.webp", },
                     ],
@@ -767,7 +767,7 @@ modules = {
                     "label": "Figurines",
                     "key": "bobble",
                     "image": "bobble.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "apollo.webp", },
                         { "id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "atlas.webp", },
@@ -779,7 +779,7 @@ modules = {
                     "label": "Scanners",
                     "key": "scanners",
                     "image": "wormhole.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "WB", "type": "core", "label": "Wormhole Brain", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "wormhole.webp", },
                         { "id": "NS", "type": "core", "label": "Neural Shielding", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "neural.webp", },
@@ -789,7 +789,7 @@ modules = {
                     "label": "Starship Trails",
                     "key": "trails",
                     "image": "trails.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "artemis.webp", },
                         { "id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": True, "image": "polo.webp", },
@@ -831,7 +831,7 @@ modules = {
                     "label": "Analysis Visor",
                     "key": "analysis",
                     "image": "analysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
                     ],
@@ -855,7 +855,7 @@ modules = {
                     "label": "Survey Device",
                     "key": "survey",
                     "image": "survey.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.webp", },
                     ],
@@ -880,7 +880,7 @@ modules = {
                     "label": "Boltcaster",
                     "key": "bolt-caster",
                     "image": "boltcaster.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.webp", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.webp", },
@@ -964,7 +964,7 @@ modules = {
                     "label": "Cloaking Device",
                     "key": "cloaking",
                     "image": "cloaking.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.webp", },
                     ],
@@ -973,7 +973,7 @@ modules = {
                     "label": "Combat Scope",
                     "key": "combat",
                     "image": "combat.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.webp", },
                     ],
@@ -982,7 +982,7 @@ modules = {
                     "label": "Voltaic Amplifier",
                     "key": "voltaic-amplifier",
                     "image": "voltaic-amplifier.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.webp", },
                     ],
@@ -991,7 +991,7 @@ modules = {
                     "label": "Paralysis Mortar",
                     "key": "paralysis",
                     "image": "paralysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.webp", },
                     ],
@@ -1000,7 +1000,7 @@ modules = {
                     "label": "Personal Forcefield",
                     "key": "personal",
                     "image": "personal.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
                     ],
@@ -1011,7 +1011,7 @@ modules = {
                     "label": "Fishing Rig",
                     "key": "fishing",
                     "image": "fishing.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
@@ -1020,7 +1020,7 @@ modules = {
                     "label": "Terrain Manipulator",
                     "key": "terrian",
                     "image": "terrian.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
@@ -1054,7 +1054,7 @@ modules = {
                     "label": "Analysis Visor",
                     "key": "analysis",
                     "image": "analysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
                     ],
@@ -1078,7 +1078,7 @@ modules = {
                     "label": "Survey Device",
                     "key": "survey",
                     "image": "survey.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.webp", },
                     ],
@@ -1103,7 +1103,7 @@ modules = {
                     "label": "Boltcaster",
                     "key": "bolt-caster",
                     "image": "boltcaster.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.webp", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.webp", },
@@ -1187,7 +1187,7 @@ modules = {
                     "label": "Cloaking Device",
                     "key": "cloaking",
                     "image": "cloaking.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.webp", },
                     ],
@@ -1196,7 +1196,7 @@ modules = {
                     "label": "Combat Scope",
                     "key": "combat",
                     "image": "combat.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.webp", },
                     ],
@@ -1205,7 +1205,7 @@ modules = {
                     "label": "Voltaic Amplifier",
                     "key": "voltaic-amplifier",
                     "image": "voltaic-amplifier.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.webp", },
                     ],
@@ -1214,7 +1214,7 @@ modules = {
                     "label": "Paralysis Mortar",
                     "key": "paralysis",
                     "image": "paralysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.webp", },
                     ],
@@ -1223,7 +1223,7 @@ modules = {
                     "label": "Personal Forcefield",
                     "key": "personal",
                     "image": "personal.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
                     ],
@@ -1234,7 +1234,7 @@ modules = {
                     "label": "Fishing Rig",
                     "key": "fishing",
                     "image": "fishing.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
@@ -1243,7 +1243,7 @@ modules = {
                     "label": "Terrain Manipulator",
                     "key": "terrian",
                     "image": "terrian.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
@@ -1276,7 +1276,7 @@ modules = {
                     "label": "Analysis Visor",
                     "key": "analysis",
                     "image": "analysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
                     ],
@@ -1300,7 +1300,7 @@ modules = {
                     "label": "Survey Device",
                     "key": "survey",
                     "image": "survey.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.webp", },
                     ],
@@ -1325,7 +1325,7 @@ modules = {
                     "label": "Boltcaster",
                     "key": "bolt-caster",
                     "image": "boltcaster.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.webp", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.webp", },
@@ -1409,7 +1409,7 @@ modules = {
                     "label": "Cloaking Device",
                     "key": "cloaking",
                     "image": "cloaking.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.webp", },
                     ],
@@ -1418,7 +1418,7 @@ modules = {
                     "label": "Combat Scope",
                     "key": "combat",
                     "image": "combat.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.webp", },
                     ],
@@ -1427,7 +1427,7 @@ modules = {
                     "label": "Voltaic Amplifier",
                     "key": "voltaic-amplifier",
                     "image": "voltaic-amplifier.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.webp", },
                     ],
@@ -1436,7 +1436,7 @@ modules = {
                     "label": "Paralysis Mortar",
                     "key": "paralysis",
                     "image": "paralysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.webp", },
                     ],
@@ -1445,7 +1445,7 @@ modules = {
                     "label": "Personal Forcefield",
                     "key": "personal",
                     "image": "personal.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
                     ],
@@ -1456,7 +1456,7 @@ modules = {
                     "label": "Fishing Rig",
                     "key": "fishing",
                     "image": "fishing.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
@@ -1465,7 +1465,7 @@ modules = {
                     "label": "Terrain Manipulator",
                     "key": "terrian",
                     "image": "terrian.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
@@ -1498,7 +1498,7 @@ modules = {
                     "label": "Analysis Visor",
                     "key": "analysis",
                     "image": "analysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
                     ],
@@ -1522,7 +1522,7 @@ modules = {
                     "label": "Survey Device",
                     "key": "survey",
                     "image": "survey.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "SD", "type": "core", "label": "Survey Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "survey.webp", },
                     ],
@@ -1547,7 +1547,7 @@ modules = {
                     "label": "Boltcaster",
                     "key": "bolt-caster",
                     "image": "boltcaster.webp",
-                    "color": "cyan",
+                    "color": "teal",
                     "modules": [
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "boltcaster.webp", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "boltcaster-rm.webp", },
@@ -1631,7 +1631,7 @@ modules = {
                     "label": "Cloaking Device",
                     "key": "cloaking",
                     "image": "cloaking.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CD", "type": "core", "label": "Cloaking Device", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cloaking.webp", },
                     ],
@@ -1640,7 +1640,7 @@ modules = {
                     "label": "Combat Scope",
                     "key": "combat",
                     "image": "combat.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "CS", "type": "core", "label": "Combat Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "combat.webp", },
                     ],
@@ -1649,7 +1649,7 @@ modules = {
                     "label": "Voltaic Amplifier",
                     "key": "voltaic-amplifier",
                     "image": "voltaic-amplifier.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "VA", "type": "core", "label": "Voltaic Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "voltaic-amplifier.webp", },
                     ],
@@ -1658,7 +1658,7 @@ modules = {
                     "label": "Paralysis Mortar",
                     "key": "paralysis",
                     "image": "paralysis.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PM", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "paralysis.webp", },
                     ],
@@ -1667,7 +1667,7 @@ modules = {
                     "label": "Personal Forcefield",
                     "key": "personal",
                     "image": "personal.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
                     ],
@@ -1678,7 +1678,7 @@ modules = {
                     "label": "Fishing Rig",
                     "key": "fishing",
                     "image": "fishing.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
@@ -1687,7 +1687,7 @@ modules = {
                     "label": "Terrain Manipulator",
                     "key": "terrian",
                     "image": "terrian.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
@@ -1725,7 +1725,7 @@ modules = {
                     "label": "Interstellar Scanner",
                     "key": "interstellar",
                     "image": "freighter-scanner.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "IS", "type": "core", "label": "Interstellar Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "freighter-scanner.webp", },
                     ],
@@ -1734,7 +1734,7 @@ modules = {
                     "label": "Matter Beam",
                     "key": "matterbeam",
                     "image": "freighter-matter.webp",
-                    "color": "black",
+                    "color": "gray",
                     "modules": [
                         { "id": "MB", "type": "core", "label": "Matter Beam", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "freighter-matter.webp", },
                     ],
@@ -1745,7 +1745,7 @@ modules = {
                     "label": "Fuel Efficiency",
                     "key": "fleet-fuel",
                     "image": "fleet-fuel.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
@@ -1756,7 +1756,7 @@ modules = {
                     "label": "Expedition Speed",
                     "key": "fleet-speed",
                     "image": "fleet-speed.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-speed.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-speed.webp", },
@@ -1767,7 +1767,7 @@ modules = {
                     "label": "Combat and Defense",
                     "key": "fleet-combat",
                     "image": "fleet-combat.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-combat.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-combat.webp", },
@@ -1778,7 +1778,7 @@ modules = {
                     "label": "Exploration and Science",
                     "key": "fleet-exploration",
                     "image": "fleet-exploration.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-exploration.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-exploration.webp", },
@@ -1789,7 +1789,7 @@ modules = {
                     "label": "Mining and Industrial",
                     "key": "fleet-mining",
                     "image": "fleet-mining.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-mining.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-mining.webp", },
@@ -1800,7 +1800,7 @@ modules = {
                     "label": "Trade",
                     "key": "fleet-trade",
                     "image": "fleet-trade.webp",
-                    "color": "gray",
+                    "color": "white",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-trade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-trade.webp", },
@@ -1954,7 +1954,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.4620
+            "score": 0.4520
         }
     },
     "sentinel": {
@@ -2098,7 +2098,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.4620
+            "score": 0.4520
         }
     },
     "solar": {
@@ -2243,7 +2243,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.4620
+            "score": 0.4520
         }
     },
     "living": {
@@ -2320,7 +2320,7 @@ solves = {
                 (2, 2): "ST",
                 (3, 2): "None"
             },
-            "score": 0.4620
+            "score": 0.4520
         }
     },
     "standard-mt": {
