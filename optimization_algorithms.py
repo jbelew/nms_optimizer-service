@@ -834,7 +834,7 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, exp
                             best_pattern_height = pattern_height
                         elif (
                             current_pattern_bonus == highest_pattern_bonus
-                            and adjacency_score >= best_pattern_adjacency_score
+            and adjacency_score > best_pattern_adjacency_score # Change >= to > to prefer earlier (top-left) positions on tie
                         ):
                             best_pattern_grid = temp_result_grid.copy()
                             best_pattern_adjacency_score = adjacency_score
