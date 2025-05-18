@@ -50,7 +50,7 @@ modules = {
                     "label": "Photon Cannon",
                     "key": "photon",
                     "image": "photon.webp",
-                    "color": "teal",
+                    "color": "blue",
                     "modules": [
                         { "id": "PC", "type": "core", "label": "Photon Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "photon.webp", },
                         { "id": "NO", "type": "bonus", "label": "Nonlinear Optics", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "nonlinear.webp", },
@@ -826,7 +826,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanners": [
+            "Scanner": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -834,6 +834,15 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
+                    ],
+                },
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1003,17 +1012,6 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
-                    ],
-                },
-            ],
-            "Utilities": [
-                {
-                    "label": "Fishing Rig",
-                    "key": "fishing",
-                    "image": "fishing.webp",
-                    "color": "gray",
-                    "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1049,7 +1047,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanners": [
+            "Scanner": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -1057,6 +1055,15 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
+                    ],
+                },
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1226,17 +1233,6 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
-                    ],
-                },
-            ],
-            "Utilities": [
-                {
-                    "label": "Fishing Rig",
-                    "key": "fishing",
-                    "image": "fishing.webp",
-                    "color": "gray",
-                    "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1271,7 +1267,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanners": [
+            "Scanner": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -1279,6 +1275,15 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
+                    ],
+                },
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1448,17 +1453,6 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
-                    ],
-                },
-            ],
-            "Utilities": [
-                {
-                    "label": "Fishing Rig",
-                    "key": "fishing",
-                    "image": "fishing.webp",
-                    "color": "gray",
-                    "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1493,7 +1487,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanners": [
+            "Scanner": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -1501,6 +1495,15 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "AV", "type": "core", "label": "Paralysis Mortar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "analysis.webp", },
+                    ],
+                },
+                {
+                    "label": "Fishing Rig",
+                    "key": "fishing",
+                    "image": "fishing.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1670,17 +1673,6 @@ modules = {
                     "color": "gray",
                     "modules": [
                         { "id": "PF", "type": "core", "label": "Personal Forcefield", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "personal.webp", },
-                    ],
-                },
-            ],
-            "Utilities": [
-                {
-                    "label": "Fishing Rig",
-                    "key": "fishing",
-                    "image": "fishing.webp",
-                    "color": "gray",
-                    "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
