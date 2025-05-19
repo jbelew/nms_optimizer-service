@@ -1,11 +1,10 @@
 # app.py
 from flask import Flask, jsonify, request
-from flask_compress import Compress  # Import Compress
+from flask_compress import Compress
 from flask_cors import CORS
-from optimization_algorithms import optimize_placement  # Import directly from optimization_algorithms
-from optimizer import get_tech_tree_json, Grid  # Keep these imports from optimizer
-from modules import modules
-from grid_display import print_grid_compact
+from optimization_algorithms import optimize_placement 
+from optimizer import get_tech_tree_json, Grid 
+from modules import modules # Keep modules as it's used directly
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -22,8 +21,7 @@ def optimize_grid():
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
-    forced_solve = data.get("forced", False)  # Get the 'forced' flag, default to False
-    # print(f"Received request for ship: {ship}, tech: {tech}, player_owned_rewards: {player_owned_rewards}")
+    forced_solve = data.get("forced", False) 
 
     if tech is None:
         return jsonify({"error": "No tech specified"}), 400
@@ -62,8 +60,8 @@ def optimize_grid():
             }
         )
     except ValueError as e:
-        print(f"ERROR -- {str(e)}")
-        print_grid_compact(grid)
+        app.logger.error(f"ValueError during optimization: {str(e)}")
+        # Consider if printing the grid here is necessary or too verbose for production logs
         return jsonify({"error": str(e)}), 500
 
 
@@ -85,8 +83,6 @@ def get_ship_types():
         # Create a dictionary containing both label and type
         ship_info = {"label": ship_data.get("label"), "type": ship_data.get("type")}  # Get the 'type' field
         ship_types[ship_key] = ship_info
-
-    # print(f"Ship types: {ship_types}")
     return jsonify(ship_types)
 
 
