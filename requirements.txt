@@ -68,8 +68,8 @@ sympy==1.13.1
 tensorboard==2.19.0
 tensorboard-data-server==0.7.2
 tinycss2==1.4.0
-torch==2.6.0+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.6.0+cpu
 tornado==6.4.2
 traitlets==5.14.3
 typing_extensions==4.13.2
