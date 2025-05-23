@@ -334,31 +334,39 @@ def generate_training_batch(
             optimized_grid = None
             best_bonus = -1.0
             
-            sa_params = {
-                "initial_temperature": 5000,
-                "cooling_rate": 0.999,
-                "stopping_temperature": 0.1,
-                "iterations_per_temp": 35,
-                "initial_swap_probability": 0.55,
-                "final_swap_probability": 0.25,
-                "start_from_current_grid": False,
-                "max_processing_time": 600.0
-            }
-            
             try:
-                # optimized_grid, optimized_score = simulated_annealing(
-                #     original_grid_layout, # Use the correctly prepared grid for this sample
-                #     ship,                 # Use the 'ship' variable
-                #     modules,
-                #     tech,
-                #     None,                 # Pass None for player_owned_rewards in this context
-                #     **sa_params
-                # )
-                # best_bonus = optimized_score # Update best_bonus with the score from SA
-                
-                optimized_grid, best_bonus = refine_placement_for_training(
-                    original_grid_layout, ship, modules, tech
-                )
+                # module_count is len(tech_modules), tech_modules is already fetched
+                if module_count < 9:
+                    print(f"INFO -- DataGen ({tech}): {module_count} modules < 9. Using refine_placement_for_training (brute-force).")
+                    # refine_placement_for_training will use brute-force for <10 modules
+                    optimized_grid, best_bonus = refine_placement_for_training(
+                        original_grid_layout, ship, modules, tech
+                    )
+                else: # module_count >= 10
+                    print(f"INFO -- DataGen ({tech}): {module_count} modules >= 9. Using direct Simulated Annealing for ground truth.")
+                    # Use robust SA parameters, similar to those in refine_placement_for_training's internal SA call
+                    # when it handles >=10 modules.
+                    sa_params_for_ground_truth = {
+                        "initial_temperature": 5000,
+                        "cooling_rate": 0.999,
+                        "stopping_temperature": 0.1,
+                        "iterations_per_temp": 35,
+                        "initial_swap_probability": 0.55,
+                        "final_swap_probability": 0.25,
+                        "start_from_current_grid": False,
+                        "max_processing_time": 600.0
+                    }
+                    # Ensure 'modules' (modules_for_training.modules) is passed as modules_data_dict
+                    # and tech_modules (the list of module dicts) is passed as tech_modules_list_override
+                    optimized_grid, sa_score = simulated_annealing(
+                        original_grid_layout,
+                        ship,
+                        modules,
+                        tech,
+                        player_owned_rewards=None, # Not needed when overriding modules
+                        **sa_params_for_ground_truth
+                    )
+                    best_bonus = sa_score # Assign the score from SA
                 
                 if optimized_grid is None: sample_valid = False
             except ValueError as ve:
