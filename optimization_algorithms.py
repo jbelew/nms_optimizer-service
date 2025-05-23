@@ -243,7 +243,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     if num_permutations != float("inf"):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
         chunks_per_worker_target = 500  # Tune this value
-        calculated_chunksize = num_permutations // (num_workers * chunks_per_worker_target)
+        calculated_chunksize = int(num_permutations // (num_workers * chunks_per_worker_target)) # Ensure integer
         chunksize = max(chunksize, calculated_chunksize)
         # Add an upper limit to prevent huge chunks consuming too much memory at once
         max_chunksize = 50000  # Tune this based on memory observations
@@ -369,6 +369,8 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
     Returns:
         A tuple containing the calculated window_width and window_height.
     """
+    window_width, window_height = 3, 3
+    
     if module_count < 1:
         # Handle cases with zero or negative modules (optional, but good practice)
         print(f"Warning: Module count is {module_count}. Returning default 1x1 window.")
@@ -1615,13 +1617,18 @@ def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=Non
         bool: True if all modules are placed, False otherwise.
     """
     if player_owned_rewards is None:
-        player_owned_rewards = []
+        player_owned_rewards = [] # Ensure it's an empty list if None
 
-    # Get the filtered list of modules
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
 
-    placed_module_ids = set()
+    if tech_modules is None:
+        print(f"Warning: check_all_modules_placed (opt_alg) - Could not get expected modules for {ship}/{tech}. Assuming not all modules are placed.")
+        return False # If modules for the tech couldn't be retrieved, assume they aren't all placed.
 
+    if not tech_modules: # Handles empty list case (no modules defined for this tech)
+        return True # All zero modules are considered placed.
+
+    placed_module_ids = set()
     for y in range(grid.height):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)

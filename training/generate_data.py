@@ -346,19 +346,19 @@ def generate_training_batch(
             }
             
             try:
-                optimized_grid, optimized_score = simulated_annealing(
-                    original_grid_layout, # Use the correctly prepared grid for this sample
-                    ship,                 # Use the 'ship' variable
-                    modules,
-                    tech,
-                    None,                 # Pass None for player_owned_rewards in this context
-                    **sa_params
-                )
-                best_bonus = optimized_score # Update best_bonus with the score from SA
-                
-                # optimized_grid, best_bonus = refine_placement_for_training(
-                #     original_grid_layout, ship, modules, tech
+                # optimized_grid, optimized_score = simulated_annealing(
+                #     original_grid_layout, # Use the correctly prepared grid for this sample
+                #     ship,                 # Use the 'ship' variable
+                #     modules,
+                #     tech,
+                #     None,                 # Pass None for player_owned_rewards in this context
+                #     **sa_params
                 # )
+                # best_bonus = optimized_score # Update best_bonus with the score from SA
+                
+                optimized_grid, best_bonus = refine_placement_for_training(
+                    original_grid_layout, ship, modules, tech
+                )
                 
                 if optimized_grid is None: sample_valid = False
             except ValueError as ve:
