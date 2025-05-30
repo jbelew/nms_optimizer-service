@@ -2770,7 +2770,7 @@ solves = {
                 (2, 2): "Xa",
                 (3, 2): "CW",
             },
-            "score": 2.9541
+            "score": 2.7688
         },
         "fleet-fuel": {
             "map": {
