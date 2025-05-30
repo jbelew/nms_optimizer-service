@@ -10,7 +10,7 @@ sys.path.insert(0, project_root)
 from grid_utils import Grid
 from modules import modules
 # Import both solver options
-from optimization_algorithms import refine_placement 
+from optimization_algorithms import refine_placement, refine_placement_for_training
 from grid_display import print_grid, print_grid_compact
 from simulated_annealing import simulated_annealing
 
@@ -57,7 +57,7 @@ def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owne
             )
         elif solver_choice == "refine":
             print(f"INFO -- Using refine_placement (brute-force) for {ship_type}/{tech}")
-            optimized_grid, optimized_score = refine_placement(grid, ship_type, modules, tech, player_owned_rewards)
+            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, modules, tech)
         else:
             print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine'.")
             return None, None
@@ -78,7 +78,7 @@ def generate_solve_map_template(grid):
     return template
 
 
-def generate_all_solves(modules, solver_choice="sa", tech_to_generate=None, weapon_to_generate=None):
+def generate_all_solves(modules, solver_choice="refine", tech_to_generate=None, weapon_to_generate=None):
     """Generates the solves object for all technologies and types."""
     all_solves = {}
     techs_to_process = [tech_to_generate] if tech_to_generate else modules.keys()

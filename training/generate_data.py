@@ -1,6 +1,6 @@
 # training/generate_data.py
 import random
-import numpy as np
+import numpy as np # type: ignore
 import sys
 import os
 import time
@@ -232,6 +232,7 @@ def generate_training_batch(
             fitting_variation_found = False
             tried_variations_indices = set()
             max_variation_attempts = len(solve_map_variations) # Try all variations once
+            current_pattern_data = {} # Initialize to an empty dict
 
             for _ in range(max_variation_attempts):
                 available_indices = [i for i, _ in enumerate(solve_map_variations) if i not in tried_variations_indices]
@@ -336,7 +337,7 @@ def generate_training_batch(
             
             try:
                 # module_count is len(tech_modules), tech_modules is already fetched
-                if module_count < 9:
+                if module_count < 8:
                     print(f"INFO -- DataGen ({tech}): {module_count} modules < 9. Using refine_placement_for_training (brute-force).")
                     # refine_placement_for_training will use brute-force for <10 modules
                     optimized_grid, best_bonus = refine_placement_for_training(
@@ -479,21 +480,15 @@ if __name__ == "__main__":
     parser.add_argument("--tech", type=str, default=None, help="Specific tech key to process (optional). If provided, only this tech is processed.", metavar="TECH_KEY")
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.", metavar="SHIP_TYPE")
     parser.add_argument("--samples", type=int, default=64, help="Original samples per tech (before augmentation).", metavar="NUM_SAMPLES")
-    # <<< Remove width and height arguments >>>
-    # parser.add_argument("--width", type=int, default=4, help="Grid width.", metavar="WIDTH")
-    # parser.add_argument("--height", type=int, default=3, help="Grid height.", metavar="HEIGHT")
     parser.add_argument("--max_sc", type=int, default=4, help="Max supercharged.", metavar="MAX_SC")
     parser.add_argument("--max_inactive", type=int, default=0, help="Max inactive.", metavar="MAX_INACTIVE")
     parser.add_argument("--output_dir", type=str, default=GENERATED_BATCH_DIR, help="Base output directory (ship/tech subdirs will be created).", metavar="DIR_PATH")
-    parser.add_argument("--solve_prob", type=float, default=0.0, help="Probability (0.0-1.0) of using solve map (if supercharged > 0).", metavar="PROB")
+    parser.add_argument("--solve_prob", type=float, default=0.1, help="Probability (0.0-1.0) of using solve map (if supercharged > 0).", metavar="PROB")
     args = parser.parse_args()
     if not 0.0 <= args.solve_prob <= 1.0: parser.error("--solve_prob must be between 0.0 and 1.0")
 
     config = {
         "num_samples_per_tech": args.samples,
-        # <<< Remove grid_width, grid_height from config >>>
-        # "grid_width": args.width,
-        # "grid_height": args.height,
         "max_supercharged": args.max_sc, "max_inactive_cells": args.max_inactive, "ship": args.ship,
         "tech_category_to_process": args.category,
         "specific_tech_to_process": args.tech,

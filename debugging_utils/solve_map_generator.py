@@ -30,7 +30,7 @@ def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owne
     """
     if player_owned_rewards is None:
         # <<< Simplified default rewards list >>>
-        player_owned_rewards = ["PC", "SB", "SP", "TT"]
+        player_owned_rewards = ["SB", "SP", "TT"]
 
     grid = Grid(width=grid_width, height=grid_height)
 
