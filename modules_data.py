@@ -1,4 +1,3 @@
-# modules_data.py
 import json
 from modules import modules
 
@@ -63,9 +62,20 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     return None
 
 
-def get_tech_modules_for_training(modules, ship, tech_key):
-    """Retrieves modules for training, returning the modules as they are in modules_refactored.py."""
-    ship_data = modules.get(ship)
+def get_tech_modules_for_training(modules_dict, ship, tech_key):
+    """
+    Retrieves modules for training from a provided modules dictionary,
+    returning the modules as they are defined.
+
+    Args:
+        modules_dict (dict): The modules data dictionary to use (e.g., from modules_for_training.py).
+        ship (str): The ship type.
+        tech_key (str): The technology key.
+
+    Returns:
+        list: A list of module dictionaries, or an empty list if not found.
+    """
+    ship_data = modules_dict.get(ship)
     if ship_data is None:
         print(f"Error: Ship '{ship}' not found in modules data.")
         return []

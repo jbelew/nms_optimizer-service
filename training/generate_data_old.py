@@ -1,7 +1,6 @@
 # training/generate_data.py
 import random
 import numpy as np # type: ignore
-from copy import deepcopy # Import deepcopy
 import sys
 import os
 import time
@@ -28,8 +27,7 @@ from optimization_algorithms import (
     get_all_unique_pattern_variations,
     refine_placement_for_training,
     calculate_pattern_adjacency_score,
-    determine_window_dimensions, # <<< Import the dynamic sizing function
-    _scan_grid_with_window, calculate_window_score
+    determine_window_dimensions # <<< Import the dynamic sizing function
 )
 from bonus_calculations import calculate_grid_score # <<< Import needed for print_grid logic
 from modules_for_training import modules, solves
@@ -54,7 +52,6 @@ def generate_training_batch(
     tech,
     base_output_dir, # <<< Renamed for clarity
     solve_map_prob=0.0,
-    experimental: bool = False, # <<< Renamed flag
 ):
     """
     Generates a batch of training data and saves it into ship/tech subdirectories.
@@ -72,8 +69,6 @@ def generate_training_batch(
         base_output_dir (str): Base directory to save the generated .npz file (e.g., 'generated_batches').
         solve_map_prob (float): Probability (0.0-1.0) of using a pre-defined solve map variation
                                 (only applies if num_supercharged > 0).
-        experimental (bool): If True, applies experimental data generation logic.
-                             Currently, this means only generating 4x3 data for pulse tech if SC config meets criteria.
 
     Returns:
         tuple: (generated_count, num_output_classes, saved_filepath) or (0, 0, None) on failure.
@@ -81,16 +76,15 @@ def generate_training_batch(
     """ # <<< Corrected docstring indentation
     start_time_tech = time.time()
 
+    # --- Determine Dynamic Grid Dimensions ---
     tech_modules = get_tech_modules_for_training(modules, ship, tech)
     if not tech_modules:
         print(f"Error: No tech modules found for ship='{ship}', tech='{tech}'. Cannot determine grid size or generate data.")
         return 0, 0, None
+
     module_count = len(tech_modules)
-
-    # --- Initial default grid dimensions (might be overridden by experimental logic) ---
-    # This call uses the *production* logic of determine_window_dimensions
-    default_grid_width, default_grid_height = determine_window_dimensions(module_count, tech)
-
+    grid_width, grid_height = determine_window_dimensions(module_count, tech)
+    print(f"INFO -- Determined dynamic grid size for {tech} ({module_count} modules): {grid_width}x{grid_height}")
     # --- End Determine Dynamic Grid Dimensions ---
 
     # --- Construct specific output directory ---
@@ -102,6 +96,11 @@ def generate_training_batch(
     new_X_inactive_mask_list = []
     new_y_list = []
 
+    # tech_modules = get_tech_modules_for_training(modules, ship, tech) # Already fetched above
+    # if not tech_modules: # Already checked above
+    #     print(f"Error: No tech modules found for ship='{ship}', tech='{tech}'. Cannot generate data.")
+    #     return 0, 0, None
+
     tech_modules.sort(key=lambda m: m['id'])
     module_id_mapping = {module["id"]: i + 1 for i, module in enumerate(tech_modules)}
     num_output_classes = len(tech_modules) + 1 # <<< Use fetched tech_modules
@@ -109,13 +108,6 @@ def generate_training_batch(
     # --- Check if Solve Map Exists and Generate Variations ---
     solve_map_exists = False
     solve_map_variations = []
-
-    # This variable will hold the actual grid dimensions for the current sample
-    # It's determined after the experimental filter.
-    # Initialize here to avoid undefined variable errors if loops are skipped.
-    current_sample_grid_w = default_grid_width
-    current_sample_grid_h = default_grid_height
-
     if ship in solves and tech in solves[ship]:
         original_pattern = solves[ship][tech].get("map")
         if original_pattern:
@@ -128,11 +120,11 @@ def generate_training_batch(
                     coord_tuple = eval(k) if isinstance(k, str) else k
                     if isinstance(coord_tuple, tuple) and len(coord_tuple) == 2:
                          # <<< Check if pattern fits within dynamic grid dimensions >>>
-                         px, py = coord_tuple # Use default_grid_width/height for initial solve map check
-                         if 0 <= px < default_grid_width and 0 <= py < default_grid_height:
+                         px, py = coord_tuple
+                         if 0 <= px < grid_width and 0 <= py < grid_height:
                              pattern_tuple_keys[coord_tuple] = v
                          else:
-                             print(f"Warning: Solve map key {k} is outside default grid dimensions ({default_grid_width}x{default_grid_height}). Skipping key.")
+                             print(f"Warning: Solve map key {k} is outside dynamic grid dimensions ({grid_width}x{grid_height}). Skipping key.")
                              # If any key is outside, the original pattern itself doesn't fit
                              pattern_tuple_keys = {} # Clear it to prevent use
                              break # No need to check other keys for this pattern
@@ -156,133 +148,78 @@ def generate_training_batch(
     attempt_count = 0
     max_attempts = num_samples * 15 + 100 # Keep max attempts logic
 
+    # <<< Use dynamic grid dimensions >>>
+    total_cells = grid_width * grid_height
+    all_positions = [(x, y) for y in range(grid_height) for x in range(grid_width)]
+
     while original_generated_count < num_samples and attempt_count < max_attempts:
         attempt_count += 1
-
-        # --- Determine grid dimensions for THIS sample ---        
-        if experimental:
-            current_sample_grid_w, current_sample_grid_h = 4, 3
-            # print(f"DEBUG: Experimental mode active. Grid set to 4x3 for tech '{tech}'.")
-        else:
-            current_sample_grid_w, current_sample_grid_h = default_grid_width, default_grid_height
-        
-        # Create the grid for the current sample with its determined dimensions
-        original_grid_layout = Grid(current_sample_grid_w, current_sample_grid_h)
+        # <<< Use dynamic grid dimensions >>>
+        original_grid_layout = Grid(grid_width, grid_height) # <<< Keep track of the initial state
         inactive_positions_set = set()
 
-        # Populate SC/inactive on original_grid_layout (using current_sample_grid_w/h)
-        total_cells_current_sample = current_sample_grid_w * current_sample_grid_h
-        all_positions_current_sample = [(x, y) for y in range(current_sample_grid_h) for x in range(current_sample_grid_w)]
+        # --- Add Inactive/Supercharged Cells ---
+        inactive_positions = []
+        # <<< Use dynamic total_cells >>>
+        num_inactive = random.randint(0, min(max_inactive_cells, total_cells))
+        if num_inactive > 0:
+            if num_inactive <= len(all_positions):
+                inactive_positions = random.sample(all_positions, num_inactive)
+                inactive_positions_set = set(inactive_positions)
+                for x, y in inactive_positions:
+                    original_grid_layout.set_active(x, y, False)
+            else:
+                # This case should be less likely now, but keep the warning
+                print(f"Warning: Cannot sample {num_inactive} inactive positions from {len(all_positions)} total positions. Setting 0 inactive.")
+                inactive_positions = []
+                inactive_positions_set = set()
 
-        num_inactive = random.randint(0, min(max_inactive_cells, total_cells_current_sample))
-        if num_inactive > 0 and num_inactive <= len(all_positions_current_sample):
-            inactive_positions = random.sample(all_positions_current_sample, num_inactive)
-            inactive_positions_set = set(inactive_positions)
-            for x, y in inactive_positions:
-                original_grid_layout.set_active(x, y, False)
-        
-        active_positions_current_sample = [pos for pos in all_positions_current_sample if pos not in inactive_positions_set]
-        num_active_cells_current_sample = len(active_positions_current_sample)
-        if num_active_cells_current_sample == 0: continue
+        active_positions = [pos for pos in all_positions if pos not in inactive_positions_set]
+        num_active_cells = len(active_positions)
+        if num_active_cells == 0: continue # Skip if no active cells
 
         supercharged_positions_set = set()
-        max_possible_supercharged = min(max_supercharged, num_active_cells_current_sample)
-        num_supercharged_actual = random.randint(0, max_possible_supercharged)
-        if num_supercharged_actual > 0 and num_supercharged_actual <= len(active_positions_current_sample):
-            supercharged_positions = random.sample(active_positions_current_sample, num_supercharged_actual)
-            supercharged_positions_set = set(supercharged_positions)
-            for x, y in supercharged_positions:
-                original_grid_layout.set_supercharged(x, y, True)
-
-        # --- Early Skip for Experimental with Zero SC Slots ---
-        if experimental and num_supercharged_actual == 0:
-            # print(f"DEBUG: Experimental mode and 0 SC slots for tech '{tech}'. Skipping this attempt.")
-            continue # Skip this attempt entirely, don't even run the experimental filter below
-        # --- End Early Skip ---
-
-        print_grid(original_grid_layout) # Optional: for debugging the layout before filters
-
-        # --- Experimental 4x3 Data Generation Filter ---
-        # This filter runs if 'experimental' is true, which also means current_sample_grid_w/h will be 4x3.
-        if experimental: # By this point, current_sample_grid_w and current_sample_grid_h are 4,3 if experimental is true
-            # This filter's purpose is to generate 4x3 data only if its raw SC score is "better"
-            # than what could be achieved on the tech's standard (often smaller) grid.
-            # If the tech's standard grid IS ALREADY 4x3 (i.e., default_grid_width/height match current_sample_grid_w/h),
-            # this specific comparison is not meaningful and can be problematic if _scan_grid_with_window
-            # returns an unexpected value (like -1.0) when the scan window equals the grid size.
-            if (default_grid_width, default_grid_height) != (current_sample_grid_w, current_sample_grid_h):
-                print(f"\nDEBUG_EXPERIMENTAL_FILTER (Tech: {tech}, Attempt: {attempt_count}, Experimental Flag: True):")
-                print(f"  - Module Count: {module_count}")
-                print(f"  - Current Sample Grid (Experimental): {current_sample_grid_w}x{current_sample_grid_h}")
-                print(f"  - Default Grid for Comparison (Standard for this tech): {default_grid_width}x{default_grid_height}")
-                print(f"  - SC slots in 4x3: {supercharged_positions_set}")
-                print(f"  - Inactive slots in 4x3: {inactive_positions_set}")
-    
-                # `original_grid_layout` is 4x3 here, with SC slots populated.
-    
-                # Calculate the raw score for the full 4x3 experimental layout
-                # This score is based purely on SC/empty/edge, ignoring if all modules fit.
-                raw_score_4x3 = calculate_window_score(original_grid_layout, tech)
-                print(f"  - Raw Score for 4x3 Layout: {raw_score_4x3:.4f}")
-    
-                # Scan the 4x3 layout to find the best raw score for a default-sized window (e.g., 4x2) within it.
-                best_default_slice_raw_score, best_default_slice_pos = _scan_grid_with_window(deepcopy(original_grid_layout), default_grid_width, default_grid_height, module_count, tech)
-                print(f"  - Best Raw Score for {default_grid_width}x{default_grid_height} slice within 4x3: {best_default_slice_raw_score:.4f} (at pos: {best_default_slice_pos})")
-    
-                # Now compare the raw scores: Generate sample only if 4x3 raw score is strictly better
-                if not (raw_score_4x3 > best_default_slice_raw_score):
-                    print(f"  - Decision: SKIP 4x3. Raw score 4x3 ({raw_score_4x3:.4f}) is NOT > best default slice raw score ({best_default_slice_raw_score:.4f}).")
-                    continue # Skip this sample
-                print(f"  - Decision: KEEP 4x3. Raw score 4x3 ({raw_score_4x3:.4f}) > best default slice raw score ({best_default_slice_raw_score:.4f}). Proceeding with 4x3 data gen.")
+        # <<< Use dynamic num_active_cells >>>
+        max_possible_supercharged = min(max_supercharged, num_active_cells)
+        num_supercharged = random.randint(0, max_possible_supercharged) # <<< This is the key variable
+        if num_supercharged > 0:
+            # Ensure we don't try to sample more than available active positions
+            if num_supercharged <= len(active_positions):
+                supercharged_positions = random.sample(active_positions, num_supercharged)
+                supercharged_positions_set = set(supercharged_positions)
+                for x, y in supercharged_positions:
+                    original_grid_layout.set_supercharged(x, y, True) # <<< Update original_grid_layout state
             else:
-                # Experimental mode is on, AND the default grid size for this tech IS 4x3.
-                # The comparative filter is not needed/meaningful in this case. Proceed with 4x3 generation.
-                print(f"\nDEBUG_EXPERIMENTAL_INFO (Tech: {tech}, Attempt: {attempt_count}, Experimental Flag: True):")
-                print(f"  - Current Sample Grid (Experimental): {current_sample_grid_w}x{current_sample_grid_h}")
-                print(f"  - Default Grid for this tech IS ALSO {default_grid_width}x{default_grid_height}.")
-                print(f"  - Skipping comparative raw score filter. Proceeding with 4x3 data generation as per experimental flag.")
+                 print(f"Warning: Cannot sample {num_supercharged} supercharged positions from {len(active_positions)} active positions. Setting 0 supercharged.")
+                 num_supercharged = 0 # Correct the count
+                 supercharged_positions_set = set()
 
-        # SC and inactive cells are already populated on original_grid_layout by the block above.
-        # The inactive_positions_set and supercharged_positions_set are correctly defined.
+        # --- End Add Cells ---
+
         # --- Decide: Use Solve Map Variation or Optimize ---
-        if experimental:
-            # If experimental mode is on AND there are no supercharged slots,
-            # always skip using the solve map for this sample.
-            if num_supercharged_actual == 0:
-                use_solve_map = False
-                # print(f"DEBUG: Experimental mode with 0 SC slots. Forcing NO solve map for this sample.")
-            else: # Experimental mode, but SC slots > 0
-                # Probabilistic use of solve map
-                use_solve_map = solve_map_exists and random.random() < solve_map_prob
-                # if use_solve_map:
-                #     print(f"DEBUG: Experimental mode, >0 SC. Probabilistically chose solve map (prob: {solve_map_prob}).")
-        else: # Not experimental
-            if num_supercharged_actual == 0 and solve_map_exists:
-                # If not experimental, 0 SC slots, and a map exists, always use it.
-                use_solve_map = True
-                # print(f"DEBUG: Not experimental, 0 SC slots, map exists. Forcing solve map.")
-            else: # Not experimental, and (num_supercharged_actual > 0 or not solve_map_exists)
-                # Probabilistic use of solve map
-                use_solve_map = solve_map_exists and random.random() < solve_map_prob
-                # if use_solve_map:
-                #     print(f"DEBUG: Not experimental, >0 SC or no map. Probabilistically chose solve map (prob: {solve_map_prob}).")
+        # (Logic remains the same, but relies on updated solve_map_exists flag)
+        if num_supercharged == 0 and solve_map_exists:
+            use_solve_map = True
+        else:
+            use_solve_map = solve_map_exists and random.random() < solve_map_prob
         # --- End Decision ---
+
         # --- Create Input and Output Matrices ---
         # <<< Use dynamic grid dimensions >>>
-        input_supercharge_np = np.zeros((current_sample_grid_h, current_sample_grid_w), dtype=np.int8)
-        input_inactive_mask_np = np.zeros((current_sample_grid_h, current_sample_grid_w), dtype=np.int8)
-        output_matrix = np.zeros((current_sample_grid_h, current_sample_grid_w), dtype=np.int8)
+        input_supercharge_np = np.zeros((grid_height, grid_width), dtype=np.int8)
+        input_inactive_mask_np = np.zeros((grid_height, grid_width), dtype=np.int8)
+        output_matrix = np.zeros((grid_height, grid_width), dtype=np.int8)
         sample_valid = True # Assume valid initially
 
         # Create Input Matrices
         # <<< Use dynamic grid dimensions >>>
-        for y in range(current_sample_grid_h):
-            for x in range(current_sample_grid_w):
+        for y in range(grid_height):
+            for x in range(grid_width):
                 pos = (x, y)
                 is_active = pos not in inactive_positions_set
                 is_supercharged = pos in supercharged_positions_set
                 input_supercharge_np[y, x] = int(is_active and is_supercharged)
-                input_inactive_mask_np[y, x] = int(not is_active) # 1 if inactive, 0 if active
+                input_inactive_mask_np[y, x] = int(not is_active)
 
         # Create Output Matrix
         if use_solve_map:
@@ -310,17 +247,18 @@ def generate_training_batch(
                     if module_id is None or module_id == "None": continue
 
                     # Bounds check (already done when creating variations, but safe)
-                    if not (0 <= px < current_sample_grid_w and 0 <= py < current_sample_grid_h):
+                    if not (0 <= px < grid_width and 0 <= py < grid_height):
                         pattern_fits = False; break
 
                     # Check if the target cell in the original grid is active
                     if not original_grid_layout.get_cell(px, py)["active"]:
                         pattern_fits = False; break
+
                 if pattern_fits:
                     fitting_variation_found = True
                     # <<< Use dynamic grid dimensions >>>
-                    for y in range(current_sample_grid_h): # <<< Use current sample dimensions
-                        for x in range(current_sample_grid_w): # <<< Use current sample dimensions
+                    for y in range(grid_height):
+                        for x in range(grid_width):
                             if not original_grid_layout.get_cell(x, y)["active"]:
                                 output_matrix[y, x] = 0; continue
                             module_id = current_pattern_data.get((x, y))
@@ -345,11 +283,11 @@ def generate_training_batch(
             if fitting_variation_found and sample_valid:
                 print(f"\n--- Using Fitting Solve Map Variation for Sample {original_generated_count+1} (Tech: {tech}) ---")
                 # <<< Use dynamic grid dimensions >>>
-                temp_display_grid = Grid(current_sample_grid_w, current_sample_grid_h)
+                temp_display_grid = Grid(grid_width, grid_height)
                 tech_module_defs_map = {m['id']: m for m in tech_modules}
                 # <<< Use dynamic grid dimensions >>>
-                for y_disp in range(current_sample_grid_h):
-                    for x_disp in range(current_sample_grid_w):
+                for y_disp in range(grid_height):
+                    for x_disp in range(grid_width):
                         temp_display_grid.set_active(x_disp, y_disp, original_grid_layout.get_cell(x_disp, y_disp)["active"])
                         temp_display_grid.set_supercharged(x_disp, y_disp, original_grid_layout.get_cell(x_disp, y_disp)["supercharged"])
                         module_id_disp = current_pattern_data.get((x_disp, y_disp))
@@ -444,8 +382,8 @@ def generate_training_batch(
                 print(f"Optimized Score: {best_bonus:.4f}")
                 print_grid(optimized_grid)
                 # <<< Use dynamic grid dimensions >>>
-                for y in range(current_sample_grid_h):
-                    for x in range(current_sample_grid_w): # <<< Corrected loop variable
+                for y in range(grid_height):
+                    for x in range(grid_width): # <<< Corrected loop variable
                         if not original_grid_layout.get_cell(x, y)["active"]:
                              output_matrix[y, x] = 0; continue
                         cell_data = optimized_grid.get_cell(x, y)
@@ -511,7 +449,7 @@ def generate_training_batch(
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             unique_id = uuid.uuid4().hex[:8]
             # <<< Use dynamic grid dimensions in filename >>>
-            filename = f"data_{ship}_{tech}_{current_sample_grid_w}x{current_sample_grid_h}_{timestamp}_{unique_id}.npz"
+            filename = f"data_{ship}_{tech}_{grid_width}x{grid_height}_{timestamp}_{unique_id}.npz"
             saved_filepath = os.path.join(tech_output_dir, filename)
             print(f"Saving {len(new_y_np)} generated samples (incl. augmentations) to {saved_filepath}...")
             np.savez_compressed(
@@ -545,8 +483,7 @@ if __name__ == "__main__":
     parser.add_argument("--max_sc", type=int, default=4, help="Max supercharged.", metavar="MAX_SC")
     parser.add_argument("--max_inactive", type=int, default=0, help="Max inactive.", metavar="MAX_INACTIVE")
     parser.add_argument("--output_dir", type=str, default=GENERATED_BATCH_DIR, help="Base output directory (ship/tech subdirs will be created).", metavar="DIR_PATH")
-    parser.add_argument("--solve_prob", type=float, default=0.0, help="Probability (0.0-1.0) of using solve map (if supercharged > 0).", metavar="PROB")
-    parser.add_argument("--experimental", action='store_true', help="If set, applies experimental data generation logic (e.g., for pulse 4x3).")
+    parser.add_argument("--solve_prob", type=float, default=0.1, help="Probability (0.0-1.0) of using solve map (if supercharged > 0).", metavar="PROB")
     args = parser.parse_args()
     if not 0.0 <= args.solve_prob <= 1.0: parser.error("--solve_prob must be between 0.0 and 1.0")
 
@@ -555,9 +492,7 @@ if __name__ == "__main__":
         "max_supercharged": args.max_sc, "max_inactive_cells": args.max_inactive, "ship": args.ship,
         "tech_category_to_process": args.category,
         "specific_tech_to_process": args.tech,
-        "output_dir": args.output_dir, 
-        "solve_map_prob": args.solve_prob,
-        "experimental": args.experimental, # <<< Updated in config
+        "output_dir": args.output_dir, "solve_map_prob": args.solve_prob,
     }
 
     start_time_all = time.time()
@@ -598,7 +533,6 @@ if __name__ == "__main__":
             max_inactive_cells=config["max_inactive_cells"], ship=config["ship"], tech=tech,
             base_output_dir=config["output_dir"],
             solve_map_prob=config["solve_map_prob"],
-            experimental=config["experimental"], # <<< Pass updated flag
         )
         total_samples_generated_overall += generated_count
 

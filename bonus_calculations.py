@@ -51,11 +51,9 @@ def _get_orthogonal_neighbors(grid: Grid, x: int, y: int) -> list[dict]:
                 neighbors.append(neighbor_data)
     return neighbors
 
-
 # --- Core Calculation Functions ---
 
-
-def _calculate_adjacency_factor(grid: Grid, x: int, y: int) -> float:
+def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
     """
     Calculates the total adjacency boost *factor* for a module based on the
     type and adjacency of its neighbors, respecting the receiver's adjacency rules.
@@ -65,6 +63,7 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int) -> float:
         grid: The Grid object.
         x: The x-coordinate of the module.
         y: The y-coordinate of the module.
+        tech: The technology key of the current module group being processed.
 
     Returns:
         The total adjacency boost factor (sum of weights from neighbors).
@@ -93,8 +92,13 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int) -> float:
 
             # Rule: Greater neighbor cannot give bonus to Lesser receiver
             if cell_adj_type == AdjacencyType.LESSER.value and adj_cell_adj_type == AdjacencyType.GREATER.value:
-                # Hack to ensure that the UI shows a lesser module as still being adjacent to the group.
-                weight_from_this_neighbor = 0.0001
+                if tech in ["pulse", "photonix"]:
+                    # Hack to ensure that the UI shows a lesser module as still being adjacent to the group.
+                    # Changed from 0.0001 to -0.01 to penalize this adjacency, making Layout 2 preferred for pulse/photonix.
+                    weight_from_this_neighbor = -0.01
+                else:
+                    # For other techs, this specific adjacency gives no positive bonus and no penalty.
+                    weight_from_this_neighbor = 0.0001
             else:
                 # Determine weight based on the NEIGHBOR's type and adjacency
                 if adj_cell_type == ModuleType.CORE.value:
@@ -149,7 +153,7 @@ def populate_all_module_bonuses(grid: Grid, tech: str, apply_supercharge_first: 
     # Pre-calculate adjacency factors for all relevant modules
     module_adj_factors = {}
     for x, y in tech_module_coords:
-        module_adj_factors[(x, y)] = _calculate_adjacency_factor(grid, x, y)
+        module_adj_factors[(x, y)] = _calculate_adjacency_factor(grid, x, y, tech)
 
     # Calculate final bonuses using pre-calculated factors
     for x, y in tech_module_coords:

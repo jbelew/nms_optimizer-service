@@ -21,10 +21,12 @@ def optimize_grid():
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
-    forced_solve = data.get("forced", False) 
+    forced_solve = data.get("forced", False)
+    experimental_window_sizing_req = data.get("experimental_window_sizing", True)
 
     if tech is None:
         return jsonify({"error": "No tech specified"}), 400
+
 
     grid_data = data.get("grid")
     if grid_data is None:
@@ -35,7 +37,7 @@ def optimize_grid():
     try:
         # Pass the forced_solve flag to optimize_placement
         optimized_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            grid, ship, modules, tech, player_owned_rewards, True, forced=forced_solve
+            grid, ship, modules, tech, player_owned_rewards, forced=forced_solve, experimental_window_sizing=experimental_window_sizing_req
         )
 
         if solve_method == "Pattern No Fit":

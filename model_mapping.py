@@ -1,5 +1,5 @@
 # model_mapping.py
-from typing import Optional, List, Tuple, Dict # <<< Added Dict, List, Optional
+from typing import Optional, List, Dict  # Removed Tuple as it's no longer used for return type
 
 """
 Maps the user-facing platform key (ship) and technology key (tech)
@@ -21,8 +21,8 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "shield": ("standard", "shield"),
         "launch": ("standard", "launch"),
         "hyper": ("standard", "hyper"),
-        "pulse": ("standard", "pulse"),   
-        "photonix": ("standard", "photonix"), 
+        "pulse": ("standard", "pulse"),
+        "photonix": ("standard", "photonix"),
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
@@ -39,14 +39,14 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "shield": ("standard", "shield"),
         "launch": ("standard", "launch"),
         "hyper": ("standard", "hyper"),
-        "pulse": ("standard", "pulse"),   
+        "pulse": ("standard", "pulse"),
         "photonix": ("standard", "photonix"),
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
         "scanners": ("standard", "scanners"),
         "teleporter": ("standard", "teleporter"),
-        "pilot": ("sentinel", "pilot"), 
+        "pilot": ("sentinel", "pilot"),
     },
     "solar": {
         "cyclotron": ("standard", "cyclotron"),
@@ -57,13 +57,13 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "photon": ("standard", "photon"),
         "shield": ("standard", "shield"),
         "launch": ("standard", "launch"),
-        "hyper": ("standard", "hyper"), 
+        "hyper": ("standard", "hyper"),
         "trails": ("standard", "trails"),
         "aqua": ("standard", "aqua"),
         "bobble": ("standard", "bobble"),
         "scanners": ("standard", "scanners"),
         "teleporter": ("standard", "teleporter"),
-        "pilot": ("sentinel", "pilot"), 
+        "pilot": ("sentinel", "pilot"),
     },
     # --- Multi-Tools ---
     "sentinel-mt": {
@@ -129,60 +129,97 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
     # --- Living Ship (No mapping needed, uses its own keys) ---
     "living": {},
     # --- Standard Multi-Tool (No mapping needed) ---
-    "standard-mt": {}
+    "standard-mt": {},
 }
 
 # <<< Remove _find_reward_module_id and suffix logic >>>
 
+
 def get_model_keys(
     ui_ship_key: str,
     ui_tech_key: str,
-    # <<< Add player_owned_rewards >>>
-    player_owned_rewards: Optional[List[str]] = None
-) -> Tuple[str, str]:
+    grid_width: int,
+    grid_height: int,
+    player_owned_rewards: Optional[List[str]] = None,
+) -> Dict[str, str]:
     """
-    Looks up the mapping for a given UI ship and tech key.
-    Includes specific logic to map to different tech keys based on reward ownership
-    (e.g., 'pulse' maps to 'photonix' if 'PC' reward is owned).
-    Defaults to returning the original keys if no specific mapping is found.
+    Determines keys for model filename and module definitions.
+    1. Establishes initial base keys from UI keys and PLATFORM_TECH_TO_MODEL_KEYS.
+       These serve as the primary keys for module definitions.
+    2. Applies reward-based overrides (e.g., "pulse" + "PC" -> "photonix"),
+       updating both module definition tech key and filename tech key.
+    3. Applies grid-size specific overrides, which primarily modify the
+       filename keys, while the module definition keys remain from step 2.
 
     Args:
         ui_ship_key: The ship key provided by the user/UI.
         ui_tech_key: The tech key provided by the user/UI.
+        grid_width: The expected grid width for this tech (from determine_window_dimensions).
+        grid_height: The expected grid height for this tech (from determine_window_dimensions).
         player_owned_rewards: List of reward module IDs owned by the player.
 
     Returns:
-        A tuple containing (model_ship_key, model_tech_key) to use for
-        loading the model file.
+        A dictionary with keys:
+            "filename_ship_key": Key for the ship part of the model filename.
+            "filename_tech_key": Key for the tech part of the model filename.
+            "module_def_ship_key": Key for ship lookup in module definitions.
+            "module_def_tech_key": Key for tech lookup in module definitions.
     """
     player_rewards_set = set(player_owned_rewards) if player_owned_rewards else set()
 
-    # --- 1. Specific Reward-Based Mapping Logic ---
-    # Example: Pulse Engine / Photonix Core ('PC')
-    if ui_tech_key == "pulse" and "PC" in player_rewards_set:
-        # If the player has the Photonix Core, map to the 'photonix' model key.
-        # We still need the base ship key mapping first.
-        base_ship_map = PLATFORM_TECH_TO_MODEL_KEYS.get(ui_ship_key, {})
-        base_model_ship_key, _ = base_ship_map.get(ui_tech_key, (ui_ship_key, ui_tech_key)) # Get base ship key
-        # Return the base ship key and the specific 'photonix' tech key
-        return base_model_ship_key, "photonix"
-
-    # Add other specific reward mappings here if needed following the same pattern
-    # Example (if you had a model for mining with plasma resonator):
-    # if ui_tech_key == "mining" and "PR" in player_rewards_set:
-    #     base_ship_map = PLATFORM_TECH_TO_MODEL_KEYS.get(ui_ship_key, {})
-    #     base_model_ship_key, _ = base_ship_map.get(ui_tech_key, (ui_ship_key, ui_tech_key))
-    #     # Check if the base ship is 'atlantid-mt', which has its own mining model
-    #     if base_model_ship_key == "atlantid-mt":
-    #          return "atlantid-mt", "mining_with_resonator" # Hypothetical name
-    #     else:
-    #          return "standard-mt", "mining_with_resonator" # Hypothetical name
-
-    # --- 2. General Dictionary-Based Mapping (Fallback) ---
-    # If no specific reward logic matched, use the standard dictionary lookup.
+    # --- Step 1: Determine initial base keys (primarily for module definitions) ---
+    # These will also be the starting point for filename keys.
     if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
-        return PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(ui_tech_key, (ui_ship_key, ui_tech_key))
+        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(
+            ui_tech_key, (ui_ship_key, ui_tech_key)
+        )
     else:
-        # If the ship key itself isn't in the mapping, default to original UI keys
-        return (ui_ship_key, ui_tech_key)
+        initial_model_ship_key, initial_model_tech_key = ui_ship_key, ui_tech_key
 
+    # Initialize all key types from these base keys
+    module_def_ship_key = initial_model_ship_key
+    module_def_tech_key = initial_model_tech_key
+    filename_ship_key = initial_model_ship_key
+    filename_tech_key = initial_model_tech_key
+
+    # --- Step 2: Apply reward-based overrides ---
+    # This affects both module definition tech key and filename tech key.
+    if ui_tech_key == "pulse" and "PC" in player_rewards_set:
+        # If Photonix Core is owned, "pulse" tech effectively becomes "photonix".
+        # The ship key (e.g., "standard") remains as determined by initial_model_ship_key.
+        module_def_tech_key = "photonix"
+        filename_tech_key = "photonix"
+
+    # --- Step 3: Apply grid-size specific overrides ---
+    # These conditions use the module_def_ship_key and module_def_tech_key (which may have been
+    # updated by reward logic) to decide if FILENAME keys need further specialization.
+    # The module_def keys themselves are NOT changed by this step.
+    if module_def_ship_key == "standard" and module_def_tech_key == "photonix" and grid_width == 4 and grid_height == 3:
+        # This specific model filename is "model_sentinel_photonix_4x3.pth"
+        # but it's trained on "standard" "photonix" modules.
+        filename_ship_key = "standard"
+        filename_tech_key = "photonix_4x3"
+
+    if module_def_ship_key == "solar" and module_def_tech_key == "pulse" and grid_width == 4 and grid_height == 3:
+        # This specific model filename is "model_sentinel_photonix_4x3.pth"
+        # but it's trained on "standard" "photonix" modules.
+        filename_ship_key = "solar"
+        filename_tech_key = "pulse_4x3"
+
+    if module_def_ship_key == "solar" and module_def_tech_key == "photonix" and grid_width == 4 and grid_height == 3:
+        # This specific model filename is "model_sentinel_photonix_4x3.pth"
+        # but it's trained on "standard" "photonix" modules.
+        filename_ship_key = "solar"
+        filename_tech_key = "photonix_4x3"
+
+    # Add other grid-size specific conditions here, for example:
+    # if model_ship_key == "some_ship" and model_tech_key == "some_tech" and grid_width == X and grid_height == Y:
+    #     return "specific_model_ship_for_size", "specific_model_tech_for_size"
+
+    # --- Step 4: Return the (potentially modified) model keys ---
+    return {
+        "filename_ship_key": filename_ship_key,
+        "filename_tech_key": filename_tech_key,
+        "module_def_ship_key": module_def_ship_key,
+        "module_def_tech_key": module_def_tech_key,
+    }

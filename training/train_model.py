@@ -373,6 +373,7 @@ def train_model(
 def run_training_from_files(
     ship,
     tech_category_to_train: Optional[str],
+    specific_techs_to_train: Optional[List[str]],
     # <<< Remove grid_width, grid_height as direct parameters >>>
     # grid_width,
     # grid_height,
@@ -409,43 +410,54 @@ def run_training_from_files(
         print(f"An unexpected error occurred while getting ship data: {e}")
         return
 
-    # --- Determine Categories to Train ---
-    categories_to_process: List[str] = []
-    if tech_category_to_train is None:
-        # Train all categories
-        categories_to_process = list(ship_data["types"].keys())
-        print(f"No category specified. Planning to train all categories for ship '{ship}': {categories_to_process}")
-    else:
-        # Train a single specified category
-        if tech_category_to_train not in ship_data["types"]:
-             print(f"Error: Category '{tech_category_to_train}' not found for ship '{ship}'.")
-             return
-        categories_to_process = [tech_category_to_train]
-        print(f"Planning to train category: {tech_category_to_train}")
+    # --- Determine Techs to Train ---
+    tech_keys_to_process: List[str] = []
+
+    if specific_techs_to_train:
+        print(f"Attempting to train specific techs for ship '{ship}': {specific_techs_to_train}")
+        all_valid_ship_techs = set()
+        for cat_data_list in ship_data["types"].values():
+            for tech_item in cat_data_list:
+                if isinstance(tech_item, dict) and "key" in tech_item:
+                    all_valid_ship_techs.add(tech_item["key"])
+
+        for tech_key_input in specific_techs_to_train:
+            if tech_key_input in all_valid_ship_techs:
+                tech_keys_to_process.append(tech_key_input)
+            else:
+                print(f"  Warning: Specified tech key '{tech_key_input}' not found for ship '{ship}'. Skipping.")
+        if not tech_keys_to_process:
+            print(f"Error: None of the specified tech keys were valid for ship '{ship}'. Aborting.")
+            return
+        print(f"  Will train the following valid specific techs: {tech_keys_to_process}")
+
+    elif tech_category_to_train:
+        print(f"Attempting to train techs in category '{tech_category_to_train}' for ship '{ship}'.")
+        category_data = ship_data["types"].get(tech_category_to_train)
+        if not category_data or not isinstance(category_data, list):
+            print(f"  Error: Category '{tech_category_to_train}' not found or invalid for ship '{ship}'.")
+            return
+        tech_keys_to_process = [
+            t_data["key"] for t_data in category_data if isinstance(t_data, dict) and "key" in t_data
+        ]
+        if not tech_keys_to_process:
+            print(f"  Warning: No valid tech keys found in category '{tech_category_to_train}'. Skipping category.")
+        else:
+            print(f"  Will train techs in category '{tech_category_to_train}': {tech_keys_to_process}")
+    else: # Neither specific techs nor category specified - train all techs for the ship
+        print(f"No specific techs or category specified. Planning to train all techs for ship '{ship}'.")
+        for cat_data_list in ship_data["types"].values():
+            for tech_item in cat_data_list:
+                if isinstance(tech_item, dict) and "key" in tech_item:
+                    tech_keys_to_process.append(tech_item["key"])
+        print(f"  Will train all found techs: {tech_keys_to_process}")
 
     print(f"Looking for data files in subdirectories under: {os.path.abspath(base_data_source_dir)}")
-    # --- End Determine Categories ---
-
     trained_models = {}
+    # --- End Determine Techs to Train ---
 
-    # --- Loop through Categories ---
-    for category in categories_to_process:
-        print(f"\n{'='*15} Processing Category: {category} {'='*15}")
-        category_data = ship_data["types"].get(category)
-        if not category_data or not isinstance(category_data, list):
-            print(f"Warning: Category data for '{category}' is invalid or empty. Skipping.")
-            continue
-
-        tech_keys_to_train = [
-            tech_data["key"] for tech_data in category_data if isinstance(tech_data, dict) and "key" in tech_data
-        ]
-        if not tech_keys_to_train:
-            print(f"Warning: No valid tech keys found in category '{category}'. Skipping.")
-            continue
-        print(f"Found techs in category '{category}': {tech_keys_to_train}")
-
-        # --- Loop through Techs within the Category ---
-        for tech in tech_keys_to_train:
+    # --- Loop through Techs to Process ---
+    for tech in tech_keys_to_process:
             print(f"\n--- Processing Tech: {tech} ---")
 
             # <<< Determine num_output_classes AND grid dimensions >>>
@@ -643,7 +655,7 @@ def run_training_from_files(
 
             # --- 4. Train Model ---
             log_dir = os.path.join(base_log_dir, ship, tech)
-            model_filename = f"model_{ship}_{tech}.pth"
+            model_filename = f"model_{ship}_{tech}_{grid_width}x{grid_height}.pth"
             model_save_path = os.path.join(base_model_save_dir, model_filename)
 
             can_early_stop = val_loader is not None
@@ -662,23 +674,21 @@ def run_training_from_files(
                 early_stopping_metric=early_stopping_metric,
             )
             # --- End Train Model ---
-
             trained_models[tech] = model
-        # --- End Tech Loop ---
-    # --- End Category Loop ---
+    # --- End Tech Loop ---
 
     print(f"\n{'='*10} Training Pipeline Complete {'='*10}")
+    if not tech_keys_to_process:
+        print("No techs were processed in this run.")
 
 
 # --- Main Execution (Modified) ---
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train NMS Optimizer models with validation and early stopping.")
     # <<< Make category optional >>>
-    parser.add_argument("--category", type=str, default=None, help="Technology category to train models for (optional, trains all if omitted).")
+    parser.add_argument("--category", type=str, default=None, help="Technology category to train (optional, used if --techs is not provided).")
+    parser.add_argument("--techs", type=str, default=None, help="Comma-separated list of specific tech keys to train (e.g., 'pulse,hyper'). Overrides --category.")
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
-    # <<< Remove width and height arguments >>>
-    # parser.add_argument("--width", type=int, default=4, help="Grid width model was trained for.")
-    # parser.add_argument("--height", type=int, default=3, help="Grid height model was trained for.")
     parser.add_argument("--lr", type=float, default=2e-5, help="Initial learning rate.")
     parser.add_argument("--wd", type=float, default=5e-5, help="Weight decay (L2 regularization).")
     parser.add_argument("--epochs", type=int, default=200, help="Maximum number of training epochs.")
@@ -702,12 +712,19 @@ if __name__ == "__main__":
         print("Warning: Cannot use 'val_miou' for early stopping as torchmetrics is not installed. Defaulting to 'val_loss'.")
         effective_es_metric = "val_loss"
 
+    specific_techs_list = None
+    if args.techs:
+        specific_techs_list = [tech.strip() for tech in args.techs.split(',') if tech.strip()]
+        if not specific_techs_list: # Handle empty string or just commas
+            specific_techs_list = None
+
     config = {
         # <<< Remove width and height from config >>>
         # "grid_width": args.width, "grid_height": args.height,
         "ship": args.ship,
         # <<< Pass the potentially None category >>>
         "tech_category_to_train": args.category,
+        "specific_techs_to_train": specific_techs_list,
         "learning_rate": args.lr,
         "weight_decay": args.wd, "num_epochs": args.epochs, "batch_size": args.batch_size,
         "scheduler_factor": args.scheduler_factor, "scheduler_patience": args.scheduler_patience,
@@ -727,6 +744,7 @@ if __name__ == "__main__":
     run_training_from_files(
         ship=config["ship"],
         tech_category_to_train=config["tech_category_to_train"], # <<< Pass the value from args
+        specific_techs_to_train=config["specific_techs_to_train"],
         # grid_width=config["grid_width"], # Removed
         # grid_height=config["grid_height"], # Removed
         learning_rate=config["learning_rate"],
