@@ -1058,8 +1058,8 @@ def optimize_placement(grid, ship, modules, tech, player_owned_rewards=None, for
                 print("INFO -- ML refinement failed or model not found. Falling back to SA/Refine refinement.") # <<< KEEP: Important fallback >>>
                 sa_was_ml_fallback = True
                 refinement_method = "ML->SA/Refine Fallback"
-                # Assuming _handle_sa_refine_opportunity is defined elsewhere
-                refined_grid_candidate, refined_score_global = _handle_ml_opportunity(
+                # Assuming _handle_sa_refine_opportunity is defined elsewhere - THIS WAS THE BUG
+                refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
                     grid_after_initial_placement.copy(), # Pass a fresh copy
                     modules, ship, tech, player_owned_rewards,
                     opportunity_x, opportunity_y, window_width, window_height
