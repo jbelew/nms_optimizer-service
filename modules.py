@@ -842,7 +842,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanner": [
+            "Scanners": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -858,7 +858,7 @@ modules = {
                     "image": "fishing.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
+                        { "id": "FR", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1036,7 +1036,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
+                        { "id": "TM", "type": "core", "label": "Terrain Manipulator", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
                 },
             ],
@@ -1063,7 +1063,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanner": [
+            "Scanners": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -1079,11 +1079,11 @@ modules = {
                     "image": "fishing.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
+                        { "id": "FR", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
-                    "label": "Scanner",
+                    "label": "Scanners",
                     "key": "scanner",
                     "image": "mt-scanner.webp",
                     "color": "yellow",
@@ -1257,7 +1257,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
+                        { "id": "TM", "type": "core", "label": "Terrain Manipulator", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
                 },
             ],
@@ -1283,7 +1283,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanner": [
+            "Scanners": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -1299,11 +1299,11 @@ modules = {
                     "image": "fishing.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
+                        { "id": "FR", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
-                    "label": "Scanner",
+                    "label": "Scanners",
                     "key": "scanner",
                     "image": "mt-scanner.webp",
                     "color": "yellow",
@@ -1477,7 +1477,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
+                        { "id": "TM", "type": "core", "label": "Terrain Manipulator", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
                 },
             ],
@@ -1503,7 +1503,7 @@ modules = {
                     ],
                 },
             ],
-            "Scanner": [
+            "Scanners": [
                 {
                     "label": "Analysis Visor",
                     "key": "analysis",
@@ -1519,7 +1519,7 @@ modules = {
                     "image": "fishing.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "FR", "type": "core", "label": "F", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
+                        { "id": "FR", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "fishing.webp", },
                     ],
                 },
                 {
@@ -1697,7 +1697,7 @@ modules = {
                     "image": "terrian.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "TM", "type": "core", "label": "Fishing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
+                        { "id": "TM", "type": "core", "label": "Terrain Manipulator", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "terrian.webp", },
                     ],
                 },
             ],
@@ -1757,7 +1757,7 @@ modules = {
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Fuel EfficiencyUpgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "fleet-fuel.webp", },
                       ],
                 },
                 {
