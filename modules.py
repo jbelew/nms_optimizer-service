@@ -186,13 +186,29 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Scanners",
-                    "key": "scanners",
-                    "image": "scanner.webp",
+                    "label": "Conflict Scanner",
+                    "key": "conflict_scanner",
+                    "image": "conflict.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", },
-                        { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", },
+                        { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", }
+                    ],
+                },
+                {
+                    "label": "Economy Scanner",
+                    "key": "economy_scanner",
+                    "image": "economy.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", }
+                    ],
+                },
+                {
+                    "label": "Cargo Scan Deflector",
+                    "key": "cargo_scanner",
+                    "image": "cargo.webp",
+                    "color": "gray",
+                    "modules": [
                         { "id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cargo.webp", },
                     ],
                 },
@@ -419,13 +435,29 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Scanners",
-                    "key": "scanners",
-                    "image": "scanner.webp",
+                    "label": "Conflict Scanner",
+                    "key": "conflict_scanner",
+                    "image": "conflict.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", },
-                        { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", },
+                        { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", }
+                    ],
+                },
+                {
+                    "label": "Economy Scanner",
+                    "key": "economy_scanner",
+                    "image": "economy.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", }
+                    ],
+                },
+                {
+                    "label": "Cargo Scan Deflector",
+                    "key": "cargo_scanner",
+                    "image": "cargo.webp",
+                    "color": "gray",
+                    "modules": [
                         { "id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cargo.webp", },
                     ],
                 },
@@ -644,14 +676,30 @@ modules = {
                         { "id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "null.webp", },
                     ],
                 },
-                {
-                    "label": "Scanners",
-                    "key": "scanners",
-                    "image": "scanner.webp",
+                 {
+                    "label": "Conflict Scanner",
+                    "key": "conflict_scanner",
+                    "image": "conflict.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", },
-                        { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", },
+                        { "id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "conflict.webp", }
+                    ],
+                },
+                {
+                    "label": "Economy Scanner",
+                    "key": "economy_scanner",
+                    "image": "economy.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "economy.webp", }
+                    ],
+                },
+                {
+                    "label": "Cargo Scan Deflector",
+                    "key": "cargo_scanner",
+                    "image": "cargo.webp",
+                    "color": "gray",
+                    "modules": [
                         { "id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "cargo.webp", },
                     ],
                 },
