@@ -7,7 +7,7 @@ import sys
 import glob
 import time
 import argparse
-from tqdm import tqdm # For progress bar
+from tqdm import tqdm  # For progress bar
 
 # --- Add project root to sys.path ---
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -16,13 +16,13 @@ if project_root not in sys.path:
 # --- End Add project root ---
 
 # --- Imports from your project ---
-from training.train_model import ModulePlacementCNN, PlacementDataset # Import model and dataset
-from modules import modules # Your module definitions
-from modules_data import get_tech_modules_for_training # To get module mapping
-from grid_utils import Grid # Grid class
-from bonus_calculations import calculate_grid_score # Scoring function
-from module_placement import place_module # To build grids
-from simulated_annealing import simulated_annealing # For comparison (optional)
+from training.train_model import ModulePlacementCNN, PlacementDataset  # Import model and dataset
+from src.data_definitions.modules import modules  # Your module definitions
+from src.training.modules_data import get_tech_modules_for_training  # To get module mapping
+from grid_utils import Grid  # Grid class
+from bonus_calculations import calculate_grid_score  # Scoring function
+from module_placement import place_module  # To build grids
+from simulated_annealing import simulated_annealing  # For comparison (optional)
 
 # --- Import Metrics Library ---
 try:
@@ -32,8 +32,9 @@ except ImportError:
     sys.exit(1)
 
 # --- Configuration ---
-DEFAULT_TEST_DATA_DIR = "generated_batches" # Directory containing test .npz files
-DEFAULT_MODEL_DIR = "training/trained_models" # Directory containing trained models
+DEFAULT_TEST_DATA_DIR = "generated_batches"  # Directory containing test .npz files
+DEFAULT_MODEL_DIR = "training/trained_models"  # Directory containing trained models
+
 
 # --- Helper Function to Reconstruct Grid from Target Tensor ---
 def reconstruct_grid_from_target(
@@ -56,7 +57,7 @@ def reconstruct_grid_from_target(
             is_active = input_inactive_mask_np[y, x] == 0
             is_supercharged = input_supercharge_np[y, x] == 1.0
             grid.set_active(x, y, is_active)
-            grid.set_supercharged(x, y, is_supercharged and is_active) # SC only if active
+            grid.set_supercharged(x, y, is_supercharged and is_active)  # SC only if active
 
             # Get module ID from target tensor
             class_idx = target_tensor[y, x]
@@ -67,15 +68,23 @@ def reconstruct_grid_from_target(
                 if module_data:
                     try:
                         place_module(
-                            grid, x, y,
-                            module_data["id"], module_data["label"], tech,
-                            module_data["type"], module_data["bonus"],
-                            module_data["adjacency"], module_data["sc_eligible"],
-                            module_data["image"]
+                            grid,
+                            x,
+                            y,
+                            module_data["id"],
+                            module_data["label"],
+                            tech,
+                            module_data["type"],
+                            module_data["bonus"],
+                            module_data["adjacency"],
+                            module_data["sc_eligible"],
+                            module_data["image"],
                         )
                     except Exception as e:
-                        print(f"Warning: Error placing module {module_id} during ground truth reconstruction at ({x},{y}): {e}")
-                        grid.set_module(x, y, None) # Ensure cell is cleared on error
+                        print(
+                            f"Warning: Error placing module {module_id} during ground truth reconstruction at ({x},{y}): {e}"
+                        )
+                        grid.set_module(x, y, None)  # Ensure cell is cleared on error
                         grid.set_tech(x, y, None)
                 else:
                     # Should not happen if mappings are correct
@@ -87,6 +96,7 @@ def reconstruct_grid_from_target(
                 grid.set_module(x, y, None)
                 grid.set_tech(x, y, None)
     return grid
+
 
 # --- Helper Function to Build Predicted Grid (Confidence-Based) ---
 def build_predicted_grid(
@@ -105,13 +115,14 @@ def build_predicted_grid(
     """
     num_output_classes = output_probs.shape[0]
     potential_placements = []
-    for class_idx in range(1, num_output_classes): # Skip background class 0
+    for class_idx in range(1, num_output_classes):  # Skip background class 0
         module_id = reverse_module_mapping.get(class_idx)
-        if module_id is None: continue
+        if module_id is None:
+            continue
 
         for y in range(grid_height):
             for x in range(grid_width):
-                if input_inactive_mask_np[y, x] == 0: # Only active cells
+                if input_inactive_mask_np[y, x] == 0:  # Only active cells
                     score = output_probs[class_idx, y, x]
                     potential_placements.append(
                         {"score": score, "x": x, "y": y, "class_idx": class_idx, "module_id": module_id}
@@ -139,20 +150,29 @@ def build_predicted_grid(
         module_id = placement["module_id"]
         cell_coord = (x, y)
 
-        if module_id in placed_module_ids or cell_coord in used_cells: continue
+        if module_id in placed_module_ids or cell_coord in used_cells:
+            continue
         try:
-            if not predicted_grid.get_cell(x, y)["active"]: continue
-        except IndexError: continue
+            if not predicted_grid.get_cell(x, y)["active"]:
+                continue
+        except IndexError:
+            continue
 
         module_data = tech_module_defs_map.get(module_id)
         if module_data:
             try:
                 place_module(
-                    predicted_grid, x, y,
-                    module_data["id"], module_data["label"], tech,
-                    module_data["type"], module_data["bonus"],
-                    module_data["adjacency"], module_data["sc_eligible"],
-                    module_data["image"]
+                    predicted_grid,
+                    x,
+                    y,
+                    module_data["id"],
+                    module_data["label"],
+                    tech,
+                    module_data["type"],
+                    module_data["bonus"],
+                    module_data["adjacency"],
+                    module_data["sc_eligible"],
+                    module_data["image"],
                 )
                 placed_module_ids.add(module_id)
                 used_cells.add(cell_coord)
@@ -161,9 +181,10 @@ def build_predicted_grid(
                 try:
                     predicted_grid.set_module(x, y, None)
                     predicted_grid.set_tech(x, y, None)
-                except IndexError: pass
+                except IndexError:
+                    pass
         else:
-             print(f"Warning: Module data for predicted ID '{module_id}' not found.")
+            print(f"Warning: Module data for predicted ID '{module_id}' not found.")
 
     return predicted_grid
 
@@ -198,12 +219,12 @@ def evaluate_model(
     if not tech_modules_list:
         print(f"Error: No training modules found for {ship}/{tech}. Cannot evaluate.")
         return
-    tech_modules_list.sort(key=lambda m: m['id'])
+    tech_modules_list.sort(key=lambda m: m["id"])
     module_id_mapping = {module["id"]: i + 1 for i, module in enumerate(tech_modules_list)}
     reverse_module_mapping = {v: k for k, v in module_id_mapping.items()}
-    reverse_module_mapping[0] = None # Background class
+    reverse_module_mapping[0] = None  # Background class
     num_output_classes = len(module_id_mapping) + 1
-    tech_module_defs_map = {m['id']: m for m in tech_modules_list}
+    tech_module_defs_map = {m["id"]: m for m in tech_modules_list}
 
     # Load Model
     if not os.path.exists(model_path):
@@ -235,8 +256,8 @@ def evaluate_model(
         try:
             with np.load(filepath) as npz_file:
                 # Assuming test data has same structure 'X', 'y' as training
-                x_batch = npz_file["X"] # Input: Supercharge state (0 or 1)
-                y_batch = npz_file["y"] # Target: Module class index (0 for background)
+                x_batch = npz_file["X"]  # Input: Supercharge state (0 or 1)
+                y_batch = npz_file["y"]  # Target: Module class index (0 for background)
                 # Basic validation
                 if x_batch.shape[1:] != (grid_height, grid_width) or y_batch.shape[1:] != (grid_height, grid_width):
                     print(f"Warning: Shape mismatch in {filepath}. Skipping.")
@@ -268,7 +289,7 @@ def evaluate_model(
         test_loader = torch.utils.data.DataLoader(
             test_dataset,
             batch_size=batch_size,
-            shuffle=False, # No need to shuffle test data
+            shuffle=False,  # No need to shuffle test data
             num_workers=min(2, os.cpu_count()),
             pin_memory=torch.cuda.is_available(),
         )
@@ -280,20 +301,20 @@ def evaluate_model(
     criterion = torch.nn.CrossEntropyLoss()
     # Use 'macro' average for mIoU and Accuracy to treat all classes equally
     # Ignore index 0 (background) if desired, but usually included.
-    test_accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=num_output_classes, average='macro').to(device)
-    test_iou = torchmetrics.JaccardIndex(task="multiclass", num_classes=num_output_classes, average='macro').to(device)
+    test_accuracy = torchmetrics.Accuracy(task="multiclass", num_classes=num_output_classes, average="macro").to(device)
+    test_iou = torchmetrics.JaccardIndex(task="multiclass", num_classes=num_output_classes, average="macro").to(device)
     # Add other metrics if needed (Precision, Recall, F1)
     # test_f1 = torchmetrics.F1Score(task="multiclass", num_classes=num_output_classes, average='macro').to(device)
 
     total_test_loss = 0.0
     all_predicted_scores = []
     all_ground_truth_scores = []
-    all_sa_scores = [] # Optional
+    all_sa_scores = []  # Optional
 
     # --- 4. Evaluation Loop ---
     print("Starting evaluation...")
     start_eval_time = time.time()
-    model.eval() # Ensure model is in eval mode
+    model.eval()  # Ensure model is in eval mode
     with torch.no_grad():
         for i, (inputs, targets) in enumerate(tqdm(test_loader, desc="Evaluating")):
             inputs, targets = inputs.to(device), targets.to(device)
@@ -310,10 +331,10 @@ def evaluate_model(
 
             # --- Domain-Specific Score Calculation (Per Sample) ---
             output_probs_batch = F.softmax(outputs_logits, dim=1).cpu().numpy()
-            inputs_np_batch = inputs.squeeze(1).cpu().numpy() # Remove channel dim
+            inputs_np_batch = inputs.squeeze(1).cpu().numpy()  # Remove channel dim
             targets_np_batch = targets.cpu().numpy()
 
-            for j in range(inputs.size(0)): # Iterate through samples in the batch
+            for j in range(inputs.size(0)):  # Iterate through samples in the batch
                 # --- Input Grid State Reconstruction ---
                 # We need both supercharge state (from X) and inactive state.
                 # The current X only stores supercharge. We need to infer inactive.
@@ -337,20 +358,32 @@ def evaluate_model(
                 # --> WORKAROUND (Less Accurate): Assume all cells are active unless proven otherwise.
                 #     This might overestimate performance if the model places things in truly inactive spots.
                 # Let's proceed with the WORKAROUND for now, but acknowledge its limitation.
-                input_inactive_mask_np = np.zeros_like(target_np, dtype=np.int8) # Assume all active initially
+                input_inactive_mask_np = np.zeros_like(target_np, dtype=np.int8)  # Assume all active initially
 
                 # Build Predicted Grid
                 predicted_grid = build_predicted_grid(
-                    output_probs_batch[j], input_supercharge_np, input_inactive_mask_np,
-                    reverse_module_mapping, tech_module_defs_map, tech, grid_height, grid_width
+                    output_probs_batch[j],
+                    input_supercharge_np,
+                    input_inactive_mask_np,
+                    reverse_module_mapping,
+                    tech_module_defs_map,
+                    tech,
+                    grid_height,
+                    grid_width,
                 )
                 predicted_score = calculate_grid_score(predicted_grid, tech)
                 all_predicted_scores.append(predicted_score)
 
                 # Build Ground Truth Grid
                 ground_truth_grid = reconstruct_grid_from_target(
-                    target_np, input_supercharge_np, input_inactive_mask_np,
-                    reverse_module_mapping, tech_module_defs_map, tech, grid_height, grid_width
+                    target_np,
+                    input_supercharge_np,
+                    input_inactive_mask_np,
+                    reverse_module_mapping,
+                    tech_module_defs_map,
+                    tech,
+                    grid_height,
+                    grid_width,
                 )
                 ground_truth_score = calculate_grid_score(ground_truth_grid, tech)
                 all_ground_truth_scores.append(ground_truth_score)
@@ -361,25 +394,28 @@ def evaluate_model(
                     sa_input_grid = Grid(grid_width, grid_height)
                     for y_sa in range(grid_height):
                         for x_sa in range(grid_width):
-                             is_active = input_inactive_mask_np[y_sa, x_sa] == 0
-                             is_supercharged = input_supercharge_np[y_sa, x_sa] == 1.0
-                             sa_input_grid.set_active(x_sa, y_sa, is_active)
-                             sa_input_grid.set_supercharged(x_sa, y_sa, is_supercharged and is_active)
-                             sa_input_grid.set_module(x_sa, y_sa, None) # Start empty
-                             sa_input_grid.set_tech(x_sa, y_sa, None)
+                            is_active = input_inactive_mask_np[y_sa, x_sa] == 0
+                            is_supercharged = input_supercharge_np[y_sa, x_sa] == 1.0
+                            sa_input_grid.set_active(x_sa, y_sa, is_active)
+                            sa_input_grid.set_supercharged(x_sa, y_sa, is_supercharged and is_active)
+                            sa_input_grid.set_module(x_sa, y_sa, None)  # Start empty
+                            sa_input_grid.set_tech(x_sa, y_sa, None)
                     try:
                         # Use default SA parameters or pass them in
                         sa_grid, sa_score = simulated_annealing(
-                            sa_input_grid, ship, modules, tech,
-                            player_owned_rewards=None # Assuming SA doesn't need rewards here, adjust if needed
+                            sa_input_grid,
+                            ship,
+                            modules,
+                            tech,
+                            player_owned_rewards=None,  # Assuming SA doesn't need rewards here, adjust if needed
                         )
                         if sa_grid is not None:
                             all_sa_scores.append(sa_score)
                         else:
-                            all_sa_scores.append(0.0) # Append 0 if SA fails
+                            all_sa_scores.append(0.0)  # Append 0 if SA fails
                     except Exception as sa_e:
                         print(f"Warning: SA failed for sample {i*batch_size + j}: {sa_e}")
-                        all_sa_scores.append(0.0) # Append 0 on error
+                        all_sa_scores.append(0.0)  # Append 0 on error
 
     # --- 5. Compute and Print Final Metrics ---
     eval_time = time.time() - start_eval_time
@@ -405,12 +441,12 @@ def evaluate_model(
         print(f"Average Simulated Annealing Grid Score: {avg_sa_score:.4f}")
     print("-" * 30)
     # Calculate relative performance
-    if avg_ground_truth_score > 1e-6: # Avoid division by zero
-         score_ratio_vs_gt = avg_predicted_score / avg_ground_truth_score
-         print(f"Ratio Predicted Score / Ground Truth Score: {score_ratio_vs_gt:.4f}")
+    if avg_ground_truth_score > 1e-6:  # Avoid division by zero
+        score_ratio_vs_gt = avg_predicted_score / avg_ground_truth_score
+        print(f"Ratio Predicted Score / Ground Truth Score: {score_ratio_vs_gt:.4f}")
     if run_sa_comparison and avg_sa_score > 1e-6:
-         score_ratio_vs_sa = avg_predicted_score / avg_sa_score
-         print(f"Ratio Predicted Score / SA Score: {score_ratio_vs_sa:.4f}")
+        score_ratio_vs_sa = avg_predicted_score / avg_sa_score
+        print(f"Ratio Predicted Score / SA Score: {score_ratio_vs_sa:.4f}")
 
     print(f"{'='*32}\n")
 
@@ -428,9 +464,13 @@ if __name__ == "__main__":
     parser.add_argument("--ship", type=str, default="standard", help="Ship type the model was trained for.")
     parser.add_argument("--width", type=int, default=4, help="Grid width the model was trained for.")
     parser.add_argument("--height", type=int, default=3, help="Grid height the model was trained for.")
-    parser.add_argument("--test_data_dir", type=str, default=DEFAULT_TEST_DATA_DIR, help="Directory containing test .npz data files.")
+    parser.add_argument(
+        "--test_data_dir", type=str, default=DEFAULT_TEST_DATA_DIR, help="Directory containing test .npz data files."
+    )
     parser.add_argument("--batch_size", type=int, default=32, help="Batch size for evaluation.")
-    parser.add_argument("--compare_sa", action='store_true', help="Run Simulated Annealing on test inputs for comparison.")
+    parser.add_argument(
+        "--compare_sa", action="store_true", help="Run Simulated Annealing on test inputs for comparison."
+    )
 
     args = parser.parse_args()
 
@@ -439,9 +479,9 @@ if __name__ == "__main__":
     # Example: model_standard_pulse.pth -> tech = "pulse"
     try:
         model_filename = os.path.basename(args.model)
-        parts = model_filename.split('_')
-        if len(parts) >= 3 and parts[0] == 'model':
-            tech_key = parts[2].replace('.pth', '')
+        parts = model_filename.split("_")
+        if len(parts) >= 3 and parts[0] == "model":
+            tech_key = parts[2].replace(".pth", "")
             print(f"Inferred tech key '{tech_key}' from model filename.")
         else:
             raise ValueError("Could not infer tech key from model filename.")
@@ -451,12 +491,11 @@ if __name__ == "__main__":
         sys.exit(1)
     # --- End Tech Key Determination ---
 
-
     evaluate_model(
         model_path=args.model,
         test_data_dir=args.test_data_dir,
         ship=args.ship,
-        tech=tech_key, # Use inferred tech key
+        tech=tech_key,  # Use inferred tech key
         grid_width=args.width,
         grid_height=args.height,
         batch_size=args.batch_size,

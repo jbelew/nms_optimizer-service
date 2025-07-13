@@ -1,5 +1,5 @@
 import json
-from modules import modules
+from data_definitions.modules import modules
 
 
 def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
@@ -52,9 +52,7 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
                             modified_module["type"] = "bonus"  # Convert type to bonus
                             filtered_modules.append(modified_module)
                     else:
-                        filtered_modules.append(
-                            module
-                        )  # No need to copy non-reward modules
+                        filtered_modules.append(module)  # No need to copy non-reward modules
 
                 return filtered_modules
 
@@ -99,9 +97,7 @@ def get_tech_tree_json(ship):
         if "error" in tech_tree:
             return json.dumps({"error": tech_tree["error"]})  # Return error as JSON
         else:
-            return json.dumps(
-                tech_tree, indent=2
-            )  # Return tree as JSON with indentation for readability
+            return json.dumps(tech_tree, indent=2)  # Return tree as JSON with indentation for readability
     except Exception as e:
         return json.dumps({"error": str(e)})  # Catch any errors during tree generation
 

@@ -144,13 +144,13 @@ class Grid:
                         "value": cell_data["value"],
                         "type": cell_data["type"],
                         "total": cell_data["total"],
-                        "active": cell_data["active"],
+                        "active": cell_data.get("active", False),
                         "adjacency_bonus": cell_data["adjacency_bonus"],
                         "bonus": cell_data["bonus"],
                         "adjacency": cell_data["adjacency"],
                         "tech": cell_data["tech"],
-                        "supercharged": cell_data["supercharged"],
-                        "sc_eligible": cell_data["sc_eligible"],
+                        "supercharged": cell_data.get("supercharged", False),
+                        "sc_eligible": cell_data.get("sc_eligible", False),
                         "image": cell_data["image"],
                     }
                 )

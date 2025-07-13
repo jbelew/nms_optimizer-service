@@ -1,6 +1,6 @@
 # optimizer.py
 from grid_utils import Grid
-from modules_data import get_tech_modules, get_tech_modules_for_training, get_tech_tree, get_tech_tree_json
+from modules_utils import get_tech_modules, get_tech_modules_for_training, get_tech_tree, get_tech_tree_json
 # --- Remove these imports to break the cycle ---
 # from optimization_algorithms import optimize_placement, refine_placement, refine_placement_for_training, calculate_grid_score
 # --- Keep imports for functions defined elsewhere or used directly if any ---

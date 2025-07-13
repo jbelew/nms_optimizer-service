@@ -3,19 +3,28 @@ import argparse
 import sys
 import os
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
 from grid_utils import Grid
-from modules import modules
+from src.data_definitions.modules import modules
+
 # Import both solver options
-from optimization_algorithms import refine_placement_for_training # Keep for one option
+from optimization_algorithms import refine_placement_for_training  # Keep for one option
 from grid_display import print_grid, print_grid_compact
 from simulated_annealing import simulated_annealing
 
 
 # <<< Update function signature to accept ship_type >>>
-def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owned_rewards=None, supercharged_positions=None, solver_choice="sa"):
+def generate_solve_map(
+    ship_type,
+    tech,
+    grid_width=3,
+    grid_height=3,
+    player_owned_rewards=None,
+    supercharged_positions=None,
+    solver_choice="sa",
+):
     """
     Generates a single solve map for a given technology and ship type.
 
@@ -50,7 +59,7 @@ def generate_solve_map(ship_type, tech, grid_width=3, grid_height=3, player_owne
                 "initial_swap_probability": 0.55,
                 "final_swap_probability": 0.25,
                 "start_from_current_grid": False,
-                "max_processing_time": 600.0
+                "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
             optimized_grid, optimized_score = simulated_annealing(
@@ -107,7 +116,7 @@ if __name__ == "__main__":
         type=str,
         default="sa",
         choices=["sa", "refine_training"],
-        help="Solver to use: 'sa' for Simulated Annealing, 'refine_training' for refine_placement_for_training"
+        help="Solver to use: 'sa' for Simulated Annealing, 'refine_training' for refine_placement_for_training",
     )
     args = parser.parse_args()
 
@@ -129,7 +138,15 @@ if __name__ == "__main__":
             supercharged_positions.append((args.supercharged[i], args.supercharged[i + 1]))
 
     # <<< Pass ship_type to generate_solve_map >>>
-    solve_map, solve_score = generate_solve_map(ship_type, tech, grid_width, grid_height, player_owned_rewards, supercharged_positions=supercharged_positions, solver_choice=solver)
+    solve_map, solve_score = generate_solve_map(
+        ship_type,
+        tech,
+        grid_width,
+        grid_height,
+        player_owned_rewards,
+        supercharged_positions=supercharged_positions,
+        solver_choice=solver,
+    )
 
     if solve_map:
         # <<< Use ship_type in output >>>

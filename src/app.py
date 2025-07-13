@@ -2,9 +2,11 @@
 from flask import Flask, jsonify, request
 from flask_compress import Compress
 from flask_cors import CORS
-from optimization_algorithms import optimize_placement 
-from optimizer import get_tech_tree_json, Grid 
-from modules import modules # Keep modules as it's used directly
+from optimization_algorithms import optimize_placement
+from optimizer import get_tech_tree_json, Grid
+from data_definitions.modules import modules  # Keep modules as it's used directly
+from data_definitions.recommended_builds import recommended_builds
+from data_definitions.grids import grids
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +29,6 @@ def optimize_grid():
     if tech is None:
         return jsonify({"error": "No tech specified"}), 400
 
-
     grid_data = data.get("grid")
     if grid_data is None:
         return jsonify({"error": "No grid specified"}), 400
@@ -37,7 +38,13 @@ def optimize_grid():
     try:
         # Pass the forced_solve flag to optimize_placement
         optimized_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            grid, ship, modules, tech, player_owned_rewards, forced=forced_solve, experimental_window_sizing=experimental_window_sizing_req
+            grid,
+            ship,
+            modules,
+            tech,
+            player_owned_rewards,
+            forced=forced_solve,
+            experimental_window_sizing=experimental_window_sizing_req,
         )
 
         if solve_method == "Pattern No Fit":
@@ -72,7 +79,28 @@ def get_technology_tree(ship_name):
     """Endpoint to get the technology tree for a given ship."""
     try:
         tree_data = get_tech_tree_json(ship_name)
-        return tree_data
+
+        # Check if a recommended build exists for the current ship_name
+        recommended_build = recommended_builds.get(ship_name)
+
+        # If tree_data is a JSON string, parse it to a dict, add recommended_build, then re-serialize
+        # Otherwise, assume it's already a dict and add directly
+        import json
+
+        if isinstance(tree_data, str):
+            tree_dict = json.loads(tree_data)
+        else:
+            tree_dict = tree_data
+
+        if recommended_build:
+            tree_dict["recommended_build"] = recommended_build
+
+        # Check if a grid definition exists for the current ship_name
+        grid_definition = grids.get(ship_name)
+        if grid_definition:
+            tree_dict["grid_definition"] = grid_definition
+
+        return jsonify(tree_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

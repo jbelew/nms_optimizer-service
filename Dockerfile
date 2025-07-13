@@ -9,10 +9,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the service code
-COPY . .
+COPY . /app/src
 
 # Expose the port your service listens on (change if different)
 EXPOSE 2016
 
 # Default command to run the service
-CMD ["python", "app.py"]
+CMD ["python", "src/app.py"]

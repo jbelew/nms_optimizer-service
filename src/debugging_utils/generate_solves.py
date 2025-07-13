@@ -4,17 +4,27 @@ import sys
 import os
 import json
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
 from grid_utils import Grid
-from modules import modules
+from src.data_definitions.modules import modules
+
 # Import both solver options
 from optimization_algorithms import refine_placement, refine_placement_for_training
 from grid_display import print_grid, print_grid_compact
 from simulated_annealing import simulated_annealing
 
-def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owned_rewards=None, supercharged_positions=None, solver_choice="sa"):
+
+def generate_solve_map(
+    ship_type,
+    tech,
+    grid_width=4,
+    grid_height=3,
+    player_owned_rewards=None,
+    supercharged_positions=None,
+    solver_choice="sa",
+):
     """
     Generates a single solve map for a given technology.
 
@@ -49,7 +59,7 @@ def generate_solve_map(ship_type, tech, grid_width=4, grid_height=3, player_owne
                 "initial_swap_probability": 0.6,
                 "final_swap_probability": 0.1,
                 "start_from_current_grid": False,
-                "max_processing_time": 600.0 
+                "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
             optimized_grid, optimized_score = simulated_annealing(
@@ -121,8 +131,12 @@ def generate_all_solves(modules, solver_choice="refine", tech_to_generate=None, 
                 else:
                     grid_width, grid_height = 4, 3
 
-                print(f"Generating solve map for {tech_key} - {weapon_key} ({module_count} modules) - Grid: {grid_width}x{grid_height}")
-                solve_map, solve_score = generate_solve_map(tech_key, weapon_key, grid_width, grid_height, solver_choice=solver_choice)
+                print(
+                    f"Generating solve map for {tech_key} - {weapon_key} ({module_count} modules) - Grid: {grid_width}x{grid_height}"
+                )
+                solve_map, solve_score = generate_solve_map(
+                    tech_key, weapon_key, grid_width, grid_height, solver_choice=solver_choice
+                )
                 if solve_map:
                     solve_map_template = generate_solve_map_template(solve_map)
                     all_solves[tech_key][weapon_key] = {
@@ -166,6 +180,7 @@ def load_trails_stub(filepath):
         print(f"Warning: Invalid format in trails stub file at {filepath}. Skipping trails insertion.")
         return None
 
+
 def save_solves_to_file(solves_data, filename="new_solves.json", trails_stub_filepath=None):
     """Saves the solves data to a JSON file."""
     output = "solves = " + json.dumps(solves_data, indent=4, sort_keys=False)
@@ -206,7 +221,7 @@ if __name__ == "__main__":
         type=str,
         default="sa",
         choices=["sa", "refine"],
-        help="Solver to use: 'sa' for Simulated Annealing, 'refine' for refine_placement (brute-force permutations)"
+        help="Solver to use: 'sa' for Simulated Annealing, 'refine' for refine_placement (brute-force permutations)",
     )
     args = parser.parse_args()
 
@@ -214,10 +229,14 @@ if __name__ == "__main__":
         all_solves = generate_all_solves(modules, solver_choice=args.solver)
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     elif args.tech and args.weapon:
-        all_solves = generate_all_solves(modules, solver_choice=args.solver, tech_to_generate=args.tech, weapon_to_generate=args.weapon)
+        all_solves = generate_all_solves(
+            modules, solver_choice=args.solver, tech_to_generate=args.tech, weapon_to_generate=args.weapon
+        )
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     elif args.tech:
         all_solves = generate_all_solves(modules, solver_choice=args.solver, tech_to_generate=args.tech)
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     else:
-        print("Please use the --generate-all flag to generate all solves, the --tech flag to generate a specific tech, or the --tech and --weapon flags to generate a specific weapon within a tech.")
+        print(
+            "Please use the --generate-all flag to generate all solves, the --tech flag to generate a specific tech, or the --tech and --weapon flags to generate a specific weapon within a tech."
+        )

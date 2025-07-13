@@ -23,8 +23,8 @@ from optimization_algorithms import (
     clear_all_modules_of_tech,
 )
 from grid_utils import Grid
-from modules import modules as sample_modules  # <<< Use alias for clarity
-from modules import solves as sample_solves  # <<< Use alias for clarity
+from src.data_definitions.modules import modules as sample_modules  # <<< Use alias for clarity
+from src.data_definitions.modules import solves as sample_solves  # <<< Use alias for clarity
 
 
 # --- Test Class ---
@@ -261,7 +261,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_calculate_score.return_value = 5.0
 
         # Act
-        result_grid, percentage, solved_bonus, solve_method= optimize_placement(
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
         )
 
@@ -296,9 +296,9 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         )
 
         # Assert
-        mock_apply_pattern.assert_called() # Pattern application was attempted
-        mock_sa.assert_not_called()       # SA should NOT be called
-        mock_find_opp.assert_not_called() # No refinement opportunity finding
+        mock_apply_pattern.assert_called()  # Pattern application was attempted
+        mock_sa.assert_not_called()  # SA should NOT be called
+        mock_find_opp.assert_not_called()  # No refinement opportunity finding
         mock_check_placed.assert_not_called()
         mock_calculate_score.assert_not_called()
 
@@ -306,7 +306,6 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.assertEqual(percentage, 0.0)
         self.assertEqual(solved_bonus, 0.0)
         self.assertEqual(solve_method, "Pattern No Fit")
-
 
     @patch("optimization_algorithms.apply_pattern_to_grid")
     @patch("optimization_algorithms.simulated_annealing")  # Mock the initial SA
@@ -337,7 +336,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_check_placed.return_value = True
 
         # Act
-        result_grid, percentage, solved_bonus, solve_method = optimize_placement( # Call with forced=True
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(  # Call with forced=True
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=True
         )
 

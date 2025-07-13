@@ -1,5 +1,5 @@
 # solve_map_utils.py
-from modules_data import get_tech_modules
+from modules_utils import get_tech_modules
 
 def filter_solves(solves, ship, modules, tech, player_owned_rewards=None):
     """
@@ -33,9 +33,11 @@ def filter_solves(solves, ship, modules, tech, player_owned_rewards=None):
             return {}  # Return empty dict if no modules are found
 
         owned_module_ids = {module["id"] for module in tech_modules}
+        # Initialize the 'map' and 'score' for the filtered solve
+        filtered_solves[ship][tech]["map"] = {}
+        filtered_solves[ship][tech]["score"] = solve_data["score"]
+
         for position, module_id in solve_data["map"].items(): # Access the nested 'map'
             if module_id is None or module_id in owned_module_ids:
-                filtered_solves[ship][tech]["map"] = filtered_solves[ship][tech].get("map", {})
                 filtered_solves[ship][tech]["map"][position] = module_id
-        filtered_solves[ship][tech]["score"] = solve_data["score"] # Copy the score
     return filtered_solves

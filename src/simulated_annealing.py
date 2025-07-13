@@ -3,7 +3,7 @@ import random
 import math
 import time
 from grid_display import print_grid_compact, print_grid
-from modules_data import get_tech_modules
+from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
 

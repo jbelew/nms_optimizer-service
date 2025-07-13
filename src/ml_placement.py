@@ -11,23 +11,24 @@ from collections import Counter
 # --- Add project root to sys.path if needed ---
 # Ensure the project root is in the path if running this script directly
 # or if imports fail in your environment.
-# project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# if project_root not in sys.path:
-#     sys.path.insert(0, project_root)
+import sys
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 # --- End Add project root ---
 
 # --- Imports from your project ---
 try:
     from training.model_definition import ModulePlacementCNN
     # <<< Import both module definition sources >>>
-    from modules_data import get_tech_modules, get_tech_modules_for_training
+    from modules_utils import get_tech_modules, get_tech_modules_for_training
     from modules_for_training import modules as modules_for_training_defs # For model loading
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
     from module_placement import place_module, clear_all_modules_of_tech
     from bonus_calculations import calculate_grid_score
     from grid_utils import Grid
-    from model_mapping import get_model_keys # Import the modified get_model_keys
+    from data_definitions.model_mapping import get_model_keys # Import the modified get_model_keys
     from simulated_annealing import simulated_annealing # Import simulated_annealing
     from grid_display import print_grid_compact, print_grid # Optional for debugging
 except ImportError as e:
