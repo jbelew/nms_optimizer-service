@@ -8,7 +8,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
 from grid_utils import Grid
-from src.data_definitions.modules import modules
+from data_definitions.modules import modules
 
 # Import both solver options
 from optimization_algorithms import refine_placement, refine_placement_for_training

@@ -23,8 +23,8 @@ from optimization_algorithms import (
     clear_all_modules_of_tech,
 )
 from grid_utils import Grid
-from src.data_definitions.modules import modules as sample_modules  # <<< Use alias for clarity
-from src.data_definitions.modules import solves as sample_solves  # <<< Use alias for clarity
+from data_definitions.modules import modules as sample_modules  # <<< Use alias for clarity
+from data_definitions.solves import solves as sample_solves  # <<< Use alias for clarity
 
 
 # --- Test Class ---

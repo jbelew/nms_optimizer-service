@@ -702,8 +702,8 @@ grids = {
         ],
     },
     "nomad": {
-        "superchargedFixed": False,
-        "gridFixed": False,
+        "superchargedFixed": True,
+        "gridFixed": True,
         "grid": [
             [
                 {"active": True},
@@ -780,8 +780,8 @@ grids = {
         ],
     },
     "pilgram": {
-        "superchargedFixed": False,
-        "gridFixed": False,
+        "superchargedFixed": True,
+        "gridFixed": True,
         "grid": [
             [
                 {"active": True},
@@ -858,8 +858,8 @@ grids = {
         ],
     },
     "roamer": {
-        "superchargedFixed": False,
-        "gridFixed": False,
+        "superchargedFixed": True,
+        "gridFixed": True,
         "grid": [
             [
                 {"active": True},
@@ -936,8 +936,8 @@ grids = {
         ],
     },
     "naution": {
-        "superchargedFixed": False,
-        "gridFixed": False,
+        "superchargedFixed": True,
+        "gridFixed": True,
         "grid": [
             [
                 {"active": True},
@@ -1014,8 +1014,8 @@ grids = {
         ],
     },
     "colossus": {
-        "superchargedFixed": False,
-        "gridFixed": False,
+        "superchargedFixed": True,
+        "gridFixed": True,
         "grid": [
             [
                 {"active": True},
@@ -1166,6 +1166,84 @@ grids = {
                 {"active": False},
                 {"active": False},
                 {"active": False},
+            ],
+        ],
+    },
+    "exosuit": {
+        "superchargedFixed": True,
+        "gridFixed": False,
+        "grid": [
+            [
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True, "supercharged": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+            ],
+            [
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True, "supercharged": True},
+                {"active": True},
+            ],
+            [
+                {"active": True},
+                {"active": True},
+                {"active": True, "supercharged": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+            ],
+            [
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+            ],
+            [
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+            ],
+            [
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
+                {"active": True},
             ],
         ],
     },

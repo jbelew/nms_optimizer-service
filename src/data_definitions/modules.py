@@ -1875,7 +1875,7 @@ modules = {
                     "label": "Fusion Engine",
                     "key": "fusion",
                     "image": "exocraft/fusion.webp",
-                    "color": "jade",
+                    "color": "orange",
                     "modules": [
                         { "id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exocraft/fusion.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Fusion Engine Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/fusion-upgrade.webp", },
@@ -1937,7 +1937,7 @@ modules = {
                     "label": "Exocraft Mining Laser",
                     "key": "mining",
                     "image": "exocraft/mining.webp",
-                    "color": "blue",
+                    "color": "green",
                     "modules": [
                         { "id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining.webp", },
                         { "id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/advanced-mining.webp", },
@@ -2048,7 +2048,7 @@ modules = {
                     "label": "Fusion Engine",
                     "key": "fusion",
                     "image": "exocraft/fusion.webp",
-                    "color": "jade",
+                    "color": "orange",
                     "modules": [
                         { "id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exocraft/fusion.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Fusion Engine Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/fusion-upgrade.webp", },
@@ -2110,7 +2110,7 @@ modules = {
                     "label": "Exocraft Mining Laser",
                     "key": "mining",
                     "image": "exocraft/mining.webp",
-                    "color": "blue",
+                    "color": "green",
                     "modules": [
                         { "id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining.webp", },
                         { "id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/advanced-mining.webp", },
@@ -2221,7 +2221,7 @@ modules = {
                     "label": "Fusion Engine",
                     "key": "fusion",
                     "image": "exocraft/fusion.webp",
-                    "color": "jade",
+                    "color": "orange",
                     "modules": [
                         { "id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exocraft/fusion.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Fusion Engine Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/fusion-upgrade.webp", },
@@ -2283,7 +2283,7 @@ modules = {
                     "label": "Exocraft Mining Laser",
                     "key": "mining",
                     "image": "exocraft/mining.webp",
-                    "color": "blue",
+                    "color": "green",
                     "modules": [
                         { "id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining.webp", },
                         { "id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/advanced-mining.webp", },
@@ -2394,7 +2394,7 @@ modules = {
                     "label": "Humboldt Drive",
                     "key": "humboldt",
                     "image": "exocraft/humboldt.webp",
-                    "color": "jade",
+                    "color": "orange",
                     "modules": [
                         { "id": "HD", "type": "core", "label": "Humboldt Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exocraft/humboldt.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Humboldt Drive Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/humboldt-upgrade.webp", },
@@ -2418,7 +2418,7 @@ modules = {
                     "label": "Dredging Laser",
                     "key": "dredging",
                     "image": "exocraft/dredging.webp",
-                    "color": "blue",
+                    "color": "green",
                     "modules": [
                         { "id": "DL", "type": "core", "label": "Dredging Laser", "bonus": 1.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/dredging.webp", },
                     ],
@@ -2467,7 +2467,7 @@ modules = {
                     "label": "Fusion Engine",
                     "key": "fusion",
                     "image": "exocraft/fusion.webp",
-                    "color": "jade",
+                    "color": "orange",
                     "modules": [
                         { "id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exocraft/fusion.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Fusion Engine Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/fusion-upgrade.webp", },
@@ -2529,7 +2529,7 @@ modules = {
                     "label": "Exocraft Mining Laser",
                     "key": "mining",
                     "image": "exocraft/mining.webp",
-                    "color": "blue",
+                    "color": "green",
                     "modules": [
                         { "id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining.webp", },
                         { "id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/advanced-mining.webp", },
@@ -2640,7 +2640,7 @@ modules = {
                     "label": "Daedalus Engine",
                     "key": "daedalus",
                     "image": "exocraft/daedalus.webp",
-                    "color": "jade",
+                    "color": "orange",
                     "modules": [
                         { "id": "DE", "type": "core", "label": "Daedalus Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exocraft/daedalus.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Daedalus Engine Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/daedalus-upgrade.webp", },
@@ -2658,78 +2658,108 @@ modules = {
                          { "id": "AF", "type": "core", "label": "Ariadne's Flame", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/ariadnes.webp", },
                     ],
                 },
+                {
+                    "label": "Icarus Fuel System",
+                    "key": "icarus",
+                    "image": "exocraft/icarus.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "FS", "type": "core", "label": "Icarus Fuel System", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/icarus.webp", },
+                    ],
+                },
+                {
+                    "label": "Hardframe Legs",
+                    "key": "hardframe-legs",
+                    "image": "exocraft/hardframe-legs.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "HL", "type": "core", "label": "Hardframe Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": False, "image": "exocraft/hardframe-legs.webp", },
+                    ],
+                },
+                {
+                    "label": "Liquidator Legs",
+                    "key": "liquidator-legs",
+                    "image": "exocraft/liquidator-legs.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "LL", "type": "core", "label": "Liqiquidator Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": False, "image": "exocraft/liquidator-legs.webp", },
+                    ],
+                },
             ],
             "Weaponry": [
                 {
                     "label": "Exocraft Mining Laser",
                     "key": "mining",
                     "image": "exocraft/mining.webp",
-                    "color": "blue",
+                    "color": "green",
                     "modules": [
                         { "id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining.webp", },
-                        { "id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/advanced-mining.webp", },
+                        { "id": "AL", "type": "bonus", "label": "Precision Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/precision.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
                         { "id": "Xc", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
                     ],
                 },
                 {
-                    "label": "Mounted Cannon",
-                    "key": "mounted",
-                    "image": "exocraft/mounted.webp",
+                    "label": "Minotaur Cannon",
+                    "key": "minotaur",
+                    "image": "exocraft/minotaur.webp",
                     "color": "blue",
                     "modules": [
-                        { "id": "MC", "type": "core", "label": "Mounted Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Mounted Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Mounted Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Mounted Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", },
+                        { "id": "MC", "type": "core", "label": "Minotaur Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/minotaur.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Minotaur Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/minotaur-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Minotaur Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/minotaur-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Minotaur Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/minotaur-upgrade.webp", },
                     ],
                 },
                 {
-                    "label": "Mounted Flamethrower",
-                    "key": "flamethrower",
-                    "image": "exocraft/flamethrower.webp",
+                    "label": "Hardframe Right Arm",
+                    "key": "hardframe-right",
+                    "image": "exocraft/hardframe-right.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "MF", "type": "core", "label": "Mounted Flameethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
+                        { "id": "HR", "type": "core", "label": "Hardframe Right Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/hardframe-right.webp", },
+                    ],
+                },
+                {
+                    "label": "Hardframe Left Arm",
+                    "key": "hardframe-left",
+                    "image": "exocraft/hardframe-left.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "HL", "type": "core", "label": "Hardframe Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/hardframe-left.webp", },
+                    ],
+                },
+                {
+                    "label": "Liquidator Right Arm",
+                    "key": "liquidator-right",
+                    "image": "exocraft/liquidator-right.webp",
+                    "color": "sky",
+                    "modules": [
+                        { "id": "LR", "type": "core", "label": "Liquidator Right Arm", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "exocraft/liquidator-right.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Flamethrower Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/liquidator-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Flamethrower Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/liquidator-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Flamethrower Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/liquidator-upgrade.webp", },
+                    ],
+                },
+                {
+                    "label": "Liquidator Left Arm",
+                    "key": "liquidator-left",
+                    "image": "exocraft/liquidator-left.webp",
+                    "color": "gray",
+                    "modules": [
+                        { "id": "LL", "type": "core", "label": "Liquidator Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/liquidator-left.webp", },
                     ],
                 },
             ],    
             "Defensive Systems": [
                 {
-                    "label": "Thermal Buffer",
-                    "key": "thermal",
-                    "image": "exocraft/thermal.webp",
+                    "label": "Environment Control Unit",
+                    "key": "environment",
+                    "image": "exocraft/environment.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "TB", "type": "core", "label": "Thermal Buffer", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/thermal.webp", },
-                    ],
-                },
-                {
-                    "label": "Megawatt Heater",
-                    "key": "cold",
-                    "image": "exocraft/cold.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "MH", "type": "core", "label": "Megawatt Heater", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/cold.webp", },
-                    ],
-                },
-                {
-                    "label": "Neutron Shielding",
-                    "key": "radiation",
-                    "image": "exocraft/radiation.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "NS", "type": "core", "label": "Neutron Shielding", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/radiation.webp", },
-                    ],
-                },
-                {
-                    "label": "Air Filtration Unit",
-                    "key": "toxic",
-                    "image": "exocraft/toxic.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "AF", "type": "core", "label": "Air Filtration Unit", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/toxic.webp", },
+                         { "id": "EC", "type": "core", "label": "Environment Control Unit", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/environment.webp", },
                     ],
                 },
             ],
@@ -2737,10 +2767,324 @@ modules = {
                 {
                     "label": "Radar Array",
                     "key": "array",
-                    "image": "exocraft/radarrayar.webp",
+                    "image": "exocraft/array.webp",
                     "color": "gray",
                     "modules": [
                          { "id": "RA", "type": "core", "label": "Radar Array", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/array.webp", }, 
+                    ],
+                },
+                {
+                    "label": "AI Pilot",
+                    "key": "ai",
+                    "image": "exocraft/ai.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "AI", "type": "core", "label": "AI Pilot", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/ai.webp", },
+                    ],
+                },
+                {
+                    "label": "Minotaur Bore",
+                    "key": "bore",
+                    "image": "exocraft/bore.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "MB", "type": "core", "label": "Minotaur Bore", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/bore.webp", },
+                    ],
+                },
+                {
+                    "label": "Hardframe Body",
+                    "key": "hardframe-body",
+                    "image": "exocraft/hardframe-body.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "HB", "type": "core", "label": "Hardframe Body", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/hardframe-body.webp", },
+                    ],
+                },
+                {
+                    "label": "Liquidator Body",
+                    "key": "liquidator-body",
+                    "image": "exocraft/liquidator-body.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "LB", "type": "core", "label": "Liquidator Body", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/liquidator-body.webp", },
+                    ],
+                },
+            ],
+        },
+    },
+    "exosuit": {
+        "label": "Exosuit",
+        "type": "Other",
+        "types": {
+            "Movement Systems": [
+                {
+                    "label": "Jetpack",
+                    "key": "jetpack",
+                    "image": "exosuit/jetpack.webp",
+                    "color": "yellow",
+                    "modules": [
+                        { "id": "JP", "type": "core", "label": "Jetpack", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exosuit/jetpack.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Jetpack Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/jetpack-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Jetpack Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/jetpack-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Jetpack Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/jetpack-upgrade.webp", },
+                        { "id": "WJ", "type": "bonus", "label": "Efficient Water Jets", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/waterjets.webp", },
+                        { "id": "NS", "type": "bonus", "label": "Neural Stimulator", "bonus": 0.10, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/neural.webp", },
+                        { "id": "AB", "type": "bonus", "label": "Airburst Engine", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/airburst.webp", },
+                   ],
+                },
+                {
+                    "label": "Rocket Boots",
+                    "key": "boots",
+                    "image": "exosuit/boots.webp",
+                    "color": "yellow",
+                    "modules": [
+                        { "id": "RB", "type": "bonus", "label": "Rocket Boots", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/boots.webp", },
+                   ],
+                },
+            ],
+            "Life Support": [
+                {
+                    "label": "Life Support",
+                    "key": "life",
+                    "image": "exosuit/life.webp",
+                    "color": "blue",
+                    "modules": [
+                        { "id": "LS", "type": "core", "label": "Life Support", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": False, "image": "exosuit/life.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Life Support Upgrade Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/life-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Life Support Upgrade Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/life-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Life Support Upgrade Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/life-upgrade.webp", },
+ 					    { "id": "RR", "type": "bonus", "label": "Oxygen Rereouter", "bonus": 0.00, "adjacency": "none", "sc_eligible": True, "image": "exosuit/rerouter.webp", },
+ 					    { "id": "OR", "type": "bonus", "label": "Oxygen Recycler", "bonus": 0.10, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/recycler.webp", },
+                   ],
+                },
+                {
+                    "label": "Sheild Lattice",
+                    "key": "protection",
+                    "image": "exosuit/protection.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "SL", "type": "bonus", "label": "Sheild Lattice", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Sheild Lattice Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                   ],
+                },
+                {
+                    "label": "Rebuilt Exosuit Module",
+                    "key": "rebuilt",
+                    "image": "exosuit/rebuilt.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Rebuilt Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Rebuilt Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Rebuilt Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                   ],
+                },
+                {
+                    "label": "Forbidden Exosuit Module",
+                    "key": "forbidden",
+                    "image": "exosuit/forbidden.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Forbidden Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Forbidden Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                   ],
+                },
+                {
+                    "label": "Star Seed",
+                    "key": "starseed",
+                    "image": "exosuit/starseed.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "SS", "type": "core", "label": "Star Seed", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/starseed.webp", },
+                    ],
+                },
+                {
+                    "label": "Mark of the Denier",
+                    "key": "denier",
+                    "image": "exosuit/denier.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "MD", "type": "core", "label": "Mark of the Denier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/denier.webp", },
+                    ],
+                },
+                {
+                    "label": "Remembrance",
+                    "key": "remembrance",
+                    "image": "exosuit/remembrance.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "RM", "type": "core", "label": "Remembrance", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/remembrance.webp", },
+                    ],
+                },
+            ],
+            "Hazard Protection": [
+                {
+                    "label": "Hazard Protection",
+                    "key": "hazard",
+                    "image": "exosuit/hazard.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "HP", "type": "core", "label": "Hazard Protection", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/hazard.webp", },
+                    ],
+                },
+                {
+                    "label": "Anomaly Suppressor",
+                    "key": "anomaly",
+                    "image": "exosuit/anomaly.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "AS", "type": "core", "label": "Anomaly Suppressor", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/anomaly.webp", },
+                    ],
+                },
+                {
+                    "label": "Pressure Membrane",
+                    "key": "pressure",
+                    "image": "exosuit/pressure.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "PM", "type": "core", "label": "Pressure Membrane", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/pressure.webp", },
+                    ],
+                },
+                {
+                    "label": "Defense Systems",
+                    "key": "defense",
+                    "image": "exosuit/defense.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Defense Systems Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Defense Systems Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Defense Systems Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                   ],
+                },
+
+                {
+                    "label": "Coolant Network",
+                    "key": "coolant",
+                    "image": "exosuit/coolant.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "CN", "type": "bonus", "label": "Coolant Networt", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Coolant Network Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Coolant Network Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Coolant Network Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
+                   ],
+                },
+                {
+                    "label": "Radiation Deflector",
+                    "key": "radiation",
+                    "image": "exosuit/radiation.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "RD", "type": "bonus", "label": "Radiation Deflector", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Radiation Deflector Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Radiation Deflector Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Radiation Deflector Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
+                   ],
+                },
+               {
+                    "label": "Aeration Membrane",
+                    "key": "aeration",
+                    "image": "exosuit/aeration.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Aeration Membrane Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
+                   ],
+                },
+               {
+                    "label": "Thermic Layer",
+                    "key": "thermic",
+                    "image": "exosuit/thermic.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "TL", "type": "bonus", "label": "Thermic Layer", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Thermic Layer Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Thermic Layer Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Thermic Layer Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
+                   ],
+                },
+               {
+                    "label": "Toxin Suppressor",
+                    "key": "toxin",
+                    "image": "exosuit/toxin.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "TS", "type": "bonus", "label": "Toxin Suppressor", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Toxin Suppressor Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Toxin Suppressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Toxin Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
+                   ],
+                },
+            ],
+            "Utilities": [
+                {
+                    "label": "Tranlators",
+                    "key": "translators",
+                    "image": "exosuit/translator.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "Ta", "type": "bonus", "label": "Artemis' Translator", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/artemis-translator.webp", },
+                        { "id": "Tb", "type": "bonus", "label": "Simple Translator", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/simple.webp", },
+                        { "id": "Tc", "type": "bonus", "label": "Superior Translator", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/superior.webp", },
+                        { "id": "Td", "type": "bonus", "label": "Advanced Translator", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/advanced.webp", },
+                   ],
+                },
+                {
+                    "label": "Personal Refiner",
+                    "key": "refiner",
+                    "image": "exosuit/refiner.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "PR", "type": "core", "label": "Personal Refiner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/refiner.webp", },
+                    ],
+                },
+                {
+                    "label": "Haz-Mat Gauntlets",
+                    "key": "hazmat",
+                    "image": "exosuit/hazmat.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "HG", "type": "core", "label": "Haz-Mat Gauntlets", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/hazmat.webp", },
+                    ],
+                },
+                {
+                    "label": "Nutrient Ingestor",
+                    "key": "nutrient",
+                    "image": "exosuit/nutrient.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "NI", "type": "core", "label": "Nutrient Ingestor", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/nutrient.webp", },
+                    ],
+                },
+                {
+                    "label": "Exo Skiff",
+                    "key": "skiff",
+                    "image": "exosuit/skiff.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "ES", "type": "core", "label": "Exo Skiff", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/skiff.webp", },
+                    ],
+                },
+                {
+                    "label": "Trade Rocket",
+                    "key": "trade",
+                    "image": "exosuit/trade.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "TR", "type": "core", "label": "Trade Rocket", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/trade.webp", },
+                    ],
+                },
+                {
+                    "label": "Exocraft Summoning Unit",
+                    "key": "exocraft",
+                    "image": "exosuit/exocraft.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "ES", "type": "core", "label": "Exosuit Summoning Unit", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/exocraft.webp", },
                     ],
                 },
             ],
