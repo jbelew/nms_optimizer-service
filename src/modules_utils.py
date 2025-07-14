@@ -123,6 +123,7 @@ def get_tech_tree(ship):
                     "modules": tech["modules"],
                     "image": tech.get("image"),  # Get the image value
                     "color": tech.get("color"),  # Get the color value
+                    "module_count": len([m for m in tech["modules"] if m.get("type") != "reward"]),  # Add module count, excluding reward modules
                 }
             )
 
