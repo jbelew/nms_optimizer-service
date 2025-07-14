@@ -227,12 +227,12 @@ recommended_builds = {
             ],
         ]
     },
-    "naution": {
+    "nautilon": {
         "layout": [
             [
                 {"tech": "sonar", "module": "HS", "adjacency_bonus": False},
-                {"tech": "naution", "module": "Xa", "adjacency_bonus": True},
-                {"tech": "naution", "module": "Xc", "adjacency_bonus": True},
+                {"tech": "nautilon", "module": "Xa", "adjacency_bonus": True},
+                {"tech": "nautilon", "module": "Xc", "adjacency_bonus": True},
                 {"active": True},
                 {"tech": "humboldt", "module": "Xa", "adjacency_bonus": True, "supercharged": True},
                 {"tech": "humboldt", "module": "OG", "adjacency_bonus": True},
@@ -243,8 +243,8 @@ recommended_builds = {
             ],
             [
                 {"tech": "dredging", "module": "DL", "adjacency_bonus": False},
-                {"tech": "naution", "module": "NC", "adjacency_bonus": True, "supercharged": True},
-                {"tech": "naution", "module": "Xb", "adjacency_bonus": True},
+                {"tech": "nautilon", "module": "NC", "adjacency_bonus": True, "supercharged": True},
+                {"tech": "nautilon", "module": "Xb", "adjacency_bonus": True},
                 {"active": True},
                 {"tech": "humboldt", "module": "Xc", "adjacency_bonus": True},
                 {"tech": "humboldt", "module": "Xb", "adjacency_bonus": True},

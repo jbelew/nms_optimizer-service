@@ -2385,8 +2385,8 @@ modules = {
             ],
         },
     },
-    "naution": {
-        "label": "Naution",
+    "nautilon": {
+        "label": "Nautilon",
         "type": "Exocraft",
         "types": {
             "Propulsion": [
@@ -2433,15 +2433,15 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Naution Cannon",
-                    "key": "naution",
-                    "image": "exocraft/naution.webp",
+                    "label": "Nautilon Cannon",
+                    "key": "nautilon",
+                    "image": "exocraft/nautilon.webp",
                     "color": "blue",
                     "modules": [
-                        { "id": "NC", "type": "core", "label": "Naution Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/naution.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Naution Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/naution-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Naution Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/naution-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Naution Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/naution-upgrade.webp", },
+                        { "id": "NC", "type": "core", "label": "Nautilon Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/nautilon.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Nautilon Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/nautilon-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Nautilon Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/nautilon-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Nautilon Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/nautilon-upgrade.webp", },
                     ],
                 },
             ],    

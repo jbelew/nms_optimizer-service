@@ -1125,7 +1125,7 @@ solves = {
 			"score": 2.1003
 		},
     },
-    "naution": {
+    "nautilon": {
         "humboldt": {
             "map": {
                 (0, 0): "OG",
@@ -1137,7 +1137,7 @@ solves = {
             },
 			"score": 2.1713
 		},
-        "naution": {
+        "nautilon": {
 			"map": {
 				(0, 0): "NC", 
 				(1, 0): "Xa", 
