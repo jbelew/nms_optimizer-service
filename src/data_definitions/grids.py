@@ -779,7 +779,7 @@ grids = {
             ],
         ],
     },
-    "pilgram": {
+    "pilgrim": {
         "superchargedFixed": True,
         "gridFixed": True,
         "grid": [

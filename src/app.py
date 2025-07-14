@@ -81,7 +81,7 @@ def get_technology_tree(ship_name):
         tree_data = get_tech_tree_json(ship_name)
 
         # Check if a recommended build exists for the current ship_name
-        recommended_build = recommended_builds.get(ship_name)
+        recommended_builds_list = recommended_builds.get(ship_name)
 
         # If tree_data is a JSON string, parse it to a dict, add recommended_build, then re-serialize
         # Otherwise, assume it's already a dict and add directly
@@ -92,8 +92,9 @@ def get_technology_tree(ship_name):
         else:
             tree_dict = tree_data
 
-        if recommended_build:
-            tree_dict["recommended_build"] = recommended_build
+        if recommended_builds_list:
+            # Now expecting a list of builds, so name the key accordingly
+            tree_dict["recommended_builds"] = recommended_builds_list
 
         # Check if a grid definition exists for the current ship_name
         grid_definition = grids.get(ship_name)

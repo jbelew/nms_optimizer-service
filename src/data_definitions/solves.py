@@ -1045,7 +1045,7 @@ solves = {
 			"score": 2.1003
 		},
     },
-    "pilgram": {
+    "pilgrim": {
         "fusion": {
 			"map": {
 				(0, 0): "FE", 

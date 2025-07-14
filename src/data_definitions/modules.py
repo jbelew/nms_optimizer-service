@@ -2039,7 +2039,7 @@ modules = {
             ],
         },
     },
-    "pilgram": {
+    "pilgrim": {
         "label": "Pilgram",
         "type": "Exocraft",
         "types": {
@@ -2628,6 +2628,16 @@ modules = {
  
                     ],
                 },
+                {
+                    "label": "Mineral Processing Rig",
+                    "key": "mineral",
+                    "image": "exocraft/mineral.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "MP", "type": "core", "label": "Mineral Processing Rig", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/mineral.webp", },
+ 
+                    ],
+                },
             ],
         },
     },
@@ -2873,7 +2883,7 @@ modules = {
                     "label": "Rebuilt Exosuit Module",
                     "key": "rebuilt",
                     "image": "exosuit/rebuilt.webp",
-                    "color": "white",
+                    "color": "crimson",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Rebuilt Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Rebuilt Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
@@ -2884,7 +2894,7 @@ modules = {
                     "label": "Forbidden Exosuit Module",
                     "key": "forbidden",
                     "image": "exosuit/forbidden.webp",
-                    "color": "white",
+                    "color": "crimson",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Forbidden Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
@@ -2951,7 +2961,7 @@ modules = {
                     "label": "Defense Systems",
                     "key": "defense",
                     "image": "exosuit/defense.webp",
-                    "color": "white",
+                    "color": "crimson",
                     "modules": [
                         { "id": "Xa", "type": "bonus", "label": "Defense Systems Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Defense Systems Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
