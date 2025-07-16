@@ -2840,15 +2840,7 @@ modules = {
                         { "id": "WJ", "type": "bonus", "label": "Efficient Water Jets", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/waterjets.webp", },
                         { "id": "NS", "type": "bonus", "label": "Neural Stimulator", "bonus": 0.10, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/neural.webp", },
                         { "id": "AB", "type": "bonus", "label": "Airburst Engine", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/airburst.webp", },
-                   ],
-                },
-                {
-                    "label": "Rocket Boots",
-                    "key": "boots",
-                    "image": "exosuit/boots.webp",
-                    "color": "yellow",
-                    "modules": [
-                        { "id": "RB", "type": "bonus", "label": "Rocket Boots", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/boots.webp", },
+                        { "id": "RB", "type": "reward", "label": "Rocket Boots", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/boots.webp", },
                    ],
                 },
             ],
