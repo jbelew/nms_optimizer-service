@@ -591,7 +591,7 @@ recommended_builds = {
                     {"tech": "toxin", "module": "Xc", "adjacency_bonus": True},
                 ],
                 [
-                    {"tech": "remembrance", "module": "RM", "adjacency_bonus": True},
+                    {"tech": "exocraft", "module": "ES", "adjacency_bonus": True},
                     {"tech": "jetpack", "module": "NS", "adjacency_bonus": True},
                     {"tech": "jetpack", "module": "Xc", "adjacency_bonus": True},
                     {"tech": "translators", "module": "Ta", "adjacency_bonus": True},
@@ -618,8 +618,8 @@ recommended_builds = {
                     {"tech": "life", "module": "Xa", "adjacency_bonus": True},
                     {"tech": "life", "module": "LS", "adjacency_bonus": True},
                     {"tech": "life", "module": "OR", "adjacency_bonus": True},
+                    {"tech": "remembrance", "module": "RM", "adjacency_bonus": True},
                     {"tech": "starseed", "module": "SS", "adjacency_bonus": True},
-                    {"tech": "denier", "module": "MD", "adjacency_bonus": True},
                     {"tech": "aeration", "module": "Xc", "adjacency_bonus": True},
                     {"tech": "aeration", "module": "AM", "adjacency_bonus": True},
                     {"tech": "radiation", "module": "Xc", "adjacency_bonus": True},

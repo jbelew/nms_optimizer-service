@@ -20,10 +20,9 @@ if project_root not in sys.path:
 # --- End Add project root ---
 
 # --- Imports from your project ---
-from model_definition import ModulePlacementCNN # Import model definition
-from modules_data import get_tech_modules_for_training
-from modules_for_training import modules
-# <<< Import determine_window_dimensions >>>
+from training.model_definition import ModulePlacementCNN
+from modules_utils import get_tech_modules_for_training
+from data_definitions.modules import modules
 from optimization_algorithms import determine_window_dimensions
 from sklearn.model_selection import train_test_split
 
