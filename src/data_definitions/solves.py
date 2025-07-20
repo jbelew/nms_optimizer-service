@@ -1234,15 +1234,6 @@ solves = {
             },
             "score": 2.2031
         },
-        "liquidator-right": {
-            "map": {
-                (0, 0): "LR",
-                (1, 0): "Xb",
-                (0, 1): "Xc",
-                (1, 1): "Xa",
-            },
-            "score": 1.9632
-        },
     },
     "exosuit": {
         "jetpack": {

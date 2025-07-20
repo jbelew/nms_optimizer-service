@@ -95,7 +95,7 @@ recommended_builds = {
     ],
     "pilgrim": [
         {
-            "title": "Pilgram",
+            "title": "Pilgrim",
             "layout": [
                 [
                     {"tech": "radar", "module": "ER", "adjacency_bonus": False},

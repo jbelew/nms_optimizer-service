@@ -1943,7 +1943,7 @@ modules = {
                         { "id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/advanced-mining.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", }
                     ],
                 },
                 {
@@ -1955,7 +1955,7 @@ modules = {
                         { "id": "MC", "type": "core", "label": "Mounted Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Mounted Cannon Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Mounted Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Mounted Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Mounted Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mounted-upgrade.webp", }
                     ],
                 },
                 {
@@ -1964,7 +1964,7 @@ modules = {
                     "image": "exocraft/flamethrower.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "MF", "type": "core", "label": "Mounted Flameethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
+                        { "id": "MF", "type": "core", "label": "Mounted Flamethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", }
                     ],
                 },
             ],    
@@ -1975,7 +1975,7 @@ modules = {
                     "image": "exocraft/thermal.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "TB", "type": "core", "label": "Thermal Buffer", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/thermal.webp", },
+                         { "id": "TB", "type": "core", "label": "Thermal Buffer", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/thermal.webp", }
                     ],
                 },
                 {
@@ -1984,7 +1984,7 @@ modules = {
                     "image": "exocraft/cold.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "MH", "type": "core", "label": "Megawatt Heater", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/cold.webp", },
+                         { "id": "MH", "type": "core", "label": "Megawatt Heater", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/cold.webp", }
                     ],
                 },
                 {
@@ -1993,7 +1993,7 @@ modules = {
                     "image": "exocraft/radiation.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "NS", "type": "core", "label": "Neutron Shielding", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/radiation.webp", },
+                         { "id": "NS", "type": "core", "label": "Neutron Shielding", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/radiation.webp", }
                     ],
                 },
                 {
@@ -2002,7 +2002,7 @@ modules = {
                     "image": "exocraft/toxic.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "AF", "type": "core", "label": "Air Filtration Unit", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/toxic.webp", },
+                         { "id": "AF", "type": "core", "label": "Air Filtration Unit", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/toxic.webp", }
                     ],
                 },
             ],
@@ -2013,7 +2013,7 @@ modules = {
                     "image": "exocraft/radar.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "ER", "type": "core", "label": "Exocraft Radar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/radar.webp", }, 
+                         { "id": "ER", "type": "core", "label": "Exocraft Radar", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/radar.webp", }
                     ],
                 },
                 {
@@ -2022,7 +2022,7 @@ modules = {
                     "image": "exocraft/amplifier.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "RA", "type": "core", "label": "Radar Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/amplifier.webp", },
+                         { "id": "RA", "type": "core", "label": "Radar Amplifier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/amplifier.webp", }
  
                     ],
                 },
@@ -2032,7 +2032,7 @@ modules = {
                     "image": "exocraft/power.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "PR", "type": "core", "label": "Power Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/power.webp", },
+                         { "id": "PR", "type": "core", "label": "Power Resonator", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exocraft/power.webp", }
  
                     ],
                 },
@@ -2040,7 +2040,7 @@ modules = {
         },
     },
     "pilgrim": {
-        "label": "Pilgram",
+        "label": "Pilgrim",
         "type": "Exocraft",
         "types": {
             "Propulsion": [
@@ -2137,7 +2137,7 @@ modules = {
                     "image": "exocraft/flamethrower.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "MF", "type": "core", "label": "Mounted Flameethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
+                        { "id": "MF", "type": "core", "label": "Mounted Flamethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
                     ],
                 },
             ],    
@@ -2310,7 +2310,7 @@ modules = {
                     "image": "exocraft/flamethrower.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "MF", "type": "core", "label": "Mounted Flameethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
+                        { "id": "MF", "type": "core", "label": "Mounted Flamethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
                     ],
                 },
             ],    
@@ -2556,7 +2556,7 @@ modules = {
                     "image": "exocraft/flamethrower.webp",
                     "color": "gray",
                     "modules": [
-                        { "id": "MF", "type": "core", "label": "Mounted Flameethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
+                        { "id": "MF", "type": "core", "label": "Mounted Flamethrower", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/flamethrower.webp", },
                     ],
                 },
             ],    
