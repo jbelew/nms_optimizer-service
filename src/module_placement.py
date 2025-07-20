@@ -1,5 +1,17 @@
 # module_placement.py
-def place_module(grid, x, y, module_id, label, tech, module_type, bonus, adjacency, sc_eligible, image):
+def place_module(
+    grid,
+    x,
+    y,
+    module_id,
+    label,
+    tech,
+    module_type,
+    bonus,
+    adjacency,
+    sc_eligible,
+    image,
+):
     """Places a module on the grid at the specified position."""
     grid.cells[y][x]["module"] = module_id
     grid.cells[y][x]["label"] = label
@@ -10,6 +22,7 @@ def place_module(grid, x, y, module_id, label, tech, module_type, bonus, adjacen
     grid.cells[y][x]["sc_eligible"] = sc_eligible
     grid.cells[y][x]["image"] = image
     grid.cells[y][x]["module_position"] = (x, y)
+
 
 def clear_all_modules_of_tech(grid, tech):
     """Clears all modules of the specified tech type from the entire grid."""

@@ -1,5 +1,4 @@
 # grid_display.py
-import copy
 from grid_utils import Grid
 from data_definitions.modules import modules  # Import the modules dictionary
 

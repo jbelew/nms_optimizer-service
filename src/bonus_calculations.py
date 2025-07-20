@@ -1,8 +1,6 @@
 # bonus_calculations.py
 from grid_utils import Grid
-import math
 from enum import Enum
-from copy import deepcopy
 
 # --- Constants ---
 

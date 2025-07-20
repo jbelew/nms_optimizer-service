@@ -1,9 +1,8 @@
 # optimization_algorithms.py
 from grid_utils import Grid
 from modules_utils import get_tech_modules, get_tech_modules_for_training
-from grid_display import print_grid_compact, print_grid
+from grid_display import print_grid_compact
 from bonus_calculations import calculate_grid_score
-from modules_utils import get_tech_modules_for_training
 from module_placement import (
     place_module,
     clear_all_modules_of_tech,
@@ -50,7 +49,9 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
     # Generate all permutations of module placements
     for placement in permutations(available_positions, len(tech_modules)):
         # Shuffle the tech_modules list for each permutation
-        shuffled_tech_modules = tech_modules[:]  # Create a copy to avoid modifying the original list
+        shuffled_tech_modules = tech_modules[
+            :
+        ]  # Create a copy to avoid modifying the original list
         random.shuffle(shuffled_tech_modules)
 
         # Increment the iteration counter
@@ -87,7 +88,9 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
             # print_grid(optimal_grid)
 
     # Print the total number of iterations
-    print(f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'")
+    print(
+        f"INFO -- refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'"
+    )
 
     return optimal_grid, highest_bonus
 
@@ -100,7 +103,9 @@ def _evaluate_permutation_worker(args):
     Creates its own grid copy internally to avoid modifying the shared base.
     """
     # 1. Unpack arguments
-    placement_indices, original_base_grid, tech_modules, available_positions, tech = args
+    placement_indices, original_base_grid, tech_modules, available_positions, tech = (
+        args
+    )
     num_modules_to_place = len(tech_modules)
 
     # 2. Create a local copy *inside* the worker for this specific permutation
@@ -143,11 +148,15 @@ def _evaluate_permutation_worker(args):
                 module["image"],
             )
         except IndexError:
-            print(f"ERROR: IndexError during place_module at ({x},{y}) in worker. Skipping.")
+            print(
+                f"ERROR: IndexError during place_module at ({x},{y}) in worker. Skipping."
+            )
             placement_successful = False
             break
         except Exception as e:  # Catch other potential errors
-            print(f"ERROR: Exception during place_module at ({x},{y}) in worker: {e}. Skipping.")
+            print(
+                f"ERROR: Exception during place_module at ({x},{y}) in worker: {e}. Skipping."
+            )
             placement_successful = False
             break
 
@@ -183,7 +192,10 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     num_modules_to_place = len(tech_modules)
     available_positions = [
-        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["active"]
+        (x, y)
+        for y in range(grid.height)
+        for x in range(grid.width)
+        if grid.get_cell(x, y)["active"]
     ]
     num_available = len(available_positions)
 
@@ -226,7 +238,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     # --- Task Preparation ---
     # Generate permutations of *indices* into available_positions
-    permutation_indices_iterator = permutations(range(num_available), num_modules_to_place)
+    permutation_indices_iterator = permutations(
+        range(num_available), num_modules_to_place
+    )
 
     # Package arguments: Pass the single base_working_grid. It gets pickled by the pool mechanism.
     tasks = (
@@ -243,7 +257,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     if num_permutations != float("inf"):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
         chunks_per_worker_target = 500  # Tune this value
-        calculated_chunksize = int(num_permutations // (num_workers * chunks_per_worker_target))  # Ensure integer
+        calculated_chunksize = int(
+            num_permutations // (num_workers * chunks_per_worker_target)
+        )  # Ensure integer
         chunksize = max(chunksize, calculated_chunksize)
         # Add an upper limit to prevent huge chunks consuming too much memory at once
         max_chunksize = 50000  # Tune this based on memory observations
@@ -257,10 +273,14 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     print(f"-- Setting maxtasksperchild={maxtasks}")
     with multiprocessing.Pool(processes=num_workers, maxtasksperchild=maxtasks) as pool:
         # imap_unordered is good for performance when order doesn't matter
-        results_iterator = pool.imap_unordered(_evaluate_permutation_worker, tasks, chunksize=chunksize)
+        results_iterator = pool.imap_unordered(
+            _evaluate_permutation_worker, tasks, chunksize=chunksize
+        )
 
         # Progress reporting frequency
-        update_frequency = max(1, chunksize * num_workers // 4)  # Update reasonably often
+        update_frequency = max(
+            1, chunksize * num_workers // 4
+        )  # Update reasonably often
 
         for score, placement_indices in results_iterator:
             processed_count += 1
@@ -278,7 +298,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
                 num_permutations != float("inf") and processed_count == num_permutations
             ):
                 elapsed = time.time() - start_time
-                progress_percent = (processed_count / num_permutations * 100) if num_permutations != float("inf") else 0
+                (processed_count / num_permutations * 100) if num_permutations != float(
+                    "inf"
+                ) else 0
                 # Use \r and flush=True for inline updating
                 print(
                     f"\r-- Processed ~{processed_count // 1000}k permutations. Best: {highest_bonus:.4f} ({elapsed:.1f}s)",
@@ -290,7 +312,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     end_time = time.time()
     total_time = end_time - start_time
-    print(f"-- Parallel evaluation finished in {total_time:.2f} seconds. Processed {processed_count} permutations.")
+    print(
+        f"-- Parallel evaluation finished in {total_time:.2f} seconds. Processed {processed_count} permutations."
+    )
     if total_time > 0:
         perms_per_sec = processed_count / total_time
         print(f"-- Rate: {perms_per_sec:,.0f} permutations/sec")
@@ -344,7 +368,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     # --- Handle No Valid Placement Found ---
     elif num_modules_to_place > 0:  # Check if modules existed but no solution found
-        print(f"Warning: No optimal grid found for {ship}/{tech}. Returning cleared grid.")
+        print(
+            f"Warning: No optimal grid found for {ship}/{tech}. Returning cleared grid."
+        )
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)
         highest_bonus = 0.0  # Score is 0 for a cleared grid
@@ -439,7 +465,9 @@ def mirror_pattern_vertically(pattern):
     return mirrored_pattern
 
 
-def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards=None):
+def apply_pattern_to_grid(
+    grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards=None
+):
     """Applies a pattern to a *copy* of the grid at a given starting position.
 
     Returns a new grid with the pattern applied, or None if the pattern cannot be applied.
@@ -448,7 +476,9 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
     new_grid = grid.copy()
 
     tech_modules_available = get_tech_modules(modules, ship, tech, player_owned_rewards)
-    if tech_modules_available is None:  # Should not happen if filter_solves worked correctly
+    if (
+        tech_modules_available is None
+    ):  # Should not happen if filter_solves worked correctly
         print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
         return None, 0
     # Create a mapping from module id to module data
@@ -457,12 +487,19 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
     # --- Pre-check 1: Determine if the pattern is even placeable by the player and fits basic constraints ---
     # Count how many modules the pattern *intends* to place that the player actually owns.
     expected_module_placements_in_pattern = 0
-    for module_id_in_pattern_val in pattern.values():  # Iterate through values (module IDs)
-        if module_id_in_pattern_val is not None and module_id_in_pattern_val in available_module_ids_map:
+    for (
+        module_id_in_pattern_val
+    ) in pattern.values():  # Iterate through values (module IDs)
+        if (
+            module_id_in_pattern_val is not None
+            and module_id_in_pattern_val in available_module_ids_map
+        ):
             expected_module_placements_in_pattern += 1
 
     # If the pattern has defined module IDs, but none are owned by the player, this pattern is not applicable.
-    if expected_module_placements_in_pattern == 0 and any(pid is not None for pid in pattern.values()):
+    if expected_module_placements_in_pattern == 0 and any(
+        pid is not None for pid in pattern.values()
+    ):
         return None, 0
 
     # --- Pre-check 2: Check for overlaps, off-grid, or inactive cells for REQUIRED modules ---
@@ -472,7 +509,10 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
         grid_y = start_y + pattern_y
 
         # Is this part of the pattern trying to place an owned module?
-        if module_id_in_pattern is not None and module_id_in_pattern in available_module_ids_map:
+        if (
+            module_id_in_pattern is not None
+            and module_id_in_pattern in available_module_ids_map
+        ):
             if not (0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height):
                 # A required module (owned, non-None) would be off-grid. This pattern variation doesn't fit.
                 return None, 0
@@ -482,14 +522,19 @@ def apply_pattern_to_grid(grid, pattern, modules, tech, start_x, start_y, ship, 
                 # Cannot place a required module on an inactive cell.
                 return None, 0
 
-            if current_cell_on_new_grid["module"] is not None and current_cell_on_new_grid["tech"] != tech:
+            if (
+                current_cell_on_new_grid["module"] is not None
+                and current_cell_on_new_grid["tech"] != tech
+            ):
                 # Overlap with a module of a *different* technology.
                 return None, 0
         # If module_id_in_pattern is None, or not in available_module_ids_map, we don't check its target cell strictly here,
         # as it won't be placed anyway or it's an intentionally empty slot.
 
     # If all pre-checks pass, proceed with actual placement attempt
-    clear_all_modules_of_tech(new_grid, tech)  # Clear target tech modules for a clean placement
+    clear_all_modules_of_tech(
+        new_grid, tech
+    )  # Clear target tech modules for a clean placement
 
     successfully_placed_this_variation = 0
     for (pattern_x, pattern_y), module_id_in_pattern in pattern.items():
@@ -557,7 +602,10 @@ def get_all_unique_pattern_variations(original_pattern):
             patterns_to_try.append(rotated_pattern_90)
             rotated_patterns.add(tuple(rotated_pattern_90.items()))
             rotated_pattern_180 = rotate_pattern(rotated_pattern_90)
-            if rotated_pattern_180 != original_pattern and tuple(rotated_pattern_180.items()) not in rotated_patterns:
+            if (
+                rotated_pattern_180 != original_pattern
+                and tuple(rotated_pattern_180.items()) not in rotated_patterns
+            ):
                 patterns_to_try.append(rotated_pattern_180)
                 rotated_patterns.add(tuple(rotated_pattern_180.items()))
                 rotated_pattern_270 = rotate_pattern(rotated_pattern_180)
@@ -629,7 +677,10 @@ def calculate_pattern_adjacency_score(grid, tech):
                 for adj_x, adj_y in adjacent_positions:
                     if 0 <= adj_x < grid.width and 0 <= adj_y < grid.height:
                         adjacent_cell = grid.get_cell(adj_x, adj_y)
-                        if adjacent_cell["module"] is not None and adjacent_cell["tech"] != tech:
+                        if (
+                            adjacent_cell["module"] is not None
+                            and adjacent_cell["tech"] != tech
+                        ):
                             total_adjacency_score += module_edge_weight
 
     return total_adjacency_score
@@ -637,7 +688,15 @@ def calculate_pattern_adjacency_score(grid, tech):
 
 # --- Helper function for ML opportunity refinement ---
 def _handle_ml_opportunity(
-    grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y, window_width, window_height
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards,
+    opportunity_x,
+    opportunity_y,
+    window_width,
+    window_height,
 ):
     """Handles the ML-based refinement within an opportunity window."""
     from ml_placement import ml_placement  # Keep import local if possible
@@ -651,7 +710,12 @@ def _handle_ml_opportunity(
     # 1. Create localized grid specifically for ML
     # <<< Pass window dimensions to create_localized_grid_ml >>>
     localized_grid_ml, start_x, start_y, original_state_map = create_localized_grid_ml(
-        grid, opportunity_x, opportunity_y, tech, window_width, window_height  # <<< Pass dimensions
+        grid,
+        opportunity_x,
+        opportunity_y,
+        tech,
+        window_width,
+        window_height,  # <<< Pass dimensions
     )
 
     # 2. Run ML placement on the localized grid
@@ -684,13 +748,23 @@ def _handle_ml_opportunity(
         grid_copy = grid.copy()
         restore_original_state(grid_copy, original_state_map)
         original_score = calculate_grid_score(grid_copy, tech)
-        print(f"INFO -- Returning grid with original score after failed ML: {original_score:.4f}")
+        print(
+            f"INFO -- Returning grid with original score after failed ML: {original_score:.4f}"
+        )
         return None, 0.0
 
 
 # --- Existing function for SA/Refine opportunity ---
 def _handle_sa_refine_opportunity(
-    grid, modules, ship, tech, player_owned_rewards, opportunity_x, opportunity_y, window_width, window_height
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards,
+    opportunity_x,
+    opportunity_y,
+    window_width,
+    window_height,
 ):
     """Handles the SA/Refine-based refinement within an opportunity window."""
     print(
@@ -736,7 +810,7 @@ def _handle_sa_refine_opportunity(
 
     # Process SA/Refine result (logic remains the same)
     if temp_refined_grid is not None:
-        temp_refined_bonus_local = calculate_grid_score(temp_refined_grid, tech)
+        calculate_grid_score(temp_refined_grid, tech)
         # Apply changes back to the main grid copy (grid - which was cleared earlier)
         clear_all_modules_of_tech(grid, tech)
         apply_localized_grid_changes(grid, temp_refined_grid, tech, start_x, start_y)
@@ -751,7 +825,13 @@ def _handle_sa_refine_opportunity(
 
 
 def optimize_placement(
-    grid, ship, modules, tech, player_owned_rewards=None, forced=False, experimental_window_sizing=False
+    grid,
+    ship,
+    modules,
+    tech,
+    player_owned_rewards=None,
+    forced=False,
+    experimental_window_sizing=False,
 ):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
@@ -794,7 +874,9 @@ def optimize_placement(
     if not tech_modules:
         # This case should ideally be caught by has_empty_active_slots or other checks,
         # but as a safeguard if get_tech_modules returns None or empty for a valid tech key.
-        print(f"Warning: No modules retrieved for ship '{ship}', tech '{tech}'. Cannot proceed with optimization.")
+        print(
+            f"Warning: No modules retrieved for ship '{ship}', tech '{tech}'. Cannot proceed with optimization."
+        )
         # Return a grid that's essentially empty for this tech, with 0 score.
         cleared_grid_on_fail = grid.copy()
         clear_all_modules_of_tech(cleared_grid_on_fail, tech)
@@ -810,7 +892,9 @@ def optimize_placement(
         if has_empty_active_slots:
             break
     if not has_empty_active_slots:
-        raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
+        raise ValueError(
+            f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'."
+        )
 
     # Initialize variables for tracking best results
     solved_grid = grid.copy()  # Grid state after initial pattern/SA fallback
@@ -829,14 +913,18 @@ def optimize_placement(
     filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
 
     # --- Initial Placement Strategy ---
-    if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
+    if ship not in filtered_solves or (
+        ship in filtered_solves and tech not in filtered_solves[ship]
+    ):
         # --- Special Case: No Solve Available ---
         print(
             f"INFO -- No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots."
         )  # <<< KEEP: Important outcome >>>
         solve_method = "Initial Placement (No Solve)"  # <<< Set method >>>
         # Assuming place_all_modules_in_empty_slots is defined elsewhere
-        solved_grid = place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards)
+        solved_grid = place_all_modules_in_empty_slots(
+            grid, modules, ship, tech, player_owned_rewards
+        )
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
@@ -870,10 +958,19 @@ def optimize_placement(
                     temp_grid_pattern = Grid.from_dict(grid_dict)
                     # Assuming apply_pattern_to_grid is defined elsewhere
                     temp_result_grid, adjacency_score = apply_pattern_to_grid(
-                        temp_grid_pattern, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards
+                        temp_grid_pattern,
+                        pattern,
+                        modules,
+                        tech,
+                        start_x,
+                        start_y,
+                        ship,
+                        player_owned_rewards,
                     )
                     if temp_result_grid is not None:
-                        current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
+                        current_pattern_bonus = calculate_grid_score(
+                            temp_result_grid, tech
+                        )
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
                             best_pattern_grid = temp_result_grid.copy()
@@ -936,7 +1033,9 @@ def optimize_placement(
                 print(
                     f"INFO -- Forced fallback SA score (no pattern fit): {solved_bonus:.4f}"
                 )  # <<< KEEP: Result of fallback >>>
-                solve_method = "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
+                solve_method = (
+                    "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
+                )
                 sa_was_initial_placement = True
 
     # --- Opportunity Refinement Stage ---
@@ -947,7 +1046,9 @@ def optimize_placement(
         raise ValueError(
             "optimize_placement: solved_grid is None before opportunity refinement, indicating an unexpected state."
         )
-    grid_after_initial_placement = solved_grid.copy()  # Grid state before refinement starts
+    grid_after_initial_placement = (
+        solved_grid.copy()
+    )  # Grid state before refinement starts
     current_best_score = calculate_grid_score(grid_after_initial_placement, tech)
 
     # Prepare grid for opportunity scanning (clear target tech)
@@ -957,7 +1058,11 @@ def optimize_placement(
     # --- Calculate Pattern Window Score (if applicable) ---
     pattern_window_score = 0.0
     pattern_opportunity_result = None
-    if highest_pattern_bonus > -float("inf") and best_pattern_start_x != -1 and best_pattern_width > 0:
+    if (
+        highest_pattern_bonus > -float("inf")
+        and best_pattern_start_x != -1
+        and best_pattern_width > 0
+    ):
         try:
             # Assuming create_localized_grid and calculate_window_score are defined elsewhere
             pattern_window_grid, _, _ = create_localized_grid(
@@ -994,7 +1099,12 @@ def optimize_placement(
         try:
             # Assuming create_localized_grid and calculate_window_score are defined elsewhere
             scanned_window_grid, _, _ = create_localized_grid(
-                grid_for_opportunity_scan, scan_x, scan_y, tech, scan_w, scan_h  # Use the grid with tech cleared
+                grid_for_opportunity_scan,
+                scan_x,
+                scan_y,
+                tech,
+                scan_w,
+                scan_h,  # Use the grid with tech cleared
             )
             scanned_window_score = calculate_window_score(scanned_window_grid, tech)
             # print(f"DEBUG -- Calculated opportunity score for best scanned area ({scan_w}x{scan_h} at {scan_x},{scan_y}): {scanned_window_score:.2f}") # <<< COMMENT OUT/DEBUG >>>
@@ -1006,7 +1116,10 @@ def optimize_placement(
     # --- Compare Scores and Select Final Opportunity ---
     final_opportunity_result = None
     opportunity_source = "None"  # For logging
-    if pattern_window_score >= scanned_window_score and pattern_opportunity_result is not None:
+    if (
+        pattern_window_score >= scanned_window_score
+        and pattern_opportunity_result is not None
+    ):
         print(
             "INFO -- Using pattern location as the refinement opportunity window (score >= scanned)."
         )  # <<< COMMENT OUT >>>
@@ -1018,7 +1131,9 @@ def optimize_placement(
         )  # <<< COMMENT OUT >>>
         final_opportunity_result = scanned_opportunity_result
         opportunity_source = "Scan"
-    elif pattern_opportunity_result is not None:  # Fallback if scanning failed but pattern exists
+    elif (
+        pattern_opportunity_result is not None
+    ):  # Fallback if scanning failed but pattern exists
         print(
             "INFO -- Using pattern location as the refinement opportunity window (scanning failed)."
         )  # <<< COMMENT OUT >>>
@@ -1029,9 +1144,16 @@ def optimize_placement(
 
     # --- Perform Refinement using the Selected Opportunity ---
     # --- Experimental Window Sizing for 'pulse' tech ---
-    if experimental_window_sizing and tech == "pulse" and final_opportunity_result and len(tech_modules) >= 8:
+    if (
+        experimental_window_sizing
+        and tech == "pulse"
+        and final_opportunity_result
+        and len(tech_modules) >= 8
+    ):
         print("INFO -- Experimental window sizing active for 'pulse' tech.")
-        opp_x_anchor, opp_y_anchor, current_opp_w, current_opp_h = final_opportunity_result
+        opp_x_anchor, opp_y_anchor, current_opp_w, current_opp_h = (
+            final_opportunity_result
+        )
 
         # Determine the score of the current best opportunity (before considering 4x3 override)
         score_of_current_best_opportunity = -1.0
@@ -1047,9 +1169,16 @@ def optimize_placement(
                 f"Warning: Unknown opportunity_source '{opportunity_source}' for experimental sizing. Recalculating score for current best."
             )
             temp_loc_grid, _, _ = create_localized_grid(
-                grid_for_opportunity_scan.copy(), opp_x_anchor, opp_y_anchor, tech, current_opp_w, current_opp_h
+                grid_for_opportunity_scan.copy(),
+                opp_x_anchor,
+                opp_y_anchor,
+                tech,
+                current_opp_w,
+                current_opp_h,
             )
-            score_of_current_best_opportunity = calculate_window_score(temp_loc_grid, tech)
+            score_of_current_best_opportunity = calculate_window_score(
+                temp_loc_grid, tech
+            )
 
         print(
             f"INFO -- Experimental: Current best opportunity ({current_opp_w}x{current_opp_h} from {opportunity_source}) score: {score_of_current_best_opportunity:.4f}"
@@ -1078,18 +1207,27 @@ def optimize_placement(
                     f"INFO -- Experimental: Scanned 4x3 window (score {best_4x3_score_from_scan:.4f}) is better than current best ({score_of_current_best_opportunity:.4f}). Selecting 4x3."
                 )
                 # Override final_opportunity_result with the 4x3 window's location and dimensions
-                final_opportunity_result = (best_4x3_pos_from_scan[0], best_4x3_pos_from_scan[1], 4, 3)
+                final_opportunity_result = (
+                    best_4x3_pos_from_scan[0],
+                    best_4x3_pos_from_scan[1],
+                    4,
+                    3,
+                )
             else:
                 print(
                     f"INFO -- Experimental: Current best opportunity (score {score_of_current_best_opportunity:.4f}) is better or equal to scanned 4x3 ({best_4x3_score_from_scan:.4f}). Keeping original dimensions ({current_opp_w}x{current_opp_h})."
                 )
                 # final_opportunity_result remains unchanged
         else:
-            print("INFO -- Experimental: No suitable 4x3 window found by full scan. Keeping original dimensions.")
+            print(
+                "INFO -- Experimental: No suitable 4x3 window found by full scan. Keeping original dimensions."
+            )
             # final_opportunity_result remains unchanged
     # --- End Experimental Window Sizing ---
     if final_opportunity_result:
-        opportunity_x, opportunity_y, window_width, window_height = final_opportunity_result
+        opportunity_x, opportunity_y, window_width, window_height = (
+            final_opportunity_result
+        )
         # <<< KEEP: Selected window info >>>
         # print(f"INFO -- Selected opportunity window ({opportunity_source}): Start ({opportunity_x}, {opportunity_y}), Size {window_width}x{window_height}")
 
@@ -1099,9 +1237,16 @@ def optimize_placement(
         for y_win in range(opportunity_y, opportunity_y + window_height):
             for x_win in range(opportunity_x, opportunity_x + window_width):
                 # Bounds check for safety
-                if 0 <= x_win < grid_for_opportunity_scan.width and 0 <= y_win < grid_for_opportunity_scan.height:
+                if (
+                    0 <= x_win < grid_for_opportunity_scan.width
+                    and 0 <= y_win < grid_for_opportunity_scan.height
+                ):
                     cell = grid_for_opportunity_scan.get_cell(x_win, y_win)
-                    if cell["active"] and cell["supercharged"] and cell["module"] is None:
+                    if (
+                        cell["active"]
+                        and cell["supercharged"]
+                        and cell["module"] is None
+                    ):
                         window_has_available_sc = True
                         break
             if window_has_available_sc:
@@ -1139,20 +1284,25 @@ def optimize_placement(
                 sa_was_ml_fallback = True
                 refinement_method = "ML->SA/Refine Fallback"
                 # Assuming _handle_sa_refine_opportunity is defined elsewhere - THIS WAS THE BUG
-                refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
-                    grid_after_initial_placement.copy(),  # Pass a fresh copy
-                    modules,
-                    ship,
-                    tech,
-                    player_owned_rewards,
-                    opportunity_x,
-                    opportunity_y,
-                    window_width,
-                    window_height,
+                refined_grid_candidate, refined_score_global = (
+                    _handle_sa_refine_opportunity(
+                        grid_after_initial_placement.copy(),  # Pass a fresh copy
+                        modules,
+                        ship,
+                        tech,
+                        player_owned_rewards,
+                        opportunity_x,
+                        opportunity_y,
+                        window_width,
+                        window_height,
+                    )
                 )
 
             # --- Compare and Update based on Refinement Result ---
-            if refined_grid_candidate is not None and refined_score_global >= current_best_score:
+            if (
+                refined_grid_candidate is not None
+                and refined_score_global >= current_best_score
+            ):
                 # <<< KEEP: Score improvement >>>
                 print(
                     f"INFO -- Opportunity refinement ({refinement_method}) improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
@@ -1177,7 +1327,9 @@ def optimize_placement(
                 # solve_method remains what it was before refinement
 
                 # --- Final Fallback SA Logic ---
-                if not sa_was_ml_fallback:  # Only run if the previous SA wasn't already a fallback from ML
+                if (
+                    not sa_was_ml_fallback
+                ):  # Only run if the previous SA wasn't already a fallback from ML
                     # <<< KEEP: Important fallback >>>
                     print(
                         "INFO -- Refinement didn't improve/failed (and was not ML->SA fallback). Attempting final fallback Simulated Annealing."
@@ -1195,7 +1347,10 @@ def optimize_placement(
                         window_width,
                         window_height,
                     )
-                    if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
+                    if (
+                        sa_fallback_grid is not None
+                        and sa_fallback_bonus > current_best_score
+                    ):
                         # <<< KEEP: Score improvement >>>
                         print(
                             f"INFO -- Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}"
@@ -1210,7 +1365,9 @@ def optimize_placement(
                             f"INFO -- Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best."
                         )
                     else:
-                        print(f"ERROR -- Final fallback Simulated Annealing failed. Keeping previous best.")
+                        print(
+                            "ERROR -- Final fallback Simulated Annealing failed. Keeping previous best."
+                        )
 
         # <<< --- Else block for the supercharged check --- >>>
         else:
@@ -1225,17 +1382,23 @@ def optimize_placement(
 
     else:  # No final_opportunity_result found
         # <<< KEEP: Reason for skipping refinement >>>
-        print("INFO -- No refinement performed as no suitable opportunity window was selected.")
+        print(
+            "INFO -- No refinement performed as no suitable opportunity window was selected."
+        )
         # solved_grid remains grid_after_initial_placement
         solved_bonus = current_best_score
         # solve_method remains what it was before refinement
 
     # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
     # Assuming check_all_modules_placed is defined elsewhere (or imported)
-    all_modules_placed = check_all_modules_placed(solved_grid, modules, ship, tech, player_owned_rewards)
+    all_modules_placed = check_all_modules_placed(
+        solved_grid, modules, ship, tech, player_owned_rewards
+    )
     if not all_modules_placed and not sa_was_initial_placement:
         # <<< KEEP: Important fallback >>>
-        print(f"WARNING! -- Not all modules placed AND initial placement wasn't SA. Running final SA.")
+        print(
+            "WARNING! -- Not all modules placed AND initial placement wasn't SA. Running final SA."
+        )
         grid_for_final_sa = solved_grid.copy()
         clear_all_modules_of_tech(grid_for_final_sa, tech)
         temp_solved_grid, temp_solved_bonus_sa = simulated_annealing(
@@ -1271,7 +1434,9 @@ def optimize_placement(
             )
     elif not all_modules_placed and sa_was_initial_placement:
         # <<< KEEP: Important warning >>>
-        print(f"WARNING! -- Not all modules placed, but initial placement WAS SA. Skipping final SA check.")
+        print(
+            "WARNING! -- Not all modules placed, but initial placement WAS SA. Skipping final SA check."
+        )
 
     # --- Final Result Calculation ---
     best_grid = solved_grid
@@ -1300,7 +1465,9 @@ def optimize_placement(
     return best_grid, round(percentage, 2), best_bonus, solve_method
 
 
-def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rewards=None):
+def place_all_modules_in_empty_slots(
+    grid, modules, ship, tech, player_owned_rewards=None
+):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
@@ -1332,7 +1499,9 @@ def place_all_modules_in_empty_slots(grid, modules, ship, tech, player_owned_rew
                 module_index += 1  # Move to the next module
 
     if module_index < len(tech_modules) and len(tech_modules) > 0:
-        print(f"WARNING -- Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'")
+        print(
+            f"WARNING -- Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'"
+        )
 
     return grid
 
@@ -1388,17 +1557,25 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
                         # Copy relevant data to the window grid cell
                         window_grid.cells[y][x]["active"] = cell["active"]
                         window_grid.cells[y][x]["supercharged"] = cell["supercharged"]
-                        window_grid.cells[y][x]["module"] = cell["module"]  # Keep module info for checks
+                        window_grid.cells[y][x]["module"] = cell[
+                            "module"
+                        ]  # Keep module info for checks
                         window_grid.cells[y][x]["tech"] = cell["tech"]
                     else:
-                        window_grid.cells[y][x]["active"] = False  # Mark as inactive if out of bounds
+                        window_grid.cells[y][x]["active"] = (
+                            False  # Mark as inactive if out of bounds
+                        )
 
             # Check if the window has at least one available supercharged slot
             has_available_supercharged = False
             for y in range(window_height):
                 for x in range(window_width):
                     cell = window_grid.get_cell(x, y)
-                    if cell["supercharged"] and cell["module"] is None and cell["active"]:
+                    if (
+                        cell["supercharged"]
+                        and cell["module"] is None
+                        and cell["active"]
+                    ):
                         has_available_supercharged = True
                         break
                 if has_available_supercharged:
@@ -1425,7 +1602,9 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
     return best_score, best_start_pos
 
 
-def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewards=None):
+def find_supercharged_opportunities(
+    grid, modules, ship, tech, player_owned_rewards=None
+):
     """
     Scans the entire grid with a sliding window (dynamically sized, including rotation
     if non-square) to find the highest-scoring window containing available
@@ -1465,25 +1644,35 @@ def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewa
     # Determine Dynamic Window Size (no change needed)
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
-        print(f"Error: No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
+        print(
+            f"Error: No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities."
+        )
         return None
     module_count = len(tech_modules)
     window_width, window_height = determine_window_dimensions(module_count, tech)
-    print(f"INFO -- Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
+    print(
+        f"INFO -- Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules)."
+    )
 
     # --- Scan with Original Dimensions ---
-    best_score1, best_pos1 = _scan_grid_with_window(grid_copy, window_width, window_height, module_count, tech)
+    best_score1, best_pos1 = _scan_grid_with_window(
+        grid_copy, window_width, window_height, module_count, tech
+    )
 
     # --- Scan with Rotated Dimensions (if needed) ---
     best_score2 = -1
     best_pos2 = None
-    rotated_needed = window_width != window_height  # Check if width and height are different
+    rotated_needed = (
+        window_width != window_height
+    )  # Check if width and height are different
     rotated_width, rotated_height = 0, 0  # Initialize for print statement clarity
 
     if rotated_needed:
         rotated_width, rotated_height = window_height, window_width  # Swap dimensions
         # print(f"INFO -- Also checking rotated window size {rotated_width}x{rotated_height}.")
-        best_score2, best_pos2 = _scan_grid_with_window(grid_copy, rotated_width, rotated_height, module_count, tech)
+        best_score2, best_pos2 = _scan_grid_with_window(
+            grid_copy, rotated_width, rotated_height, module_count, tech
+        )
 
     # --- Compare Results and Determine Best Dimensions ---
     overall_best_score = -1
@@ -1507,7 +1696,9 @@ def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewa
         print(
             f"INFO -- Rotated window ({rotated_width}x{rotated_height}) provided a better score ({overall_best_score:.2f})."
         )
-    elif best_score1 > -1 and rotated_needed:  # Only print if original scan found something and rotation was checked
+    elif (
+        best_score1 > -1 and rotated_needed
+    ):  # Only print if original scan found something and rotation was checked
         print(
             f"INFO -- Original window ({window_width}x{window_height}) provided the best score ({overall_best_score:.2f})."
         )
@@ -1523,7 +1714,9 @@ def find_supercharged_opportunities(grid, modules, ship, tech, player_owned_rewa
         # <<< Return position AND dimensions >>>
         return best_x, best_y, overall_best_width, overall_best_height
     else:
-        print(f"INFO -- No suitable opportunity window found for {tech} after scanning (original and rotated).")
+        print(
+            f"INFO -- No suitable opportunity window found for {tech} after scanning (original and rotated)."
+        )
         return None
 
 
@@ -1554,7 +1747,9 @@ def calculate_window_score(window_grid, tech):
         return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 
 
-def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
+def create_localized_grid(
+    grid, opportunity_x, opportunity_y, tech, localized_width, localized_height
+):
     """
     Creates a localized grid around a given opportunity, ensuring it stays within
     the bounds of the main grid and preserves modules of other tech types.
@@ -1604,26 +1799,38 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_wi
             localized_y = y - start_y
             cell = grid.get_cell(x, y)
             localized_grid.cells[localized_y][localized_x]["active"] = cell["active"]
-            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell["supercharged"]
+            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell[
+                "supercharged"
+            ]
 
             # Copy module data if a module exists
             if cell["module"] is not None:
-                localized_grid.cells[localized_y][localized_x]["module"] = cell["module"]
+                localized_grid.cells[localized_y][localized_x]["module"] = cell[
+                    "module"
+                ]
                 localized_grid.cells[localized_y][localized_x]["label"] = cell["label"]
                 localized_grid.cells[localized_y][localized_x]["tech"] = cell["tech"]
                 localized_grid.cells[localized_y][localized_x]["type"] = cell["type"]
                 localized_grid.cells[localized_y][localized_x]["bonus"] = cell["bonus"]
-                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell["adjacency"]
-                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell["sc_eligible"]
+                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell[
+                    "adjacency"
+                ]
+                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell[
+                    "sc_eligible"
+                ]
                 localized_grid.cells[localized_y][localized_x]["image"] = cell["image"]
                 if "module_position" in cell:
-                    localized_grid.cells[localized_y][localized_x]["module_position"] = cell["module_position"]
+                    localized_grid.cells[localized_y][localized_x][
+                        "module_position"
+                    ] = cell["module_position"]
 
     return localized_grid, start_x, start_y
 
 
 # --- NEW ML-Specific Function ---
-def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
+def create_localized_grid_ml(
+    grid, opportunity_x, opportunity_y, tech, localized_width, localized_height
+):
     """
     Creates a localized grid around a given opportunity for ML processing,
     using the provided dimensions.
@@ -1747,7 +1954,9 @@ def restore_original_state(grid, original_state_map):
             # Use deepcopy of the stored data for safety when updating
             grid.cells[y][x].update(deepcopy(original_cell_data))
         else:
-            print(f"Warning -- Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid.")
+            print(
+                f"Warning -- Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid."
+            )
 
 
 def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
@@ -1762,7 +1971,10 @@ def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
             main_y = start_y + y
             if 0 <= main_x < grid.width and 0 <= main_y < grid.height:
                 # Only copy if the cell is empty or of the same tech
-                if grid.get_cell(main_x, main_y)["tech"] == tech or grid.get_cell(main_x, main_y)["module"] is None:
+                if (
+                    grid.get_cell(main_x, main_y)["tech"] == tech
+                    or grid.get_cell(main_x, main_y)["module"] is None
+                ):
                     grid.cells[main_y][main_x].update(localized_grid.cells[y][x])
 
 
