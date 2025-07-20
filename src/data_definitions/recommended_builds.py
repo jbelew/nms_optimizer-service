@@ -394,7 +394,7 @@ recommended_builds = {
                         "adjacency_bonus": True,
                         "supercharged": True,
                     },
-                    {"tech": "slide", "module": "HS", "adjacency_bonus": False},
+                    {"tech": "grip", "module": "GB", "adjacency_bonus": False},
                 ],
                 [
                     {"tech": "boost", "module": "Xa", "adjacency_bonus": True},
@@ -411,7 +411,7 @@ recommended_builds = {
                         "supercharged": True,
                     },
                     {"tech": "fusion", "module": "Xc", "adjacency_bonus": True},
-                    {"tech": "grip", "module": "GB", "adjacency_bonus": False},
+                    {"active": True},
                 ],
                 [
                     {"tech": "radar", "module": "ER", "adjacency_bonus": False},
@@ -428,7 +428,6 @@ recommended_builds = {
                     {"tech": "mining", "module": "Xb", "adjacency_bonus": True},
                     {"tech": "flamethrower", "module": "MF", "adjacency_bonus": False},
                     {"tech": "mineral", "module": "MP", "adjacency_bonus": False},
-                    # {"tech": "drift", "module": "DS", "adjacency_bonus": False},
                     {"active": True},
                 ],
                 [
