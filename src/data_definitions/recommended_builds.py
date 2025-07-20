@@ -428,8 +428,8 @@ recommended_builds = {
                     {"tech": "mining", "module": "Xb", "adjacency_bonus": True},
                     {"tech": "flamethrower", "module": "MF", "adjacency_bonus": False},
                     {"tech": "mineral", "module": "MP", "adjacency_bonus": False},
-                    {"tech": "drift", "module": "DS", "adjacency_bonus": False},
-                    # {"active": False},
+                    # {"tech": "drift", "module": "DS", "adjacency_bonus": False},
+                    {"active": True},
                 ],
                 [
                     {"active": False},
