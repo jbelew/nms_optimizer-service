@@ -2843,6 +2843,15 @@ modules = {
                         { "id": "RB", "type": "reward", "label": "Rocket Boots", "bonus": 0.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/boots.webp", },
                    ],
                 },
+                {
+                    "label": "Personal Refiner",
+                    "key": "refiner",
+                    "image": "exosuit/refiner.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "PR", "type": "core", "label": "Personal Refiner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/refiner.webp", },
+                    ],
+                },
             ],
             "Life Support": [
                 {
@@ -2859,67 +2868,6 @@ modules = {
  					    { "id": "OR", "type": "bonus", "label": "Oxygen Recycler", "bonus": 0.10, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/recycler.webp", },
                    ],
                 },
-                {
-                    "label": "Sheild Lattice",
-                    "key": "protection",
-                    "image": "exosuit/protection.webp",
-                    "color": "white",
-                    "modules": [
-                        { "id": "SL", "type": "bonus", "label": "Sheild Lattice", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Sheild Lattice Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
-                   ],
-                },
-                {
-                    "label": "Rebuilt Exosuit Module",
-                    "key": "rebuilt",
-                    "image": "exosuit/rebuilt.webp",
-                    "color": "crimson",
-                    "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Rebuilt Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Rebuilt Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Rebuilt Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
-                   ],
-                },
-                {
-                    "label": "Forbidden Exosuit Module",
-                    "key": "forbidden",
-                    "image": "exosuit/forbidden.webp",
-                    "color": "crimson",
-                    "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Forbidden Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Forbidden Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
-                   ],
-                },
-                {
-                    "label": "Star Seed",
-                    "key": "starseed",
-                    "image": "exosuit/starseed.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "SS", "type": "core", "label": "Star Seed", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/starseed.webp", },
-                    ],
-                },
-                {
-                    "label": "Mark of the Denier",
-                    "key": "denier",
-                    "image": "exosuit/denier.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "MD", "type": "core", "label": "Mark of the Denier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/denier.webp", },
-                    ],
-                },
-                {
-                    "label": "Remembrance",
-                    "key": "remembrance",
-                    "image": "exosuit/remembrance.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "RM", "type": "core", "label": "Remembrance", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/remembrance.webp", },
-                    ],
-                },
             ],
             "Hazard Protection": [
                 {
@@ -2932,15 +2880,6 @@ modules = {
                     ],
                 },
                 {
-                    "label": "Anomaly Suppressor",
-                    "key": "anomaly",
-                    "image": "exosuit/anomaly.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "AS", "type": "core", "label": "Anomaly Suppressor", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/anomaly.webp", },
-                    ],
-                },
-                {
                     "label": "Pressure Membrane",
                     "key": "pressure",
                     "image": "exosuit/pressure.webp",
@@ -2949,18 +2888,6 @@ modules = {
                          { "id": "PM", "type": "core", "label": "Pressure Membrane", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/pressure.webp", },
                     ],
                 },
-                {
-                    "label": "Defense Systems",
-                    "key": "defense",
-                    "image": "exosuit/defense.webp",
-                    "color": "crimson",
-                    "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Defense Systems Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Defense Systems Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Defense Systems Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
-                   ],
-                },
-
                 {
                     "label": "Coolant Network",
                     "key": "coolant",
@@ -3021,6 +2948,91 @@ modules = {
                         { "id": "Xc", "type": "bonus", "label": "Toxin Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
                    ],
                 },
+                {
+                    "label": "Sheild Lattice",
+                    "key": "protection",
+                    "image": "exosuit/protection.webp",
+                    "color": "white",
+                    "modules": [
+                        { "id": "SL", "type": "bonus", "label": "Sheild Lattice", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Sheild Lattice Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                   ],
+                },
+            ],
+            "Upgrade Modules": [
+                {
+                    "label": "Defense Systems",
+                    "key": "defense",
+                    "image": "exosuit/defense.webp",
+                    "color": "crimson",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Defense Systems Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Defense Systems Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Defense Systems Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                   ],
+                },
+                {
+                    "label": "Rebuilt Exosuit Module",
+                    "key": "rebuilt",
+                    "image": "exosuit/rebuilt.webp",
+                    "color": "crimson",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Rebuilt Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Rebuilt Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Rebuilt Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                   ],
+                },
+                {
+                    "label": "Forbidden Exosuit Module",
+                    "key": "forbidden",
+                    "image": "exosuit/forbidden.webp",
+                    "color": "crimson",
+                    "modules": [
+                        { "id": "Xa", "type": "bonus", "label": "Forbidden Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Forbidden Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                   ],
+                },                
+            ],
+            "Quest Rewards": [
+                {
+                    "label": "Anomaly Suppressor",
+                    "key": "anomaly",
+                    "image": "exosuit/anomaly.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "AS", "type": "core", "label": "Anomaly Suppressor", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/anomaly.webp", },
+                    ],
+                },
+                {
+                    "label": "Mark of the Denier",
+                    "key": "denier",
+                    "image": "exosuit/denier.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "MD", "type": "core", "label": "Mark of the Denier", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/denier.webp", },
+                    ],
+                },
+                {
+                    "label": "Remembrance",
+                    "key": "remembrance",
+                    "image": "exosuit/remembrance.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "RM", "type": "core", "label": "Remembrance", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/remembrance.webp", },
+                    ],
+                },
+                {
+                    "label": "Star Seed",
+                    "key": "starseed",
+                    "image": "exosuit/starseed.webp",
+                    "color": "gray",
+                    "modules": [
+                         { "id": "SS", "type": "core", "label": "Star Seed", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/starseed.webp", },
+                    ],
+                },
             ],
             "Utilities": [
                 {
@@ -3034,15 +3046,6 @@ modules = {
                         { "id": "Tc", "type": "bonus", "label": "Superior Translator", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/superior.webp", },
                         { "id": "Td", "type": "bonus", "label": "Advanced Translator", "bonus": 0.00, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/advanced.webp", },
                    ],
-                },
-                {
-                    "label": "Personal Refiner",
-                    "key": "refiner",
-                    "image": "exosuit/refiner.webp",
-                    "color": "gray",
-                    "modules": [
-                         { "id": "PR", "type": "core", "label": "Personal Refiner", "bonus": 0.0, "adjacency": "none", "sc_eligible": False, "image": "exosuit/refiner.webp", },
-                    ],
                 },
                 {
                     "label": "Haz-Mat Gauntlets",
