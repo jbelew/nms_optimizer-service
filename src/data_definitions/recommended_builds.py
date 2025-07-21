@@ -377,7 +377,7 @@ recommended_builds = {
     ],
     "colossus": [
         {
-            "title": "Colossus",
+            "title": "Default Build",
             "layout": [
                 [
                     {"tech": "boost", "module": "EB", "adjacency_bonus": True},
