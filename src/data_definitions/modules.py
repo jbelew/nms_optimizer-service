@@ -1096,9 +1096,9 @@ modules = {
         "types": {
             "Mining": [
                 {
-                    "label": "Mining Beam",
+                    "label": "Runic Lens",
                     "key": "mining",
-                    "image": "multi-tool/mining-beam.webp",
+                    "image": "multi-tool/runic.webp",
                     "color": "green",
                     "modules": [
                         { "id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-laser.webp", },
@@ -1107,7 +1107,7 @@ modules = {
                         { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-upgrade.webp", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-upgrade.webp", },
-                        { "id": "RL", "type": "bonus", "label": "Runic Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/runic-laser.webp", },
+                        { "id": "RL", "type": "bonus", "label": "Runic Lens", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/runic-lens.webp", },
                     ],
                 },
             ],
