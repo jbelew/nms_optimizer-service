@@ -700,11 +700,13 @@ recommended_builds = {
                         "tech": "hardframe-legs",
                         "module": "HL",
                         "adjacency_bonus": 1,
+                        "supercharged": True,
                     },
                     {
                         "tech": "liquidator-legs",
                         "module": "LL",
                         "adjacency_bonus": 1,
+    
                     },
                     {
                         "tech": "daedalus",
