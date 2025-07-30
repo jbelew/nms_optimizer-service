@@ -1322,15 +1322,16 @@ modules = {
                     "image": "multi-tool/hijacked.webp",
                     "color": "green",
                     "modules": [
-                        { "id": "MB", "type": "core", "label": "Hijacked Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/hijacked.webp", },
+                        { "id": "RL", "type": "core", "label": "Hijacked Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/hijacked.webp", },
                         { "id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/advanced-mining.webp", },
                         { "id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.50, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/optical.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-upgrade.webp", },
                         { "id": "Xc", "type": "bonus", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-upgrade.webp", },
+                        { "id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/mining-laser.webp", },
                     ],
                 },
-            ],
+            ],     
             "Scanners": [
                 {
                     "label": "Analysis Visor",
@@ -2726,7 +2727,7 @@ modules = {
                     "label": "Hardframe Right Arm",
                     "key": "hardframe-right",
                     "image": "exocraft/hardframe-right.webp",
-                    "color": "gray",
+                    "color": "sky",
                     "modules": [
                         { "id": "HR", "type": "core", "label": "Hardframe Right Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/hardframe-right.webp", },
                     ],
@@ -2756,7 +2757,7 @@ modules = {
                     "label": "Liquidator Left Arm",
                     "key": "liquidator-left",
                     "image": "exocraft/liquidator-left.webp",
-                    "color": "gray",
+                    "color": "sky",
                     "modules": [
                         { "id": "LL", "type": "core", "label": "Liquidator Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": True, "image": "exocraft/liquidator-left.webp", },
                     ],
