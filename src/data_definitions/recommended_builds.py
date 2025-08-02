@@ -1,7 +1,7 @@
 recommended_builds = {
     "nomad": [
         {
-            "title": "Nomad",
+            "title": "Default Build",
             "layout": [
                 [
                     {"tech": "radiation", "module": "NS", "adjacency_bonus": 0},
@@ -95,7 +95,7 @@ recommended_builds = {
     ],
     "pilgrim": [
         {
-            "title": "Pilgrim",
+            "title": "Default Build",
             "layout": [
                 [
                     {"tech": "radar", "module": "ER", "adjacency_bonus": 0},
@@ -189,7 +189,7 @@ recommended_builds = {
     ],
     "roamer": [
         {
-            "title": "Roamer",
+            "title": "Default Build",
             "layout": [
                 [
                     {"tech": "boost", "module": "EB", "adjacency_bonus": 1},
@@ -283,7 +283,7 @@ recommended_builds = {
     ],
     "nautilon": [
         {
-            "title": "Nautilon",
+            "title": "Default Build",
             "layout": [
                 [
                     {
@@ -429,7 +429,7 @@ recommended_builds = {
     ],
     "colossus": [
         {
-            "title": "Colussus",
+            "title": "Default Build",
             "layout": [
                 [
                     {"tech": "boost", "module": "EB", "adjacency_bonus": 1},
@@ -762,7 +762,7 @@ recommended_builds = {
     ],
     "exosuit": [
         {
-            "title": "Exosuit",
+            "title": "Default Build",
             "layout": [
                 [
                     {"tech": "refiner", "module": "PR", "adjacency_bonus": 0},
