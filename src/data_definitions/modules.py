@@ -1804,9 +1804,9 @@ modules = {
                     "image": "other/fleet-fuel.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-fuel.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-fuel.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-fuel.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Theta", "bonus": .300, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-fuel.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Tau", "bonus": .290, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-fuel.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Fuel Efficiency Upgrade Sigma", "bonus": .280, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-fuel.webp", },
                       ],
                 },
                 {
@@ -1815,9 +1815,9 @@ modules = {
                     "image": "other/fleet-speed.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-speed.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-speed.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-speed.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Theta", "bonus": .300, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-speed.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Tau", "bonus": .290, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-speed.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Expedition Speed Upgrade Sigma", "bonus": .280, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-speed.webp", },
                       ],
                 },
                 {
@@ -1826,9 +1826,9 @@ modules = {
                     "image": "other/fleet-combat.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-combat.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-combat.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-combat.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Theta", "bonus": .300, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-combat.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Tau", "bonus": .290, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-combat.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Combat and Defense Upgrade Sigma", "bonus": .280, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-combat.webp", },
                       ],
                 },
                 {
@@ -1837,9 +1837,9 @@ modules = {
                     "image": "other/fleet-exploration.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-exploration.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-exploration.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-exploration.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Theta", "bonus": .300, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-exploration.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Tau", "bonus": .290, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-exploration.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Exploration and Science Upgrade Sigma", "bonus": .280, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-exploration.webp", },
                       ],
                 },
                 {
@@ -1848,9 +1848,9 @@ modules = {
                     "image": "other/fleet-mining.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-mining.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-mining.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-mining.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-mining.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-mining.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": .280, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-mining.webp", },
                       ],
                 },
                 {
@@ -1859,9 +1859,9 @@ modules = {
                     "image": "other/fleet-trade.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-trade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-trade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": .280, "adjacency": "greater", "sc_eligible": True, "image": "other/fleet-trade.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": .300, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-trade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": .290, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-trade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": .280, "adjacency": "greater_1", "sc_eligible": True, "image": "other/fleet-trade.webp", },
                       ],
                 },
             ],
@@ -2895,10 +2895,10 @@ modules = {
                     "image": "exosuit/coolant.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "CN", "type": "bonus", "label": "Coolant Networt", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Coolant Network Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Coolant Network Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Coolant Network Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
+                        { "id": "CN", "type": "bonus", "label": "Coolant Networt", "bonus": 1.00, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/coolant.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Coolant Network Upgrade Theta", "bonus": 0.30, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Coolant Network Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Coolant Network Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/coolant-upgrade.webp", },
                    ],
                 },
                 {
@@ -2907,10 +2907,10 @@ modules = {
                     "image": "exosuit/radiation.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "RD", "type": "bonus", "label": "Radiation Deflector", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Radiation Deflector Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Radiation Deflector Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Radiation Deflector Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
+                        { "id": "RD", "type": "bonus", "label": "Radiation Deflector", "bonus": 1.00, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/radiation.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Radiation Deflector Upgrade Theta", "bonus": 0.30, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Radiation Deflector Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Radiation Deflector Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/radiation-upgrade.webp", },
                    ],
                 },
                {
@@ -2919,10 +2919,10 @@ modules = {
                     "image": "exosuit/aeration.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Aeration Membrane Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
+                        { "id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 1.00, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/aeration.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Aeration Membrane Upgrade Theta", "bonus": 0.30, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/aeration-upgrade.webp", },
                    ],
                 },
                {
@@ -2931,10 +2931,10 @@ modules = {
                     "image": "exosuit/thermic.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "TL", "type": "bonus", "label": "Thermic Layer", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Thermic Layer Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Thermic Layer Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Thermic Layer Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
+                        { "id": "TL", "type": "bonus", "label": "Thermic Layer", "bonus": 1.00, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/thermic.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Thermic Layer Upgrade Theta", "bonus": 0.30, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Thermic Layer Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Thermic Layer Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/thermic-upgrade.webp", },
                    ],
                 },
                {
@@ -2943,10 +2943,10 @@ modules = {
                     "image": "exosuit/toxin.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "TS", "type": "bonus", "label": "Toxin Suppressor", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Toxin Suppressor Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Toxin Suppressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Toxin Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
+                        { "id": "TS", "type": "bonus", "label": "Toxin Suppressor", "bonus": 1.00, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/toxin.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Toxin Suppressor Upgrade Theta", "bonus": 0.30, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Toxin Suppressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Toxin Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/toxin-upgrade.webp", },
                    ],
                 },
                 {
@@ -2955,10 +2955,10 @@ modules = {
                     "image": "exosuit/protection.webp",
                     "color": "white",
                     "modules": [
-                        { "id": "SL", "type": "bonus", "label": "Sheild Lattice", "bonus": 1.00, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Sheild Lattice Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "SL", "type": "bonus", "label": "Sheild Lattice", "bonus": 1.00, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/protection.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Sheild Lattice Upgrade Theta", "bonus": 0.30, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": True, "image": "exosuit/protection-upgrade.webp", },
                    ],
                 },
             ],
@@ -2969,9 +2969,9 @@ modules = {
                     "image": "exosuit/defense.webp",
                     "color": "crimson",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Defense Systems Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Defense Systems Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Defense Systems Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Defense Systems Theta", "bonus": 0.30, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Defense Systems Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/defense.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Defense Systems Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/defense.webp", },
                    ],
                 },
                 {
@@ -2980,9 +2980,9 @@ modules = {
                     "image": "exosuit/rebuilt.webp",
                     "color": "crimson",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Rebuilt Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Rebuilt Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Rebuilt Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Rebuilt Exosuit Module Theta", "bonus": 0.30, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Rebuilt Exosuit Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Rebuilt Exosuit Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/rebuilt.webp", },
                    ],
                 },
                 {
@@ -2991,9 +2991,9 @@ modules = {
                     "image": "exosuit/forbidden.webp",
                     "color": "crimson",
                     "modules": [
-                        { "id": "Xa", "type": "bonus", "label": "Forbidden Exosuit Module Theta", "bonus": 0.30, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Forbidden Exosuit Module Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Forbidden Exosuit Module Theta", "bonus": 0.30, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Forbidden Exosuit Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": True, "image": "exosuit/forbidden.webp", },
                    ],
                 },                
             ],

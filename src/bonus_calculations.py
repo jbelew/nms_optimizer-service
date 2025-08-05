@@ -88,8 +88,24 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
             adj_cell_adj_type and cell_adj_type and adj_cell_adj_type != "none" and cell_adj_type != "none"
         ):  # <<< MODIFIED CHECK
 
+            # --- Translate group adjacency to base adjacency for scoring ---
+            temp_cell_adj_type = cell_adj_type
+            if isinstance(temp_cell_adj_type, str):
+                if temp_cell_adj_type.startswith("greater_"):
+                    temp_cell_adj_type = "greater"
+                elif temp_cell_adj_type.startswith("lesser_"):
+                    temp_cell_adj_type = "lesser"
+
+            temp_adj_cell_adj_type = adj_cell_adj_type
+            if isinstance(temp_adj_cell_adj_type, str):
+                if temp_adj_cell_adj_type.startswith("greater_"):
+                    temp_adj_cell_adj_type = "greater"
+                elif temp_adj_cell_adj_type.startswith("lesser_"):
+                    temp_adj_cell_adj_type = "lesser"
+            # --- End Translation ---
+
             # Rule: Greater neighbor cannot give bonus to Lesser receiver
-            if cell_adj_type == AdjacencyType.LESSER.value and adj_cell_adj_type == AdjacencyType.GREATER.value:
+            if temp_cell_adj_type == AdjacencyType.LESSER.value and temp_adj_cell_adj_type == AdjacencyType.GREATER.value:
                 if tech in ["pulse", "photonix"]:
                     # Hack to ensure that the UI shows a lesser module as still being adjacent to the group.
                     # Changed from 0.0001 to -0.01 to penalize this adjacency, making Layout 2 preferred for pulse/photonix.
@@ -100,14 +116,14 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
             else:
                 # Determine weight based on the NEIGHBOR's type and adjacency
                 if adj_cell_type == ModuleType.CORE.value:
-                    if adj_cell_adj_type == AdjacencyType.GREATER.value:
+                    if temp_adj_cell_adj_type == AdjacencyType.GREATER.value:
                         weight_from_this_neighbor = WEIGHT_FROM_GREATER_CORE
-                    elif adj_cell_adj_type == AdjacencyType.LESSER.value:
+                    elif temp_adj_cell_adj_type == AdjacencyType.LESSER.value:
                         weight_from_this_neighbor = WEIGHT_FROM_LESSER_CORE
                 elif adj_cell_type == ModuleType.BONUS.value:
-                    if adj_cell_adj_type == AdjacencyType.GREATER.value:
+                    if temp_adj_cell_adj_type == AdjacencyType.GREATER.value:
                         weight_from_this_neighbor = WEIGHT_FROM_GREATER_BONUS
-                    elif adj_cell_adj_type == AdjacencyType.LESSER.value:
+                    elif temp_adj_cell_adj_type == AdjacencyType.LESSER.value:
                         weight_from_this_neighbor = WEIGHT_FROM_LESSER_BONUS
                 # If neighbor type is unknown or adjacency is 'none', weight remains 0.0
 
