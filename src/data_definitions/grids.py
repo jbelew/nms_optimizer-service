@@ -1170,7 +1170,7 @@ grids = {
         ],
     },
     "exosuit": {
-        "superchargedFixed": False,
+        "superchargedFixed": True,
         "gridFixed": False,
         "grid": [
             [
