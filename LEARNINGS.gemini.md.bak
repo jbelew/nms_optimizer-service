@@ -1,0 +1,32 @@
+## LEARNINGS.gemini.md
+
+### Task: Implement Google Analytics Data Endpoint (GA4)
+
+**Date:** 2025-08-07
+
+**PRAR Cycle Summary:**
+
+*   **Perceive & Understand:** User requested an endpoint for Google Analytics data to display popular ship types and technologies. Initial assumption was Universal Analytics (GA3) due to common search results, leading to initial implementation with `google-api-python-client` and `analyticsreporting` API.
+
+*   **Reason & Plan:**
+    *   Initial plan: Add `google-api-python-client` to `requirements.txt`, implement endpoint using `analyticsreporting` API, authenticate with service account JSON key.
+    *   Revised plan (after `ModuleNotFoundError`): Explicitly add `google-auth` to `requirements.txt` and ensure installation in correct virtual environment.
+    *   Revised plan (after `404 Not Found` and user clarification): Shift to Google Analytics 4 (GA4) Data API. Add `google-analytics-data` to `requirements.txt`, remove `google-api-python-client` and `google-auth`. Update `src/app.py` to use `BetaAnalyticsDataClient` and `RunReportRequest` for GA4.
+    *   Revised plan (after `AttributeError`): Correct `OrderBy` and `MetricOrderBy` import and usage.
+    *   Revised plan (after `NameError`): Explicitly import `FilterExpression` and `Filter`.
+    *   Revised plan (after `403 Forbidden`): User granted necessary permissions to service account in GA4.
+    *   Revised plan (after `400 Bad Request`): Corrected custom dimension names to lowercase (`customEvent:platform`, `customEvent:tech`).
+
+*   **Act & Implement:**
+    *   Added/removed dependencies in `requirements.txt`.
+    *   Modified `src/app.py` to include GA4 client initialization, `GA_PROPERTY_ID` configuration, and the `/analytics/popular_data` endpoint.
+    *   Implemented `RunReportRequest` with `eventName` filter and `customEvent:platform`, `customEvent:tech` dimensions.
+    *   Corrected API client usage and import statements based on iterative debugging.
+
+*   **Refine & Reflect:**
+    *   **Key Learning 1:** Always confirm Google Analytics version (UA vs. GA4) and corresponding API (`analyticsreporting` vs. `data`) at the outset to avoid rework. The `google-api-python-client` is for older APIs, `google-analytics-data` is for GA4.
+    *   **Key Learning 2:** Ensure all necessary types (e.g., `OrderBy`, `FilterExpression`, `Filter`) are explicitly imported from `google.analytics.data_v1beta.types` when using the GA4 Data API.
+    *   **Key Learning 3:** Google Analytics custom dimension names are case-sensitive in API requests and often require lowercase (`customEvent:platform` vs. `customEvent:Platform`). Always verify exact names from GA4 UI or API schema.
+    *   **Key Learning 4:** Service account permissions must be correctly configured in Google Analytics for the specific GA4 property. A `403 Forbidden` error indicates a permissions issue.
+    *   **Key Learning 5:** Verify `pip install` targets the correct virtual environment, especially in projects with multiple `venv` directories.
+

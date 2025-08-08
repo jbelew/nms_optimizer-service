@@ -172,8 +172,7 @@ def get_popular_analytics_data():
             dimensions=[
                 Dimension(name="eventName"),
                 Dimension(name="customEvent:platform"), # Your actual custom dimension name for Platform
-                Dimension(name="customEvent:tech"), # Your actual custom dimension name for Tech
-                Dimension(name="customEvent:supercharged") # New custom dimension for supercharged
+                Dimension(name="customEvent:tech") # Your actual custom dimension name for Tech
             ],
             dimension_filter=FilterExpression(
                 filter=Filter(
@@ -197,7 +196,6 @@ def get_popular_analytics_data():
                 'event_name': row.dimension_values[0].value,
                 'ship_type': row.dimension_values[1].value,
                 'technology': row.dimension_values[2].value,
-                'supercharged': row.dimension_values[3].value,
                 'total_events': int(row.metric_values[0].value)
             })
 

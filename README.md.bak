@@ -14,11 +14,6 @@ This repository contains the code for the `nms_optimizer-service`, a service des
 - **Simulated Annealing:** Employs a simulated annealing algorithm to polish and refine module placement and explore alternative configurations for improved scores.
 - **Technology Tree Generation:** Generates a technology tree for a given ship, providing a structured view of available technologies and their relationships.
 - **REST API:** Provides REST API endpoints for grid optimization and technology tree retrieval.
-- **Google Analytics Integration:** Provides an endpoint (`/analytics/popular_data`) to retrieve Google Analytics 4 (GA4) data for popular ship types and technologies.
-
-## Documentation
-
-Detailed documentation for this project can be found in the `/docs` directory.
 
 ## Getting Started
 

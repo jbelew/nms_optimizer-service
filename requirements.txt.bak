@@ -20,7 +20,8 @@ Flask-Compress==1.17
 flask-cors==5.0.1
 fsspec==2025.3.2
 gevent==24.11.1
-google-analytics-data
+google-api-python-client
+google-auth
 greenlet==3.1.1
 grpcio==1.71.0
 gunicorn==23.0.0

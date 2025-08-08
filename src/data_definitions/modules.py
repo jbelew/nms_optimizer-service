@@ -146,22 +146,22 @@ modules = {
                         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
                     ],
                 },
-                # {
-                #     "label": "Pulse Engine",
-                #     "key": "photonix",
-                #     "image": "starship/pulse.webp",
-                #     "color": "orange",
-                #     "modules": [
-                #         { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": True, "image": "starship/pulse.webp", },
-                #         { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": False, "image": "starship/flight-assist.webp", },
-                #         { "id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.10, "adjacency": "greater", "sc_eligible": False, "image": "starship/photonix.webp", },
-                #         { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "starship/sublight.webp", },
-                #         { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "starship/instability.webp", },
-                #         { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 1.14, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
-                #         { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 1.13, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
-                #         { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
-                #     ],
-                # },
+                {
+                    "label": "Pulse Engine",
+                    "key": "photonix",
+                    "image": "starship/pulse.webp",
+                    "color": "orange",
+                    "modules": [
+                        { "id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": True, "image": "starship/pulse.webp", },
+                        { "id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": False, "image": "starship/flight-assist.webp", },
+                        { "id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.10, "adjacency": "greater", "sc_eligible": False, "image": "starship/photonix.webp", },
+                        { "id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "starship/sublight.webp", },
+                        { "id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": False, "image": "starship/instability.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 1.14, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 1.13, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": True, "image": "starship/pulse-upgrade.webp", },
+                    ],
+                },
             ],
             "Utilities": [
                 {
@@ -953,7 +953,7 @@ modules = {
                     "label": "Boltcaster",
                     "key": "bolt-caster",
                     "image": "multi-tool/boltcaster.webp",
-                    "color": "teal",
+                    "color": "cyan",
                     "modules": [
                         { "id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": True, "image": "multi-tool/boltcaster.webp", },
                         { "id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": True, "image": "multi-tool/boltcaster-rm.webp", },

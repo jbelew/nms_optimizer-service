@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SESSION_NAME="nms_solvers"
-BASE_CMD="python generate_data.py --ship standard-mt --category Weaponry --tech bolt-caster"
+BASE_CMD="python generate_data.py --ship standard --category Hyperdrive --tech pulse"
 
 /usr/bin/tmux kill-session -t $SESSION_NAME 2>/dev/null
 /usr/bin/tmux new-session -d -s $SESSION_NAME
