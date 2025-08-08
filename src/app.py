@@ -30,17 +30,28 @@ Compress(app)  # Initialize Flask-Compress
 # --- Google Analytics 4 (GA4) Configuration ---
 # IMPORTANT: For production, store this path securely (e.g., environment variable)
 # and ensure the JSON key file is NOT committed to version control.
-GA_KEY_FILE_PATH = os.path.join(os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json")
 GA_PROPERTY_ID = "484727815"  # Your GA4 Property ID
 
 
 def initialize_ga4_client():
     """Initializes the Google Analytics Data API V1Beta client."""
     try:
-        credentials = service_account.Credentials.from_service_account_file(
-            GA_KEY_FILE_PATH,
-            scopes=["https://www.googleapis.com/auth/analytics.readonly"],
-        )
+        # Try to get credentials from environment variable first (Heroku)
+        gcp_key_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
+        if gcp_key_json:
+            import json
+            credentials_info = json.loads(gcp_key_json)
+            credentials = service_account.Credentials.from_service_account_info(
+                credentials_info,
+                scopes=["https://www.googleapis.com/auth/analytics.readonly"],
+            )
+        else:
+            # Fallback to file-based credentials (local development)
+            GA_KEY_FILE_PATH = os.path.join(os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json")
+            credentials = service_account.Credentials.from_service_account_file(
+                GA_KEY_FILE_PATH,
+                scopes=["https://www.googleapis.com/auth/analytics.readonly"],
+            )
         client = BetaAnalyticsDataClient(credentials=credentials)
         return client
     except Exception as e:
