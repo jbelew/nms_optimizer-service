@@ -589,7 +589,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "II",
                 (1, 0): "AC",
@@ -696,7 +696,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "None",
                 (1, 0): "AC",
@@ -803,7 +803,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "II",
                 (1, 0): "AC",
@@ -908,7 +908,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "II",
                 (1, 0): "AC",

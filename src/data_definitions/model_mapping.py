@@ -1,5 +1,9 @@
 # model_mapping.py
-from typing import Optional, List, Dict  # Removed Tuple as it's no longer used for return type
+from typing import (
+    Optional,
+    List,
+    Dict,
+)  # Removed Tuple as it's no longer used for return type
 
 """
 Maps the user-facing platform key (ship) and technology key (tech)
@@ -75,7 +79,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "bolt-caster": ("standard-mt", "bolt-caster"),
         "neutron": ("standard-mt", "neutron"),
         "plasma-launcher": ("standard-mt", "plasma-launcher"),
-        "pulse-splitter": ("standard-mt", "pulse-splitter"),
+        "pulse-spitter": ("standard-mt", "pulse-spitter"),
         "scatter": ("standard-mt", "scatter"),
         "cloaking": ("standard-mt", "cloaking"),
         "combat": ("standard-mt", "combat"),
@@ -95,7 +99,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "bolt-caster": ("standard-mt", "bolt-caster"),
         "neutron": ("standard-mt", "neutron"),
         "plasma-launcher": ("standard-mt", "plasma-launcher"),
-        "pulse-splitter": ("standard-mt", "pulse-splitter"),
+        "pulse-spitter": ("standard-mt", "pulse-spitter"),
         "scatter": ("standard-mt", "scatter"),
         "cloaking": ("standard-mt", "cloaking"),
         "combat": ("standard-mt", "combat"),
@@ -115,7 +119,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
         "bolt-caster": ("standard-mt", "bolt-caster"),
         "neutron": ("standard-mt", "neutron"),
         "plasma-launcher": ("standard-mt", "plasma-launcher"),
-        "pulse-splitter": ("standard-mt", "pulse-splitter"),
+        "pulse-spitter": ("standard-mt", "pulse-spitter"),
         "scatter": ("standard-mt", "scatter"),
         "cloaking": ("standard-mt", "cloaking"),
         "combat": ("standard-mt", "combat"),
@@ -170,9 +174,9 @@ def get_model_keys(
     # --- Step 1: Determine initial base keys (primarily for module definitions) ---
     # These will also be the starting point for filename keys.
     if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
-        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(
-            ui_tech_key, (ui_ship_key, ui_tech_key)
-        )
+        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[
+            ui_ship_key
+        ].get(ui_tech_key, (ui_ship_key, ui_tech_key))
     else:
         initial_model_ship_key, initial_model_tech_key = ui_ship_key, ui_tech_key
 
@@ -194,19 +198,34 @@ def get_model_keys(
     # These conditions use the module_def_ship_key and module_def_tech_key (which may have been
     # updated by reward logic) to decide if FILENAME keys need further specialization.
     # The module_def keys themselves are NOT changed by this step.
-    if module_def_ship_key == "standard" and module_def_tech_key == "photonix" and grid_width == 4 and grid_height == 3:
+    if (
+        module_def_ship_key == "standard"
+        and module_def_tech_key == "photonix"
+        and grid_width == 4
+        and grid_height == 3
+    ):
         # This specific model filename is "model_sentinel_photonix_4x3.pth"
         # but it's trained on "standard" "photonix" modules.
         filename_ship_key = "standard"
         filename_tech_key = "photonix_4x3"
 
-    if module_def_ship_key == "solar" and module_def_tech_key == "pulse" and grid_width == 4 and grid_height == 3:
+    if (
+        module_def_ship_key == "solar"
+        and module_def_tech_key == "pulse"
+        and grid_width == 4
+        and grid_height == 3
+    ):
         # This specific model filename is "model_sentinel_photonix_4x3.pth"
         # but it's trained on "standard" "photonix" modules.
         filename_ship_key = "solar"
         filename_tech_key = "pulse_4x3"
 
-    if module_def_ship_key == "solar" and module_def_tech_key == "photonix" and grid_width == 4 and grid_height == 3:
+    if (
+        module_def_ship_key == "solar"
+        and module_def_tech_key == "photonix"
+        and grid_width == 4
+        and grid_height == 3
+    ):
         # This specific model filename is "model_sentinel_photonix_4x3.pth"
         # but it's trained on "standard" "photonix" modules.
         filename_ship_key = "solar"

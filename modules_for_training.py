@@ -957,17 +957,17 @@ modules = {
                 },
                 {
                     "label": "Pulse Spitter",
-                    "key": "pulse-splitter",
-                    "image": "pulse-splitter.webp",
+                    "key": "pulse-spitter",
+                    "image": "pulse-spitter.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.webp", },
+                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter.webp", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.webp", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.webp", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-rm.webp", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
                     ],
                 },
                 {
@@ -1178,17 +1178,17 @@ modules = {
                 },
                 {
                     "label": "Pulse Spitter",
-                    "key": "pulse-splitter",
-                    "image": "pulse-splitter.webp",
+                    "key": "pulse-spitter",
+                    "image": "pulse-spitter.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.webp", },
+                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter.webp", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.webp", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.webp", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-rm.webp", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
                     ],
                 },
                 {
@@ -1398,17 +1398,17 @@ modules = {
                 },
                 {
                     "label": "Pulse Spitter",
-                    "key": "pulse-splitter",
-                    "image": "pulse-splitter.webp",
+                    "key": "pulse-spitter",
+                    "image": "pulse-spitter.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.webp", },
+                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter.webp", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.webp", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.webp", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-rm.webp", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
                     ],
                 },
                 {
@@ -1618,17 +1618,17 @@ modules = {
                 },
                 {
                     "label": "Pulse Spitter",
-                    "key": "pulse-splitter",
-                    "image": "pulse-splitter.webp",
+                    "key": "pulse-spitter",
+                    "image": "pulse-spitter.webp",
                     "color": "jade",
                     "modules": [
-                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter.webp", },
+                        { "id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter.webp", },
                         { "id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "amplified.webp", },
-                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-rm.webp", },
+                        { "id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-rm.webp", },
                         { "id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": True, "image": "impact-ignitor.webp", },
-                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
-                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-splitter-upgrade.webp", },
+                        { "id": "Xa", "type": "bonus", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xb", "type": "bonus", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
+                        { "id": "Xc", "type": "bonus", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": True, "image": "pulse-spitter-upgrade.webp", },
                     ],
                 },
                 {
@@ -2412,7 +2412,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "II",
                 (1, 0): "AC",
@@ -2519,7 +2519,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "None",
                 (1, 0): "AC",
@@ -2624,7 +2624,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "II",
                 (1, 0): "AC",
@@ -2729,7 +2729,7 @@ solves = {
             },
             "score": 2.4383
         },
-        "pulse-splitter": {
+        "pulse-spitter": {
             "map": {
                 (0, 0): "II",
                 (1, 0): "AC",
