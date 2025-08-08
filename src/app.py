@@ -11,7 +11,15 @@ import logging
 import os
 from google.oauth2 import service_account
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import DateRange, Dimension, Metric, RunReportRequest, OrderBy, FilterExpression, Filter
+from google.analytics.data_v1beta.types import (
+    DateRange,
+    Dimension,
+    Metric,
+    RunReportRequest,
+    OrderBy,
+    FilterExpression,
+    Filter,
+)
 
 logging.basicConfig(level=logging.INFO)
 
@@ -22,15 +30,16 @@ Compress(app)  # Initialize Flask-Compress
 # --- Google Analytics 4 (GA4) Configuration ---
 # IMPORTANT: For production, store this path securely (e.g., environment variable)
 # and ensure the JSON key file is NOT committed to version control.
-GA_KEY_FILE_PATH = os.path.join(app.root_path, '..', 'cosmic-inkwell-467922-v5-85707f3bcc80.json')
-GA_PROPERTY_ID = '484727815' # Your GA4 Property ID
+GA_KEY_FILE_PATH = os.path.join(os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json")
+GA_PROPERTY_ID = "484727815"  # Your GA4 Property ID
+
 
 def initialize_ga4_client():
     """Initializes the Google Analytics Data API V1Beta client."""
     try:
         credentials = service_account.Credentials.from_service_account_file(
             GA_KEY_FILE_PATH,
-            scopes=['https://www.googleapis.com/auth/analytics.readonly']
+            scopes=["https://www.googleapis.com/auth/analytics.readonly"],
         )
         client = BetaAnalyticsDataClient(credentials=credentials)
         return client
@@ -38,10 +47,13 @@ def initialize_ga4_client():
         app.logger.error(f"Error initializing Google Analytics Data API client: {e}")
         return None
 
+
 # Initialize the client globally or on first request
 ga4_client = initialize_ga4_client()
 if not ga4_client:
-    app.logger.error("Failed to initialize Google Analytics Data API client. Analytics endpoints may not function.")
+    app.logger.error(
+        "Failed to initialize Google Analytics Data API client. Analytics endpoints may not function."
+    )
 
 # --- End GA4 Configuration ---
 
@@ -142,7 +154,10 @@ def get_ship_types():
     ship_types = {}
     for ship_key, ship_data in modules.items():
         # Create a dictionary containing both label and type
-        ship_info = {"label": ship_data.get("label"), "type": ship_data.get("type")}  # Get the 'type' field
+        ship_info = {
+            "label": ship_data.get("label"),
+            "type": ship_data.get("type"),
+        }  # Get the 'type' field
         ship_types[ship_key] = ship_info
     return jsonify(ship_types)
 
@@ -154,52 +169,60 @@ def get_popular_analytics_data():
     Requires GA_PROPERTY_ID to be configured.
     """
     if not ga4_client:
-        return jsonify({"error": "Google Analytics Data API client not initialized."}), 500
+        return jsonify(
+            {"error": "Google Analytics Data API client not initialized."}
+        ), 500
 
     try:
         # Define the date range for the report
-        start_date = request.args.get('start_date', '30daysAgo')
-        end_date = request.args.get('end_date', 'today')
+        start_date = request.args.get("start_date", "30daysAgo")
+        end_date = request.args.get("end_date", "today")
 
         # Define the report request for GA4
         # This example assumes you are tracking 'optimize' events and have custom dimensions
         # for 'ship_type' and 'technology'. Adjust dimension names as per your GA4 setup.
         request_body = RunReportRequest(
             property=f"properties/{GA_PROPERTY_ID}",
-            date_ranges=[
-                DateRange(start_date=start_date, end_date=end_date)
-            ],
+            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
             dimensions=[
                 Dimension(name="eventName"),
-                Dimension(name="customEvent:platform"), # Your actual custom dimension name for Platform
-                Dimension(name="customEvent:tech"), # Your actual custom dimension name for Tech
-                Dimension(name="customEvent:supercharged") # New custom dimension for supercharged
+                Dimension(
+                    name="customEvent:platform"
+                ),  # Your actual custom dimension name for Platform
+                Dimension(
+                    name="customEvent:tech"
+                ),  # Your actual custom dimension name for Tech
+                Dimension(
+                    name="customEvent:supercharged"
+                ),  # New custom dimension for supercharged
             ],
             dimension_filter=FilterExpression(
                 filter=Filter(
                     field_name="eventName",
-                    string_filter=Filter.StringFilter(value="optimize_tech")
+                    string_filter=Filter.StringFilter(value="optimize_tech"),
                 )
             ),
-            metrics=[
-                Metric(name="eventCount")
-            ],
+            metrics=[Metric(name="eventCount")],
             order_bys=[
-                OrderBy(metric=OrderBy.MetricOrderBy(metric_name="eventCount"), desc=True)
-            ]
+                OrderBy(
+                    metric=OrderBy.MetricOrderBy(metric_name="eventCount"), desc=True
+                )
+            ],
         )
 
         response = ga4_client.run_report(request_body)
 
         popular_data = []
         for row in response.rows:
-            popular_data.append({
-                'event_name': row.dimension_values[0].value,
-                'ship_type': row.dimension_values[1].value,
-                'technology': row.dimension_values[2].value,
-                'supercharged': row.dimension_values[3].value,
-                'total_events': int(row.metric_values[0].value)
-            })
+            popular_data.append(
+                {
+                    "event_name": row.dimension_values[0].value,
+                    "ship_type": row.dimension_values[1].value,
+                    "technology": row.dimension_values[2].value,
+                    "supercharged": row.dimension_values[3].value,
+                    "total_events": int(row.metric_values[0].value),
+                }
+            )
 
         return jsonify(popular_data)
 
