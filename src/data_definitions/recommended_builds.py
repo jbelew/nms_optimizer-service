@@ -669,11 +669,11 @@ recommended_builds = {
                 [
                     {
                         "tech": "minotaur",
-                        "module": "MC",
+                        "module": "Xa",
                         "adjacency_bonus": 1,
                         "supercharged": True,
                     },
-                    {"tech": "minotaur", "module": "Xa", "adjacency_bonus": 1},
+                    {"tech": "minotaur", "module": "MC", "adjacency_bonus": 1},
                     {"tech": "array", "module": "RA", "adjacency_bonus": 0},
                     {"tech": "hardframe-right", "module": "HR", "adjacency_bonus": 0},
                     {"tech": "minotaur-laser", "module": "Xa", "adjacency_bonus": 1},
