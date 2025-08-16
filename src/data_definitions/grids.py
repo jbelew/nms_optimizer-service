@@ -1092,8 +1092,8 @@ grids = {
         ],
     },
     "minotaur": {
-        "superchargedFixed": False,
-        "gridFixed": False,
+        "superchargedFixed": True,
+        "gridFixed": True,
         "grid": [
             [
                 {"active": True},
