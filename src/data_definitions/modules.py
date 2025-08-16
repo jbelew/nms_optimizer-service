@@ -2693,19 +2693,19 @@ modules = {
                     "image": "exocraft/liquidator-legs.webp",
                     "color": "gray",
                     "modules": [
-                         { "id": "LL", "type": "core", "label": "Liqiquidator Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": False, "image": "exocraft/liquidator-legs.webp", },
+                         { "id": "LL", "type": "core", "label": "Liquidator Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": False, "image": "exocraft/liquidator-legs.webp", },
                     ],
                 },
             ],
             "Weaponry": [
                 {
-                    "label": "Exocraft Mining Laser",
-                    "key": "mining",
-                    "image": "exocraft/mining.webp",
+                    "label": "Minotaur Laser",
+                    "key": "minotaur-laser",
+                    "image": "exocraft/minotaur-laser.webp",
                     "color": "green",
                     "modules": [
-                        { "id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining.webp", },
-                        { "id": "AL", "type": "bonus", "label": "Precision Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/precision.webp", },
+                        { "id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/minotaur-laser.webp", },
+                        { "id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/precision.webp", },
                         { "id": "Xa", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
                         { "id": "Xb", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },
                         { "id": "Xc", "type": "bonus", "label": "Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": True, "image": "exocraft/mining-upgrade.webp", },

@@ -1225,7 +1225,7 @@ solves = {
             },
             "score": 2.3001
         },
-        "mining": {
+        "minotaur-laser": {
             "map": {
                 (0, 0): "AL",
                 (1, 0): "None",
@@ -1235,6 +1235,12 @@ solves = {
                 (1, 2): "Xc",
             },
             "score": 2.2031
+        },
+        "hardframe-left": {
+            "map": {
+                (0, 0): "HL",
+            },
+            "score": 1.2500
         },
     },
     "exosuit": {
