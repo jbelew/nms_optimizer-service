@@ -1240,7 +1240,7 @@ solves = {
             "map": {
                 (0, 0): "HL",
             },
-            "score": 1.2500
+            "score": 1.000
         },
     },
     "exosuit": {
