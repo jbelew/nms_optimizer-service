@@ -319,7 +319,9 @@ def simulated_annealing(
 
     # --- Progress Reporting Setup ---
     try:
-        total_steps = math.log(stopping_temperature / initial_temperature) / math.log(cooling_rate)
+        total_steps = math.log(stopping_temperature / initial_temperature) / math.log(
+            cooling_rate
+        )
     except (ValueError, ZeroDivisionError):
         total_steps = 0  # Avoid division by zero if cooling_rate is 1 or invalid
     step = 0
@@ -386,10 +388,15 @@ def simulated_annealing(
                             "tech": tech,
                             "run_id": run_id,
                             "stage": stage,
-                            "progress_percent": progress_offset + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                            "progress_percent": progress_offset
+                            + (
+                                (step / total_steps) * progress_scale
+                                if total_steps > 0
+                                else 0
+                            ),
                             "current_temp": temperature,
                             "best_score": best_score,
-                            "status": "new_best"
+                            "status": "new_best",
                         }
                         if send_grid_updates:
                             progress_data["best_grid"] = best_grid.to_dict()
@@ -402,10 +409,16 @@ def simulated_annealing(
                 "tech": tech,
                 "run_id": run_id,
                 "stage": stage,
-                "progress_percent": progress_offset + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                "progress_percent": progress_offset
+                + (
+                    max(
+                        ((time.time() - start_time) / max_processing_time) if max_processing_time > 0 else 0,
+                        ((step / total_steps) if total_steps > 0 else 0)
+                    ) * progress_scale
+                ),
                 "current_temp": temperature,
                 "best_score": best_score,
-                "status": "in_progress"
+                "status": "in_progress",
             }
             progress_callback(progress_data)
             gevent.sleep(0)
