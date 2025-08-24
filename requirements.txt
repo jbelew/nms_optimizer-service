@@ -18,6 +18,7 @@ filelock==3.18.0
 Flask==3.1.0
 Flask-Compress==1.17
 flask-cors==5.0.1
+Flask-SocketIO==5.3.6
 fsspec==2025.3.2
 gevent==24.11.1
 google-analytics-data

@@ -58,6 +58,12 @@ def ml_placement(
     model_grid_width: int = DEFAULT_MODEL_GRID_WIDTH,
     model_grid_height: int = DEFAULT_MODEL_GRID_HEIGHT,
     polish_result: bool = True,  # Flag for optional SA polishing
+    progress_callback=None,
+    run_id=None,
+    stage=None,
+    progress_offset=0,
+    progress_scale=100,
+    send_grid_updates=False,
 ) -> Tuple[Optional[Grid], float]:
     """
     Uses a pre-trained Machine Learning model to predict module placement.
@@ -415,6 +421,12 @@ def ml_placement(
                 modules_data,
                 tech,  # Use original UI tech key
                 player_owned_rewards,
+                progress_callback=progress_callback,
+                run_id=run_id,
+                stage=stage,
+                progress_offset=progress_offset,
+                progress_scale=progress_scale,
+                send_grid_updates=send_grid_updates,
                 **polish_params,
             )
 

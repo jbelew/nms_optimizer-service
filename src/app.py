@@ -2,6 +2,7 @@
 from flask import Flask, jsonify, request
 from flask_compress import Compress
 from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 from optimization_algorithms import optimize_placement
 from optimizer import get_tech_tree_json, Grid
 from data_definitions.modules import modules  # Keep modules as it's used directly
@@ -9,6 +10,7 @@ from data_definitions.recommended_builds import recommended_builds
 from data_definitions.grids import grids
 import logging
 import os
+import uuid
 from google.oauth2 import service_account
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
@@ -26,6 +28,7 @@ logging.basicConfig(level=logging.INFO)
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 Compress(app)  # Initialize Flask-Compress
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # --- Google Analytics 4 (GA4) Configuration ---
 # IMPORTANT: For production, store this path securely (e.g., environment variable)
@@ -68,28 +71,25 @@ if not ga4_client:
 
 # --- End GA4 Configuration ---
 
-
-@app.route("/optimize", methods=["POST"])
-def optimize_grid():
-    """Endpoint to optimize the grid."""
-    data = request.get_json()
+def run_optimization(data, progress_callback=None, run_id=None):
+    """Central function to run the optimization logic."""
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
     forced_solve = data.get("forced", False)
     experimental_window_sizing_req = data.get("experimental_window_sizing", True)
+    send_grid_updates = data.get("send_grid_updates", False)
 
     if tech is None:
-        return jsonify({"error": "No tech specified"}), 400
+        return {"error": "No tech specified"}, 400
 
     grid_data = data.get("grid")
     if grid_data is None:
-        return jsonify({"error": "No grid specified"}), 400
+        return {"error": "No grid specified"}, 400
 
     grid = Grid.from_dict(grid_data)
 
     try:
-        # Pass the forced_solve flag to optimize_placement
         optimized_grid, percentage, solved_bonus, solve_method = optimize_placement(
             grid,
             ship,
@@ -98,33 +98,50 @@ def optimize_grid():
             player_owned_rewards,
             forced=forced_solve,
             experimental_window_sizing=experimental_window_sizing_req,
+            progress_callback=progress_callback,
+            run_id=run_id,
+            send_grid_updates=send_grid_updates,
         )
 
+        result = {
+            "grid": optimized_grid.to_dict() if optimized_grid else None,
+            "max_bonus": percentage,
+            "solved_bonus": solved_bonus,
+            "solve_method": solve_method,
+            "run_id": run_id,
+        }
+
         if solve_method == "Pattern No Fit":
-            return (
-                jsonify(
-                    {
-                        "grid": None,  # No grid to return in this specific case
-                        "max_bonus": 0.0,
-                        "solved_bonus": 0.0,
-                        "solve_method": "Pattern No Fit",
-                        "message": "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve.",
-                    }
-                ),
-                200,
-            )  # 200 OK, but with a specific message for the UI
-        return jsonify(
-            {
-                "grid": optimized_grid.to_dict(),
-                "max_bonus": percentage,
-                "solved_bonus": solved_bonus,
-                "solve_method": solve_method,
-            }
-        )
+            result["message"] = "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve."
+            return result, 200
+
+        return result, 200
+
     except ValueError as e:
         app.logger.error(f"ValueError during optimization: {str(e)}")
-        # Consider if printing the grid here is necessary or too verbose for production logs
-        return jsonify({"error": str(e)}), 500
+        return {"error": str(e), "run_id": run_id}, 500
+
+
+@app.route("/optimize", methods=["POST"])
+def optimize_grid():
+    """Endpoint to optimize the grid."""
+    data = request.get_json()
+    result, status_code = run_optimization(data)
+    return jsonify(result), status_code
+
+
+@socketio.on('optimize')
+def handle_optimize_socket(data):
+    """WebSocket endpoint to optimize the grid."""
+    sid = request.sid
+    run_id = str(uuid.uuid4())
+
+    def progress_callback(progress_data):
+        """Callback to emit progress over the socket."""
+        emit('progress', {**progress_data, 'run_id': run_id}, room=sid)
+
+    result, status_code = run_optimization(data, progress_callback=progress_callback, run_id=run_id)
+    emit('optimization_result', {**result, 'run_id': run_id}, room=sid)
 
 
 @app.route("/tech_tree/<ship_name>")
@@ -244,4 +261,4 @@ def get_popular_analytics_data():
 
 # Start the message sending thread
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)

@@ -4,7 +4,6 @@ from enum import Enum
 
 # --- Constants ---
 
-
 # Adjacency Types using Enum
 class AdjacencyType(Enum):
     GREATER = "greater"

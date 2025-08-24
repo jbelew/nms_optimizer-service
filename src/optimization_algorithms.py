@@ -731,6 +731,12 @@ def _handle_ml_opportunity(
     opportunity_y,
     window_width,
     window_height,
+    progress_callback=None,
+    run_id=None,
+    stage=None,
+    progress_offset=0,
+    progress_scale=100,
+    send_grid_updates=False,
 ):
     """Handles the ML-based refinement within an opportunity window."""
     from ml_placement import ml_placement  # Keep import local if possible
@@ -764,6 +770,11 @@ def _handle_ml_opportunity(
         model_grid_width=localized_grid_ml.width,  # <<< Use actual localized width
         model_grid_height=localized_grid_ml.height,  # <<< Use actual localized height
         polish_result=True,  # Usually don't polish within the main polish step
+        progress_callback=progress_callback,
+        run_id=run_id,
+        stage=stage,
+        progress_offset=progress_offset,
+        progress_scale=progress_scale,
     )
 
     # 3. Process ML result (logic remains the same)
@@ -799,6 +810,12 @@ def _handle_sa_refine_opportunity(
     opportunity_y,
     window_width,
     window_height,
+    progress_callback=None,
+    run_id=None,
+    stage=None,
+    progress_offset=0,
+    progress_scale=100,
+    send_grid_updates=False,
 ):
     """Handles the SA/Refine-based refinement within an opportunity window."""
     print(
@@ -839,7 +856,7 @@ def _handle_sa_refine_opportunity(
     else:
         print(f"INFO -- {tech} has 6 or more modules, running simulated_annealing")
         temp_refined_grid, temp_refined_bonus_local = simulated_annealing(
-            localized_grid, ship, modules, tech, player_owned_rewards
+            localized_grid, ship, modules, tech, player_owned_rewards, progress_callback=progress_callback, run_id=run_id, stage=stage, progress_offset=progress_offset, progress_scale=progress_scale
         )
 
     # Process SA/Refine result (logic remains the same)
@@ -866,6 +883,9 @@ def optimize_placement(
     player_owned_rewards=None,
     forced=False,
     experimental_window_sizing=False,
+    progress_callback=None,
+    run_id=None,
+    send_grid_updates=False,
 ):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
@@ -1059,6 +1079,11 @@ def optimize_placement(
                     iterations_per_temp=35,
                     initial_swap_probability=0.55,
                     max_processing_time=20.0,
+                    progress_callback=progress_callback,
+                    run_id=run_id,
+                    stage="initial_placement",
+                    progress_offset=0,
+                    progress_scale=80,
                 )
                 if solved_grid is None:
                     raise ValueError(
@@ -1310,6 +1335,12 @@ def optimize_placement(
                 opportunity_y,
                 window_width,
                 window_height,
+                progress_callback=progress_callback,
+                run_id=run_id,
+                stage="refinement_ml",
+                progress_offset=20,
+                progress_scale=60,
+                send_grid_updates=send_grid_updates,
             )
             if refined_grid_candidate is None:
                 print(
@@ -1329,6 +1360,12 @@ def optimize_placement(
                         opportunity_y,
                         window_width,
                         window_height,
+                        progress_callback=progress_callback,
+                        run_id=run_id,
+                        stage="refinement_sa_fallback",
+                        progress_offset=20,
+                        progress_scale=60,
+                        send_grid_updates=send_grid_updates,
                     )
                 )
 
@@ -1380,6 +1417,12 @@ def optimize_placement(
                         opportunity_y,
                         window_width,
                         window_height,
+                        progress_callback=progress_callback,
+                        run_id=run_id,
+                        stage="final_fallback_sa",
+                        progress_offset=80,
+                        progress_scale=15,
+                        send_grid_updates=send_grid_updates,
                     )
                     if (
                         sa_fallback_grid is not None
@@ -1445,6 +1488,11 @@ def optimize_placement(
             initial_swap_probability=0.70,
             final_swap_probability=0.25,
             max_processing_time=20.0,
+            progress_callback=progress_callback,
+            run_id=run_id,
+            stage="final_sa_unplaced_modules",
+            progress_offset=95,
+            progress_scale=5,
         )
         if temp_solved_grid is not None:
             final_sa_score = calculate_grid_score(temp_solved_grid, tech)

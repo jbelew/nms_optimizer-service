@@ -2,6 +2,7 @@
 import random
 import math
 import time
+import gevent
 from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
@@ -181,6 +182,12 @@ def simulated_annealing(
     final_swap_probability=0.25,
     start_from_current_grid: bool = False,
     max_processing_time: float = 360.0,
+    progress_callback=None,
+    run_id=None,
+    stage=None,
+    progress_offset=0,
+    progress_scale=100,
+    send_grid_updates=False,
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -310,8 +317,17 @@ def simulated_annealing(
     temperature = initial_temperature
     swap_probability = initial_swap_probability
 
+    # --- Progress Reporting Setup ---
+    try:
+        total_steps = math.log(stopping_temperature / initial_temperature) / math.log(cooling_rate)
+    except (ValueError, ZeroDivisionError):
+        total_steps = 0  # Avoid division by zero if cooling_rate is 1 or invalid
+    step = 0
+    # --- End Progress Reporting Setup ---
+
     # --- Annealing Loop ---
     while temperature > stopping_temperature:
+        step += 1
         if time.time() - start_time > max_processing_time:
             print(
                 f"INFO -- SA: Max processing time ({max_processing_time}s) exceeded. Returning best found."
@@ -365,8 +381,34 @@ def simulated_annealing(
                     )
                     # print_grid_compact(best_grid)
                     best_score = current_score
+                    if progress_callback:
+                        progress_data = {
+                            "tech": tech,
+                            "run_id": run_id,
+                            "stage": stage,
+                            "progress_percent": progress_offset + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                            "current_temp": temperature,
+                            "best_score": best_score,
+                            "status": "new_best"
+                        }
+                        if send_grid_updates:
+                            progress_data["best_grid"] = best_grid.to_dict()
+                        progress_callback(progress_data)
+                        gevent.sleep(0)
 
         temperature *= cooling_rate
+        if progress_callback and (step % 5 == 0 or temperature <= stopping_temperature):
+            progress_data = {
+                "tech": tech,
+                "run_id": run_id,
+                "stage": stage,
+                "progress_percent": progress_offset + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                "current_temp": temperature,
+                "best_score": best_score,
+                "status": "in_progress"
+            }
+            progress_callback(progress_data)
+            gevent.sleep(0)
     # --- End Annealing Loop ---
 
     end_time = time.time()
