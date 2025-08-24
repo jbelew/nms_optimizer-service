@@ -9,15 +9,15 @@ sio = socketio.Client()
 @sio.event
 def connect():
     print("Connected to server")
-    # Once connected, send the optimization request
-    print("Sending optimization request...")
+    # Once connected, send the optimization request if payload is defined
+    print(f"Sending optimization request for {payload['ship']} - {payload['tech']}...")
     sio.emit("optimize", payload)
 
 
 @sio.event
 def disconnect():
     print("Disconnected from server")
-
+ 
 
 @sio.on("progress")
 def on_progress(data):
