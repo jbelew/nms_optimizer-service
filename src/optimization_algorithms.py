@@ -244,7 +244,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     # Package arguments: Pass the single base_working_grid. It gets pickled by the pool mechanism.
     tasks = (
-        (indices, base_working_grid, tech_modules, available_positions, tech)
+        (indices, base_working_grid, tech_modules, available_positions, tech) 
         for indices in permutation_indices_iterator
     )
     # --- End Task Preparation --- 
@@ -258,7 +258,8 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
         chunks_per_worker_target = 500  # Tune this value
         calculated_chunksize = int(
-            num_permutations // (num_workers * chunks_per_worker_target) # Ensure integer
+            num_permutations
+            // (num_workers * chunks_per_worker_target)  # Ensure integer
         )
         chunksize = max(chunksize, calculated_chunksize)
         # Add an upper limit to prevent huge chunks consuming too much memory at once
@@ -279,7 +280,8 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
         # Progress reporting frequency
         update_frequency = max(
-            1, chunksize * num_workers // 4 # Update reasonably often
+            1,
+            chunksize * num_workers // 4,  # Update reasonably often
         )
 
         for score, placement_indices in results_iterator:
@@ -425,7 +427,7 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
 
 
 def rotate_pattern(pattern):
-    """Rotates a pattern 90 degrees clockwise."""
+    "Rotates a pattern 90 degrees clockwise."
     x_coords = [coord[0] for coord in pattern.keys()]
     y_coords = [coord[1] for coord in pattern.keys()]
     if not x_coords or not y_coords:
@@ -440,7 +442,7 @@ def rotate_pattern(pattern):
 
 
 def mirror_pattern_horizontally(pattern):
-    """Mirrors a pattern horizontally."""
+    "Mirrors a pattern horizontally."
     x_coords = [coord[0] for coord in pattern.keys()]
     if not x_coords:
         return {}
@@ -453,7 +455,7 @@ def mirror_pattern_horizontally(pattern):
 
 
 def mirror_pattern_vertically(pattern):
-    """Mirrors a pattern vertically."""
+    "Mirrors a pattern vertically."
     y_coords = [coord[1] for coord in pattern.keys()]
     if not y_coords:
         return {}
@@ -771,7 +773,7 @@ def _handle_ml_opportunity(
         progress_callback=progress_callback,
         run_id=run_id,
         stage=stage,
-        
+        send_grid_updates=send_grid_updates,
     )
 
     # 3. Process ML result (logic remains the same)
@@ -859,7 +861,7 @@ def _handle_sa_refine_opportunity(
             progress_callback=progress_callback,
             run_id=run_id,
             stage=stage,
-            
+            send_grid_updates=send_grid_updates,
         )
 
     # Process SA/Refine result (logic remains the same)
@@ -920,6 +922,7 @@ def optimize_placement(
     print(  # <<< KEEP: Start of process >>>
         f"INFO -- Attempting solve for ship: '{ship}' -- tech: '{tech}' -- Exp. Window: {experimental_window_sizing}"
     )
+    print("send_grid_updates:", send_grid_updates)
 
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -994,8 +997,8 @@ def optimize_placement(
     else:
         # --- Case 2: Solve Map Exists --- 
         solve_data = filtered_solves[ship][tech]
-        original_pattern = solve_data['map']
-        solve_score = solve_data['score']
+        original_pattern = solve_data["map"]
+        solve_score = solve_data["score"]
 
         # print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.") # <<< KEEP: Important outcome >>>
         # Assuming get_all_unique_pattern_variations is defined elsewhere
@@ -1085,7 +1088,7 @@ def optimize_placement(
                     progress_callback=progress_callback,
                     run_id=run_id,
                     stage="initial_placement",
-                    
+                    send_grid_updates=send_grid_updates,
                 )
                 if solved_grid is None:
                     raise ValueError(
@@ -1340,7 +1343,6 @@ def optimize_placement(
                 progress_callback=progress_callback,
                 run_id=run_id,
                 stage="refinement_ml",
-                
                 send_grid_updates=send_grid_updates,
             )
             if refined_grid_candidate is None:
@@ -1419,7 +1421,6 @@ def optimize_placement(
                         progress_callback=progress_callback,
                         run_id=run_id,
                         stage="final_fallback_sa",
-                        
                         send_grid_updates=send_grid_updates,
                     )
                     if (
@@ -1489,7 +1490,7 @@ def optimize_placement(
             progress_callback=progress_callback,
             run_id=run_id,
             stage="final_sa_unplaced_modules",
-            
+            send_grid_updates=send_grid_updates,
         )
         if temp_solved_grid is not None:
             final_sa_score = calculate_grid_score(temp_solved_grid, tech)
@@ -1977,9 +1978,9 @@ def create_localized_grid_ml(
                 # --- Other Tech Found --- 
                 original_state_map[(x_main, y_main)] = deepcopy(main_cell)
                 local_cell['module'] = None
-                local_cell['label'] = ''
+                local_cell['label'] = ""
                 local_cell['tech'] = None
-                local_cell['type'] = ''
+                local_cell['type'] = ""
                 local_cell['bonus'] = 0.0
                 local_cell['adjacency'] = False
                 local_cell['sc_eligible'] = False
@@ -1993,9 +1994,9 @@ def create_localized_grid_ml(
                 # --- Inactive Cell in Main Grid --- 
                 local_cell['active'] = False
                 local_cell['module'] = None
-                local_cell['label'] = ''
+                local_cell['label'] = ""
                 local_cell['tech'] = None
-                local_cell['type'] = ''
+                local_cell['type'] = ""
                 local_cell['bonus'] = 0.0
                 local_cell['adjacency'] = False
                 local_cell['sc_eligible'] = False

@@ -3,6 +3,8 @@ from flask import Flask, jsonify, request
 from flask_compress import Compress
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
+
+
 from optimization_algorithms import optimize_placement
 from optimizer import get_tech_tree_json, Grid
 from data_definitions.modules import modules  # Keep modules as it's used directly
@@ -23,6 +25,12 @@ from google.analytics.data_v1beta.types import (
     FilterExpression,
     Filter,
 )
+from typing import cast
+
+
+# Define a custom Request type for Flask-SocketIO to include 'sid'
+class SocketIORequest(request.__class__):
+    sid: str
 
 logging.basicConfig(level=logging.INFO)
 
@@ -44,6 +52,7 @@ def initialize_ga4_client():
         gcp_key_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
         if gcp_key_json:
             import json
+
             credentials_info = json.loads(gcp_key_json)
             credentials = service_account.Credentials.from_service_account_info(
                 credentials_info,
@@ -51,7 +60,9 @@ def initialize_ga4_client():
             )
         else:
             # Fallback to file-based credentials (local development)
-            GA_KEY_FILE_PATH = os.path.join(os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json")
+            GA_KEY_FILE_PATH = os.path.join(
+                os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json"
+            )
             credentials = service_account.Credentials.from_service_account_file(
                 GA_KEY_FILE_PATH,
                 scopes=["https://www.googleapis.com/auth/analytics.readonly"],
@@ -71,6 +82,7 @@ if not ga4_client:
     )
 
 # --- End GA4 Configuration ---
+
 
 def run_optimization(data, progress_callback=None, run_id=None):
     """Central function to run the optimization logic."""
@@ -113,7 +125,9 @@ def run_optimization(data, progress_callback=None, run_id=None):
         }
 
         if solve_method == "Pattern No Fit":
-            result["message"] = "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve."
+            result["message"] = (
+                "Official solve map exists, but no pattern variation fits the current grid. User can choose to force a Simulated Annealing solve."
+            )
             return result, 200
 
         return result, 200
@@ -131,10 +145,11 @@ def optimize_grid():
     return jsonify(result), status_code
 
 
-@socketio.on('optimize')
+@socketio.on("optimize")
 def handle_optimize_socket(data):
     """WebSocket endpoint to optimize the grid."""
-    sid = request.sid
+    req = cast(SocketIORequest, request)
+    sid = req.sid
     run_id = str(uuid.uuid4())
     last_emit_time = 0
     THROTTLE_INTERVAL = 0.1  # seconds
@@ -144,11 +159,13 @@ def handle_optimize_socket(data):
         nonlocal last_emit_time
         current_time = time.time()
         if current_time - last_emit_time > THROTTLE_INTERVAL:
-            emit('progress', {**progress_data, 'run_id': run_id}, room=sid)
+            emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
             last_emit_time = current_time
 
-    result, status_code = run_optimization(data, progress_callback=progress_callback, run_id=run_id)
-    emit('optimization_result', {**result, 'run_id': run_id}, room=sid)
+    result, status_code = run_optimization(
+        data, progress_callback=progress_callback, run_id=run_id
+    )
+    emit("optimization_result", {**result, "run_id": run_id}, room=sid)  # type: ignore
 
 
 @app.route("/tech_tree/<ship_name>")
@@ -199,8 +216,7 @@ def get_ship_types():
 
 @app.route("/analytics/popular_data", methods=["GET"])
 def get_popular_analytics_data():
-    """
-    Endpoint to pull Google Analytics data for popular technologies and ship types.
+    """Endpoint to pull Google Analytics data for popular technologies and ship types.
     Requires GA_PROPERTY_ID to be configured.
     """
     if not ga4_client:

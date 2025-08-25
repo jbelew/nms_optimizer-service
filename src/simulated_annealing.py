@@ -6,6 +6,9 @@ import gevent
 from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
+from grid_display import print_grid_compact
+from grid_utils import Grid # Added import
+from optimization_algorithms import apply_localized_grid_changes # Added import
 
 
 def place_modules_with_supercharged_priority(grid, tech_modules, tech):
@@ -173,6 +176,7 @@ def simulated_annealing(
     ship,
     modules,
     tech,
+    full_grid, # Added full_grid
     player_owned_rewards=None,
     initial_temperature=4000,
     cooling_rate=0.995,
@@ -213,6 +217,7 @@ def simulated_annealing(
         tuple: (best_grid, best_score) or (None, 0.0) on failure.
     """
     start_time = time.time()
+    print("send_grid_updates:", send_grid_updates)
 
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
@@ -399,7 +404,24 @@ def simulated_annealing(
                             "status": "new_best",
                         }
                         if send_grid_updates:
-                            progress_data["best_grid"] = best_grid.to_dict()
+                            # Reconstitute the full grid from the localized best_grid
+                            # Assuming start_x, start_y, localized_width, localized_height are available
+                            # from the context where simulated_annealing is called.
+                            # For now, we'll use a placeholder for these values.
+                            # In a real scenario, these would need to be passed into simulated_annealing.
+                            reconstituted_full_grid = full_grid.copy()
+                            # Clear the tech modules from the full grid before applying localized changes
+                            clear_all_modules_of_tech(reconstituted_full_grid, tech)
+                            apply_localized_grid_changes(
+                                reconstituted_full_grid,
+                                best_grid,
+                                tech,
+                                # These values need to be passed from the calling function (optimize_placement)
+                                # For now, using dummy values. This will cause an error if not handled.
+                                0, # Placeholder for start_x
+                                0, # Placeholder for start_y
+                            )
+                            progress_data["best_grid"] = reconstituted_full_grid.to_dict()
                         progress_callback(progress_data)
                         gevent.sleep(0)
 
@@ -412,9 +434,12 @@ def simulated_annealing(
                 "progress_percent": progress_offset
                 + (
                     max(
-                        ((time.time() - start_time) / max_processing_time) if max_processing_time > 0 else 0,
-                        ((step / total_steps) if total_steps > 0 else 0)
-                    ) * progress_scale
+                        ((time.time() - start_time) / max_processing_time)
+                        if max_processing_time > 0
+                        else 0,
+                        ((step / total_steps) if total_steps > 0 else 0),
+                    )
+                    * progress_scale
                 ),
                 "current_temp": temperature,
                 "best_score": best_score,
@@ -463,6 +488,7 @@ def simulated_annealing(
         #     clear_all_modules_of_tech(cleared_grid, tech)
         #     return cleared_grid, 0.0
         # Let's return the best_grid found for now, even if score is 0
+
         return best_grid, best_score
 
     return best_grid, best_score

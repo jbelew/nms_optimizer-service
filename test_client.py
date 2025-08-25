@@ -17,21 +17,20 @@ def connect():
 @sio.event
 def disconnect():
     print("Disconnected from server")
- 
 
-@sio.on("progress")
+
+@sio.on("progress")  # type: ignore
 def on_progress(data):
     print(f"--- Progress Update at {time.time():.2f} ---")
     print(json.dumps(data, indent=2))
 
 
-@sio.on("optimization_result")
+@sio.on("optimization_result")  # type: ignore
 def on_optimization_result(data):
     print(f"\n--- Final Result at {time.time():.2f} ---")
     print(json.dumps(data, indent=2))
     # Disconnect after getting the final result
     sio.disconnect()
-
 
 
 # --- Prepare the optimization request data ---
@@ -60,6 +59,7 @@ payload = {
     "player_owned_rewards": [],
     "forced": True,
     "experimental_window_sizing": True,
+    "send_grid_updates": True,
     "grid": {
         "width": 10,
         "height": 6,
