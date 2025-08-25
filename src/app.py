@@ -11,6 +11,7 @@ from data_definitions.grids import grids
 import logging
 import os
 import uuid
+import time
 from google.oauth2 import service_account
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
@@ -135,10 +136,16 @@ def handle_optimize_socket(data):
     """WebSocket endpoint to optimize the grid."""
     sid = request.sid
     run_id = str(uuid.uuid4())
+    last_emit_time = 0
+    THROTTLE_INTERVAL = 0.1  # seconds
 
     def progress_callback(progress_data):
-        """Callback to emit progress over the socket."""
-        emit('progress', {**progress_data, 'run_id': run_id}, room=sid)
+        """Callback to emit progress over the socket, with throttling."""
+        nonlocal last_emit_time
+        current_time = time.time()
+        if current_time - last_emit_time > THROTTLE_INTERVAL:
+            emit('progress', {**progress_data, 'run_id': run_id}, room=sid)
+            last_emit_time = current_time
 
     result, status_code = run_optimization(data, progress_callback=progress_callback, run_id=run_id)
     emit('optimization_result', {**result, 'run_id': run_id}, room=sid)
