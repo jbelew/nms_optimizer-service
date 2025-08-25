@@ -60,6 +60,7 @@ payload = {
     "player_owned_rewards": [],
     "forced": True,
     "experimental_window_sizing": True,
+    "send_grid_updates": True,
     "grid": {
         "width": 10,
         "height": 6,

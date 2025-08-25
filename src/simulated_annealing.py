@@ -5,7 +5,11 @@ import time
 import gevent
 from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
-from module_placement import place_module, clear_all_modules_of_tech
+from module_placement import (
+    place_module,
+    clear_all_modules_of_tech,
+    apply_localized_grid_changes,
+)
 
 
 def place_modules_with_supercharged_priority(grid, tech_modules, tech):
@@ -188,6 +192,7 @@ def simulated_annealing(
     progress_offset=0,
     progress_scale=100,
     send_grid_updates=False,
+    full_grid_context=None,
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -398,8 +403,21 @@ def simulated_annealing(
                             "best_score": best_score,
                             "status": "new_best",
                         }
+                        print(f"send_grid_updates in simulated_annealing: {send_grid_updates}")
                         if send_grid_updates:
-                            progress_data["best_grid"] = best_grid.to_dict()
+                            grid_to_send = best_grid
+                            if full_grid_context:
+                                # Reconstruct the full grid for the update
+                                full_grid = full_grid_context["full_grid"].copy()
+                                apply_localized_grid_changes(
+                                    full_grid,
+                                    best_grid,
+                                    tech,
+                                    full_grid_context["start_x"],
+                                    full_grid_context["start_y"],
+                                )
+                                grid_to_send = full_grid
+                            progress_data["best_grid"] = grid_to_send.to_dict()
                         progress_callback(progress_data)
                         gevent.sleep(0)
 

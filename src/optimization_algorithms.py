@@ -859,7 +859,12 @@ def _handle_sa_refine_opportunity(
             progress_callback=progress_callback,
             run_id=run_id,
             stage=stage,
-            
+            send_grid_updates=send_grid_updates,
+            full_grid_context={
+                "full_grid": grid,
+                "start_x": start_x,
+                "start_y": start_y,
+            },
         )
 
     # Process SA/Refine result (logic remains the same)
@@ -1085,7 +1090,7 @@ def optimize_placement(
                     progress_callback=progress_callback,
                     run_id=run_id,
                     stage="initial_placement",
-                    
+                    send_grid_updates=send_grid_updates,
                 )
                 if solved_grid is None:
                     raise ValueError(
@@ -1419,7 +1424,6 @@ def optimize_placement(
                         progress_callback=progress_callback,
                         run_id=run_id,
                         stage="final_fallback_sa",
-                        
                         send_grid_updates=send_grid_updates,
                     )
                     if (
@@ -1489,7 +1493,7 @@ def optimize_placement(
             progress_callback=progress_callback,
             run_id=run_id,
             stage="final_sa_unplaced_modules",
-            
+            send_grid_updates=send_grid_updates,
         )
         if temp_solved_grid is not None:
             final_sa_score = calculate_grid_score(temp_solved_grid, tech)
