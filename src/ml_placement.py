@@ -32,7 +32,7 @@ try:
     # <<< End import changes >>>
     from module_placement import place_module, clear_all_modules_of_tech
     from bonus_calculations import calculate_grid_score
-    from grid_utils import Grid
+    from grid_utils import Grid, apply_localized_grid_changes, restore_original_state
     from data_definitions.model_mapping import (
         get_model_keys,
     )  # Import the modified get_model_keys
@@ -56,6 +56,7 @@ def ml_placement(
     full_grid_original: Grid, # The original full grid from optimize_placement
     start_x_original: int, # The x-offset of this localized grid within the original full grid
     start_y_original: int, # The y-offset of this localized grid within the original full grid
+    original_state_map: dict, # The map to restore original state of other tech modules
     player_owned_rewards: Optional[List[str]] = None,
     model_dir: str = DEFAULT_MODEL_DIR,
     model_grid_width: int = DEFAULT_MODEL_GRID_WIDTH,
@@ -396,6 +397,31 @@ def ml_placement(
         f"INFO -- ML Placement: Initial Score (before polish): {predicted_score:.4f}"
     )
     # print_grid(predicted_grid) # Optional: print grid before polish
+
+    # Emit the full, reconstituted grid state after ML placement, before polishing
+    if send_grid_updates and progress_callback:
+        reconstituted_grid_for_update = full_grid_original.copy()
+        # Clear the tech modules from the full grid before applying localized changes
+        clear_all_modules_of_tech(reconstituted_grid_for_update, tech)
+        apply_localized_grid_changes(
+            reconstituted_grid_for_update,
+            predicted_grid,
+            tech,
+            start_x_original,
+            start_y_original,
+        )
+        restore_original_state(reconstituted_grid_for_update, original_state_map)
+
+        progress_data = {
+            "tech": tech,
+            "run_id": run_id,
+            "stage": stage,
+            "progress_percent": 0,
+            "best_score": predicted_score,
+            "status": "ml_initial_placement_complete",
+            "best_grid": reconstituted_grid_for_update.to_dict(),
+        }
+        progress_callback(progress_data)
 
     # --- 11. Optional Polishing Step ---
     if polish_result:

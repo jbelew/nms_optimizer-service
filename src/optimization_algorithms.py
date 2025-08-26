@@ -778,6 +778,7 @@ def _handle_ml_opportunity(
         run_id=run_id,
         stage=stage,
         send_grid_updates=send_grid_updates,
+        original_state_map=original_state_map,
     )
 
     # 3. Process ML result (logic remains the same)
