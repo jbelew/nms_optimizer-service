@@ -6,8 +6,7 @@ import gevent
 from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
-from grid_display import print_grid_compact
-from grid_utils import Grid, restore_original_state, apply_localized_grid_changes
+from grid_utils import apply_localized_grid_changes
 
 
 def place_modules_with_supercharged_priority(grid, tech_modules, tech):
