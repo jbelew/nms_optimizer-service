@@ -426,7 +426,7 @@ def ml_placement(
                 stage=stage,
                 progress_offset=progress_offset,
                 progress_scale=progress_scale,
-                send_grid_updates=send_grid_updates,
+                send_grid_updates=False,
                 **polish_params,
             )
 

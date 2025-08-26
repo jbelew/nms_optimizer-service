@@ -1,5 +1,5 @@
 # optimization_algorithms.py
-from grid_utils import Grid
+from grid_utils import Grid, restore_original_state, apply_localized_grid_changes
 from modules_utils import get_tech_modules, get_tech_modules_for_training
 from grid_display import print_grid_compact
 from bonus_calculations import calculate_grid_score
@@ -7,8 +7,9 @@ from module_placement import (
     place_module,
     clear_all_modules_of_tech,
 )  # Import from module_placement
-from simulated_annealing import simulated_annealing
 
+
+from simulated_annealing import simulated_annealing
 # from ml_placement import ml_placement
 from itertools import permutations
 import random
@@ -857,7 +858,10 @@ def _handle_sa_refine_opportunity(
             ship,
             modules,
             tech,
+            grid, # full_grid
             player_owned_rewards,
+            start_x=start_x, # Pass start_x
+            start_y=start_y, # Pass start_y
             progress_callback=progress_callback,
             run_id=run_id,
             stage=stage,
@@ -1080,6 +1084,7 @@ def optimize_placement(
                     ship,
                     modules,
                     tech,
+                    grid, # full_grid
                     player_owned_rewards,
                     cooling_rate=0.999,
                     iterations_per_temp=35,
@@ -1482,6 +1487,7 @@ def optimize_placement(
             ship,
             modules,
             tech,
+            grid, # full_grid
             player_owned_rewards,
             iterations_per_temp=25,
             initial_swap_probability=0.70,
@@ -2013,50 +2019,10 @@ def create_localized_grid_ml(
     return localized_grid, start_x, start_y, original_state_map
 
 
-# --- Restoration Function (Keep as is from previous response) --- 
-def restore_original_state(grid, original_state_map):
-    """
-    Restores the original state of cells in the main grid that were temporarily
-    modified (other tech modules removed and marked inactive) during localization.
-
-    Args:
-        grid (Grid): The main grid to restore.
-        original_state_map (dict): The dictionary mapping main grid coordinates (x, y)
-                                   to their original cell data, as returned by
-                                   create_localized_grid_ml.
-    """
-    if not original_state_map:
-        return  # Nothing to restore
-
-    print(f"INFO -- Restoring original state for {len(original_state_map)} cells.")
-    for (x, y), original_cell_data in original_state_map.items():
-        if 0 <= x < grid.width and 0 <= y < grid.height:
-            # Directly update the cell in the main grid with its original data
-            # Use deepcopy of the stored data for safety when updating
-            grid.cells[y][x].update(deepcopy(original_cell_data))
-        else:
-            print(
-                f"Warning -- Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid."
-            )
 
 
-def apply_localized_grid_changes(grid, localized_grid, tech, start_x, start_y):
-    """Applies changes from the localized grid back to the main grid."""
-    localized_width = localized_grid.width
-    localized_height = localized_grid.height
 
-    # Copy module placements from the localized grid back to the main grid
-    for y in range(localized_height):
-        for x in range(localized_width):
-            main_x = start_x + x
-            main_y = start_y + y
-            if 0 <= main_x < grid.width and 0 <= main_y < grid.height:
-                # Only copy if the cell is empty or of the same tech
-                if (
-                    grid.get_cell(main_x, main_y)['tech'] == tech
-                    or grid.get_cell(main_x, main_y)['module'] is None
-                ):
-                    grid.cells[main_y][main_x].update(localized_grid.cells[y][x])
+
 
 
 def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=None):

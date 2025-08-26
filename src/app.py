@@ -32,6 +32,7 @@ from typing import cast
 class SocketIORequest(request.__class__):
     sid: str
 
+
 logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
@@ -158,7 +159,10 @@ def handle_optimize_socket(data):
         """Callback to emit progress over the socket, with throttling."""
         nonlocal last_emit_time
         current_time = time.time()
-        if current_time - last_emit_time > THROTTLE_INTERVAL:
+        if "best_grid" in progress_data:  # Guarantee send_grid_update messages
+            emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
+            last_emit_time = current_time  # Reset throttle for subsequent messages
+        elif current_time - last_emit_time > THROTTLE_INTERVAL:
             emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
             last_emit_time = current_time
 

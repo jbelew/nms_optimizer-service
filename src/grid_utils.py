@@ -1,5 +1,6 @@
 # grid_utils.py
 from copy import deepcopy
+from module_placement import place_module, clear_all_modules_of_tech
 
 class Grid:
     def __init__(self, width, height):
@@ -168,5 +169,63 @@ class Grid:
             for row in self.cells
         )
 
-__all__ = ["Grid"]
+def restore_original_state(grid, original_state_map):
+    """
+    Restores the original state of cells in the main grid that were temporarily
+    modified (other tech modules removed and marked inactive) during localization.
 
+    Args:
+        grid (Grid): The main grid to restore.
+        original_state_map (dict): The dictionary mapping main grid coordinates (x, y)
+                                   to their original cell data, as returned by
+                                   create_localized_grid_ml.
+    """
+    if not original_state_map:
+        return  # Nothing to restore
+
+    print(f"INFO -- Restoring original state for {len(original_state_map)} cells.")
+    for (x, y), original_cell_data in original_state_map.items():
+        if 0 <= x < grid.width and 0 <= y < grid.height:
+            grid.cells[y][x].update(deepcopy(original_cell_data))
+        else:
+            print(
+                f"Warning -- Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid."
+            )
+
+def apply_localized_grid_changes(main_grid, localized_grid, tech, start_x, start_y):
+    """
+    Applies changes from a localized grid back to the main grid.
+    Only modules of the specified tech are transferred.
+    """
+    clear_all_modules_of_tech(main_grid, tech)
+
+    for y_local in range(localized_grid.height):
+        for x_local in range(localized_grid.width):
+            local_cell = localized_grid.get_cell(x_local, y_local)
+            if local_cell['module'] is not None and local_cell['tech'] == tech:
+                main_x = start_x + x_local
+                main_y = start_y + y_local
+                if (
+                    0 <= main_x < main_grid.width
+                    and 0 <= main_y < main_grid.height
+                    and main_grid.get_cell(main_x, main_y)['active']
+                ):
+                    place_module(
+                        main_grid,
+                        main_x,
+                        main_y,
+                        local_cell['module'],
+                        local_cell['label'],
+                        local_cell['tech'],
+                        local_cell['type'],
+                        local_cell['bonus'],
+                        local_cell['adjacency'],
+                        local_cell['sc_eligible'],
+                        local_cell['image'],
+                    )
+                else:
+                    print(
+                        f"Warning: Attempted to place module {local_cell['label']} from localized grid at ({main_x},{main_y}) on main grid, but cell is inactive or out of bounds."
+                    )
+
+__all__ = ["Grid", "restore_original_state", "apply_localized_grid_changes"]

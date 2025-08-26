@@ -7,8 +7,7 @@ from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
 from grid_display import print_grid_compact
-from grid_utils import Grid # Added import
-from optimization_algorithms import apply_localized_grid_changes # Added import
+from grid_utils import Grid, restore_original_state, apply_localized_grid_changes
 
 
 def place_modules_with_supercharged_priority(grid, tech_modules, tech):
@@ -176,7 +175,7 @@ def simulated_annealing(
     ship,
     modules,
     tech,
-    full_grid, # Added full_grid
+    full_grid,  # Added full_grid
     player_owned_rewards=None,
     initial_temperature=4000,
     cooling_rate=0.995,
@@ -192,6 +191,8 @@ def simulated_annealing(
     progress_offset=0,
     progress_scale=100,
     send_grid_updates=False,
+    start_x: int = 0,  # Added start_x
+    start_y: int = 0,  # Added start_y
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -386,7 +387,6 @@ def simulated_annealing(
                     print(
                         f"DEBUG SA -- New best score for {tech}: {current_score:.4f} (Temp: {temperature:.2f})"
                     )
-                    # print_grid_compact(best_grid)
                     best_score = current_score
                     if progress_callback:
                         progress_data = {
@@ -418,10 +418,12 @@ def simulated_annealing(
                                 tech,
                                 # These values need to be passed from the calling function (optimize_placement)
                                 # For now, using dummy values. This will cause an error if not handled.
-                                0, # Placeholder for start_x
-                                0, # Placeholder for start_y
+                                start_x,  # Placeholder for start_x
+                                start_y,  # Placeholder for start_y
                             )
-                            progress_data["best_grid"] = reconstituted_full_grid.to_dict()
+                            progress_data["best_grid"] = (
+                                reconstituted_full_grid.to_dict()
+                            )
                         progress_callback(progress_data)
                         gevent.sleep(0)
 
@@ -445,6 +447,7 @@ def simulated_annealing(
                 "best_score": best_score,
                 "status": "in_progress",
             }
+
             progress_callback(progress_data)
             gevent.sleep(0)
     # --- End Annealing Loop ---
