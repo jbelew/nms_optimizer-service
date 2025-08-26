@@ -218,7 +218,6 @@ def simulated_annealing(
         tuple: (best_grid, best_score) or (None, 0.0) on failure.
     """
     start_time = time.time()
-    print("send_grid_updates:", send_grid_updates)
 
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:

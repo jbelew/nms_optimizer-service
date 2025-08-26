@@ -767,6 +767,9 @@ def _handle_ml_opportunity(
         ship,
         modules,
         tech,
+        full_grid_original=grid, # Pass the original full grid
+        start_x_original=opportunity_x, # Pass the original start_x
+        start_y_original=opportunity_y, # Pass the original start_y
         player_owned_rewards=player_owned_rewards,
         model_grid_width=localized_grid_ml.width,  # <<< Use actual localized width
         model_grid_height=localized_grid_ml.height,  # <<< Use actual localized height

@@ -53,6 +53,9 @@ def ml_placement(
     ship: str,  # This is the UI ship key
     modules_data: dict,  # <<< This should be the user-facing modules dict (from modules.py)
     tech: str,  # This is the UI tech key
+    full_grid_original: Grid, # The original full grid from optimize_placement
+    start_x_original: int, # The x-offset of this localized grid within the original full grid
+    start_y_original: int, # The y-offset of this localized grid within the original full grid
     player_owned_rewards: Optional[List[str]] = None,
     model_dir: str = DEFAULT_MODEL_DIR,
     model_grid_width: int = DEFAULT_MODEL_GRID_WIDTH,
@@ -420,13 +423,16 @@ def ml_placement(
                 ship,  # Use original UI ship key
                 modules_data,
                 tech,  # Use original UI tech key
-                player_owned_rewards,
+                player_owned_rewards=player_owned_rewards,
                 progress_callback=progress_callback,
                 run_id=run_id,
                 stage=stage,
                 progress_offset=progress_offset,
                 progress_scale=progress_scale,
-                send_grid_updates=False,
+                full_grid=full_grid_original,
+                send_grid_updates=send_grid_updates,
+                start_x=start_x_original,
+                start_y=start_y_original,
                 **polish_params,
             )
 
