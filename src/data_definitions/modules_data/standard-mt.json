@@ -1,0 +1,716 @@
+{
+    "label": "Standard / Royal Multi-Tools",
+    "type": "Multi-Tool",
+    "types": {
+        "Mining": [
+            {
+                "label": "Mining Beam",
+                "key": "mining",
+                "image": "multi-tool/mining-beam.webp",
+                "color": "green",
+                "modules": [
+                    {
+                        "id": "MB",
+                        "type": "core",
+                        "label": "Mining Laser",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/mining-laser.webp"
+                    },
+                    {
+                        "id": "AM",
+                        "type": "bonus",
+                        "label": "Advanced Mining Laser",
+                        "bonus": 0.5,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/advanced-mining.webp"
+                    },
+                    {
+                        "id": "OD",
+                        "type": "bonus",
+                        "label": "Optical Drill",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/optical.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Mining Laser Upgrade Theta",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/mining-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Mining Laser Upgrade Tau",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/mining-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Mining Laser Upgrade Sigma",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/mining-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Scanners": [
+            {
+                "label": "Analysis Visor",
+                "key": "analysis",
+                "image": "multi-tool/analysis.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "AV",
+                        "type": "core",
+                        "label": "Analysis Visor",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/analysis.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Fishing Rig",
+                "key": "fishing",
+                "image": "multi-tool/fishing.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "FR",
+                        "type": "core",
+                        "label": "Fishing Rig",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/fishing.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Scanner",
+                "key": "scanner",
+                "image": "multi-tool/mt-scanner.webp",
+                "color": "yellow",
+                "modules": [
+                    {
+                        "id": "SC",
+                        "type": "core",
+                        "label": "Scanner",
+                        "bonus": 0.01,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "multi-tool/mt-scanner.webp"
+                    },
+                    {
+                        "id": "WR",
+                        "type": "bonus",
+                        "label": "Waveform Recycler",
+                        "bonus": 0.11,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/waveform.webp"
+                    },
+                    {
+                        "id": "SH",
+                        "type": "bonus",
+                        "label": "Scan Harmonizer",
+                        "bonus": 0.11,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/harmonizer.webp"
+                    },
+                    {
+                        "id": "PC",
+                        "type": "bonus",
+                        "label": "Polyphonic Core",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/polyphonic.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Scanner Upgrade Theta",
+                        "bonus": 1.5,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scanner-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Scanner Upgrade Tau",
+                        "bonus": 1.45,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scanner-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Scanner Upgrade Sigma",
+                        "bonus": 1.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scanner-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Survey Device",
+                "key": "survey",
+                "image": "multi-tool/survey.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "SD",
+                        "type": "core",
+                        "label": "Survey Device",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/survey.webp"
+                    }
+                ]
+            }
+        ],
+        "Weaponry": [
+            {
+                "label": "Blaze Javelin",
+                "key": "blaze-javelin",
+                "image": "multi-tool/blaze-javelin.webp",
+                "color": "red",
+                "modules": [
+                    {
+                        "id": "BJ",
+                        "type": "core",
+                        "label": "Blaze Javelin",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/blaze-javelin.webp"
+                    },
+                    {
+                        "id": "MA",
+                        "type": "bonus",
+                        "label": "Mass Accelerator",
+                        "bonus": 0.03,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/mass-accelerator.webp"
+                    },
+                    {
+                        "id": "WO",
+                        "type": "bonus",
+                        "label": "Waveform Oscillator",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": true,
+                        "image": "multi-tool/waveform-osc.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Blaze Javelin Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/blaze-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Blaze Javelin Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/blaze-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Blaze Javelin Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/blaze-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Boltcaster",
+                "key": "bolt-caster",
+                "image": "multi-tool/boltcaster.webp",
+                "color": "cyan",
+                "modules": [
+                    {
+                        "id": "BC",
+                        "type": "core",
+                        "label": "Bolt Caster",
+                        "bonus": 1.0,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "multi-tool/boltcaster.webp"
+                    },
+                    {
+                        "id": "RM",
+                        "type": "bonus",
+                        "label": "Boltcaster Ricochet Module",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/boltcaster-rm.webp"
+                    },
+                    {
+                        "id": "BI",
+                        "type": "bonus",
+                        "label": "Barrel Ionizer",
+                        "bonus": 0.1,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/barrel-ionizer.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Boltcaster Upgrade Theta",
+                        "bonus": 0.15,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/boltcaster-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Boltcaster Upgrade Tau",
+                        "bonus": 0.14,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/boltcaster-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Boltcaster Upgrade Sigma",
+                        "bonus": 0.13,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/boltcaster-upgrade.webp"
+                    },
+                    {
+                        "id": "Fa",
+                        "type": "bonus",
+                        "label": "Forbidden Module Theta",
+                        "bonus": 0.22,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/forbidden.webp"
+                    },
+                    {
+                        "id": "Fb",
+                        "type": "bonus",
+                        "label": "Forbidden Module Tau",
+                        "bonus": 0.21,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/forbidden.webp"
+                    },
+                    {
+                        "id": "Fc",
+                        "type": "bonus",
+                        "label": "Forbidden Module Sigma",
+                        "bonus": 0.2,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/forbidden.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Geology Cannon",
+                "key": "geology",
+                "image": "multi-tool/geology.webp",
+                "color": "iris",
+                "modules": [
+                    {
+                        "id": "GC",
+                        "type": "core",
+                        "label": "Geology Cannon",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/geology.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Geology Cannon Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/geology-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Geology Cannon Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/geology-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Geology Cannon Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/geology-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Neutron Cannon",
+                "key": "neutron",
+                "image": "multi-tool/neutron.webp",
+                "color": "purple",
+                "modules": [
+                    {
+                        "id": "NC",
+                        "type": "core",
+                        "label": "Neutron Cannon",
+                        "bonus": 1.0,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "multi-tool/neutron.webp"
+                    },
+                    {
+                        "id": "PF",
+                        "type": "bonus",
+                        "label": "P-Field Compressor",
+                        "bonus": 1.62,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "multi-tool/p-field.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Neutron Cannon Upgrade Theta",
+                        "bonus": 3.15,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/neutron-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Neutron Cannon Upgrade Tau",
+                        "bonus": 3.14,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/neutron-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Neutron Cannon Upgrade Sigma",
+                        "bonus": 3.13,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/neutron-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Plasma Launcher",
+                "key": "plasma-launcher",
+                "image": "multi-tool/plasma-launcher.webp",
+                "color": "sky",
+                "modules": [
+                    {
+                        "id": "PL",
+                        "type": "core",
+                        "label": "Plasma Launcher",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/plasma-launcher.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Plasma Launcher Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/plasma-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Plasma Launcher Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/plasma-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Plasma Launcher Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/plasma-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Pulse Spitter",
+                "key": "pulse-spitter",
+                "image": "multi-tool/pulse-spitter.webp",
+                "color": "jade",
+                "modules": [
+                    {
+                        "id": "PS",
+                        "type": "core",
+                        "label": "Pulse Spitter",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/pulse-spitter.webp"
+                    },
+                    {
+                        "id": "AC",
+                        "type": "bonus",
+                        "label": "Amplified Cartridges",
+                        "bonus": 0.03,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/amplified.webp"
+                    },
+                    {
+                        "id": "RM",
+                        "type": "bonus",
+                        "label": "Richochet Module",
+                        "bonus": 0.03,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/pulse-spitter-rm.webp"
+                    },
+                    {
+                        "id": "II",
+                        "type": "bonus",
+                        "label": "Impact Ignitor",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": true,
+                        "image": "multi-tool/impact-ignitor.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Pulse Spitter Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/pulse-spitter-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Pulse Spitter Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/pulse-spitter-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Pulse Spitter Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/pulse-spitter-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Scatter Blaster",
+                "key": "scatter",
+                "image": "multi-tool/scatter.webp",
+                "color": "amber",
+                "modules": [
+                    {
+                        "id": "SB",
+                        "type": "core",
+                        "label": "Scatter Blaster",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scatter.webp"
+                    },
+                    {
+                        "id": "SG",
+                        "type": "bonus",
+                        "label": "Shell Greaser",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/shell-greaser.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Scatter Blaster Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scatter-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Scatter Blaster Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scatter-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Scatter Blaster Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "multi-tool/scatter-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Secondary Weapons": [
+            {
+                "label": "Cloaking Device",
+                "key": "cloaking",
+                "image": "multi-tool/cloaking.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "CD",
+                        "type": "core",
+                        "label": "Cloaking Device",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/cloaking.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Combat Scope",
+                "key": "combat",
+                "image": "multi-tool/combat.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "CS",
+                        "type": "core",
+                        "label": "Combat Scope",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/combat.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Voltaic Amplifier",
+                "key": "voltaic-amplifier",
+                "image": "multi-tool/voltaic-amplifier.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "VA",
+                        "type": "core",
+                        "label": "Voltaic Amplifier",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/voltaic-amplifier.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Paralysis Mortar",
+                "key": "paralysis",
+                "image": "multi-tool/paralysis.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "PM",
+                        "type": "core",
+                        "label": "Paralysis Mortar",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/paralysis.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Personal Forcefield",
+                "key": "personal",
+                "image": "multi-tool/personal.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "PF",
+                        "type": "core",
+                        "label": "Personal Forcefield",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/personal.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Terrain Manipulator",
+                "key": "terrian",
+                "image": "multi-tool/terrian.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "TM",
+                        "type": "core",
+                        "label": "Terrain Manipulator",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "multi-tool/terrian.webp"
+                    }
+                ]
+            }
+        ]
+    }
+}

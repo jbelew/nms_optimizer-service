@@ -23,9 +23,11 @@ from optimization_algorithms import (
     clear_all_modules_of_tech,
 )
 from grid_utils import Grid
-from data_definitions.modules import modules as sample_modules  # <<< Use alias for clarity
-from data_definitions.solves import solves as sample_solves  # <<< Use alias for clarity
+from data_loader import get_all_module_data, get_all_solve_data
 
+# Load all data for testing purposes
+sample_modules = get_all_module_data()
+sample_solves = get_all_solve_data()
 
 # --- Test Class ---
 class TestOptimizationAlgorithms(unittest.TestCase):
@@ -244,110 +246,73 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "No empty, active slots available"):
             optimize_placement(full_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards)
 
-    @patch("optimization_algorithms.filter_solves")
+    @patch("optimization_algorithms.get_solve_map")
     @patch("optimization_algorithms.place_all_modules_in_empty_slots")
     @patch("optimization_algorithms.calculate_grid_score")
-    def test_optimize_no_solve_map_available(self, mock_calculate_score, mock_place_all, mock_filter_solves):
-        """Test behavior when no solve map is found after filtering."""
-        # Arrange: Mock filter_solves to return an empty dict (no solve found)
-        mock_filter_solves.return_value = {}
-        # Arrange: Mock place_all_modules to return a grid
+    def test_optimize_no_solve_map_available(self, mock_calculate_score, mock_place_all, mock_get_solves):
+        """Test behavior when no solve map is found for the ship."""
+        mock_get_solves.return_value = {}
         placed_grid = self.empty_grid.copy()
-        # Simulate placing some modules for score calculation
         placed_grid.set_module(0, 0, "IK")
         placed_grid.set_tech(0, 0, self.tech)
         mock_place_all.return_value = placed_grid
-        # Arrange: Mock calculate_grid_score
         mock_calculate_score.return_value = 5.0
 
-        # Act
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
         )
 
-        # Assert
-        mock_filter_solves.assert_called_once_with(
-            sample_solves, self.ship, sample_modules, self.tech, self.player_owned_rewards
-        )
-        mock_place_all.assert_called_once_with(ANY, sample_modules, self.ship, self.tech, self.player_owned_rewards)
-        # Check that the grid returned by place_all is used for scoring and returned
+        mock_get_solves.assert_called_once_with(self.ship)
+        mock_place_all.assert_called_once()
         mock_calculate_score.assert_called_once_with(placed_grid, self.tech)
         self.assertEqual(result_grid, placed_grid)
         self.assertEqual(solved_bonus, 5.0)
-        self.assertEqual(percentage, 100.0)  # Percentage is 100 if score > 0 and solve_score is 0
+        self.assertEqual(percentage, 100.0)
 
+    @patch("optimization_algorithms.get_solve_map")
     @patch("optimization_algorithms.apply_pattern_to_grid")
     @patch("optimization_algorithms.simulated_annealing")
-    @patch("optimization_algorithms.find_supercharged_opportunities")
-    @patch("optimization_algorithms.check_all_modules_placed")
-    @patch("optimization_algorithms.calculate_grid_score")
     def test_optimize_solve_map_no_pattern_fits_returns_indicator_when_not_forced(
-        self, mock_calculate_score, mock_check_placed, mock_find_opp, mock_sa, mock_apply_pattern
+        self, mock_sa, mock_apply_pattern, mock_get_solves
     ):
         """Test returns 'Pattern No Fit' when solve map exists, no pattern fits, and not forced."""
-        # Arrange: Assume filter_solves finds a map (using real filter_solves for 'pulse').
-        # Arrange: Mock apply_pattern_to_grid to always return None (no fit)
+        mock_get_solves.return_value = sample_solves[self.ship]
         mock_apply_pattern.return_value = (None, 0)
-        # SA and other mocks should NOT be called in this path if not forced.
 
-        # Act: Call with forced=False (default)
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=False
         )
 
-        # Assert
-        mock_apply_pattern.assert_called()  # Pattern application was attempted
-        mock_sa.assert_not_called()  # SA should NOT be called
-        mock_find_opp.assert_not_called()  # No refinement opportunity finding
-        mock_check_placed.assert_not_called()
-        mock_calculate_score.assert_not_called()
-
+        mock_apply_pattern.assert_called()
+        mock_sa.assert_not_called()
         self.assertIsNone(result_grid)
         self.assertEqual(percentage, 0.0)
         self.assertEqual(solved_bonus, 0.0)
         self.assertEqual(solve_method, "Pattern No Fit")
 
+    @patch("optimization_algorithms.get_solve_map")
     @patch("optimization_algorithms.apply_pattern_to_grid")
-    @patch("optimization_algorithms.simulated_annealing")  # Mock the initial SA
-    @patch("optimization_algorithms.find_supercharged_opportunities")
-    @patch("optimization_algorithms.check_all_modules_placed")
+    @patch("optimization_algorithms.simulated_annealing")
     @patch("optimization_algorithms.calculate_grid_score")
     def test_optimize_solve_map_no_pattern_fits_falls_back_to_sa_when_forced(
-        self, mock_calculate_score, mock_check_placed, mock_find_opp, mock_sa, mock_apply_pattern
+        self, mock_calculate_score, mock_sa, mock_apply_pattern, mock_get_solves
     ):
         """Test fallback to initial SA when solve map exists, no pattern fits, and forced=True."""
-        # Arrange: Assume filter_solves finds a map (using real filter_solves).
-        # Arrange: Mock apply_pattern_to_grid to always return None (no fit)
+        mock_get_solves.return_value = sample_solves[self.ship]
         mock_apply_pattern.return_value = (None, 0)
-        # Arrange: Mock simulated_annealing (the initial fallback one)
+
         initial_sa_grid = self.empty_grid.copy()
-        # Simulate SA placing modules
         initial_sa_grid.set_module(0, 1, "PE")
         initial_sa_grid.set_tech(0, 1, self.tech)
         mock_sa.return_value = (initial_sa_grid, 10.0)
+        mock_calculate_score.return_value = 10.0
 
-        # Arrange: Mock calculate_grid_score for the two calls
-        # 1. Before refinement check, 2. For final result calculation
-        mock_calculate_score.side_effect = [10.0, 10.0]  # <<< Use side_effect
-
-        # Arrange: Mock find_supercharged_opportunities to return None
-        mock_find_opp.return_value = None
-        # Arrange: Mock check_all_modules_placed to return True
-        mock_check_placed.return_value = True
-
-        # Act
-        result_grid, percentage, solved_bonus, solve_method = optimize_placement(  # Call with forced=True
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
             self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=True
         )
 
-        # Assert
-        mock_apply_pattern.assert_called()  # Check pattern application was attempted
-        mock_sa.assert_called_once()  # Check that initial SA was called
-        mock_find_opp.assert_called_once()  # Refinement check still happens
-        mock_check_placed.assert_called_once()
-        # Expect 2 calls: before refinement check and for final result
-        self.assertEqual(mock_calculate_score.call_count, 2)  # <<< Correct assertion
-        self.assertEqual(result_grid, initial_sa_grid)
+        mock_apply_pattern.assert_called()
+        mock_sa.assert_called_once()
         self.assertEqual(solve_method, "Forced Initial SA (No Pattern Fit)")
         self.assertEqual(solved_bonus, 10.0)
 

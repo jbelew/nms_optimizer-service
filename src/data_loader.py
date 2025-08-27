@@ -1,0 +1,140 @@
+import json
+import os
+from functools import lru_cache
+
+# --- Constants ---
+DATA_DIR = os.path.join(os.path.dirname(__file__), "data_definitions")
+
+
+def _convert_map_keys_to_tuple(data):
+    """
+    Recursively converts string keys in a 'map' dictionary back to tuples.
+    This is the reverse of the conversion done when saving to JSON.
+    """
+    if isinstance(data, dict):
+        new_dict = {}
+        for k, v in data.items():
+            # Check if the key is a string representation of a tuple (e.g., "0,0")
+            if isinstance(k, str) and "," in k:
+                try:
+                    # Attempt to convert "x,y" string back to a tuple of integers
+                    new_key = tuple(map(int, k.split(",")))
+                    new_dict[new_key] = _convert_map_keys_to_tuple(v)
+                except ValueError:
+                    # If conversion fails, keep the original key
+                    new_dict[k] = _convert_map_keys_to_tuple(v)
+            else:
+                new_dict[k] = _convert_map_keys_to_tuple(v)
+        return new_dict
+    elif isinstance(data, list):
+        return [_convert_map_keys_to_tuple(item) for item in data]
+    else:
+        return data
+
+
+@lru_cache(maxsize=32)
+def get_solve_map(ship_type: str):
+    """
+    Loads the solve map for a specific ship type from its JSON file.
+    Results are cached to avoid repeated file I/O.
+    """
+    file_path = os.path.join(DATA_DIR, "solves", f"{ship_type}.json")
+
+    if not os.path.exists(file_path):
+        # Return an empty dict if a solve map for the ship type doesn't exist
+        return {}
+
+    try:
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+
+        # We need to process the loaded data to convert map keys back to tuples
+        processed_data = {}
+        for tech_name, tech_info in data.items():
+            if 'map' in tech_info:
+                tech_info['map'] = _convert_map_keys_to_tuple(tech_info['map'])
+            processed_data[tech_name] = tech_info
+
+        return processed_data
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error loading or parsing solve map for {ship_type}: {e}")
+        # Return an empty dict on error to prevent crashes
+        return {}
+
+
+@lru_cache(maxsize=32)
+def get_module_data(ship_type: str):
+    """
+    Loads the module data for a specific ship type from its JSON file.
+    Results are cached to avoid repeated file I/O.
+    """
+    file_path = os.path.join(DATA_DIR, "modules_data", f"{ship_type}.json")
+
+    if not os.path.exists(file_path):
+        # Return an empty dict if module data for the ship type doesn't exist
+        return {}
+
+    try:
+        with open(file_path, 'r') as f:
+            return json.load(f)
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error loading or parsing module data for {ship_type}: {e}")
+        # Return an empty dict on error to prevent crashes
+        return {}
+
+
+def get_all_solve_data():
+    """
+    Loads all solve data from all JSON files in the solves directory.
+    This is used for testing purposes.
+    """
+    all_solves = {}
+    solves_dir = os.path.join(DATA_DIR, "solves")
+
+    if not os.path.exists(solves_dir):
+        return {}
+
+    for filename in os.listdir(solves_dir):
+        if filename.endswith(".json"):
+            ship_type = filename.replace(".json", "")
+            file_path = os.path.join(solves_dir, filename)
+            try:
+                with open(file_path, 'r') as f:
+                    data = json.load(f)
+                    # We need to process the loaded data to convert map keys back to tuples
+                    processed_data = {}
+                    for tech_name, tech_info in data.items():
+                        if 'map' in tech_info:
+                            tech_info['map'] = _convert_map_keys_to_tuple(tech_info['map'])
+                        processed_data[tech_name] = tech_info
+                    all_solves[ship_type] = processed_data
+            except (IOError, json.JSONDecodeError) as e:
+                print(f"Error loading or parsing solve data from {filename}: {e}")
+                continue
+
+    return all_solves
+
+
+def get_all_module_data():
+    """
+    Loads all module data from all JSON files in the modules_data directory.
+    This is used for endpoints that need to list all available platforms.
+    """
+    all_modules = {}
+    modules_dir = os.path.join(DATA_DIR, "modules_data")
+
+    if not os.path.exists(modules_dir):
+        return {}
+
+    for filename in os.listdir(modules_dir):
+        if filename.endswith(".json"):
+            ship_type = filename.replace(".json", "")
+            file_path = os.path.join(modules_dir, filename)
+            try:
+                with open(file_path, 'r') as f:
+                    all_modules[ship_type] = json.load(f)
+            except (IOError, json.JSONDecodeError) as e:
+                print(f"Error loading or parsing module data from {filename}: {e}")
+                continue
+
+    return all_modules

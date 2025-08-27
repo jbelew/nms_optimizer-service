@@ -1,0 +1,420 @@
+{
+    "label": "Colossus",
+    "type": "Exocraft",
+    "types": {
+        "Propulsion": [
+            {
+                "label": "Fusion Engine",
+                "key": "fusion",
+                "image": "exocraft/fusion.webp",
+                "color": "orange",
+                "modules": [
+                    {
+                        "id": "FE",
+                        "type": "core",
+                        "label": "Fusion Engine",
+                        "bonus": 1.0,
+                        "adjacency": "lesser",
+                        "sc_eligible": false,
+                        "image": "exocraft/fusion.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fusion Engine Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/fusion-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fusion Engine Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/fusion-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fusion Engine Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/fusion-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Icarus Fuel System",
+                "key": "icarus",
+                "image": "exocraft/icarus.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "FS",
+                        "type": "core",
+                        "label": "Icarus Fuel System",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/icarus.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Exocraft Boosters",
+                "key": "boost",
+                "image": "exocraft/boost.webp",
+                "color": "jade",
+                "modules": [
+                    {
+                        "id": "EB",
+                        "type": "core",
+                        "label": "Exocraft Boost Module",
+                        "bonus": 1.0,
+                        "adjacency": "lesser",
+                        "sc_eligible": false,
+                        "image": "exocraft/boost.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Exocraft Boost Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/boost-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Exocraft Boost Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/boost-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Exocraft Boost Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/boost-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Hi-Slide Suspension",
+                "key": "slide",
+                "image": "exocraft/slide.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "HS",
+                        "type": "core",
+                        "label": "Hi-Slide Suspension",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/slide.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Grip Boost Suspension",
+                "key": "grip",
+                "image": "exocraft/grip.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "GB",
+                        "type": "core",
+                        "label": "Grip Boost Suspension",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/grip.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Drift Suspension",
+                "key": "drift",
+                "image": "exocraft/drift.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "DS",
+                        "type": "core",
+                        "label": "Drift Suspension",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/drift.webp"
+                    }
+                ]
+            }
+        ],
+        "Weaponry": [
+            {
+                "label": "Exocraft Mining Laser",
+                "key": "mining",
+                "image": "exocraft/mining.webp",
+                "color": "green",
+                "modules": [
+                    {
+                        "id": "ML",
+                        "type": "core",
+                        "label": "Exocraft Mining Laser",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mining.webp"
+                    },
+                    {
+                        "id": "AL",
+                        "type": "bonus",
+                        "label": "Advanced Exocraft Laser",
+                        "bonus": 0.04,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/advanced-mining.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Exocraft Mining Laser Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mining-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Exocraft Mining Laser Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mining-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Exocraft Mining Laser Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mining-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Mounted Cannon",
+                "key": "mounted",
+                "image": "exocraft/mounted.webp",
+                "color": "blue",
+                "modules": [
+                    {
+                        "id": "MC",
+                        "type": "core",
+                        "label": "Mounted Cannon",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mounted.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Mounted Cannon Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mounted-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Mounted Cannon Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mounted-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Mounted Cannon Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/mounted-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Mounted Flamethrower",
+                "key": "flamethrower",
+                "image": "exocraft/flamethrower.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "MF",
+                        "type": "core",
+                        "label": "Mounted Flamethrower",
+                        "bonus": 1.0,
+                        "adjacency": "none",
+                        "sc_eligible": true,
+                        "image": "exocraft/flamethrower.webp"
+                    }
+                ]
+            }
+        ],
+        "Defensive Systems": [
+            {
+                "label": "Thermal Buffer",
+                "key": "thermal",
+                "image": "exocraft/thermal.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "TB",
+                        "type": "core",
+                        "label": "Thermal Buffer",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/thermal.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Megawatt Heater",
+                "key": "cold",
+                "image": "exocraft/cold.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "MH",
+                        "type": "core",
+                        "label": "Megawatt Heater",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/cold.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Neutron Shielding",
+                "key": "radiation",
+                "image": "exocraft/radiation.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "NS",
+                        "type": "core",
+                        "label": "Neutron Shielding",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/radiation.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Air Filtration Unit",
+                "key": "toxic",
+                "image": "exocraft/toxic.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "AF",
+                        "type": "core",
+                        "label": "Air Filtration Unit",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/toxic.webp"
+                    }
+                ]
+            }
+        ],
+        "Utilities": [
+            {
+                "label": "Exocraft Radar",
+                "key": "radar",
+                "image": "exocraft/radar.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "ER",
+                        "type": "core",
+                        "label": "Exocraft Radar",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/radar.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Radar Amplifier",
+                "key": "amplifier",
+                "image": "exocraft/amplifier.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "RA",
+                        "type": "core",
+                        "label": "Radar Amplifier",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/amplifier.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Power Resonator",
+                "key": "power",
+                "image": "exocraft/power.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "PR",
+                        "type": "core",
+                        "label": "Power Resonator",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/power.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Mineral Processing Rig",
+                "key": "mineral",
+                "image": "exocraft/mineral.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "MP",
+                        "type": "core",
+                        "label": "Mineral Processing Rig",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/mineral.webp"
+                    }
+                ]
+            }
+        ]
+    }
+}

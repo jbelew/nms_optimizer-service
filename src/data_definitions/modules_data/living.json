@@ -1,0 +1,481 @@
+{
+    "label": "Living Starships",
+    "type": "Starship",
+    "types": {
+        "Weaponry": [
+            {
+                "label": "Grafted Eyes",
+                "key": "grafted",
+                "image": "starship/grafted.webp",
+                "color": "green",
+                "modules": [
+                    {
+                        "id": "GE",
+                        "type": "core",
+                        "label": "Grafted Eyes",
+                        "bonus": 1.0,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "starship/grafted.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Grafted Eyes Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/grafted-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Grafted Eyes Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/grafted-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Grafted Eyes Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/grafted-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Spewing Vents",
+                "key": "spewing",
+                "image": "starship/spewing.webp",
+                "color": "teal",
+                "modules": [
+                    {
+                        "id": "SV",
+                        "type": "core",
+                        "label": "Spewing Vents",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/spewing.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Spewing Vents Upgrade Theta",
+                        "bonus": 0.4,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/spewing-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Spewing Vents Upgrade Tau",
+                        "bonus": 0.39,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/spewing-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Spewing Vents Upgrade Sigma",
+                        "bonus": 0.38,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/spewing-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Defensive Systems": [
+            {
+                "label": "Scream Supressor",
+                "key": "scream",
+                "image": "starship/scream.webp",
+                "color": "yellow",
+                "modules": [
+                    {
+                        "id": "SS",
+                        "type": "core",
+                        "label": "Scream Supressor",
+                        "bonus": 0.01,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "starship/scream.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Scream Supressor Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/scream-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Scream Supressor Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/scream-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Scream Supressor Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/scream-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Hyperdrive": [
+            {
+                "label": "Neural Assembly",
+                "key": "assembly",
+                "image": "starship/assembly.webp",
+                "color": "iris",
+                "modules": [
+                    {
+                        "id": "NA",
+                        "type": "core",
+                        "label": "Neural Assembly",
+                        "bonus": 0.01,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "starship/assembly.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Neural Assembly Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/assembly-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Neural Assembly Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/assembly-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Neural Assembly Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/assembly-upgrade.webp"
+                    },
+                    {
+                        "id": "CM",
+                        "type": "bonus",
+                        "label": "Chroloplast Membrane",
+                        "bonus": 0.0001,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/chloroplast.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Singularity Cortex",
+                "key": "singularity",
+                "image": "starship/singularity.webp",
+                "color": "sky",
+                "modules": [
+                    {
+                        "id": "SC",
+                        "type": "core",
+                        "label": "Singularity Cortex",
+                        "bonus": 0.01,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "starship/singularity.webp"
+                    },
+                    {
+                        "id": "AD",
+                        "type": "bonus",
+                        "label": "Atlantid Drive",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/atlantid.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Singularity Cortex Upgrade Theta",
+                        "bonus": 0.32,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/singularity-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Singularity Cortex Upgrade Tau",
+                        "bonus": 0.31,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/singularity-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Singularity Cortex Upgrade Sigma",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/singularity-upgrade.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Pulsing Heart",
+                "key": "pulsing",
+                "image": "starship/pulsing.webp",
+                "color": "orange",
+                "modules": [
+                    {
+                        "id": "PH",
+                        "type": "core",
+                        "label": "Pulsing Heart",
+                        "bonus": 0.01,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "starship/pulsing.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Pulsing Heart Upgrade Theta",
+                        "bonus": 0.5,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/pulsing-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Pulsing Heart Upgrade Tau",
+                        "bonus": 0.49,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/pulsing-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Pulsing Heart Upgrade Sigma",
+                        "bonus": 0.48,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/pulsing-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Utilities": [
+            {
+                "label": "Saline Carapace",
+                "key": "saline",
+                "image": "starship/saline.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "SC",
+                        "type": "core",
+                        "label": "Saline Catapace",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/saline.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Figurines",
+                "key": "bobble",
+                "image": "starship/bobble.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "AP",
+                        "type": "core",
+                        "label": "Apollo Figurine",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/apollo.webp"
+                    },
+                    {
+                        "id": "AT",
+                        "type": "core",
+                        "label": "Atlas Figurine",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/atlas.webp"
+                    },
+                    {
+                        "id": "NA",
+                        "type": "bonus",
+                        "label": "Nada Figurine",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/nada.webp"
+                    },
+                    {
+                        "id": "NB",
+                        "type": "bonus",
+                        "label": "-null- Figurine",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/null.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Scanners",
+                "key": "scanners",
+                "image": "starship/wormhole.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "WB",
+                        "type": "core",
+                        "label": "Wormhole Brain",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/wormhole.webp"
+                    },
+                    {
+                        "id": "NS",
+                        "type": "core",
+                        "label": "Neural Shielding",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "starship/neural.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Starship Trails",
+                "key": "trails",
+                "image": "starship/trails.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "AB",
+                        "type": "bonus",
+                        "label": "Artemis Figurine",
+                        "bonus": 0.05,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/artemis.webp"
+                    },
+                    {
+                        "id": "PB",
+                        "type": "core",
+                        "label": "Polo Figurine",
+                        "bonus": 0.06,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/polo.webp"
+                    },
+                    {
+                        "id": "SB",
+                        "type": "reward",
+                        "label": "Tentacled Figurine",
+                        "bonus": 0.05,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "starship/squid.webp"
+                    },
+                    {
+                        "id": "SP",
+                        "type": "reward",
+                        "label": "Sputtering Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/sputtering-trail.webp"
+                    },
+                    {
+                        "id": "CT",
+                        "type": "bonus",
+                        "label": "Cadmium Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/cadmium-trail.webp"
+                    },
+                    {
+                        "id": "ET",
+                        "type": "bonus",
+                        "label": "Emeril Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/emeril-trail.webp"
+                    },
+                    {
+                        "id": "TT",
+                        "type": "reward",
+                        "label": "Temporal Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/temporal-trail.webp"
+                    },
+                    {
+                        "id": "ST",
+                        "type": "bonus",
+                        "label": "Stealth Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/stealth-trail.webp"
+                    },
+                    {
+                        "id": "GT",
+                        "type": "bonus",
+                        "label": "Golden Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/golden-trail.webp"
+                    },
+                    {
+                        "id": "RT",
+                        "type": "bonus",
+                        "label": "Chromatic Starship Trail",
+                        "bonus": 0.0,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/chromatic-trail.webp"
+                    }
+                ]
+            }
+        ]
+    }
+}

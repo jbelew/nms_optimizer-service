@@ -24,9 +24,7 @@ try:
 
     # <<< Import both module definition sources >>>
     from modules_utils import get_tech_modules, get_tech_modules_for_training
-    from modules_for_training import (
-        modules as modules_for_training_defs,
-    )  # For model loading
+    from data_loader import get_module_data
 
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
@@ -51,7 +49,6 @@ DEFAULT_MODEL_GRID_HEIGHT = 3
 def ml_placement(
     grid: Grid,
     ship: str,  # This is the UI ship key
-    modules_data: dict,  # <<< This should be the user-facing modules dict (from modules.py)
     tech: str,  # This is the UI tech key
     full_grid_original: Grid, # The original full grid from optimize_placement
     start_x_original: int, # The x-offset of this localized grid within the original full grid
@@ -130,7 +127,7 @@ def ml_placement(
     # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) ---
     # Use the TRAINING definitions to get the list of modules the model was trained on
     training_modules_list = get_tech_modules_for_training(
-        modules_for_training_defs, module_def_ship_key, module_def_tech_key
+        get_module_data(module_def_ship_key), module_def_ship_key, module_def_tech_key
     )
 
     if not training_modules_list:
@@ -154,6 +151,7 @@ def ml_placement(
 
     # --- 4. Get ACTUAL modules to place & their UI definitions (using UI keys + rewards) ---
     # Use the USER-FACING modules_data passed into the function
+    modules_data = get_module_data(ship)
     modules_to_place_list = get_tech_modules(
         modules_data, ship, tech, player_owned_rewards
     )
@@ -427,7 +425,7 @@ def ml_placement(
             polished_grid, polished_bonus = simulated_annealing(
                 grid_to_polish,
                 ship,  # Use original UI ship key
-                modules_data,
+                get_module_data(ship),
                 tech,  # Use original UI tech key
                 player_owned_rewards=player_owned_rewards,
                 progress_callback=progress_callback,

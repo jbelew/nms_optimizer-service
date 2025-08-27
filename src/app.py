@@ -7,7 +7,7 @@ from flask_socketio import SocketIO, emit
 
 from optimization_algorithms import optimize_placement
 from optimizer import get_tech_tree_json, Grid
-from data_definitions.modules import modules  # Keep modules as it's used directly
+from data_loader import get_module_data, get_all_module_data
 from data_definitions.recommended_builds import recommended_builds
 from data_definitions.grids import grids
 import logging
@@ -103,11 +103,17 @@ def run_optimization(data, progress_callback=None, run_id=None):
 
     grid = Grid.from_dict(grid_data)
 
+    # --- Load module data on-demand ---
+    module_data = get_module_data(ship)
+    if not module_data:
+        return {"error": f"Invalid or unsupported ship type: {ship}"}, 400
+    # ---
+
     try:
         optimized_grid, percentage, solved_bonus, solve_method = optimize_placement(
             grid,
             ship,
-            modules,
+            module_data,
             tech,
             player_owned_rewards,
             forced=forced_solve,
@@ -176,7 +182,12 @@ def handle_optimize_socket(data):
 def get_technology_tree(ship_name):
     """Endpoint to get the technology tree for a given ship."""
     try:
-        tree_data = get_tech_tree_json(ship_name)
+        # --- Load module data on-demand ---
+        module_data = get_module_data(ship_name)
+        if not module_data:
+            return jsonify({"error": f"Invalid or unsupported ship type: {ship_name}"}), 404
+        # ---
+        tree_data = get_tech_tree_json(ship_name, module_data)
 
         # Check if a recommended build exists for the current ship_name
         recommended_builds_list = recommended_builds.get(ship_name)
@@ -207,8 +218,11 @@ def get_technology_tree(ship_name):
 @app.route("/platforms", methods=["GET"])
 def get_ship_types():
     """Endpoint to get the available ship types, their labels, and their types."""
+    # --- Load all module data for this endpoint ---
+    all_modules = get_all_module_data()
+    # ---
     ship_types = {}
-    for ship_key, ship_data in modules.items():
+    for ship_key, ship_data in all_modules.items():
         # Create a dictionary containing both label and type
         ship_info = {
             "label": ship_data.get("label"),

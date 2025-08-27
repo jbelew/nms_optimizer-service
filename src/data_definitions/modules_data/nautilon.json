@@ -1,0 +1,177 @@
+{
+    "label": "Nautilon",
+    "type": "Exocraft",
+    "types": {
+        "Propulsion": [
+            {
+                "label": "Humboldt Drive",
+                "key": "humboldt",
+                "image": "exocraft/humboldt.webp",
+                "color": "orange",
+                "modules": [
+                    {
+                        "id": "HD",
+                        "type": "core",
+                        "label": "Humboldt Drive",
+                        "bonus": 1.0,
+                        "adjacency": "lesser",
+                        "sc_eligible": false,
+                        "image": "exocraft/humboldt.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Humboldt Drive Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/humboldt-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Humboldt Drive Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/humboldt-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Humboldt Drive Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/humboldt-upgrade.webp"
+                    },
+                    {
+                        "id": "OG",
+                        "type": "bonus",
+                        "label": "Osmatic Generator",
+                        "bonus": 0.2,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/osmatic.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Icarus Fuel System",
+                "key": "icarus",
+                "image": "exocraft/icarus.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "FS",
+                        "type": "core",
+                        "label": "Icarus Fuel System",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/icarus.webp"
+                    }
+                ]
+            }
+        ],
+        "Weaponry": [
+            {
+                "label": "Dredging Laser",
+                "key": "dredging",
+                "image": "exocraft/dredging.webp",
+                "color": "green",
+                "modules": [
+                    {
+                        "id": "DL",
+                        "type": "core",
+                        "label": "Dredging Laser",
+                        "bonus": 1.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/dredging.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Tethys Beam",
+                "key": "tethys",
+                "image": "exocraft/tethys.webp",
+                "color": "blue",
+                "modules": [
+                    {
+                        "id": "TB",
+                        "type": "core",
+                        "label": "Tethys Beam,",
+                        "bonus": 1.0,
+                        "adjacency": "none",
+                        "sc_eligible": true,
+                        "image": "exocraft/tethys.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Nautilon Cannon",
+                "key": "nautilon",
+                "image": "exocraft/nautilon.webp",
+                "color": "blue",
+                "modules": [
+                    {
+                        "id": "NC",
+                        "type": "core",
+                        "label": "Nautilon Cannon",
+                        "bonus": 1.0,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/nautilon.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Nautilon Cannon Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/nautilon-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Nautilon Cannon Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/nautilon-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Nautilon Cannon Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "exocraft/nautilon-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Utilities": [
+            {
+                "label": "Hi-Powered Sonar",
+                "key": "sonar",
+                "image": "exocraft/sonar.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "HS",
+                        "type": "core",
+                        "label": "Exocraft Radar",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "exocraft/sonar.webp"
+                    }
+                ]
+            }
+        ]
+    }
+}

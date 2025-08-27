@@ -17,9 +17,7 @@ import math
 import multiprocessing
 import time
 from copy import deepcopy
-from data_definitions.solves import (
-    solves,
-)
+from data_loader import get_solve_map
 from solve_map_utils import filter_solves
 
 
@@ -978,7 +976,14 @@ def optimize_placement(
     sa_was_initial_placement = False
     solve_method = "Unknown"  # <<< Initialize solve_method >>>
 
-    filtered_solves = filter_solves(solves, ship, modules, tech, player_owned_rewards)
+    # --- Load Solves On-Demand ---
+    all_solves_for_ship = get_solve_map(ship)
+    # Create the structure that filter_solves expects
+    solves_for_filtering = {ship: all_solves_for_ship} if all_solves_for_ship else {}
+    filtered_solves = filter_solves(
+        solves_for_filtering, ship, modules, tech, player_owned_rewards
+    )
+    # --- End On-Demand Loading ---
 
     # --- Initial Placement Strategy --- 
     if ship not in filtered_solves or (
