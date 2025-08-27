@@ -1,83 +1,58 @@
 import torch
 import logging
 import os
+from functools import lru_cache
 from training.model_definition import ModulePlacementCNN
 
-# Global cache for storing loaded models.
-# The key is the model path, and the value is the loaded model object.
-_model_cache = {}
+# A conservative cache size, suitable for memory-constrained environments.
+# This can be overridden by an environment variable if needed.
+CACHE_SIZE = int(os.environ.get("MODEL_CACHE_SIZE", 5))
 
-
-def get_model(
-    model_path: str,
-    model_grid_width: int,
-    model_grid_height: int,
-    num_output_classes: int,
-) -> torch.nn.Module:
+@lru_cache(maxsize=CACHE_SIZE)
+def _load_model_from_disk(model_path, model_grid_width, model_grid_height, num_output_classes):
     """
-    Retrieves a model from the cache or loads it from disk if not already cached.
-
-    Args:
-        model_path (str): The full path to the trained model file (.pth).
-        model_grid_width (int): The grid width the model was trained on.
-        model_grid_height (int): The grid height the model was trained on.
-        num_output_classes (int): The number of output classes for the model.
-
-    Returns:
-        torch.nn.Module: The loaded and initialized model, ready for evaluation.
-
-    Raises:
-        FileNotFoundError: If the model file does not exist at the given path.
-        Exception: For other errors during model loading or initialization.
+    Internal function to load a model from disk.
+    This function is decorated with @lru_cache to cache its results.
     """
-    # Use the absolute path as the cache key to ensure uniqueness.
+    logging.info(f"--- CACHE MISS --- Loading model from disk: {model_path}")
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found: {model_path}")
+
+    model = ModulePlacementCNN(
+        input_channels=2,
+        grid_height=model_grid_height,
+        grid_width=model_grid_width,
+        num_output_classes=num_output_classes,
+    )
+
+    # Always load to CPU first to ensure the cached object is stored in main memory.
+    state_dict = torch.load(model_path, map_location='cpu')
+    model.load_state_dict(state_dict)
+    model.eval()
+    return model
+
+def get_model(model_path, model_grid_width, model_grid_height, num_output_classes):
+    """
+    Retrieves a model, utilizing an LRU cache to avoid reloading from disk.
+    """
     absolute_model_path = os.path.abspath(model_path)
 
-    if absolute_model_path in _model_cache:
-        logging.info(f"INFO -- Retrieving model from cache: {absolute_model_path}")
-        return _model_cache[absolute_model_path]
-
-    logging.info(f"INFO -- Model not in cache. Loading model from: {absolute_model_path}")
-
-    if not os.path.exists(absolute_model_path):
-        logging.error(f"ERROR -- Model file not found at: {absolute_model_path}")
-        raise FileNotFoundError(
-            f"Model file not found at the specified path: {absolute_model_path}"
-        )
-
     try:
-        # 1. Instantiate the model architecture.
-        model = ModulePlacementCNN(
-            input_channels=2,
-            grid_height=model_grid_height,
-            grid_width=model_grid_width,
-            num_output_classes=num_output_classes,
+        # Call the cached loader function
+        model = _load_model_from_disk(
+            absolute_model_path,
+            model_grid_width,
+            model_grid_height,
+            num_output_classes
         )
 
-        # 2. Determine the device and load the state dictionary.
+        # Determine the target device and move the model if necessary.
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        state_dict = torch.load(absolute_model_path, map_location=device)
-
-        # 3. Load the state dictionary into the model.
-        model.load_state_dict(state_dict)
         model.to(device)
-        model.eval()  # Set the model to evaluation mode.
 
-        logging.info(
-            f"INFO -- Model loaded and cached successfully. Device: {device}"
-        )
-
-        # 4. Store the loaded model in the cache.
-        _model_cache[absolute_model_path] = model
-
+        logging.info(f"Model {os.path.basename(model_path)} ready on device: {device}")
         return model
 
     except Exception as e:
-        logging.error(
-            f"ERROR -- Failed to load model state_dict from {absolute_model_path}: {e}"
-        )
-        logging.error(
-            "       Check if model architecture (grid size, channels, classes) matches the saved file."
-        )
-        # Re-raise the exception to be handled by the caller.
-        raise e
+        logging.error(f"Failed to get or load model '{model_path}': {e}")
+        raise
