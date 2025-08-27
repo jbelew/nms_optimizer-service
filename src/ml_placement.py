@@ -20,7 +20,7 @@ if project_root not in sys.path:
 
 # --- Imports from your project ---
 try:
-    from training.model_definition import ModulePlacementCNN
+    from model_cache import get_model  # <<< Import the new model cache function
 
     # <<< Import both module definition sources >>>
     from modules_utils import get_tech_modules, get_tech_modules_for_training
@@ -176,38 +176,18 @@ def ml_placement(
     # logging.info(f"INFO -- ML Placement: Need to place {total_modules_to_place} modules based on UI keys/rewards: {dict(modules_needed_count)}") # Less critical detail
     # --- End UI Module Setup ---
 
-    # --- 5. Load Model ---
-    # logging.info(f"INFO -- ML Placement: Loading model from {model_path}...") # Redundant with next message
+    # --- 5. Load Model using Cache ---
     try:
-        model = ModulePlacementCNN(
-            input_channels=2,
-            grid_height=model_grid_height,
-            grid_width=model_grid_width,
-            num_output_classes=num_output_classes,  # <<< This should now be correct
+        model = get_model(
+            model_path=model_path,
+            model_grid_width=model_grid_width,
+            model_grid_height=model_grid_height,
+            num_output_classes=num_output_classes,
         )
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        state_dict = torch.load(model_path, map_location=device)
-        model.load_state_dict(state_dict)
-        model.to(device)
-        model.eval()
-        # Important success/device info
-        logging.info(
-            f"INFO -- ML Placement: Model '{model_filename}' loaded successfully onto {device}."
-        )
-    except FileNotFoundError:
-        # Important failure condition
-        logging.error(
-            f"ERROR -- ML Placement: Model file confirmed missing at {model_path}."
-        )
-        return None, 0.0
-    except Exception as e:
-        # Important failure condition
-        logging.error(
-            f"ERROR -- ML Placement: Failed to load model state_dict from {model_path}: {e}"
-        )
-        logging.error(
-            "       Check if model architecture (grid size, channels, classes) matches the saved file."
-        )
+        model.to(device)  # Ensure model is on the correct device
+    except (FileNotFoundError, Exception) as e:
+        # Errors are already logged by get_model, so we can just return here.
         return None, 0.0
 
     # --- 6. Prepare Input Tensor ---
