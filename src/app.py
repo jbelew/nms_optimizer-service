@@ -1,3 +1,9 @@
+# --- Gevent monkey-patching ---
+# IMPORTANT: This must be the very first import and execution in the app
+from gevent import monkey
+monkey.patch_all()
+# --- End Gevent monkey-patching ---
+
 # app.py
 from flask import Flask, jsonify, request
 from flask_compress import Compress
