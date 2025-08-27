@@ -1,0 +1,363 @@
+{
+    "label": "Freighters",
+    "type": "Other",
+    "types": {
+        "Hyperdrive": [
+            {
+                "label": "Freighter Hyperdrive",
+                "key": "hyper",
+                "image": "other/freighter-hyper.webp",
+                "color": "iris",
+                "modules": [
+                    {
+                        "id": "HD",
+                        "type": "core",
+                        "label": "Hyperdrive",
+                        "bonus": 0.1,
+                        "adjacency": "lesser",
+                        "sc_eligible": true,
+                        "image": "other/freighter-hyperdrive.webp"
+                    },
+                    {
+                        "id": "TW",
+                        "type": "bonus",
+                        "label": "Temporal Warp Computer",
+                        "bonus": 0.05,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-temporal.webp"
+                    },
+                    {
+                        "id": "RD",
+                        "type": "bonus",
+                        "label": "Reality De-Threader",
+                        "bonus": 0.8,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-reality.webp"
+                    },
+                    {
+                        "id": "RM",
+                        "type": "bonus",
+                        "label": "Resonance Matrix",
+                        "bonus": 0.05,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-resonance.webp"
+                    },
+                    {
+                        "id": "PW",
+                        "type": "bonus",
+                        "label": "Plasmatic Warp Injector",
+                        "bonus": 0.3,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-plasmatic.webp"
+                    },
+                    {
+                        "id": "AW",
+                        "type": "bonus",
+                        "label": "Amplified Warp Shielding",
+                        "bonus": 0.05,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-amplified.webp"
+                    },
+                    {
+                        "id": "WC",
+                        "type": "bonus",
+                        "label": "Warp Core Resonator",
+                        "bonus": 0.2,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-warpcore.webp"
+                    },
+                    {
+                        "id": "CW",
+                        "type": "bonus",
+                        "label": "Chromatic Warp Shielding",
+                        "bonus": 0.05,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-chromatic.webp"
+                    },
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Hyperdrive Upgrade Theta",
+                        "bonus": 0.25,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-upgrade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Hyperdrive Upgrade Tau",
+                        "bonus": 0.24,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-upgrade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Hyperdrive Upgrade Sigma",
+                        "bonus": 0.23,
+                        "adjacency": "greater",
+                        "sc_eligible": true,
+                        "image": "other/freighter-upgrade.webp"
+                    }
+                ]
+            }
+        ],
+        "Utilities": [
+            {
+                "label": "Interstellar Scanner",
+                "key": "interstellar",
+                "image": "other/freighter-scanner.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "IS",
+                        "type": "core",
+                        "label": "Interstellar Scanner",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "other/freighter-scanner.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Matter Beam",
+                "key": "matterbeam",
+                "image": "other/freighter-matter.webp",
+                "color": "gray",
+                "modules": [
+                    {
+                        "id": "MB",
+                        "type": "core",
+                        "label": "Matter Beam",
+                        "bonus": 0.0,
+                        "adjacency": "none",
+                        "sc_eligible": false,
+                        "image": "other/freighter-matter.webp"
+                    }
+                ]
+            }
+        ],
+        "Fleet Upgrades": [
+            {
+                "label": "Fuel Efficiency",
+                "key": "fleet-fuel",
+                "image": "other/fleet-fuel.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fleet Fuel Efficiency Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-fuel.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fleet Fuel Efficiency Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-fuel.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fleet Fuel Efficiency Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-fuel.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Expedition Speed",
+                "key": "fleet-speed",
+                "image": "other/fleet-speed.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fleet Expedition Speed Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-speed.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fleet Expedition Speed Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-speed.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fleet Expedition Speed Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-speed.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Combat and Defense",
+                "key": "fleet-combat",
+                "image": "other/fleet-combat.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fleet Combat and Defense Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-combat.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fleet Combat and Defense Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-combat.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fleet Combat and Defense Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-combat.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Exploration and Science",
+                "key": "fleet-exploration",
+                "image": "other/fleet-exploration.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fleet Exploration and Science Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-exploration.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fleet Exploration and Science Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-exploration.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fleet Exploration and Science Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-exploration.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Mining and Industrial",
+                "key": "fleet-mining",
+                "image": "other/fleet-mining.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fleet Mining and Industrial Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-mining.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fleet Mining and Industrial Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-mining.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fleet Mining and Industrial Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-mining.webp"
+                    }
+                ]
+            },
+            {
+                "label": "Trade",
+                "key": "fleet-trade",
+                "image": "other/fleet-trade.webp",
+                "color": "white",
+                "modules": [
+                    {
+                        "id": "Xa",
+                        "type": "bonus",
+                        "label": "Fleet Mining and Industrial Upgrade Theta",
+                        "bonus": 0.3,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-trade.webp"
+                    },
+                    {
+                        "id": "Xb",
+                        "type": "bonus",
+                        "label": "Fleet Mining and Industrial Upgrade Tau",
+                        "bonus": 0.29,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-trade.webp"
+                    },
+                    {
+                        "id": "Xc",
+                        "type": "bonus",
+                        "label": "Fleet Mining and Industrial Upgrade Sigma",
+                        "bonus": 0.28,
+                        "adjacency": "greater_1",
+                        "sc_eligible": true,
+                        "image": "other/fleet-trade.webp"
+                    }
+                ]
+            }
+        ]
+    }
+}

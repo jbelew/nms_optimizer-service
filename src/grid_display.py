@@ -1,6 +1,9 @@
 # grid_display.py
 from grid_utils import Grid
-from data_definitions.modules import modules  # Import the modules dictionary
+from data_loader import get_all_module_data
+
+# Load all module data once for display purposes.
+modules = get_all_module_data()
 
 # --- Define ANSI color codes ---
 # Map color names from modules.py to ANSI escape codes

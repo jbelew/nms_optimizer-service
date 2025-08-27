@@ -1,6 +1,4 @@
 import json
-from data_definitions.modules import modules
-
 
 def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     """
@@ -90,10 +88,10 @@ def get_tech_modules_for_training(modules_dict, ship, tech_key):
     return []
 
 
-def get_tech_tree_json(ship):
+def get_tech_tree_json(ship, module_data):
     """Generates a technology tree for a given ship and returns it as JSON."""
     try:
-        tech_tree = get_tech_tree(ship)  # Call your existing function
+        tech_tree = get_tech_tree(ship, module_data)  # Call your existing function
         if "error" in tech_tree:
             return json.dumps({"error": tech_tree["error"]})  # Return error as JSON
         else:
@@ -102,13 +100,12 @@ def get_tech_tree_json(ship):
         return json.dumps({"error": str(e)})  # Catch any errors during tree generation
 
 
-def get_tech_tree(ship):
+def get_tech_tree(ship, module_data):
     """Generates a technology tree for a given ship."""
-    ship_data = modules.get(ship)
-    if ship_data is None:
+    if not module_data:
         return {"error": f"Ship '{ship}' not found."}
 
-    types_data = ship_data.get("types")
+    types_data = module_data.get("types")
     if types_data is None:
         return {"error": f"'types' key not found for ship '{ship}'."}
 
