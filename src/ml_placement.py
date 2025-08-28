@@ -183,7 +183,7 @@ def ml_placement(
         )
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)  # Ensure model is on the correct device
-    except (FileNotFoundError, Exception) as e:
+    except (FileNotFoundError, Exception):
         # Errors are already logged by get_model, so we can just return here.
         return None, 0.0
 
