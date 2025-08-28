@@ -29,6 +29,7 @@ MODULES_FOR_TRAINING = {
         ],
         "photonix": [
             "PE",  # Pulse Engine
+            "PC",  # Photonix Core
             "FA",  # Flight Assist Override
             "SL",  # Sub-Light Amplifier
             "ID",  # Instability Drive
@@ -40,6 +41,7 @@ MODULES_FOR_TRAINING = {
     "solar": {
         "pulse": [
             "PE",  # Pulse Engine
+            "VS",  # Vespar Sail
             "FA",  # Flight Assist Override
             "SL",  # Sub-Light Amplifier
             "ID",  # Instability Drive
@@ -49,6 +51,8 @@ MODULES_FOR_TRAINING = {
         ],
         "photonix": [
             "PE",  # Pulse Engine
+            "VS",  # Vespar Sail
+            "PC",  # Photonix Core
             "FA",  # Flight Assist Override
             "SL",  # Sub-Light Amplifier
             "ID",  # Instability Drive
