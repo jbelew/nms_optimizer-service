@@ -25,7 +25,7 @@ MODULES_FOR_TRAINING = {
             "ID",  # Instability Drive
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
-            "Xc",  # Pulse Engine Upgrade Sigma
+            "Xc"   # Pulse Engine Upgrade Sigma
         ],
         "photonix": [
             "PE",  # Pulse Engine
@@ -35,7 +35,30 @@ MODULES_FOR_TRAINING = {
             "ID",  # Instability Drive
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
-            "Xc",  # Pulse Engine Upgrade Sigma
+            "Xc"   # Pulse Engine Upgrade Sigma
+        ]
+    },
+    "solar": {
+        "pulse": [
+            "PE",  # Pulse Engine
+            "VS",  # Vespar Sail
+            "FA",  # Flight Assist Override
+            "SL",  # Sub-Light Amplifier
+            "ID",  # Instability Drive
+            "Xa",  # Pulse Engine Upgrade Theta
+            "Xb",  # Pulse Engine Upgrade Tau
+            "Xc"   # Pulse Engine Upgrade Sigma
         ],
+        "photonix": [
+            "PE",  # Pulse Engine
+            "VS",  # Vespar Sail
+            "PC",  # Photonix Core
+            "FA",  # Flight Assist Override
+            "SL",  # Sub-Light Amplifier
+            "ID",  # Instability Drive
+            "Xa",  # Pulse Engine Upgrade Theta
+            "Xb",  # Pulse Engine Upgrade Tau
+            "Xc"   # Pulse Engine Upgrade Sigma
+        ]
     }
 }
