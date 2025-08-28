@@ -218,8 +218,8 @@ def simulated_annealing(
         tuple: (best_grid, best_score) or (None, 0.0) on failure.
     """
     logging.info(f"SA: Starting optimization for ship='{ship}', tech='{tech}'")
-    logging.info(f"SA Parameters: initial_temp={initial_temperature}, cooling_rate={cooling_rate}, stopping_temp={stopping_temperature}, iterations_per_temp={iterations_per_temp}, max_processing_time={max_processing_time}")
-    logging.info(f"SA Mode: {'Polishing' if start_from_current_grid else 'Full Run'}")
+    logging.info(f"SA: Parameters initial_temp={initial_temperature}, cooling_rate={cooling_rate}, stopping_temp={stopping_temperature}, iterations_per_temp={iterations_per_temp}, max_processing_time={max_processing_time}")
+    logging.info(f"SA: Mode: {'Polishing' if start_from_current_grid else 'Full Run'}")
     start_time = time.time()
 
     tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
@@ -470,7 +470,7 @@ def simulated_annealing(
     elapsed_time = end_time - start_time
     elapsed_time_to_best_score = best_score_time - start_time
     logging.info(
-        f"SA finished ({'Polish' if start_from_current_grid else 'Full'}). Best score: {best_score:.4f}. Time: {elapsed_time:.4f}s. Time to best score: {elapsed_time_to_best_score:.4f}s"
+        f"SA: Finished ({'Polish' if start_from_current_grid else 'Full'}). Best score: {best_score:.4f}. Time: {elapsed_time:.4f}s. Time to best score: {elapsed_time_to_best_score:.4f}s"
     )
 
     # Final check for validity (especially important if polishing)
