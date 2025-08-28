@@ -50,10 +50,10 @@ def ml_placement(
     grid: Grid,
     ship: str,  # This is the UI ship key
     tech: str,  # This is the UI tech key
-    full_grid_original: Grid, # The original full grid from optimize_placement
-    start_x_original: int, # The x-offset of this localized grid within the original full grid
-    start_y_original: int, # The y-offset of this localized grid within the original full grid
-    original_state_map: dict, # The map to restore original state of other tech modules
+    full_grid_original: Grid,  # The original full grid from optimize_placement
+    start_x_original: int,  # The x-offset of this localized grid within the original full grid
+    start_y_original: int,  # The y-offset of this localized grid within the original full grid
+    original_state_map: dict,  # The map to restore original state of other tech modules
     player_owned_rewards: Optional[List[str]] = None,
     model_dir: str = DEFAULT_MODEL_DIR,
     model_grid_width: int = DEFAULT_MODEL_GRID_WIDTH,
@@ -183,7 +183,7 @@ def ml_placement(
         )
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         model.to(device)  # Ensure model is on the correct device
-    except (FileNotFoundError, Exception) as e:
+    except (FileNotFoundError, Exception):
         # Errors are already logged by get_model, so we can just return here.
         return None, 0.0
 
@@ -370,9 +370,7 @@ def ml_placement(
     # --- 10. Calculate Initial Score ---
     predicted_score = calculate_grid_score(predicted_grid, tech)
     # Important score info
-    logging.info(
-        f"ML Placement: Initial Score (before polish): {predicted_score:.4f}"
-    )
+    logging.info(f"ML Placement: Initial Score (before polish): {predicted_score:.4f}")
     # print_grid(predicted_grid) # Optional: print grid before polish
 
     # Emit the full, reconstituted grid state after ML placement, before polishing
@@ -474,7 +472,7 @@ def ml_placement(
     end_time = time.time()
     # Final result
     logging.info(
-        f"ML Placement finished in {end_time - start_time:.2f} seconds. Final Score: {predicted_score:.4f}"
+        f"ML Placement: Finished in {end_time - start_time:.2f} seconds. Final Score: {predicted_score:.4f}"
     )
     # print_grid(predicted_grid) # Optional: print final grid
 
