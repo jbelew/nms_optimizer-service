@@ -16,7 +16,8 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     if player_owned_rewards is None:
         player_owned_rewards = []
 
-    ship_data = modules.get(ship)
+    # The 'modules' parameter is now the ship-specific data, so we don't need to do a lookup.
+    ship_data = modules
     if ship_data is None:
         print(f"Error: Ship '{ship}' not found in modules data.")
         return None
@@ -71,7 +72,8 @@ def get_tech_modules_for_training(modules_dict, ship, tech_key):
     Returns:
         list: A list of module dictionaries, or an empty list if not found.
     """
-    ship_data = modules_dict.get(ship)
+    # The 'modules_dict' parameter is now the ship-specific data, so we don't need to do a lookup.
+    ship_data = modules_dict
     if ship_data is None:
         print(f"Error: Ship '{ship}' not found in modules data.")
         return []

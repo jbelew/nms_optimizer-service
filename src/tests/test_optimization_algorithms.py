@@ -39,7 +39,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.grid = Grid(4, 3)  # Keep this if other tests use it directly
         self.ship = "standard"
         self.tech = "pulse"  # A tech with a known solve map
-        self.modules = sample_modules  # Use the imported modules
+        self.modules = sample_modules[self.ship]  # Use the ship-specific data
         self.player_owned_rewards = ["PC"]  # Example reward
 
         # Added setup from TestOptimizePlacement
@@ -244,7 +244,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
                 full_grid.set_active(x, y, False)  # Make all inactive
 
         with self.assertRaisesRegex(ValueError, "No empty, active slots available"):
-            optimize_placement(full_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards)
+            optimize_placement(full_grid, self.ship, self.modules, self.tech, self.player_owned_rewards)
 
     @patch("optimization_algorithms.get_solve_map")
     @patch("optimization_algorithms.place_all_modules_in_empty_slots")
@@ -259,7 +259,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_calculate_score.return_value = 5.0
 
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards
+            self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards
         )
 
         mock_get_solves.assert_called_once_with(self.ship)
@@ -280,7 +280,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_apply_pattern.return_value = (None, 0)
 
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=False
+            self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards, forced=False
         )
 
         mock_apply_pattern.assert_called()
@@ -308,7 +308,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_calculate_score.return_value = 10.0
 
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, sample_modules, self.tech, self.player_owned_rewards, forced=True
+            self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards, forced=True
         )
 
         mock_apply_pattern.assert_called()
