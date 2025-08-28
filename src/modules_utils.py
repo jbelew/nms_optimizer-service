@@ -1,4 +1,5 @@
 import json
+import logging
 
 def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     """
@@ -19,26 +20,26 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
     # The 'modules' parameter is now the ship-specific data, so we don't need to do a lookup.
     ship_data = modules
     if ship_data is None:
-        print(f"Error: Ship '{ship}' not found in modules data.")
+        logging.error(f"Ship '{ship}' not found in modules data.")
         return None
 
     types_data = ship_data.get("types")
     if types_data is None:
-        print(f"Error: 'types' key not found for ship '{ship}'.")
+        logging.error(f"'types' key not found for ship '{ship}'.")
         return None
 
     for tech_type in types_data:
         tech_category = types_data.get(tech_type)
         if tech_category is None:
-            print(f"Error: Technology type '{tech_type}' not found for ship '{ship}'.")
+            logging.error(f"Technology type '{tech_type}' not found for ship '{ship}'.")
             continue  # skip this type and check the next
 
         for technology in tech_category:
             if technology.get("key") == tech_key:
                 modules_list = technology.get("modules")
                 if modules_list is None:
-                    print(
-                        f"Error: 'modules' key not found for technology '{tech_key}' within type '{tech_type}' on ship '{ship}'."
+                    logging.error(
+                        f"'modules' key not found for technology '{tech_key}' within type '{tech_type}' on ship '{ship}'."
                     )
                     return None
 
@@ -55,7 +56,7 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None):
 
                 return filtered_modules
 
-    print(f"Error: Technology '{tech_key}' not found for ship '{ship}'.")
+    logging.error(f"Technology '{tech_key}' not found for ship '{ship}'.")
     return None
 
 
@@ -75,12 +76,12 @@ def get_tech_modules_for_training(modules_dict, ship, tech_key):
     # The 'modules_dict' parameter is now the ship-specific data, so we don't need to do a lookup.
     ship_data = modules_dict
     if ship_data is None:
-        print(f"Error: Ship '{ship}' not found in modules data.")
+        logging.error(f"Ship '{ship}' not found in modules data.")
         return []
 
     types_data = ship_data.get("types")
     if types_data is None:
-        print(f"Error: 'types' key not found for ship '{ship}'.")
+        logging.error(f"'types' key not found for ship '{ship}'.")
         return []
 
     for tech_list in types_data.values():

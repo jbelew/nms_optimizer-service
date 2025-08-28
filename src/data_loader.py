@@ -1,9 +1,10 @@
 import json
+import logging
 import os
 from functools import lru_cache
 from typing import List
 
-from src.data_definitions.modules_for_training import MODULES_FOR_TRAINING
+from data_definitions.modules_for_training import MODULES_FOR_TRAINING
 
 # --- Constants ---
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data_definitions")
@@ -60,7 +61,7 @@ def get_solve_map(ship_type: str):
 
         return processed_data
     except (IOError, json.JSONDecodeError) as e:
-        print(f"Error loading or parsing solve map for {ship_type}: {e}")
+        logging.error(f"Error loading or parsing solve map for {ship_type}: {e}")
         # Return an empty dict on error to prevent crashes
         return {}
 
@@ -81,7 +82,7 @@ def get_module_data(ship_type: str):
         with open(file_path, 'r') as f:
             return json.load(f)
     except (IOError, json.JSONDecodeError) as e:
-        print(f"Error loading or parsing module data for {ship_type}: {e}")
+        logging.error(f"Error loading or parsing module data for {ship_type}: {e}")
         # Return an empty dict on error to prevent crashes
         return {}
 
@@ -112,7 +113,7 @@ def get_all_solve_data():
                         processed_data[tech_name] = tech_info
                     all_solves[ship_type] = processed_data
             except (IOError, json.JSONDecodeError) as e:
-                print(f"Error loading or parsing solve data from {filename}: {e}")
+                logging.error(f"Error loading or parsing solve data from {filename}: {e}")
                 continue
 
     return all_solves
@@ -137,7 +138,7 @@ def get_all_module_data():
                 with open(file_path, 'r') as f:
                     all_modules[ship_type] = json.load(f)
             except (IOError, json.JSONDecodeError) as e:
-                print(f"Error loading or parsing module data from {filename}: {e}")
+                logging.error(f"Error loading or parsing module data from {filename}: {e}")
                 continue
 
     return all_modules

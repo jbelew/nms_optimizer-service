@@ -1,4 +1,5 @@
 # grid_display.py
+import logging
 from grid_utils import Grid
 from data_loader import get_all_module_data
 
@@ -45,6 +46,9 @@ def get_tech_color_code(tech_key: str) -> str:
 
 def print_grid(grid: Grid) -> None:
     """Displays the grid with module info, total value, and active state (+/-), using tech colors."""
+    if not logging.getLogger().isEnabledFor(logging.DEBUG):
+        return
+    logging.debug("--- Grid Display ---")
     for y, row in enumerate(grid.cells):
         formatted_row = []
 
@@ -73,12 +77,15 @@ def print_grid(grid: Grid) -> None:
             )
             formatted_row.append(formatted_cell)
 
-        print(" | ".join(formatted_row))
-    print()
+        logging.debug(" | ".join(formatted_row))
+    logging.debug("--------------------")
 
 
 def print_grid_compact(grid: Grid) -> None:
     """Displays a compact version of the grid with module info, using tech colors."""
+    if not logging.getLogger().isEnabledFor(logging.DEBUG):
+        return
+    logging.debug("--- Compact Grid Display ---")
     for y, row in enumerate(grid.cells):
         formatted_row = []
 
@@ -100,5 +107,5 @@ def print_grid_compact(grid: Grid) -> None:
             formatted_cell = f"{color_code}{display_text}{RESET_COLOR}"
             formatted_row.append(formatted_cell)
 
-        print(" | ".join(formatted_row))
-    print()
+        logging.debug(" | ".join(formatted_row))
+    logging.debug("--------------------------")

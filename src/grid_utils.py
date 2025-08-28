@@ -1,4 +1,5 @@
 # grid_utils.py
+import logging
 from copy import deepcopy
 from module_placement import place_module, clear_all_modules_of_tech
 
@@ -183,13 +184,13 @@ def restore_original_state(grid, original_state_map):
     if not original_state_map:
         return  # Nothing to restore
 
-    print(f"INFO -- Restoring original state for {len(original_state_map)} cells.")
+    logging.info(f"Restoring original state for {len(original_state_map)} cells.")
     for (x, y), original_cell_data in original_state_map.items():
         if 0 <= x < grid.width and 0 <= y < grid.height:
             grid.cells[y][x].update(deepcopy(original_cell_data))
         else:
-            print(
-                f"Warning -- Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid."
+            logging.warning(
+                f"Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid."
             )
 
 def apply_localized_grid_changes(main_grid, localized_grid, tech, start_x, start_y):
@@ -224,8 +225,8 @@ def apply_localized_grid_changes(main_grid, localized_grid, tech, start_x, start
                         local_cell['image'],
                     )
                 else:
-                    print(
-                        f"Warning: Attempted to place module {local_cell['label']} from localized grid at ({main_x},{main_y}) on main grid, but cell is inactive or out of bounds."
+                    logging.warning(
+                        f"Attempted to place module {local_cell['label']} from localized grid at ({main_x},{main_y}) on main grid, but cell is inactive or out of bounds."
                     )
 
 __all__ = ["Grid", "restore_original_state", "apply_localized_grid_changes"]

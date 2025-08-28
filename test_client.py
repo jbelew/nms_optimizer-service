@@ -1,6 +1,15 @@
 import socketio
 import json
 import time
+import logging
+import sys
+
+# --- Basic Logging Setup ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    stream=sys.stdout,
+)
 
 # Create a Socket.IO client
 sio = socketio.Client()
@@ -8,27 +17,27 @@ sio = socketio.Client()
 
 @sio.event
 def connect():
-    print("Connected to server")
+    logging.info("Connected to server")
     # Once connected, send the optimization request if payload is defined
-    print(f"Sending optimization request for {payload['ship']} - {payload['tech']}...")
+    logging.info(f"Sending optimization request for {payload['ship']} - {payload['tech']}...")
     sio.emit("optimize", payload)
 
 
 @sio.event
 def disconnect():
-    print("Disconnected from server")
+    logging.info("Disconnected from server")
 
 
 @sio.on("progress")  # type: ignore
 def on_progress(data):
-    print(f"--- Progress Update at {time.time():.2f} ---")
-    print(json.dumps(data, indent=2))
+    logging.info(f"--- Progress Update at {time.time():.2f} ---")
+    logging.info(json.dumps(data, indent=2))
 
 
 @sio.on("optimization_result")  # type: ignore
 def on_optimization_result(data):
-    print(f"\n--- Final Result at {time.time():.2f} ---")
-    print(json.dumps(data, indent=2))
+    logging.info(f"\n--- Final Result at {time.time():.2f} ---")
+    logging.info(json.dumps(data, indent=2))
     # Disconnect after getting the final result
     sio.disconnect()
 
@@ -78,4 +87,4 @@ if __name__ == "__main__":
         # Wait for the connection and events to be processed
         sio.wait()
     except Exception as e:
-        print(f"An error occurred: {e}")
+        logging.error(f"An error occurred: {e}")

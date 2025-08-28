@@ -5,6 +5,10 @@ monkey.patch_all()
 # --- End Gevent monkey-patching ---
 
 # app.py
+# Configure logging as the first step after monkey-patching
+import logger
+import logging
+
 from flask import Flask, jsonify, request
 from flask_compress import Compress
 from flask_cors import CORS
@@ -16,7 +20,6 @@ from optimizer import get_tech_tree_json, Grid
 from data_loader import get_module_data, get_all_module_data
 from data_definitions.recommended_builds import recommended_builds
 from data_definitions.grids import grids
-import logging
 import os
 import uuid
 import time
@@ -38,8 +41,6 @@ from typing import cast
 class SocketIORequest(request.__class__):
     sid: str
 
-
-logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})

@@ -217,7 +217,6 @@ def simulated_annealing(
     Returns:
         tuple: (best_grid, best_score) or (None, 0.0) on failure.
     """
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info(f"SA: Starting optimization for ship='{ship}', tech='{tech}'")
     logging.info(f"SA Parameters: initial_temp={initial_temperature}, cooling_rate={cooling_rate}, stopping_temp={stopping_temperature}, iterations_per_temp={iterations_per_temp}, max_processing_time={max_processing_time}")
     logging.info(f"SA Mode: {'Polishing' if start_from_current_grid else 'Full Run'}")

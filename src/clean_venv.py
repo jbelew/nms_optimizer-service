@@ -1,5 +1,6 @@
 import subprocess
 import pkg_resources
+import logging
 
 # Step 1: Freeze current environment
 with open("old-requirements.txt", "w") as f:
@@ -24,7 +25,7 @@ unused = installed - used
 
 # Step 6: Uninstall unused packages
 if unused:
-    print("Uninstalling unused packages:", unused)
+    logging.info(f"Uninstalling unused packages: {unused}")
     subprocess.run(["pip", "uninstall", "-y", *unused])
 else:
-    print("No unused packages found.")
+    logging.info("No unused packages found.")

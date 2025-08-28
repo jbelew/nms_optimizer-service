@@ -1,4 +1,5 @@
 # bonus_calculations.py
+import logging
 from grid_utils import Grid
 from enum import Enum
 
@@ -253,7 +254,7 @@ def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = 
         The total calculated score for the specified technology, rounded.
     """
     if grid is None:
-        print("Warning: calculate_grid_score called with None grid.")
+        logging.warning("calculate_grid_score called with None grid.")
         return 0.0
 
     # Ensure all bonuses are calculated/updated before summing
