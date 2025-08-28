@@ -763,7 +763,6 @@ def _handle_ml_opportunity(
     ml_refined_grid, ml_refined_score_local = ml_placement(
         localized_grid_ml,
         ship,
-        modules,
         tech,
         full_grid_original=grid, # Pass the original full grid
         start_x_original=opportunity_x, # Pass the original start_x
