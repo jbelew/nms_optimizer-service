@@ -26,6 +26,15 @@ MODULES_FOR_TRAINING = {
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
             "Xc"   # Pulse Engine Upgrade Sigma
+        ],
+        "photonix": [
+            "PE",  # Pulse Engine
+            "FA",  # Flight Assist Override
+            "SL",  # Sub-Light Amplifier
+            "ID",  # Instability Drive
+            "Xa",  # Pulse Engine Upgrade Theta
+            "Xb",  # Pulse Engine Upgrade Tau
+            "Xc"   # Pulse Engine Upgrade Sigma
         ]
     }
 }
