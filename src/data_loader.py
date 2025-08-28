@@ -1,6 +1,9 @@
 import json
 import os
 from functools import lru_cache
+from typing import List
+
+from src.data_definitions.modules_for_training import MODULES_FOR_TRAINING
 
 # --- Constants ---
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data_definitions")
@@ -138,3 +141,39 @@ def get_all_module_data():
                 continue
 
     return all_modules
+
+
+def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
+    """
+    Gets the list of module IDs for a given technology, using the specific
+    training definition if available, otherwise falling back to the main
+    module data. This is used to define the ML model architecture.
+
+    Args:
+        ship_key: The key for the ship/platform (e.g., "standard").
+        tech_key: The key for the technology (e.g., "pulse").
+
+    Returns:
+        A list of module ID strings.
+    """
+    # 1. Check for a specific override in modules_for_training.py
+    if ship_key in MODULES_FOR_TRAINING and tech_key in MODULES_FOR_TRAINING[ship_key]:
+        return MODULES_FOR_TRAINING[ship_key][tech_key]
+
+    # 2. If no override, load from the main JSON data and extract the IDs
+    module_data = get_module_data(ship_key)
+    if not module_data:
+        return []
+
+    # This logic is adapted from modules_utils.get_tech_modules_for_training
+    types_data = module_data.get("types", {})
+    for tech_list in types_data.values():
+        for tech_data in tech_list:
+            if tech_data.get("key") == tech_key:
+                modules = tech_data.get("modules", [])
+                # Return a list of just the IDs. For technologies not explicitly
+                # defined in MODULES_FOR_TRAINING, we assume the training set
+                # included all modules listed in the main data file.
+                return [m['id'] for m in modules]
+
+    return []  # Return empty list if tech_key not found

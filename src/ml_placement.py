@@ -23,8 +23,8 @@ try:
     from model_cache import get_model  # <<< Import the new model cache function
 
     # <<< Import both module definition sources >>>
-    from modules_utils import get_tech_modules, get_tech_modules_for_training
-    from data_loader import get_module_data
+    from modules_utils import get_tech_modules
+    from data_loader import get_module_data, get_training_module_ids
 
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
@@ -125,23 +125,22 @@ def ml_placement(
         return None, 0.0
 
     # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) ---
-    # Use the TRAINING definitions to get the list of modules the model was trained on
-    training_modules_list = get_tech_modules_for_training(
-        get_module_data(module_def_ship_key), module_def_ship_key, module_def_tech_key
+    # Use the new data loader to get the exact list of module IDs the model was trained on.
+    training_module_ids = get_training_module_ids(
+        module_def_ship_key, module_def_tech_key
     )
 
-    if not training_modules_list:
-        # Use f-string for cleaner formatting
+    if not training_module_ids:
         # Important failure condition
         logging.error(
-            f"ERROR -- ML Placement: No TRAINING modules found for Module Def keys ('{module_def_ship_key}', '{module_def_tech_key}'). Cannot define model outputs."
+            f"ERROR -- ML Placement: No TRAINING module IDs found for Module Def keys ('{module_def_ship_key}', '{module_def_tech_key}'). Cannot define model outputs."
         )
         return None, 0.0
 
-    # --- Sort modules and create mappings (No change needed here) ---
-    training_modules_list.sort(key=lambda m: m["id"])
+    # --- Sort module IDs and create mappings ---
+    training_module_ids.sort()  # Sort the IDs alphabetically for consistency
     module_id_mapping = {
-        module["id"]: i + 1 for i, module in enumerate(training_modules_list)
+        module_id: i + 1 for i, module_id in enumerate(training_module_ids)
     }
     num_output_classes = len(module_id_mapping) + 1  # +1 for background
     reverse_module_mapping = {v: k for k, v in module_id_mapping.items()}
