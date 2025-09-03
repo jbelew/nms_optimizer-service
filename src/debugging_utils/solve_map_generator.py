@@ -7,11 +7,13 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
 from grid_utils import Grid
-from data_definitions.modules import modules
+from data_loader import get_all_module_data
+
+modules = get_all_module_data()
 
 # Import both solver options
 from optimization_algorithms import refine_placement_for_training  # Keep for one option
-from grid_display import print_grid, print_grid_compact
+from grid_display import print_grid
 from simulated_annealing import simulated_annealing
 
 
@@ -41,6 +43,11 @@ def generate_solve_map(
         # <<< Simplified default rewards list >>>
         player_owned_rewards = ["SB", "SP", "TT"]
 
+    ship_modules = modules.get(ship_type)
+    if not ship_modules:
+        print(f"Error: no modules for ship {ship_type}")
+        return None, None
+
     grid = Grid(width=grid_width, height=grid_height)
 
     # Set the specified positions as supercharged
@@ -63,11 +70,11 @@ def generate_solve_map(
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
             optimized_grid, optimized_score = simulated_annealing(
-                grid, ship_type, modules, tech, player_owned_rewards, **sa_params
+                grid, ship_type, ship_modules, tech, player_owned_rewards, **sa_params
             )
         elif solver_choice == "refine_training":
             print(f"INFO -- Using refine_placement_for_training for {ship_type}/{tech}")
-            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, modules, tech)
+            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, ship_modules, tech)
         else:
             print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine_training'.")
             return None, None
@@ -164,7 +171,7 @@ if __name__ == "__main__":
         for (x, y), module_id in solve_map_template.items():
             # Always wrap the module_id (which is either a real ID or the string "None") in quotes
             module_str = f'"{module_id}"'
-            print(f"                ({x}, {y}): {module_str},")
+            print(f'                "{x},{y}": {module_str},')
         print("            },")
         print(f'            "score": {solve_score:.4f}')
         print("        },")

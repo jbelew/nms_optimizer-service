@@ -6,12 +6,10 @@ monkey.patch_all()
 
 # app.py
 # Configure logging as the first step after monkey-patching
-import logger
-import logging
 
-from flask import Flask, jsonify, request
-from flask_compress import Compress
-from flask_cors import CORS
+from flask import Flask, jsonify, request  # noqa: E402
+from flask_compress import Compress  # noqa: E402
+from flask_cors import CORS  # noqa: E402
 from flask_socketio import SocketIO, emit
 
 
