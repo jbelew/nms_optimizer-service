@@ -6,6 +6,20 @@
             {
                 "label": "Cyclotron Ballista",
                 "key": "cyclotron",
+                "type": "normal",
+                "image": "starship/cyclotron.webp",
+                "color": "purple",
+                "modules": [
+                    {"id": "CB", "type": "core", "label": "Cyclotron Ballista", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron.webp"},
+                    {"id": "Ta", "type": "bonus", "label": "Torpedo Launcher Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"},
+                    {"id": "Tb", "type": "bonus", "label": "Torpedo Launcher Tau", "bonus": 0.12, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"},
+                    {"id": "Tc", "type": "bonus", "label": "Torpedo Launcher Sigma", "bonus": 0.13, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"}
+                ]
+            },
+            {
+                "label": "Cyclotron Ballista",
+                "key": "cyclotron",
+                "type": "max",
                 "image": "starship/cyclotron.webp",
                 "color": "purple",
                 "modules": [
@@ -75,6 +89,20 @@
             {
                 "label": "Phase Beam",
                 "key": "phase",
+                "type": "normal",
+                "image": "starship/phase.webp",
+                "color": "green",
+                "modules": [
+                    {"id": "PB", "type": "core", "label": "Phase Beam", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/phase-beam.webp"},
+                    {"id": "Pa", "type": "bonus", "label": "Phase Beam Array Theta", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"},
+                    {"id": "Pb", "type": "bonus", "label": "Phase Beam Array Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"},
+                    {"id": "Pc", "type": "bonus", "label": "Phase Beam Array Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"}
+                ]
+            },
+            {
+                "label": "Phase Beam",
+                "key": "phase",
+                "type": "max",
                 "image": "starship/phase.webp",
                 "color": "green",
                 "modules": [
@@ -88,10 +116,23 @@
                     {"id": "Pc", "type": "bonus", "label": "Phase Beam Array Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"}
                 ]
             },
-
             {
                 "label": "Photon Cannon",
                 "key": "photon",
+                "type": "normal",
+                "image": "starship/photon.webp",
+                "color": "blue",
+                "modules": [
+                    {"id": "PC", "type": "core", "label": "Photon Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon.webp"},
+                    {"id": "Pa", "type": "bonus", "label": "Photon Cannon Array Theta", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"},
+                    {"id": "Pb", "type": "bonus", "label": "Photon Cannon Array Tau", "bonus": 0.19, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"},
+                    {"id": "Pc", "type": "bonus", "label": "Photon Cannon Array Sigma", "bonus": 0.18, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"}
+                ]
+            },
+            {
+                "label": "Photon Cannon",
+                "key": "photon",
+                "type": "max",
                 "image": "starship/photon.webp",
                 "color": "blue",
                 "modules": [
@@ -108,54 +149,31 @@
             {
                 "label": "Positron Ejector",
                 "key": "positron",
+                "type": "normal",
                 "image": "starship/positron.webp",
                 "color": "amber",
                 "modules": [
-                    {
-                        "id": "PE",
-                        "type": "core",
-                        "label": "Positron Ejector",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron.webp"
-                    },
-                    {
-                        "id": "FS",
-                        "type": "bonus",
-                        "label": "Fragment Supercharger",
-                        "bonus": 0.04,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/fragment.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Positron Ejector Upgrade Theta",
-                        "bonus": 0.4,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Positron Ejector Upgrade Tau",
-                        "bonus": 0.39,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Positron Ejector Upgrade Sigma",
-                        "bonus": 0.38,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron-upgrade.webp"
-                    }
+                    { "id": "PE", "type": "core", "label": "Positron Ejector", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron.webp" },
+                    { "id": "Da", "type": "bonus", "label": "Deadeye Cannon Theta", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
+                    { "id": "Db", "type": "bonus", "label": "Deadeye Cannon Tau", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
+                    { "id": "Dc", "type": "bonus", "label": "Deadeye Cannon Sigma", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" }
+                ]
+            },
+            {
+                "label": "Positron Ejector",
+                "key": "positron",
+                "type": "max",
+                "image": "starship/positron.webp",
+                "color": "amber",
+                "modules": [
+                    { "id": "PE", "type": "core", "label": "Positron Ejector", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron.webp" },
+                    { "id": "FS", "type": "bonus", "label": "Fragment Supercharger", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "starship/fragment.webp" },
+                    { "id": "Xa", "type": "bonus", "label": "Positron Ejector Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp" },
+                    { "id": "Xb", "type": "bonus", "label": "Positron Ejector Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp" },
+                    { "id": "Xc", "type": "bonus", "label": "Positron Ejector Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp" },
+                    { "id": "Da", "type": "bonus", "label": "Deadeye Cannon Theta", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
+                    { "id": "Db", "type": "bonus", "label": "Deadeye Cannon Tau", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
+                    { "id": "Dc", "type": "bonus", "label": "Deadeye Cannon Sigma", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" }
                 ]
             },
             {
@@ -189,6 +207,20 @@
             {
                 "label": "Corvette Shields",
                 "key": "shield",
+                "type": "normal",
+                "image": "starship/shield.webp",
+                "color": "yellow",
+                "modules": [
+                    {"id": "DS", "type": "core", "label": "Defensive Shields", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/shield.webp"},
+                    {"id": "Ca", "type": "bonus", "label": "Ion Barrier Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ion.webp"},
+                    {"id": "Cb", "type": "bonus", "label": "Deflector Shield Tau", "bonus": 0.09, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deflector.webp"},
+                    {"id": "Cc", "type": "bonus", "label": "Ion Barrier Sigma", "bonus": 0.08, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ion.webp"}
+                ]
+            },
+            {
+                "label": "Corvette Shields",
+                "key": "shield",
+                "type": "max",
                 "image": "starship/shield.webp",
                 "color": "yellow",
                 "modules": [
@@ -208,9 +240,9 @@
                 "image": "corvette/ceto.webp",
                 "color": "cyan",
                 "modules": [
-                    {"id": "Ca", "type": "bonus", "label": "Ceto-Class Reactor Theta", "bonus": 0.12, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp"},
-                    {"id": "Cb", "type": "bonus", "label": "Ceto-Class Reactor Tau", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp"},
-                    {"id": "Cc", "type": "bonus", "label": "Ceto-Class Reactor Sigma", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp"}
+                    {"id": "Ca", "type": "bonus", "label": "Ceto-Class Reactor Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp"},
+                    {"id": "Cb", "type": "bonus", "label": "Ceto-Class Reactor Tau", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp"},
+                    {"id": "Cc", "type": "bonus", "label": "Ceto-Class Reactor Sigma", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp"}
                 ]
             }
         ],
@@ -264,6 +296,7 @@
             {
                 "label": "Launch Thruster",
                 "key": "launch",
+                "type": "max",
                 "image": "starship/launch.webp",
                 "color": "blue",
                 "modules": [
@@ -281,8 +314,38 @@
                 ]
             },
             {
+                "label": "Launch Thruster",
+                "key": "launch",
+                "type": "normal",
+                "image": "starship/launch.webp",
+                "color": "blue",
+                "modules": [
+                    {"id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": false, "image": "starship/launch.webp"},
+                    {"id": "La", "type": "bonus", "label": "Thunderbird Landing Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp"},
+                    {"id": "Lb", "type": "bonus", "label": "Thunderbird Landing Thruster Tau", "bonus": 0.029, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp"},
+                    {"id": "Lc", "type": "bonus", "label": "Mag-Field Landing Thruster Sigma", "bonus": 0.028, "adjacency": "greater", "sc_eligible": true, "image": "corvette/mag-field.webp"},
+                    {"id": "Aa", "type": "bonus", "label": "Azimuth-Class Reactor Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp"},
+                    {"id": "Ab", "type": "bonus", "label": "Azimuth-Class Reactor Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp"},
+                    {"id": "Ac", "type": "bonus", "label": "Azimuth-Class Reactor Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp"}
+                ]
+            },
+            {
                 "label": "Pulse Engine",
                 "key": "pulse",
+                "type": "normal",
+                "image": "starship/pulse.webp",
+                "color": "orange",
+                "modules": [
+                    {"id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/pulse.webp"},
+                    {"id": "Ba", "type": "bonus", "label": "Arcadia Heavy Booster Theta", "bonus": 1.02, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
+                    {"id": "Bb", "type": "bonus", "label": "Arcadia Heavy Booster Tau", "bonus": 1.019, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
+                    {"id": "Bc", "type": "bonus", "label": "Arcadia Heavy Booster Sigma", "bonus": 1.018, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"}
+                ]
+            },
+            {
+                "label": "Pulse Engine",
+                "key": "pulse",
+                "type": "max",
                 "image": "starship/pulse.webp",
                 "color": "orange",
                 "modules": [

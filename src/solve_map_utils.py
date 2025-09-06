@@ -24,6 +24,10 @@ def filter_solves(
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]
 
+        if player_owned_rewards == ["PC"] and tech == "pulse":
+            solve_data = solves[ship]["photonix"]
+            print("INFO -- Forcing tech to 'photonix' for PC")
+
         if not solve_data:
             return {}
 
