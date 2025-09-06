@@ -193,6 +193,8 @@ def simulated_annealing(
     send_grid_updates=False,
     start_x: int = 0,  # Added start_x
     start_y: int = 0,  # Added start_y
+    solve_type: str = None,  # Added solve_type
+    tech_modules: list = None,  # Added tech_modules
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -222,7 +224,8 @@ def simulated_annealing(
     logging.info(f"SA: Mode: {'Polishing' if start_from_current_grid else 'Full Run'}")
     start_time = time.time()
 
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
     if tech_modules is None:
         logging.error(f"SA: No modules found for ship '{ship}' and tech '{tech}'.")
         # Return a copy of the original grid and 0 score if modules aren't found
@@ -475,7 +478,7 @@ def simulated_annealing(
 
     # Final check for validity (especially important if polishing)
     final_modules_placed = check_all_modules_placed(
-        best_grid, modules, ship, tech, player_owned_rewards, modules_to_consider
+        best_grid, modules, ship, tech, player_owned_rewards, tech_modules=modules_to_consider, solve_type=solve_type
     )
     if not final_modules_placed:
         logging.warning(
@@ -698,11 +701,12 @@ def get_adjacent_empty_positions(grid, x, y):
     return empty_positions
 
 
-def get_unplaced_modules(grid, modules, ship, tech, player_owned_rewards=None):
+def get_unplaced_modules(grid, modules, ship, tech, player_owned_rewards=None, solve_type=None, tech_modules=None):
     """
     Gets a list of modules that have not been placed on the grid for a specific tech.
     """
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
     if tech_modules is None:
         return []
 
@@ -745,7 +749,7 @@ def calculate_adjacency_change(grid, x1, y1, x2, y2, module_data, tech):
 
 
 def check_all_modules_placed(
-    grid, modules, ship, tech, player_owned_rewards=None, modules_expected=None
+    grid, modules, ship, tech, player_owned_rewards=None, solve_type=None, tech_modules=None
 ):
     """
     Checks if all expected modules for a given tech have been placed in the grid.
@@ -763,15 +767,15 @@ def check_all_modules_placed(
     Returns:
         bool: True if all expected modules are placed, False otherwise.
     """
-    if modules_expected is None:
-        modules_expected = get_tech_modules(modules, ship, tech, player_owned_rewards)
-        if modules_expected is None:
-            logging.warning(
-                f"SA: check_all_modules_placed - Could not get expected modules for {ship}/{tech}."
-            )
-            return False  # Cannot verify if expected modules are unknown
+    if tech_modules is None:
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
+    if tech_modules is None:
+        logging.warning(
+            f"SA: check_all_modules_placed - Could not get expected modules for {ship}/{tech}."
+        )
+        return False  # Cannot verify if expected modules are unknown
 
-    if not modules_expected:
+    if not tech_modules:
         return True  # If no modules were expected, then all (zero) are placed.
 
     placed_module_ids = set()
@@ -781,7 +785,7 @@ def check_all_modules_placed(
             if cell["tech"] == tech and cell["module"]:
                 placed_module_ids.add(cell["module"])
 
-    expected_module_ids = {module["id"] for module in modules_expected}
+    expected_module_ids = {module["id"] for module in tech_modules}
 
     # Check if the set of placed IDs matches the set of expected IDs
     return placed_module_ids == expected_module_ids

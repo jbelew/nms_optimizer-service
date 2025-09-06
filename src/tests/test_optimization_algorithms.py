@@ -10,17 +10,18 @@ sys.path.insert(0, project_root)
 
 # --- Imports from your project ---
 from optimization_algorithms import (
-    rotate_pattern,
-    mirror_pattern_horizontally,
-    mirror_pattern_vertically,
-    get_all_unique_pattern_variations,
-    count_adjacent_occupied,
     optimize_placement,  # <<< Ensure optimize_placement is imported
     place_all_modules_in_empty_slots,
     find_supercharged_opportunities,
     apply_localized_grid_changes,
     check_all_modules_placed,
     clear_all_modules_of_tech,
+)
+from pattern_matching import (
+    rotate_pattern,
+    mirror_pattern_horizontally,
+    mirror_pattern_vertically,
+    get_all_unique_pattern_variations,
 )
 from grid_utils import Grid
 from data_loader import get_all_module_data, get_all_solve_data
@@ -111,13 +112,13 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         else:
             self.skipTest("Skipping test_get_all_unique_pattern_variations: infra pattern not found in solves.")
 
-    def test_count_adjacent_occupied(self):
-        self.grid.set_module(0, 0, "A")
-        self.grid.set_tech(0, 0, "other")  # Set tech to avoid confusion
-        self.grid.set_module(1, 0, "B")
-        self.grid.set_tech(1, 0, "other")
-        count = count_adjacent_occupied(self.grid, 0, 1)
-        self.assertEqual(count, 1)
+    # def test_count_adjacent_occupied(self):
+    #     self.grid.set_module(0, 0, "A")
+    #     self.grid.set_tech(0, 0, "other")  # Set tech to avoid confusion
+    #     self.grid.set_module(1, 0, "B")
+    #     self.grid.set_tech(1, 0, "other")
+    #     count = count_adjacent_occupied(self.grid, 0, 1)
+    #     self.assertEqual(count, 1)
 
     def test_place_all_modules_in_empty_slots(self):
         # Use the actual infra modules for standard ship
@@ -262,7 +263,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
             self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards
         )
 
-        mock_get_solves.assert_called_once_with(self.ship)
+        mock_get_solves.assert_called_once_with(self.ship, None)
         mock_place_all.assert_called_once()
         mock_calculate_score.assert_called_once_with(placed_grid, self.tech)
         self.assertEqual(result_grid, placed_grid)

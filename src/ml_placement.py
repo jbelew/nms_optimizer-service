@@ -65,6 +65,8 @@ def ml_placement(
     progress_offset=0,
     progress_scale=100,
     send_grid_updates=False,
+    solve_type: str = None,  # Added solve_type
+    tech_modules: list = None,  # Added tech_modules
 ) -> Tuple[Optional[Grid], float]:
     """
     Uses a pre-trained Machine Learning model to predict module placement.
@@ -151,9 +153,12 @@ def ml_placement(
     # --- 4. Get ACTUAL modules to place & their UI definitions (using UI keys + rewards) ---
     # Use the USER-FACING modules_data passed into the function
     modules_data = get_module_data(ship)
-    modules_to_place_list = get_tech_modules(
-        modules_data, ship, tech, player_owned_rewards
-    )
+    if tech_modules is None:
+        modules_to_place_list = get_tech_modules(
+            modules_data, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
+    else:
+        modules_to_place_list = tech_modules
 
     if not modules_to_place_list:
         # Important warning
@@ -434,6 +439,8 @@ def ml_placement(
                 send_grid_updates=send_grid_updates,
                 start_x=start_x_original,
                 start_y=start_y_original,
+                solve_type=solve_type,
+                tech_modules=tech_modules,
                 **polish_params,
             )
 

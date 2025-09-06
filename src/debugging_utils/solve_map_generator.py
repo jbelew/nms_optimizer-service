@@ -26,6 +26,7 @@ def generate_solve_map(
     player_owned_rewards=None,
     supercharged_positions=None,
     solver_choice="sa",
+    solve_type=None,
 ):
     """
     Generates a single solve map for a given technology and ship type.
@@ -70,11 +71,11 @@ def generate_solve_map(
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
             optimized_grid, optimized_score = simulated_annealing(
-                grid, ship_type, ship_modules, tech, player_owned_rewards, **sa_params
+                grid, ship_type, ship_modules, tech, player_owned_rewards, solve_type=solve_type, **sa_params
             )
         elif solver_choice == "refine_training":
             print(f"INFO -- Using refine_placement_for_training for {ship_type}/{tech}")
-            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, ship_modules, tech)
+            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, ship_modules, tech, solve_type=solve_type)
         else:
             print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine_training'.")
             return None, None
@@ -125,6 +126,7 @@ if __name__ == "__main__":
         choices=["sa", "refine_training"],
         help="Solver to use: 'sa' for Simulated Annealing, 'refine_training' for refine_placement_for_training",
     )
+    parser.add_argument("--solve_type", type=str, default=None, help="Solve type (e.g., 'max')")
     args = parser.parse_args()
 
     # <<< Get ship type from args >>>
@@ -144,7 +146,7 @@ if __name__ == "__main__":
         for i in range(0, len(args.supercharged), 2):
             supercharged_positions.append((args.supercharged[i], args.supercharged[i + 1]))
 
-    # <<< Pass ship_type to generate_solve_map >>>
+    # <<< Pass ship_type and solve_type to generate_solve_map >>>
     solve_map, solve_score = generate_solve_map(
         ship_type,
         tech,
@@ -153,11 +155,12 @@ if __name__ == "__main__":
         player_owned_rewards,
         supercharged_positions=supercharged_positions,
         solver_choice=solver,
+        solve_type=args.solve_type,
     )
 
     if solve_map:
         # <<< Use ship_type in output >>>
-        print(f"\nSolve map for {ship_type}/{tech}: {solve_score:.2f}")
+        print(f"\nSolve map for {ship_type}/{tech} (solve_type: {args.solve_type}): {solve_score:.2f}")
         print_grid(solve_map)
 
         # Generate the solve map template from the Grid object

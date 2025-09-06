@@ -10,6 +10,7 @@ from module_placement import (
 
 
 from simulated_annealing import simulated_annealing
+
 # from ml_placement import ml_placement
 from itertools import permutations
 import random
@@ -22,10 +23,21 @@ from data_loader import get_solve_map
 from solve_map_utils import filter_solves
 
 
-def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
+def refine_placement(
+    grid,
+    ship,
+    modules,
+    tech,
+    player_owned_rewards=None,
+    solve_type=None,
+    tech_modules=None,
+):
     optimal_grid = None
     highest_bonus = 0.0
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
 
     if tech_modules is None:
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}'.")
@@ -36,7 +48,7 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
         (x, y)
         for y in range(grid.height)
         for x in range(grid.width)
-        if grid.get_cell(x, y)['module'] is None and grid.get_cell(x, y)['active']
+        if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]
     ]
 
     # Check if there are enough available positions for all modules
@@ -67,14 +79,14 @@ def refine_placement(grid, ship, modules, tech, player_owned_rewards=None):
                 grid,
                 x,
                 y,
-                module['id'],
-                module['label'],
+                module["id"],
+                module["label"],
                 tech,
-                module['type'],
-                module['bonus'],
-                module['adjacency'],
-                module['sc_eligible'],
-                module['image'],
+                module["type"],
+                module["bonus"],
+                module["adjacency"],
+                module["sc_eligible"],
+                module["image"],
             )
 
         # Calculate the score for the current arrangement - MOVED OUTSIDE THE INNER LOOP
@@ -138,14 +150,14 @@ def _evaluate_permutation_worker(args):
                 working_grid,  # Use the local copy
                 x,
                 y,
-                module['id'],
-                module['label'],
+                module["id"],
+                module["label"],
                 tech,
-                module['type'],
-                module['bonus'],
-                module['adjacency'],
-                module['sc_eligible'],
-                module['image'],
+                module["type"],
+                module["bonus"],
+                module["adjacency"],
+                module["sc_eligible"],
+                module["image"],
             )
         except IndexError:
             logging.error(
@@ -195,7 +207,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         (x, y)
         for y in range(grid.height)
         for x in range(grid.width)
-        if grid.get_cell(x, y)['active']
+        if grid.get_cell(x, y)["active"]
     ]
     num_available = len(available_positions)
 
@@ -225,7 +237,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
         logging.info(
             f"Training ({tech}): {num_available} slots, {num_modules_to_place} modules -> Large number of permutations."
         )
-        num_permutations = float('inf')
+        num_permutations = float("inf")
 
     if num_workers is None:
         num_workers = multiprocessing.cpu_count()
@@ -254,7 +266,7 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
     # --- Chunksize Calculation (heuristic) ---
     chunksize = 1000  # Minimum chunksize
-    if num_permutations != float('inf'):
+    if num_permutations != float("inf"):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
         chunks_per_worker_target = 500  # Tune this value
         calculated_chunksize = int(
@@ -297,11 +309,11 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
 
             # Print progress periodically
             if processed_count % update_frequency == 0 or (
-                num_permutations != float('inf') and processed_count == num_permutations
+                num_permutations != float("inf") and processed_count == num_permutations
             ):
                 elapsed = time.time() - start_time
                 (processed_count / num_permutations * 100) if num_permutations != float(
-                    'inf'
+                    "inf"
                 ) else 0
                 # Use \r and flush=True for inline updating
                 logging.debug(
@@ -336,17 +348,19 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
                     optimal_grid,
                     x,
                     y,
-                    module['id'],
-                    module['label'],
+                    module["id"],
+                    module["label"],
                     tech,
-                    module['type'],
-                    module['bonus'],
-                    module['adjacency'],
-                    module['sc_eligible'],
-                    module['image'],
+                    module["type"],
+                    module["bonus"],
+                    module["adjacency"],
+                    module["sc_eligible"],
+                    module["image"],
                 )
             except Exception as e:
-                logging.error(f"ERROR during final grid reconstruction at ({x},{y}): {e}")
+                logging.error(
+                    f"ERROR during final grid reconstruction at ({x},{y}): {e}"
+                )
                 reconstruction_successful = False
                 break
 
@@ -382,7 +396,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     return optimal_grid, highest_bonus
 
 
-def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
+def determine_window_dimensions(
+    module_count: int, tech: str, solve_type: str = None
+) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules.
 
@@ -398,7 +414,9 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
 
     if module_count < 1:
         # Handle cases with zero or negative modules (optional, but good practice)
-        logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
+        logging.warning(
+            f"Module count is {module_count}. Returning default 1x1 window."
+        )
         return 1, 1
     elif module_count < 3:
         window_width, window_height = 1, 2
@@ -422,300 +440,7 @@ def determine_window_dimensions(module_count: int, tech) -> tuple[int, int]:
     return window_width, window_height
 
 
-def rotate_pattern(pattern):
-    "Rotates a pattern 90 degrees clockwise."
-    x_coords = [coord[0] for coord in pattern.keys()]
-    y_coords = [coord[1] for coord in pattern.keys()]
-    if not x_coords or not y_coords:
-        return {}  # Return empty dict if pattern is empty
-    max_x = max(x_coords)
-    rotated_pattern = {}
-    for (x, y), module_label in pattern.items():
-        new_x = y
-        new_y = max_x - x
-        rotated_pattern[(new_x, new_y)] = module_label
-    return rotated_pattern
-
-
-def mirror_pattern_horizontally(pattern):
-    "Mirrors a pattern horizontally."
-    x_coords = [coord[0] for coord in pattern.keys()]
-    if not x_coords:
-        return {}
-    max_x = max(x_coords)
-    mirrored_pattern = {}
-    for (x, y), module_label in pattern.items():
-        new_x = max_x - x
-        mirrored_pattern[(new_x, y)] = module_label
-    return mirrored_pattern
-
-
-def mirror_pattern_vertically(pattern):
-    "Mirrors a pattern vertically."
-    y_coords = [coord[1] for coord in pattern.keys()]
-    if not y_coords:
-        return {}
-    max_y = max(y_coords)
-    mirrored_pattern = {}
-    for (x, y), module_label in pattern.items():
-        new_y = max_y - y
-        mirrored_pattern[(x, new_y)] = module_label
-    return mirrored_pattern
-
-
-def apply_pattern_to_grid(
-    grid, pattern, modules, tech, start_x, start_y, ship, player_owned_rewards=None
-):
-    """Applies a pattern to a *copy* of the grid at a given starting position.
-
-    Returns a new grid with the pattern applied, or None if the pattern cannot be applied.
-    """
-    # Create a deep copy of the grid to avoid modifying the original
-    new_grid = grid.copy()
-
-    tech_modules_available = get_tech_modules(modules, ship, tech, player_owned_rewards)
-    if (
-        tech_modules_available is None
-    ):  # Should not happen if filter_solves worked correctly
-        logging.error(f"No modules found for ship '{ship}' and tech '{tech}'.")
-        return None, 0
-    # Create a mapping from module id to module data
-    available_module_ids_map = {m['id']: m for m in tech_modules_available}
-
-    # --- Pre-check 1: Determine if the pattern is even placeable by the player and fits basic constraints ---
-    # Count how many modules the pattern *intends* to place that the player actually owns.
-    expected_module_placements_in_pattern = 0
-    for (
-        module_id_in_pattern_val
-    ) in pattern.values():  # Iterate through values (module IDs)
-        if (
-            module_id_in_pattern_val is not None
-            and module_id_in_pattern_val in available_module_ids_map
-        ):
-            expected_module_placements_in_pattern += 1
-
-    # If the pattern has defined module IDs, but none are owned by the player, this pattern is not applicable.
-    if expected_module_placements_in_pattern == 0 and any(
-        pid is not None for pid in pattern.values()
-    ):
-        return None, 0
-
-    # --- Pre-check 2: Check for overlaps, off-grid, or inactive cells for REQUIRED modules ---
-    for pattern_x, pattern_y in pattern.keys():  # Iterate through keys (coordinates)
-        module_id_in_pattern = pattern.get((pattern_x, pattern_y))
-        grid_x = start_x + pattern_x
-        grid_y = start_y + pattern_y
-
-        # Is this part of the pattern trying to place an owned module?
-        if (
-            module_id_in_pattern is not None
-            and module_id_in_pattern in available_module_ids_map
-        ):
-            if not (0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height):
-                # A required module (owned, non-None) would be off-grid. This pattern variation doesn't fit.
-                return None, 0
-
-            current_cell_on_new_grid = new_grid.get_cell(grid_x, grid_y)
-            if not current_cell_on_new_grid['active']:
-                # Cannot place a required module on an inactive cell.
-                return None, 0
-
-            if (
-                current_cell_on_new_grid['module'] is not None
-                and current_cell_on_new_grid['tech'] != tech
-            ):
-                # Overlap with a module of a *different* technology.
-                return None, 0
-        # If module_id_in_pattern is None, or not in available_module_ids_map, we don't check its target cell strictly here,
-        # as it won't be placed anyway or it's an intentionally empty slot.
-
-    # If all pre-checks pass, proceed with actual placement attempt
-    clear_all_modules_of_tech(
-        new_grid, tech
-    )  # Clear target tech modules for a clean placement
-
-    successfully_placed_this_variation = 0
-    for (pattern_x, pattern_y), module_id_in_pattern in pattern.items():
-        grid_x = start_x + pattern_x
-        grid_y = start_y + pattern_y
-
-        if not (0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height):
-            continue  # Skip parts of the pattern that are off-grid
-
-        if module_id_in_pattern is None:  # Intentionally empty slot in pattern
-            continue
-
-        if module_id_in_pattern in available_module_ids_map:
-            module_data = available_module_ids_map[module_id_in_pattern]
-            # Cell activity and non-overlap with *other* tech already confirmed by pre-checks for these modules.
-            # The cell is also guaranteed to be empty of the *target* tech due to clear_all_modules_of_tech.
-            place_module(
-                new_grid,
-                grid_x,
-                grid_y,
-                module_data['id'],
-                module_data['label'],
-                tech,
-                module_data['type'],
-                module_data['bonus'],
-                module_data['adjacency'],
-                module_data['sc_eligible'],
-                module_data['image'],
-            )
-            successfully_placed_this_variation += 1
-
-    # --- Post-placement Check: Did we place all *expected* modules? ---
-    # This ensures that if the pattern expected to place modules (that player owns), they were all placed.
-    # If `expected_module_placements_in_pattern` is 0 (e.g. pattern was all "None", or all unowned modules), this check is skipped.
-    if (
-        expected_module_placements_in_pattern > 0
-        and successfully_placed_this_variation < expected_module_placements_in_pattern
-    ):
-        # This implies some expected modules (owned, non-None in pattern) couldn't be placed.
-        # This should ideally be caught by pre-checks (e.g. inactive cell, off-grid).
-        return None, 0
-
-    # If we reach here, the pattern (or what's placeable from it according to ownership and grid constraints) was applied.
-    adjacency_score = calculate_pattern_adjacency_score(new_grid, tech)
-    return new_grid, adjacency_score  # Return the new grid
-
-
-def get_all_unique_pattern_variations(original_pattern):
-    """
-    Generates all unique variations of a pattern (rotations and mirrors).
-
-    Args:
-        original_pattern (dict): The original pattern.
-
-    Returns:
-        list: A list of unique pattern variations.
-    """
-    patterns_to_try = [original_pattern]
-    rotated_patterns = set()
-    mirrored_patterns = set()
-
-    rotated_pattern_90 = rotate_pattern(original_pattern)
-    if rotated_pattern_90 != original_pattern:
-        if tuple(rotated_pattern_90.items()) not in rotated_patterns:
-            patterns_to_try.append(rotated_pattern_90)
-            rotated_patterns.add(tuple(rotated_pattern_90.items()))
-            rotated_pattern_180 = rotate_pattern(rotated_pattern_90)
-            if (
-                rotated_pattern_180 != original_pattern
-                and tuple(rotated_pattern_180.items()) not in rotated_patterns
-            ):
-                patterns_to_try.append(rotated_pattern_180)
-                rotated_patterns.add(tuple(rotated_pattern_180.items()))
-                rotated_pattern_270 = rotate_pattern(rotated_pattern_180)
-                if (
-                    rotated_pattern_270 != original_pattern
-                    and tuple(rotated_pattern_270.items()) not in rotated_patterns
-                ):
-                    patterns_to_try.append(rotated_pattern_270)
-                    rotated_patterns.add(tuple(rotated_pattern_270.items()))
-
-    # Add mirrored patterns
-    for pattern in list(patterns_to_try):
-        mirrored_horizontal = mirror_pattern_horizontally(pattern)
-        if tuple(mirrored_horizontal.items()) not in mirrored_patterns:
-            patterns_to_try.append(mirrored_horizontal)
-            mirrored_patterns.add(tuple(mirrored_horizontal.items()))
-        mirrored_vertical = mirror_pattern_vertically(pattern)
-        if tuple(mirrored_vertical.items()) not in mirrored_patterns:
-            patterns_to_try.append(mirrored_vertical)
-            mirrored_patterns.add(tuple(mirrored_vertical.items()))
-
-    return patterns_to_try
-
-
-def count_adjacent_occupied(grid, x, y):
-    """Counts the number of adjacent occupied slots to a given cell."""
-    count = 0
-    adjacent_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-    for nx, ny in adjacent_positions:
-        if 0 <= nx < grid.width and 0 <= ny < grid.height:
-            if grid.get_cell(nx, ny)['module'] is not None:
-                count += 1
-    return count
-
-
-def calculate_pattern_adjacency_score(grid, tech):
-    """
-    Calculates the adjacency score for modules of a specific tech on the grid.
-    This includes a boost for modules with group adjacency requirements.
-
-    Args:
-        grid (Grid): The grid.
-        tech (str): The tech type of the modules to consider.
-
-    Returns:
-        int: The adjacency score.
-    """
-    module_edge_weight = 3.0  # Weight for adjacency to other modules
-    grid_edge_weight = 0.5  # Weight for adjacency to grid edges
-    group_adjacency_weight = 5.0  # Weight for adjacency to modules in the same group
-
-    total_adjacency_score = 0
-
-    # Iterate through the grid to find modules of the specified tech
-    for y in range(grid.height):
-        for x in range(grid.width):
-            cell = grid.get_cell(x, y)
-            if cell['module'] is not None and cell['tech'] == tech:
-                # Check each edge individually and apply grid_edge_weight
-                if x == 0:
-                    total_adjacency_score += grid_edge_weight  # Left edge
-                if x == grid.width - 1:
-                    total_adjacency_score += grid_edge_weight  # Right edge
-                if y == 0:
-                    total_adjacency_score += grid_edge_weight  # Top edge
-                if y == grid.height - 1:
-                    total_adjacency_score += grid_edge_weight  # Bottom edge
-
-                # --- Adjacency Checks ---
-                num_adjacent_same_group = 0
-                adjacency_rule = cell.get('adjacency')
-                adjacent_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-
-                for adj_x, adj_y in adjacent_positions:
-                    if 0 <= adj_x < grid.width and 0 <= adj_y < grid.height:
-                        adjacent_cell = grid.get_cell(adj_x, adj_y)
-                        if adjacent_cell['module'] is not None:
-                            # Standard adjacency bonus for being next to other modules of a different tech
-                            if adjacent_cell['tech'] != tech:
-                                total_adjacency_score += module_edge_weight
-
-                            # Count for group adjacency bonus if adjacency rules match
-                            if (
-                                adjacency_rule
-                                and adjacent_cell.get('adjacency') == adjacency_rule
-                            ):
-                                num_adjacent_same_group += 1
-
-                # Check for group adjacency bonus from "greater_n" or "lesser_n" rules
-                if isinstance(adjacency_rule, str) and "_" in adjacency_rule:
-                    parts = adjacency_rule.split("_")
-                    if len(parts) == 2 and parts[1].isdigit():
-                        rule_type = parts[0]
-                        rule_value = int(parts[1])
-
-                        # Apply bonus based on the rule
-                        if (
-                            rule_type == "greater"
-                            and num_adjacent_same_group > rule_value
-                        ):
-                            total_adjacency_score += (
-                                group_adjacency_weight * num_adjacent_same_group
-                            )
-                        elif (
-                            rule_type == "lesser"
-                            and num_adjacent_same_group < rule_value
-                        ):
-                            total_adjacency_score += group_adjacency_weight * (
-                                rule_value - num_adjacent_same_group
-                            )
-
-    return total_adjacency_score
+from pattern_matching import rotate_pattern, mirror_pattern_horizontally, mirror_pattern_vertically, apply_pattern_to_grid, get_all_unique_pattern_variations, calculate_pattern_adjacency_score
 
 
 # --- Helper function for ML opportunity refinement ---
@@ -733,6 +458,8 @@ def _handle_ml_opportunity(
     run_id=None,
     stage=None,
     send_grid_updates=False,
+    solve_type=None,
+    tech_modules=None,
 ):
     """Handles the ML-based refinement within an opportunity window."""
     from ml_placement import ml_placement  # Keep import local if possible
@@ -761,9 +488,9 @@ def _handle_ml_opportunity(
         localized_grid_ml,
         ship,
         tech,
-        full_grid_original=grid, # Pass the original full grid
-        start_x_original=opportunity_x, # Pass the original start_x
-        start_y_original=opportunity_y, # Pass the original start_y
+        full_grid_original=grid,  # Pass the original full grid
+        start_x_original=opportunity_x,  # Pass the original start_x
+        start_y_original=opportunity_y,  # Pass the original start_y
         player_owned_rewards=player_owned_rewards,
         model_grid_width=localized_grid_ml.width,  # <<< Use actual localized width
         model_grid_height=localized_grid_ml.height,  # <<< Use actual localized height
@@ -773,6 +500,8 @@ def _handle_ml_opportunity(
         stage=stage,
         send_grid_updates=send_grid_updates,
         original_state_map=original_state_map,
+        solve_type=str(solve_type) if solve_type is not None else "",
+        tech_modules=tech_modules,  # type: ignore
     )
 
     # 3. Process ML result (logic remains the same)
@@ -812,6 +541,8 @@ def _handle_sa_refine_opportunity(
     run_id=None,
     stage=None,
     send_grid_updates=False,
+    solve_type=None,
+    tech_modules=None,
 ):
     """Handles the SA/Refine-based refinement within an opportunity window."""
     logging.info(
@@ -840,14 +571,23 @@ def _handle_sa_refine_opportunity(
     # print_grid(localized_grid) # Optional debug
 
     # Get the number of modules for the given tech (no change)
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
     num_modules = len(tech_modules) if tech_modules else 0
 
     # Refine the localized grid (no change in logic here)
     if num_modules < 6:
         logging.info(f"{tech} has less than 6 modules, running refine_placement")
         temp_refined_grid, temp_refined_bonus_local = refine_placement(
-            localized_grid, ship, modules, tech, player_owned_rewards
+            localized_grid,
+            ship,
+            modules,
+            tech,
+            player_owned_rewards,
+            solve_type=solve_type,
+            tech_modules=tech_modules,
         )
     else:
         logging.info(f"{tech} has 6 or more modules, running simulated_annealing")
@@ -856,14 +596,16 @@ def _handle_sa_refine_opportunity(
             ship,
             modules,
             tech,
-            grid, # full_grid
+            grid,  # full_grid
             player_owned_rewards,
-            start_x=start_x, # Pass start_x
-            start_y=start_y, # Pass start_y
+            start_x=start_x,  # Pass start_x
+            start_y=start_y,  # Pass start_y
             progress_callback=progress_callback,
             run_id=run_id,
             stage=stage,
             send_grid_updates=send_grid_updates,
+            solve_type=solve_type,
+            tech_modules=tech_modules,
         )
 
     # Process SA/Refine result (logic remains the same)
@@ -882,6 +624,35 @@ def _handle_sa_refine_opportunity(
         return grid, -1.0
 
 
+def check_all_modules_placed(
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards,
+    tech_modules=None,
+    solve_type=None,
+):
+    """Checks if all modules for a given tech are placed on the grid."""
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
+    if not tech_modules:
+        return True  # No modules to place, so all are considered placed
+
+    placed_module_ids = set()
+    for y in range(grid.height):
+        for x in range(grid.width):
+            cell = grid.get_cell(x, y)
+            if cell["module"] is not None and cell["tech"] == tech:
+                placed_module_ids.add(cell["module"])
+
+    required_module_ids = {module["id"] for module in tech_modules}
+
+    return required_module_ids.issubset(placed_module_ids)
+
+
 def optimize_placement(
     grid,
     ship,
@@ -893,6 +664,7 @@ def optimize_placement(
     progress_callback=None,
     run_id=None,
     send_grid_updates=False,
+    solve_type=None,
 ):
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
@@ -932,7 +704,9 @@ def optimize_placement(
     # --- Get modules for the current tech ---
     # This list is used to determine module_count for experimental window sizing
     # and for the check_all_modules_placed function.
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    tech_modules = get_tech_modules(
+        modules, ship, tech, player_owned_rewards, solve_type=solve_type
+    )
     if not tech_modules:
         # This case should ideally be caught by has_empty_active_slots or other checks,
         # but as a safeguard if get_tech_modules returns None or empty for a valid tech key.
@@ -948,7 +722,7 @@ def optimize_placement(
     has_empty_active_slots = False
     for y in range(grid.height):
         for x in range(grid.width):
-            if grid.get_cell(x, y)['active'] and grid.get_cell(x, y)['module'] is None:
+            if grid.get_cell(x, y)["active"] and grid.get_cell(x, y)["module"] is None:
                 has_empty_active_slots = True
                 break
         if has_empty_active_slots:
@@ -960,9 +734,9 @@ def optimize_placement(
 
     # Initialize variables for tracking best results
     solved_grid = grid.copy()  # Grid state after initial pattern/SA fallback
-    solved_bonus = -float('inf')
+    solved_bonus = -float("inf")
     best_pattern_grid = grid.copy()  # Best grid found using pattern matching
-    highest_pattern_bonus = -float('inf')
+    highest_pattern_bonus = -float("inf")
     best_pattern_adjacency_score = 0
     best_pattern_start_x = -1
     best_pattern_start_y = -1
@@ -973,11 +747,11 @@ def optimize_placement(
     solve_method = "Unknown"  # <<< Initialize solve_method >>>
 
     # --- Load Solves On-Demand ---
-    all_solves_for_ship = get_solve_map(ship)
+    all_solves_for_ship = get_solve_map(ship, solve_type)
     # Create the structure that filter_solves expects
     solves_for_filtering = {ship: all_solves_for_ship} if all_solves_for_ship else {}
     filtered_solves = filter_solves(
-        solves_for_filtering, ship, modules, tech, player_owned_rewards
+        solves_for_filtering, ship, modules, tech, player_owned_rewards, solve_type=solve_type
     )
     # --- End On-Demand Loading ---
 
@@ -992,7 +766,13 @@ def optimize_placement(
         solve_method = "Initial Placement (No Solve)"  # <<< Set method >>>
         # Assuming place_all_modules_in_empty_slots is defined elsewhere
         solved_grid = place_all_modules_in_empty_slots(
-            grid, modules, ship, tech, player_owned_rewards
+            grid,
+            modules,
+            ship,
+            tech,
+            player_owned_rewards,
+            solve_type=solve_type,
+            tech_modules=tech_modules,
         )
         solved_bonus = calculate_grid_score(solved_grid, tech)
         solve_score = 0
@@ -1006,8 +786,8 @@ def optimize_placement(
     else:
         # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
-        original_pattern = solve_data["map"]
-        solve_score = solve_data["score"]
+        original_pattern = solve_data.get("map")
+        solve_score = solve_data.get("score")
 
         # print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.") # <<< KEEP: Important outcome >>>
         # Assuming get_all_unique_pattern_variations is defined elsewhere
@@ -1035,6 +815,8 @@ def optimize_placement(
                         start_y,
                         ship,
                         player_owned_rewards,
+                        solve_type=solve_type,
+                        tech_modules=tech_modules,
                     )
                     if temp_result_grid is not None:
                         current_pattern_bonus = calculate_grid_score(
@@ -1060,7 +842,7 @@ def optimize_placement(
                             best_pattern_width = pattern_width
                             best_pattern_height = pattern_height
 
-        if highest_pattern_bonus > -float('inf'):
+        if highest_pattern_bonus > -float("inf"):
             solved_grid = best_pattern_grid
             solved_bonus = highest_pattern_bonus
             solve_method = "Pattern Match"  # <<< Set method >>>
@@ -1089,7 +871,7 @@ def optimize_placement(
                     ship,
                     modules,
                     tech,
-                    grid, # full_grid
+                    grid,  # full_grid
                     player_owned_rewards,
                     cooling_rate=0.999,
                     iterations_per_temp=35,
@@ -1099,6 +881,8 @@ def optimize_placement(
                     run_id=run_id,
                     stage="initial_placement",
                     send_grid_updates=send_grid_updates,
+                    solve_type=solve_type,
+                    tech_modules=tech_modules,
                 )
                 if solved_grid is None:
                     raise ValueError(
@@ -1133,7 +917,7 @@ def optimize_placement(
     pattern_window_score = 0.0
     pattern_opportunity_result = None
     if (
-        highest_pattern_bonus > -float('inf')
+        highest_pattern_bonus > -float("inf")
         and best_pattern_start_x != -1
         and best_pattern_width > 0
     ):
@@ -1163,7 +947,13 @@ def optimize_placement(
     # --- Find Scanned Supercharged Opportunities ---
     # Assuming find_supercharged_opportunities is defined elsewhere
     scanned_opportunity_result = find_supercharged_opportunities(
-        grid_for_opportunity_scan, modules, ship, tech, player_owned_rewards
+        grid_for_opportunity_scan,
+        modules,
+        ship,
+        tech,
+        player_owned_rewards,
+        solve_type=solve_type,
+        tech_modules=tech_modules,
     )
 
     # --- Calculate Scanned Window Score (if applicable) ---
@@ -1317,9 +1107,9 @@ def optimize_placement(
                 ):
                     cell = grid_for_opportunity_scan.get_cell(x_win, y_win)
                     if (
-                        cell['active']
-                        and cell['supercharged']
-                        and cell['module'] is None
+                        cell["active"]
+                        and cell["supercharged"]
+                        and cell["module"] is None
                     ):
                         window_has_available_sc = True
                         break
@@ -1354,6 +1144,8 @@ def optimize_placement(
                 run_id=run_id,
                 stage="refinement_ml",
                 send_grid_updates=send_grid_updates,
+                solve_type=solve_type,
+                tech_modules=tech_modules,
             )
             if refined_grid_candidate is None:
                 logging.info(
@@ -1377,6 +1169,8 @@ def optimize_placement(
                         run_id=run_id,
                         stage="refinement_sa_fallback",
                         send_grid_updates=send_grid_updates,
+                        solve_type=solve_type,
+                        tech_modules=tech_modules,
                     )
                 )
 
@@ -1432,6 +1226,8 @@ def optimize_placement(
                         run_id=run_id,
                         stage="final_fallback_sa",
                         send_grid_updates=send_grid_updates,
+                        solve_type=solve_type,
+                        tech_modules=tech_modules,
                     )
                     if (
                         sa_fallback_grid is not None
@@ -1478,7 +1274,13 @@ def optimize_placement(
     # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
     # Assuming check_all_modules_placed is defined elsewhere (or imported)
     all_modules_placed = check_all_modules_placed(
-        solved_grid, modules, ship, tech, player_owned_rewards
+        solved_grid,
+        modules,
+        ship,
+        tech,
+        player_owned_rewards,
+        tech_modules=tech_modules,
+        solve_type=solve_type,
     )
     if not all_modules_placed and not sa_was_initial_placement:
         # <<< KEEP: Important fallback >>>
@@ -1492,7 +1294,7 @@ def optimize_placement(
             ship,
             modules,
             tech,
-            grid, # full_grid
+            grid,  # full_grid
             player_owned_rewards,
             iterations_per_temp=25,
             initial_swap_probability=0.70,
@@ -1502,6 +1304,8 @@ def optimize_placement(
             run_id=run_id,
             stage="final_sa_unplaced_modules",
             send_grid_updates=send_grid_updates,
+            solve_type=solve_type,
+            tech_modules=tech_modules,
         )
         if temp_solved_grid is not None:
             final_sa_score = calculate_grid_score(temp_solved_grid, tech)
@@ -1557,10 +1361,19 @@ def optimize_placement(
 
 
 def place_all_modules_in_empty_slots(
-    grid, modules, ship, tech, player_owned_rewards=None
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards=None,
+    solve_type=None,
+    tech_modules=None,
 ):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
     if tech_modules is None:
         logging.error(f"No modules found for ship: '{ship}' -- tech: '{tech}'")
         return grid
@@ -1572,20 +1385,20 @@ def place_all_modules_in_empty_slots(
             if module_index >= len(tech_modules):
                 return grid  # All modules placed, exit early
 
-            if grid.get_cell(x, y)['module'] is None and grid.get_cell(x, y)['active']:
+            if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]:
                 module = tech_modules[module_index]
                 place_module(
                     grid,
                     x,
                     y,
-                    module['id'],
-                    module['label'],
+                    module["id"],
+                    module["label"],
                     tech,
-                    module['type'],
-                    module['bonus'],
-                    module['adjacency'],
-                    module['sc_eligible'],
-                    module['image'],
+                    module["type"],
+                    module["bonus"],
+                    module["adjacency"],
+                    module["sc_eligible"],
+                    module["image"],
                 )
                 module_index += 1  # Move to the next module
 
@@ -1603,7 +1416,7 @@ def count_empty_in_localized(localized_grid):
     for y in range(localized_grid.height):
         for x in range(localized_grid.width):
             cell = localized_grid.get_cell(x, y)
-            if cell['module'] is None:  # Only count if the module slot is empty
+            if cell["module"] is None:  # Only count if the module slot is empty
                 count += 1
     return count
 
@@ -1646,14 +1459,14 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
                     if 0 <= grid_x < grid_copy.width and 0 <= grid_y < grid_copy.height:
                         cell = grid_copy.get_cell(grid_x, grid_y)
                         # Copy relevant data to the window grid cell
-                        window_grid.cells[y][x]['active'] = cell['active']
-                        window_grid.cells[y][x]['supercharged'] = cell['supercharged']
-                        window_grid.cells[y][x]['module'] = cell[
-                            'module'
+                        window_grid.cells[y][x]["active"] = cell["active"]
+                        window_grid.cells[y][x]["supercharged"] = cell["supercharged"]
+                        window_grid.cells[y][x]["module"] = cell[
+                            "module"
                         ]  # Keep module info for checks
-                        window_grid.cells[y][x]['tech'] = cell['tech']
+                        window_grid.cells[y][x]["tech"] = cell["tech"]
                     else:
-                        window_grid.cells[y][x]['active'] = (
+                        window_grid.cells[y][x]["active"] = (
                             False  # Mark as inactive if out of bounds
                         )
 
@@ -1663,9 +1476,9 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
                 for x in range(window_width):
                     cell = window_grid.get_cell(x, y)
                     if (
-                        cell['supercharged']
-                        and cell['module'] is None
-                        and cell['active']
+                        cell["supercharged"]
+                        and cell["module"] is None
+                        and cell["active"]
                     ):
                         has_available_supercharged = True
                         break
@@ -1679,7 +1492,7 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
             for y in range(window_height):
                 for x in range(window_width):
                     cell = window_grid.get_cell(x, y)
-                    if cell['active'] and cell['module'] is None:
+                    if cell["active"] and cell["module"] is None:
                         available_cells_in_window += 1
             if available_cells_in_window < module_count:
                 continue  # Skip this window
@@ -1694,7 +1507,13 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
 
 
 def find_supercharged_opportunities(
-    grid, modules, ship, tech, player_owned_rewards=None
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards=None,
+    solve_type=None,
+    tech_modules=None,
 ):
     """
     Scans the entire grid with a sliding window (dynamically sized, including rotation
@@ -1723,7 +1542,7 @@ def find_supercharged_opportunities(
     for y in range(grid_copy.height):
         for x in range(grid_copy.width):
             cell = grid_copy.get_cell(x, y)
-            if cell['supercharged'] and cell['module'] is None and cell['active']:
+            if cell["supercharged"] and cell["module"] is None and cell["active"]:
                 unoccupied_supercharged_slots = True
                 break
         if unoccupied_supercharged_slots:
@@ -1733,14 +1552,19 @@ def find_supercharged_opportunities(
         return None
 
     # Determine Dynamic Window Size (no change needed)
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
     if tech_modules is None:
         logging.error(
             f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities."
         )
         return None
     module_count = len(tech_modules)
-    window_width, window_height = determine_window_dimensions(module_count, tech)
+    window_width, window_height = determine_window_dimensions(
+        module_count, tech, solve_type=solve_type
+    )
     logging.info(
         f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules)."
     )
@@ -1822,15 +1646,15 @@ def calculate_window_score(window_grid, tech):
     for y in range(window_grid.height):
         for x in range(window_grid.width):
             cell = window_grid.get_cell(x, y)
-            if cell['active']:  # Only consider active cells
-                if cell['supercharged']:
+            if cell["active"]:  # Only consider active cells
+                if cell["supercharged"]:
                     # Check if the supercharged cell is empty or occupied by the current tech
-                    if cell['module'] is None or cell['tech'] == tech:
+                    if cell["module"] is None or cell["tech"] == tech:
                         supercharged_count += 1
                         # Check if the supercharged slot is on the horizontal edge of the window
                     if window_grid.width > 1 and (x == 0 or x == window_grid.width - 1):
                         edge_penalty += 1
-                if cell['module'] is None:
+                if cell["module"] is None:
                     empty_count += 1
 
     if supercharged_count > 0:
@@ -1890,31 +1714,31 @@ def create_localized_grid(
             localized_x = x - start_x
             localized_y = y - start_y
             cell = grid.get_cell(x, y)
-            localized_grid.cells[localized_y][localized_x]['active'] = cell['active']
-            localized_grid.cells[localized_y][localized_x]['supercharged'] = cell[
-                'supercharged'
+            localized_grid.cells[localized_y][localized_x]["active"] = cell["active"]
+            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell[
+                "supercharged"
             ]
 
             # Copy module data if a module exists
-            if cell['module'] is not None:
-                localized_grid.cells[localized_y][localized_x]['module'] = cell[
-                    'module'
+            if cell["module"] is not None:
+                localized_grid.cells[localized_y][localized_x]["module"] = cell[
+                    "module"
                 ]
-                localized_grid.cells[localized_y][localized_x]['label'] = cell['label']
-                localized_grid.cells[localized_y][localized_x]['tech'] = cell['tech']
-                localized_grid.cells[localized_y][localized_x]['type'] = cell['type']
-                localized_grid.cells[localized_y][localized_x]['bonus'] = cell['bonus']
-                localized_grid.cells[localized_y][localized_x]['adjacency'] = cell[
-                    'adjacency'
+                localized_grid.cells[localized_y][localized_x]["label"] = cell["label"]
+                localized_grid.cells[localized_y][localized_x]["tech"] = cell["tech"]
+                localized_grid.cells[localized_y][localized_x]["type"] = cell["type"]
+                localized_grid.cells[localized_y][localized_x]["bonus"] = cell["bonus"]
+                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell[
+                    "adjacency"
                 ]
-                localized_grid.cells[localized_y][localized_x]['sc_eligible'] = cell[
-                    'sc_eligible'
+                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell[
+                    "sc_eligible"
                 ]
-                localized_grid.cells[localized_y][localized_x]['image'] = cell['image']
-                if 'module_position' in cell:
+                localized_grid.cells[localized_y][localized_x]["image"] = cell["image"]
+                if "module_position" in cell:
                     localized_grid.cells[localized_y][localized_x][
-                        'module_position'
-                    ] = cell['module_position']
+                        "module_position"
+                    ] = cell["module_position"]
 
     return localized_grid, start_x, start_y
 
@@ -1982,57 +1806,59 @@ def create_localized_grid_ml(
             local_cell = localized_grid.get_cell(localized_x, localized_y)
 
             # Always copy basic structure like supercharged status
-            local_cell['supercharged'] = main_cell['supercharged']
+            local_cell["supercharged"] = main_cell["supercharged"]
 
             # Check the module and its tech in the main grid
-            if main_cell['module'] is not None and main_cell['tech'] != tech:
+            if main_cell["module"] is not None and main_cell["tech"] != tech:
                 # --- Other Tech Found ---
                 original_state_map[(x_main, y_main)] = deepcopy(main_cell)
-                local_cell['module'] = None
-                local_cell['label'] = ""
-                local_cell['tech'] = None
-                local_cell['type'] = ""
-                local_cell['bonus'] = 0.0
-                local_cell['adjacency'] = False
-                local_cell['sc_eligible'] = False
-                local_cell['image'] = None
-                local_cell['total'] = 0.0
-                local_cell['adjacency_bonus'] = 0.0
-                if 'module_position' in local_cell:
-                    del local_cell['module_position']
-                local_cell['active'] = False
-            elif not main_cell['active']:
+                local_cell["module"] = None
+                local_cell["label"] = ""
+                local_cell["tech"] = None
+                local_cell["type"] = ""
+                local_cell["bonus"] = 0.0
+                local_cell["adjacency"] = False
+                local_cell["sc_eligible"] = False
+                local_cell["image"] = None
+                local_cell["total"] = 0.0
+                local_cell["adjacency_bonus"] = 0.0
+                if "module_position" in local_cell:
+                    del local_cell["module_position"]
+                local_cell["active"] = False
+            elif not main_cell["active"]:
                 # --- Inactive Cell in Main Grid ---
-                local_cell['active'] = False
-                local_cell['module'] = None
-                local_cell['label'] = ""
-                local_cell['tech'] = None
-                local_cell['type'] = ""
-                local_cell['bonus'] = 0.0
-                local_cell['adjacency'] = False
-                local_cell['sc_eligible'] = False
-                local_cell['image'] = None
-                local_cell['total'] = 0.0
-                local_cell['adjacency_bonus'] = 0.0
-                if 'module_position' in local_cell:
-                    del local_cell['module_position']
+                local_cell["active"] = False
+                local_cell["module"] = None
+                local_cell["label"] = ""
+                local_cell["tech"] = None
+                local_cell["type"] = ""
+                local_cell["bonus"] = 0.0
+                local_cell["adjacency"] = False
+                local_cell["sc_eligible"] = False
+                local_cell["image"] = None
+                local_cell["total"] = 0.0
+                local_cell["adjacency_bonus"] = 0.0
+                if "module_position" in local_cell:
+                    del local_cell["module_position"]
             else:
                 # --- Target Tech, Empty Active Cell ---
                 local_cell.update(deepcopy(main_cell))
-                local_cell['active'] = True
+                local_cell["active"] = True
 
     return localized_grid, start_x, start_y, original_state_map
 
 
-
-
-
-
-
-
-def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=None):
+def check_all_modules_placed(
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards=None,
+    solve_type=None,
+    tech_modules=None,
+):
     """
-    Checks if all modules for a given tech have been placed in the grid.
+    Checks if all expected modules for a given tech have been placed in the grid.
 
     Args:
         grid (Grid): The grid layout.
@@ -2040,14 +1866,21 @@ def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=Non
         ship (str): The ship type.
         tech (str): The technology type.
         player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
+        solve_type (str, optional): The type of solve, e.g., "normal" or "max".
+        tech_modules (list, optional): A pre-fetched list of modules to check against.
+                                       If provided, this list is used directly.
 
     Returns:
         bool: True if all modules are placed, False otherwise.
     """
-    if player_owned_rewards is None:
-        player_owned_rewards = []  # Ensure it's an empty list if None
+    # If a specific list of modules to check against isn't provided, fetch it.
+    if tech_modules is None:
+        if player_owned_rewards is None:
+            player_owned_rewards = []  # Ensure it's an empty list if None
 
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
 
     if tech_modules is None:
         logging.warning(
@@ -2062,8 +1895,9 @@ def check_all_modules_placed(grid, modules, ship, tech, player_owned_rewards=Non
     for y in range(grid.height):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)
-            if cell['tech'] == tech and cell['module']:
-                placed_module_ids.add(cell['module'])
+            if cell["tech"] == tech and cell["module"]:
+                placed_module_ids.add(cell["module"])
 
-    all_module_ids = {module['id'] for module in tech_modules}
-    return placed_module_ids == all_module_ids
+    expected_module_ids = {module["id"] for module in tech_modules}
+
+    return placed_module_ids == expected_module_ids

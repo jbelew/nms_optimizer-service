@@ -1,6 +1,7 @@
 # --- Gevent monkey-patching ---
 # IMPORTANT: This must be the very first import and execution in the app
 from gevent import monkey
+
 monkey.patch_all()
 # --- End Gevent monkey-patching ---
 
@@ -90,7 +91,7 @@ if not ga4_client:
 # --- End GA4 Configuration ---
 
 
-def run_optimization(data, progress_callback=None, run_id=None):
+def run_optimization(data, progress_callback=None, run_id=None, solve_type=None):
     """Central function to run the optimization logic."""
     ship = data.get("ship")
     tech = data.get("tech")
@@ -126,6 +127,7 @@ def run_optimization(data, progress_callback=None, run_id=None):
             progress_callback=progress_callback,
             run_id=run_id,
             send_grid_updates=send_grid_updates,
+            solve_type=solve_type,
         )
 
         result = {
@@ -177,8 +179,9 @@ def handle_optimize_socket(data):
             emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
             last_emit_time = current_time
 
+    solve_type = data.get("solve_type")  # Extract solve_type from the incoming data
     result, status_code = run_optimization(
-        data, progress_callback=progress_callback, run_id=run_id
+        data, progress_callback=progress_callback, run_id=run_id, solve_type=solve_type
     )
     emit("optimization_result", {**result, "run_id": run_id}, room=sid)  # type: ignore
 
@@ -190,7 +193,9 @@ def get_technology_tree(ship_name):
         # --- Load module data on-demand ---
         module_data = get_module_data(ship_name)
         if not module_data:
-            return jsonify({"error": f"Invalid or unsupported ship type: {ship_name}"}), 404
+            return jsonify(
+                {"error": f"Invalid or unsupported ship type: {ship_name}"}
+            ), 404
         # ---
         tree_data = get_tech_tree_json(ship_name, module_data)
 

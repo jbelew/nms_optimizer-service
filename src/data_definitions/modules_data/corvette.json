@@ -217,6 +217,22 @@
         "Hyperdrive": [
             {
                 "label": "Hyperdrive",
+                "type": "normal",
+                "key": "hyper",
+                "image": "starship/hyper.webp",
+                "color": "sky",
+                "modules": [
+                    {"id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/hyperdrive.webp"},
+                    {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/atlantid.webp"},
+                    {"id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/emergency.webp"},
+                    {"id": "Za", "type": "bonus", "label": "Zenith-Class Reactor Theta", "bonus": 0.19, "adjacency": "greater", "sc_eligible": true, "image": "corvette/zenith.webp"},
+                    {"id": "Zb", "type": "bonus", "label": "Zenith-Class Reactor Tau", "bonus": 0.18, "adjacency": "greater", "sc_eligible": true, "image": "corvette/zenith.webp"},
+                    {"id": "Zc", "type": "bonus", "label": "Zenith-Class Reactor Sigma", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/zenith.webp"}
+                ]
+            },
+            {
+                "label": "Hyperdrive",
+                "type": "max",
                 "key": "hyper",
                 "image": "starship/hyper.webp",
                 "color": "sky",

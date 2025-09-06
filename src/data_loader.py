@@ -36,33 +36,42 @@ def _convert_map_keys_to_tuple(data):
         return data
 
 
-@lru_cache(maxsize=32)
-def get_solve_map(ship_type: str):
+@lru_cache(maxsize=64)
+def get_solve_map(ship_type: str, solve_type: str | None = None):
     """
     Loads the solve map for a specific ship type from its JSON file.
-    Results are cached to avoid repeated file I/O.
+    If solve_type is specified, it will be used. Otherwise, it defaults to "normal".
     """
     file_path = os.path.join(DATA_DIR, "solves", f"{ship_type}.json")
 
     if not os.path.exists(file_path):
-        # Return an empty dict if a solve map for the ship type doesn't exist
         return {}
 
     try:
         with open(file_path, 'r') as f:
             data = json.load(f)
 
-        # We need to process the loaded data to convert map keys back to tuples
         processed_data = {}
         for tech_name, tech_info in data.items():
-            if 'map' in tech_info:
-                tech_info['map'] = _convert_map_keys_to_tuple(tech_info['map'])
-            processed_data[tech_name] = tech_info
+            solve_data_to_use = None
+            # Determine the key to look for in the tech_info dictionary
+            key_to_find = solve_type if solve_type else "normal"
+
+            # Check if the tech_info itself contains the map and score (flat structure)
+            if "map" in tech_info and "score" in tech_info:
+                solve_data_to_use = tech_info
+            elif key_to_find in tech_info:
+                solve_data_to_use = tech_info[key_to_find]
+
+            if solve_data_to_use and 'map' in solve_data_to_use:
+                processed_data[tech_name] = {
+                    'map': _convert_map_keys_to_tuple(solve_data_to_use['map']),
+                    'score': solve_data_to_use.get('score', 0)
+                }
 
         return processed_data
     except (IOError, json.JSONDecodeError) as e:
         logging.error(f"Error loading or parsing solve map for {ship_type}: {e}")
-        # Return an empty dict on error to prevent crashes
         return {}
 
 
