@@ -1,13 +1,281 @@
-# simulated_annealing.py
+# optimization/refinement.py
 import random
 import math
 import time
 import gevent
 import logging
+from copy import deepcopy
+from itertools import permutations
+
+from grid_utils import Grid, restore_original_state, apply_localized_grid_changes
 from modules_utils import get_tech_modules
 from bonus_calculations import calculate_grid_score
 from module_placement import place_module, clear_all_modules_of_tech
-from grid_utils import apply_localized_grid_changes
+from .helpers import check_all_modules_placed
+from .windowing import create_localized_grid, create_localized_grid_ml
+
+
+def _handle_ml_opportunity(
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards,
+    opportunity_x,
+    opportunity_y,
+    window_width,
+    window_height,
+    progress_callback=None,
+    run_id=None,
+    stage=None,
+    send_grid_updates=False,
+    solve_type=None,
+    tech_modules=None,
+):
+    """Handles the ML-based refinement within an opportunity window."""
+    from ml_placement import ml_placement  # Keep import local if possible
+
+    if player_owned_rewards is None:
+        player_owned_rewards = []
+
+    logging.info(
+        f"Using ML for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}"
+    )
+    # 1. Create localized grid specifically for ML
+    # <<< Pass window dimensions to create_localized_grid_ml >>>
+    localized_grid_ml, start_x, start_y, original_state_map = create_localized_grid_ml(
+        grid,
+        opportunity_x,
+        opportunity_y,
+        tech,
+        window_width,
+        window_height,  # <<< Pass dimensions
+    )
+
+    # 2. Run ML placement on the localized grid
+    #    Make sure player_owned_rewards is passed correctly!
+    # <<< Pass localized grid dimensions to ml_placement >>>
+    ml_refined_grid, ml_refined_score_local = ml_placement(
+        localized_grid_ml,
+        ship,
+        tech,
+        full_grid_original=grid,  # Pass the original full grid
+        start_x_original=opportunity_x,  # Pass the original start_x
+        start_y_original=opportunity_y,  # Pass the original start_y
+        player_owned_rewards=player_owned_rewards,
+        model_grid_width=localized_grid_ml.width,  # <<< Use actual localized width
+        model_grid_height=localized_grid_ml.height,  # <<< Use actual localized height
+        polish_result=True,  # Usually don't polish within the main polish step
+        progress_callback=progress_callback,
+        run_id=run_id,
+        stage=stage,
+        send_grid_updates=send_grid_updates,
+        original_state_map=original_state_map,
+        solve_type=str(solve_type) if solve_type is not None else "",
+        tech_modules=tech_modules,  # type: ignore
+    )
+
+    # 3. Process ML result (logic remains the same)
+    if ml_refined_grid is not None:
+        # logging.info(f"ML refinement produced a grid. Applying changes...")
+        grid_copy = grid.copy()
+        clear_all_modules_of_tech(grid_copy, tech)
+        apply_localized_grid_changes(grid_copy, ml_refined_grid, tech, start_x, start_y)
+        restore_original_state(grid_copy, original_state_map)
+        new_score_global = calculate_grid_score(grid_copy, tech)
+        # logging.info(f"Score after ML refinement and restoration: {new_score_global:.4f}")
+        return grid_copy, new_score_global
+    else:
+        # Handle ML failure (logic remains the same)
+        logging.info("ML refinement failed or returned None. No changes applied.")
+        grid_copy = grid.copy()
+        restore_original_state(grid_copy, original_state_map)
+        original_score = calculate_grid_score(grid_copy, tech)
+        logging.info(
+            f"Returning grid with original score after failed ML: {original_score:.4f}"
+        )
+        return None, 0.0
+
+
+def _handle_sa_refine_opportunity(
+    grid,
+    modules,
+    ship,
+    tech,
+    player_owned_rewards,
+    opportunity_x,
+    opportunity_y,
+    window_width,
+    window_height,
+    progress_callback=None,
+    run_id=None,
+    stage=None,
+    send_grid_updates=False,
+    solve_type=None,
+    tech_modules=None,
+):
+    """Handles the SA/Refine-based refinement within an opportunity window."""
+    logging.info(
+        f"Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}"
+    )
+
+    # --- *** Modification Start *** ---
+    # Create a copy of the grid *before* clearing, to preserve the original state for localization
+    grid_copy_for_localization = grid.copy()
+
+    # Clear the target tech from the original grid passed in (or a copy if preferred, but this modifies the copy passed from optimize_placement)
+    clear_all_modules_of_tech(grid_copy_for_localization, tech)
+    # --- *** Modification End *** ---
+
+    # Create a localized grid (preserves other tech modules)
+    # <<< Pass window dimensions to create_localized_grid >>>
+    # <<< Use the copy made *before* clearing for localization info >>>
+    localized_grid, start_x, start_y = create_localized_grid(
+        grid_copy_for_localization,
+        opportunity_x,
+        opportunity_y,
+        tech,
+        window_width,
+        window_height,  # <<< Pass dimensions
+    )
+    # print_grid(localized_grid) # Optional debug
+
+    # Get the number of modules for the given tech (no change)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
+    num_modules = len(tech_modules) if tech_modules else 0
+
+    # Refine the localized grid (no change in logic here)
+    if num_modules < 6:
+        logging.info(f"{tech} has less than 6 modules, running refine_placement")
+        temp_refined_grid, temp_refined_bonus_local = refine_placement(
+            localized_grid,
+            ship,
+            modules,
+            tech,
+            player_owned_rewards,
+            solve_type=solve_type,
+            tech_modules=tech_modules,
+        )
+    else:
+        logging.info(f"{tech} has 6 or more modules, running simulated_annealing")
+        temp_refined_grid, temp_refined_bonus_local = simulated_annealing(
+            localized_grid,
+            ship,
+            modules,
+            tech,
+            grid,  # full_grid
+            player_owned_rewards,
+            start_x=start_x,  # Pass start_x
+            start_y=start_y,  # Pass start_y
+            progress_callback=progress_callback,
+            run_id=run_id,
+            stage=stage,
+            send_grid_updates=send_grid_updates,
+            solve_type=solve_type,
+            tech_modules=tech_modules,
+        )
+
+    # Process SA/Refine result (logic remains the same)
+    if temp_refined_grid is not None:
+        calculate_grid_score(temp_refined_grid, tech)
+        # Apply changes back to the main grid copy (grid - which was cleared earlier)
+        clear_all_modules_of_tech(grid, tech)
+        apply_localized_grid_changes(grid, temp_refined_grid, tech, start_x, start_y)
+        new_score_global = calculate_grid_score(grid, tech)
+        logging.info(f"Score after SA/Refine refinement: {new_score_global:.4f}")
+        # print_grid(grid) # Print the modified grid (grid)
+        return grid, new_score_global
+    else:
+        logging.info("SA/Refine refinement failed. No changes applied.")
+        # Return the grid (which was cleared of the tech) and indicate failure
+        return grid, -1.0
+
+
+def refine_placement(
+    grid,
+    ship,
+    modules,
+    tech,
+    player_owned_rewards=None,
+    solve_type=None,
+    tech_modules=None,
+):
+    optimal_grid = None
+    highest_bonus = 0.0
+    if tech_modules is None:
+        tech_modules = get_tech_modules(
+            modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        )
+
+    if tech_modules is None:
+        logging.error(f"No modules found for ship '{ship}' and tech '{tech}'.")
+        return None, 0.0
+
+    # Precompute available positions for fast access
+    available_positions = [
+        (x, y)
+        for y in range(grid.height)
+        for x in range(grid.width)
+        if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]
+    ]
+
+    # Check if there are enough available positions for all modules
+    if len(available_positions) < len(tech_modules):
+        return None, 0.0
+
+    # Initialize the iteration counter
+    iteration_count = 0
+
+    # Generate all permutations of module placements
+    for placement in permutations(available_positions, len(tech_modules)):
+        # Shuffle the tech_modules list for each permutation
+        shuffled_tech_modules = tech_modules[
+            :
+        ]  # Create a copy to avoid modifying the original list
+        random.shuffle(shuffled_tech_modules)
+
+        # Increment the iteration counter
+        iteration_count += 1
+
+        # Clear all modules of the selected technology - MOVED BEFORE PLACEMENT
+        clear_all_modules_of_tech(grid, tech)
+
+        # Place all modules in the current permutation
+        for index, (x, y) in enumerate(placement):
+            module = shuffled_tech_modules[index]
+            place_module(
+                grid,
+                x,
+                y,
+                module["id"],
+                module["label"],
+                tech,
+                module["type"],
+                module["bonus"],
+                module["adjacency"],
+                module["sc_eligible"],
+                module["image"],
+            )
+
+        # Calculate the score for the current arrangement - MOVED OUTSIDE THE INNER LOOP
+        grid_bonus = calculate_grid_score(grid, tech)
+
+        # Update the best grid if a better score is found - MOVED OUTSIDE THE INNER LOOP
+        if grid_bonus > highest_bonus:
+            highest_bonus = grid_bonus
+            optimal_grid = deepcopy(grid)
+            # print(highest_bonus)
+            # print_grid(optimal_grid)
+
+    # Print the total number of iterations
+    logging.info(
+        f"refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'"
+    )
+
+    return optimal_grid, highest_bonus
 
 
 def place_modules_with_supercharged_priority(grid, tech_modules, tech):
@@ -674,118 +942,3 @@ def move_module(grid, tech, tech_modules_on_grid):
     grid.cells[y_from][x_from]["adjacency_bonus"] = 0.0
 
     return (x_from, y_from), original_from_cell_data, (x_to, y_to), original_to_cell_data
-
-
-# --- Helper functions (is_adjacent, get_adjacent_empty_positions, etc.) ---
-# These seem okay, but calculate_adjacency_change is complex and might not be needed
-# if we recalculate the full score anyway. Let's keep them for now but note they aren't used
-# in the simplified move/swap logic above.
-
-
-def is_adjacent(x1, y1, x2, y2):
-    """Checks if two positions are adjacent."""
-    return (abs(x1 - x2) == 1 and y1 == y2) or (abs(y1 - y2) == 1 and x1 == x2)
-
-
-def get_adjacent_empty_positions(grid, x, y):
-    """Gets a list of adjacent empty positions to a given position."""
-    adjacent_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-    empty_positions = []
-    for ax, ay in adjacent_positions:
-        if 0 <= ax < grid.width and 0 <= ay < grid.height:
-            if (
-                grid.get_cell(ax, ay)["module"] is None
-                and grid.get_cell(ax, ay)["active"]
-            ):
-                empty_positions.append((ax, ay))
-    return empty_positions
-
-
-def get_unplaced_modules(grid, modules, ship, tech, player_owned_rewards=None, solve_type=None, tech_modules=None):
-    """
-    Gets a list of modules that have not been placed on the grid for a specific tech.
-    """
-    if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
-    if tech_modules is None:
-        return []
-
-    placed_module_ids = set()
-    for y in range(grid.height):
-        for x in range(grid.width):
-            cell = grid.get_cell(x, y)
-            if cell["tech"] == tech and cell["module"]:
-                placed_module_ids.add(cell["module"])
-
-    unplaced_modules = [m for m in tech_modules if m["id"] not in placed_module_ids]
-    return unplaced_modules
-
-
-def calculate_adjacency_change(grid, x1, y1, x2, y2, module_data, tech):
-    """
-    Calculates the change in adjacency bonus if a module is moved or swapped.
-    (Note: This is complex and might be less reliable than just recalculating score)
-    """
-    original_adjacency = 0
-    new_adjacency = 0
-
-    def check_cell_adjacency(x, y, tech):
-        adjacency_count = 0
-        adjacent_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-        for ax, ay in adjacent_positions:
-            if 0 <= ax < grid.width and 0 <= ay < grid.height:
-                adjacent_cell = grid.get_cell(ax, ay)
-                if (
-                    adjacent_cell["tech"] == tech
-                    and adjacent_cell["module"] is not None
-                ):
-                    adjacency_count += 1
-        return adjacency_count
-
-    original_adjacency += check_cell_adjacency(x1, y1, tech)
-    new_adjacency += check_cell_adjacency(x2, y2, tech)
-
-    return new_adjacency - original_adjacency
-
-
-def check_all_modules_placed(
-    grid, modules, ship, tech, player_owned_rewards=None, solve_type=None, tech_modules=None
-):
-    """
-    Checks if all expected modules for a given tech have been placed in the grid.
-
-    Args:
-        grid (Grid): The grid layout.
-        modules (dict): The module data.
-        ship (str): The ship type.
-        tech (str): The technology type.
-        player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
-        modules_expected (list, optional): The specific list of module definitions
-                                           that were intended to be placed. If None,
-                                           it fetches based on ship/tech/rewards.
-
-    Returns:
-        bool: True if all expected modules are placed, False otherwise.
-    """
-    if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
-    if tech_modules is None:
-        logging.warning(
-            f"SA: check_all_modules_placed - Could not get expected modules for {ship}/{tech}."
-        )
-        return False  # Cannot verify if expected modules are unknown
-
-    if not tech_modules:
-        return True  # If no modules were expected, then all (zero) are placed.
-
-    placed_module_ids = set()
-    for y in range(grid.height):
-        for x in range(grid.width):
-            cell = grid.get_cell(x, y)
-            if cell["tech"] == tech and cell["module"]:
-                placed_module_ids.add(cell["module"])
-
-    expected_module_ids = {module["id"] for module in tech_modules}
-
-    # Check if the set of placed IDs matches the set of expected IDs
-    return placed_module_ids == expected_module_ids

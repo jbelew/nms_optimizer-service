@@ -1,6 +1,6 @@
-# test_optimization_algorithms.py
+# test_optimization.py
 import unittest
-from unittest.mock import patch, MagicMock, ANY  # <<< Added ANY
+from unittest.mock import patch, MagicMock, ANY
 import sys
 import os
 
@@ -9,29 +9,34 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, project_root)
 
 # --- Imports from your project ---
-from optimization_algorithms import (
-    optimize_placement,  # <<< Ensure optimize_placement is imported
-    place_all_modules_in_empty_slots,
-    find_supercharged_opportunities,
-    apply_localized_grid_changes,
-    check_all_modules_placed,
-    clear_all_modules_of_tech,
+from src.optimization import (
+    optimize_placement,
 )
-from pattern_matching import (
+from src.optimization.helpers import (
+    place_all_modules_in_empty_slots,
+    check_all_modules_placed,
+)
+from src.optimization.windowing import (
+    find_supercharged_opportunities,
+)
+from src.grid_utils import apply_localized_grid_changes
+from src.module_placement import clear_all_modules_of_tech
+from src.pattern_matching import (
     rotate_pattern,
     mirror_pattern_horizontally,
     mirror_pattern_vertically,
     get_all_unique_pattern_variations,
 )
-from grid_utils import Grid
-from data_loader import get_all_module_data, get_all_solve_data
+from src.grid_utils import Grid
+from src.data_loader import get_all_module_data, get_all_solve_data
 
 # Load all data for testing purposes
 sample_modules = get_all_module_data()
 sample_solves = get_all_solve_data()
 
+
 # --- Test Class ---
-class TestOptimizationAlgorithms(unittest.TestCase):
+class TestOptimization(unittest.TestCase):
 
     # --- Merged setUp method ---
     def setUp(self):
@@ -112,21 +117,13 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         else:
             self.skipTest("Skipping test_get_all_unique_pattern_variations: infra pattern not found in solves.")
 
-    # def test_count_adjacent_occupied(self):
-    #     self.grid.set_module(0, 0, "A")
-    #     self.grid.set_tech(0, 0, "other")  # Set tech to avoid confusion
-    #     self.grid.set_module(1, 0, "B")
-    #     self.grid.set_tech(1, 0, "other")
-    #     count = count_adjacent_occupied(self.grid, 0, 1)
-    #     self.assertEqual(count, 1)
-
     def test_place_all_modules_in_empty_slots(self):
         # Use the actual infra modules for standard ship
         infra_modules = [m for t in sample_modules["standard"]["types"].values() for m in t if m["key"] == "infra"][0][
             "modules"
         ]
 
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
+        with patch("src.optimization.helpers.get_tech_modules") as mock_get_tech_modules:
             mock_get_tech_modules.return_value = infra_modules
             # Use self.empty_grid which is guaranteed empty
             result_grid = place_all_modules_in_empty_slots(
@@ -150,19 +147,20 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         result = find_supercharged_opportunities(self.empty_grid, self.modules, self.ship, self.tech)
         self.assertIsNone(result)
 
-    # def test_find_supercharged_opportunities_opportunity(self):
-    #     # Use self.sc_grid which has SC slots
-    #     sc_grid_test = self.sc_grid.copy()
-    #     # Place a module of the *same* tech outside the best window to ensure it's cleared
-    #     sc_grid_test.set_module(3, 2, "IK")
-    #     sc_grid_test.set_tech(3, 2, self.tech)
-    #     # Place a module of a *different* tech within the window
-    #     sc_grid_test.set_module(1, 0, "OTHER")
-    #     sc_grid_test.set_tech(1, 0, "other_tech")
+    def test_find_supercharged_opportunities_opportunity(self):
+        # Use self.sc_grid which has SC slots
+        sc_grid_test = self.sc_grid.copy()
+        # Place a module of the *same* tech outside the best window to ensure it's cleared
+        sc_grid_test.set_module(3, 2, "IK")
+        sc_grid_test.set_tech(3, 2, self.tech)
+        # Place a module of a *different* tech within the window
+        sc_grid_test.set_module(1, 0, "OTHER")
+        sc_grid_test.set_tech(1, 0, "other_tech")
 
-    #     result = find_supercharged_opportunities(sc_grid_test, self.modules, self.ship, self.tech)
-    #     # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
-    #     self.assertEqual(result, (0, 0))
+        result = find_supercharged_opportunities(sc_grid_test, self.modules, self.ship, self.tech)
+        # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
+        self.assertIsNotNone(result)
+        self.assertEqual(result, (0, 0, 4, 2))
 
     def test_apply_localized_grid_changes(self):
         localized_grid = Grid(2, 2)  # Smaller localized grid
@@ -196,7 +194,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
             m for t in sample_modules["standard"]["types"].values() for m in t if m["key"] == rocket_tech
         ][0]["modules"]
 
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
+        with patch("src.optimization.helpers.get_tech_modules") as mock_get_tech_modules:
             mock_get_tech_modules.return_value = rocket_modules
             grid_all_placed = Grid(2, 2)
             grid_all_placed.set_module(0, 0, "RL")
@@ -212,7 +210,7 @@ class TestOptimizationAlgorithms(unittest.TestCase):
             m for t in sample_modules["standard"]["types"].values() for m in t if m["key"] == rocket_tech
         ][0]["modules"]
 
-        with patch("optimization_algorithms.get_tech_modules") as mock_get_tech_modules:
+        with patch("src.optimization.helpers.get_tech_modules") as mock_get_tech_modules:
             mock_get_tech_modules.return_value = rocket_modules
             grid_not_all_placed = Grid(2, 2)
             grid_not_all_placed.set_module(0, 0, "RL")
@@ -247,9 +245,9 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "No empty, active slots available"):
             optimize_placement(full_grid, self.ship, self.modules, self.tech, self.player_owned_rewards)
 
-    @patch("optimization_algorithms.get_solve_map")
-    @patch("optimization_algorithms.place_all_modules_in_empty_slots")
-    @patch("optimization_algorithms.calculate_grid_score")
+    @patch("src.optimization.core.get_solve_map")
+    @patch("src.optimization.core.place_all_modules_in_empty_slots")
+    @patch("src.optimization.core.calculate_grid_score")
     def test_optimize_no_solve_map_available(self, mock_calculate_score, mock_place_all, mock_get_solves):
         """Test behavior when no solve map is found for the ship."""
         mock_get_solves.return_value = {}
@@ -270,9 +268,9 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.assertEqual(solved_bonus, 5.0)
         self.assertEqual(percentage, 100.0)
 
-    @patch("optimization_algorithms.get_solve_map")
-    @patch("optimization_algorithms.apply_pattern_to_grid")
-    @patch("optimization_algorithms.simulated_annealing")
+    @patch("src.optimization.core.get_solve_map")
+    @patch("src.optimization.core.apply_pattern_to_grid")
+    @patch("src.optimization.refinement.simulated_annealing")
     def test_optimize_solve_map_no_pattern_fits_returns_indicator_when_not_forced(
         self, mock_sa, mock_apply_pattern, mock_get_solves
     ):
@@ -291,10 +289,10 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         self.assertEqual(solved_bonus, 0.0)
         self.assertEqual(solve_method, "Pattern No Fit")
 
-    @patch("optimization_algorithms.get_solve_map")
-    @patch("optimization_algorithms.apply_pattern_to_grid")
-    @patch("optimization_algorithms.simulated_annealing")
-    @patch("optimization_algorithms.calculate_grid_score")
+    @patch("src.optimization.core.get_solve_map")
+    @patch("src.optimization.core.apply_pattern_to_grid")
+    @patch("src.optimization.core.simulated_annealing")
+    @patch("src.optimization.core.calculate_grid_score")
     def test_optimize_solve_map_no_pattern_fits_falls_back_to_sa_when_forced(
         self, mock_calculate_score, mock_sa, mock_apply_pattern, mock_get_solves
     ):
@@ -316,6 +314,73 @@ class TestOptimizationAlgorithms(unittest.TestCase):
         mock_sa.assert_called_once()
         self.assertEqual(solve_method, "Forced Initial SA (No Pattern Fit)")
         self.assertEqual(solved_bonus, 10.0)
+
+    @patch("src.optimization.core.calculate_grid_score")
+    @patch("src.optimization.core.check_all_modules_placed", return_value=True)
+    @patch("src.optimization.core._handle_ml_opportunity")
+    @patch("src.optimization.core._handle_sa_refine_opportunity")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core.apply_pattern_to_grid")
+    @patch("src.optimization.core.get_solve_map")
+    def test_optimize_ml_fallback_to_sa(
+        self,
+        mock_get_solves,
+        mock_apply_pattern,
+        mock_find_opportunities,
+        mock_handle_sa,
+        mock_handle_ml,
+        mock_check_placed,
+        mock_calculate_score,
+    ):
+        """Test that optimization falls back to SA when ML refinement fails."""
+        # --- Setup Mocks ---
+        # 1. Pattern matching succeeds and gives a base score
+        pattern_grid = self.sc_grid.copy()
+        pattern_grid.set_module(0, 0, "PE")
+        pattern_grid.set_tech(0, 0, self.tech)
+        mock_apply_pattern.return_value = (pattern_grid, 10)
+        mock_get_solves.return_value = sample_solves[self.ship]
+
+        # 2. An opportunity window is found
+        mock_find_opportunities.return_value = (0, 0, 4, 3)
+
+        # 3. ML refinement fails (returns None)
+        mock_handle_ml.return_value = (None, 0.0)
+
+        # 4. SA refinement succeeds
+        sa_grid = self.sc_grid.copy()
+        sa_grid.set_module(1, 1, "PE")
+        sa_grid.set_tech(1, 1, self.tech)
+        mock_handle_sa.return_value = (sa_grid, 25.0)
+
+        # 5. Mock score calculations to prevent final check from overriding bonus
+        def score_side_effect(grid, tech):
+            # If this is the grid from the SA mock, return the SA score
+            if grid.get_cell(1, 1).get("module") == "PE":
+                return 25.0
+            # Otherwise, it's a grid from the pattern step, return its score
+            else:
+                return 10.0
+        mock_calculate_score.side_effect = score_side_effect
+
+
+        # --- Run Optimization ---
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            self.sc_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            self.player_owned_rewards,
+        )
+
+        # --- Assertions ---
+        mock_handle_ml.assert_called_once()
+        mock_handle_sa.assert_called_once()
+        self.assertEqual(solve_method, "ML->SA/Refine Fallback")
+        self.assertEqual(solved_bonus, 25.0)
+        self.assertIsNotNone(result_grid)
+        # Check if the final grid is the one from SA
+        self.assertEqual(result_grid.get_cell(1, 1)["module"], "PE")
 
 
 # --- Run Tests ---

@@ -18,7 +18,7 @@ from grid_display import print_grid_compact
 from module_placement import place_module
 from modules_utils import get_tech_modules_for_training
 from data_definitions.model_mapping import get_model_keys
-from optimization_algorithms import determine_window_dimensions
+from optimization.helpers import determine_window_dimensions
 
 def find_best_layout(directory, num_supercharged, ship, tech):
     """

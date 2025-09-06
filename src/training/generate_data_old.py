@@ -21,19 +21,16 @@ except ImportError:
     # Fallback to importing Grid from grid_utils
     from grid_utils import Grid
 
-# <<< Import determine_window_dimensions >>>
-from modules_data import get_tech_modules_for_training
-from optimization_algorithms import (
-    get_all_unique_pattern_variations,
-    refine_placement_for_training,
-    calculate_pattern_adjacency_score,
-    determine_window_dimensions # <<< Import the dynamic sizing function
-)
-from bonus_calculations import calculate_grid_score # <<< Import needed for print_grid logic
-from modules_for_training import modules, solves
-from simulated_annealing import simulated_annealing
-from grid_display import print_grid # <<< Import print_grid
-from module_placement import place_module # <<< Import place_module
+from modules_utils import get_tech_modules_for_training
+from optimization.training import refine_placement_for_training
+from optimization.helpers import determine_window_dimensions
+from optimization.refinement import simulated_annealing
+from pattern_matching import get_all_unique_pattern_variations
+from bonus_calculations import calculate_grid_score
+from data_definitions.modules import modules
+from data_definitions.solves import solves
+from grid_display import print_grid
+from module_placement import place_module
 
 # --- Configuration for Data Storage ---
 GENERATED_BATCH_DIR = "generated_batches"

@@ -12,9 +12,9 @@ from data_loader import get_all_module_data
 modules = get_all_module_data()
 
 # Import both solver options
-from optimization_algorithms import refine_placement_for_training  # Keep for one option
+from optimization.training import refine_placement_for_training
+from optimization.refinement import simulated_annealing
 from grid_display import print_grid
-from simulated_annealing import simulated_annealing
 
 
 # <<< Update function signature to accept ship_type >>>

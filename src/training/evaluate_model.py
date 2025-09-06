@@ -22,7 +22,7 @@ from src.training.modules_data import get_tech_modules_for_training  # To get mo
 from grid_utils import Grid  # Grid class
 from bonus_calculations import calculate_grid_score  # Scoring function
 from module_placement import place_module  # To build grids
-from simulated_annealing import simulated_annealing  # For comparison (optional)
+from optimization.refinement import simulated_annealing
 
 # --- Import Metrics Library ---
 try:

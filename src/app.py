@@ -14,9 +14,10 @@ from flask_cors import CORS  # noqa: E402
 from flask_socketio import SocketIO, emit
 
 
-from optimization_algorithms import optimize_placement
-from optimizer import get_tech_tree_json, Grid
-from data_loader import get_module_data, get_all_module_data
+from src.optimization import optimize_placement
+from src.grid_utils import Grid
+from src.modules_utils import get_tech_tree_json
+from src.data_loader import get_module_data, get_all_module_data
 from data_definitions.recommended_builds import recommended_builds
 from data_definitions.grids import grids
 import os

@@ -34,7 +34,9 @@ try:
     from data_definitions.model_mapping import (
         get_model_keys,
     )  # Import the modified get_model_keys
-    from simulated_annealing import simulated_annealing  # Import simulated_annealing
+    from optimization.refinement import (
+        simulated_annealing,
+    )  # Import simulated_annealing
 except ImportError as e:
     logging.error(f"ERROR in ml_placement.py: Failed to import dependencies - {e}")
     raise

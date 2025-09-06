@@ -11,9 +11,9 @@ from grid_utils import Grid
 from data_definitions.modules import modules
 
 # Import both solver options
-from optimization_algorithms import refine_placement, refine_placement_for_training
+from optimization.training import refine_placement_for_training
+from optimization.refinement import refine_placement, simulated_annealing
 from grid_display import print_grid, print_grid_compact
-from simulated_annealing import simulated_annealing
 
 
 def generate_solve_map(
