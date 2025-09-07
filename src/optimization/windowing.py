@@ -1,6 +1,7 @@
 # optimization/windowing.py
 import logging
 from copy import deepcopy
+from typing import Optional
 
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules
@@ -99,7 +100,7 @@ def find_supercharged_opportunities(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """

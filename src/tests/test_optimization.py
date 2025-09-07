@@ -383,6 +383,44 @@ class TestOptimization(unittest.TestCase):
         self.assertEqual(result_grid.get_cell(1, 1)["module"], "PE")
 
 
+    def test_get_tech_modules_no_solve_type_returns_untyped_modules(self):
+        # Mock ship_modules data
+        mock_ship_modules = {
+            "types": {
+                "some_category": [
+                    {
+                        "key": "test_tech",
+                        "label": "Test Tech Normal",
+                        "modules": [{"id": "MOD_A", "type": "normal"}],
+                        "type": "normal",
+                    },
+                    {
+                        "key": "test_tech",
+                        "label": "Test Tech Untyped",
+                        "modules": [{"id": "MOD_B", "type": "untyped"}],
+                        # No 'type' key here
+                    },
+                    {
+                        "key": "test_tech",
+                        "label": "Test Tech Max",
+                        "modules": [{"id": "MOD_C", "type": "max"}],
+                        "type": "max",
+                    },
+                ]
+            }
+        }
+
+        # Call get_tech_modules with solve_type=None
+        from src.modules_utils import get_tech_modules
+        result_modules = get_tech_modules(
+            mock_ship_modules, "test_ship", "test_tech", []
+        )
+
+        # Assert that it returns modules from the untyped definition
+        self.assertIsNotNone(result_modules)
+        self.assertEqual(len(result_modules), 1)
+        self.assertEqual(result_modules[0]["id"], "MOD_B")
+
 # --- Run Tests ---
 if __name__ == "__main__":
     # Use the standard unittest main runner

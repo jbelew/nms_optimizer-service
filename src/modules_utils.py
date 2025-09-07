@@ -37,17 +37,15 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_t
         for technology_info in tech_list:
             if technology_info.get("key") == tech_key:
                 # If solve_type is provided, try to match the 'type' field
-                if solve_type:
+                if solve_type is not None:
                     if technology_info.get("type") == solve_type:
                         found_modules_list = technology_info.get("modules")
                         break
-                else:
-                    # If solve_type is None, prioritize 'normal' type, then any other type
-                    if technology_info.get("type") == "normal":
-                        found_modules_list = technology_info.get("modules")
-                        break
-                    elif found_modules_list is None: # Fallback to any available modules if 'normal' not found yet
-                        found_modules_list = technology_info.get("modules")
+                elif solve_type is None and technology_info.get("type") is None:
+                    # If solve_type is None, and the technology_info also has no 'type' key,
+                    # then this is the default set of modules.
+                    found_modules_list = technology_info.get("modules")
+                    break
         if found_modules_list:
             break
 
