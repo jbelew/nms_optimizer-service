@@ -10,9 +10,8 @@ import uuid
 
 # --- Imports from your project ---
 from src.grid_utils import Grid
-from src.data_loader import get_module_data, get_training_module_ids
-from src.data_definitions.modules import modules
-from src.data_definitions.solves import solves
+from src.data_loader import get_module_data, get_training_module_ids, get_all_module_data, get_all_solve_data
+
 from src.optimization.training import refine_placement_for_training
 from src.optimization.helpers import determine_window_dimensions
 from src.optimization.windowing import _scan_grid_with_window, calculate_window_score
@@ -42,6 +41,7 @@ def generate_training_batch(
     base_output_dir,  # <<< Renamed for clarity
     solve_map_prob=0.0,
     experimental: bool = False,  # <<< Renamed flag
+    solve_type: str | None = None,
 ):
     """
     Generates a batch of training data and saves it into ship/tech subdirectories.
@@ -128,6 +128,7 @@ def generate_training_batch(
     current_sample_grid_w = default_grid_width
     current_sample_grid_h = default_grid_height
 
+    solves = get_all_solve_data()
     if ship in solves and tech in solves[ship]:
         original_pattern = solves[ship][tech].get("map")
         if original_pattern:
@@ -495,24 +496,14 @@ def generate_training_batch(
                                         temp_display_grid,
                                         x_disp,
                                         y_disp,
-                                        module_id=module_data.get("id"),
-                                        label=module_data.get("label"),  # Added label
-                                        tech=module_data.get(
-                                            "tech"
-                                        ),  # Use module_tech if that's the param name
-                                        module_type=module_data.get(
-                                            "type"
-                                        ),  # Added module_type
-                                        bonus=module_data.get(
-                                            "bonus"
-                                        ),  # Use module_bonus if that's the param name
-                                        adjacency=module_data.get(
-                                            "adjacency"
-                                        ),  # Use module_adjacency if that's the param name
-                                        sc_eligible=module_data.get(
-                                            "sc_eligible"
-                                        ),  # Added sc_eligible
-                                        image=module_data.get("image"),  # Added image
+                                        module_data.get("id"),
+                                        module_data.get("label"),
+                                        module_data.get("tech"),
+                                        module_data.get("type"),
+                                        module_data.get("bonus"),
+                                        module_data.get("adjacency"),
+                                        module_data.get("sc_eligible"),
+                                        module_data.get("image"),
                                     )
                                 except TypeError as te:
                                     # Catch signature mismatches specifically
@@ -688,7 +679,13 @@ def generate_training_batch(
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             unique_id = uuid.uuid4().hex[:8]
             # <<< Use dynamic grid dimensions in filename >>>
-            filename = f"data_{ship}_{tech}_{current_sample_grid_w}x{current_sample_grid_h}_{timestamp}_{unique_id}.npz"
+            filename_parts = ["data", ship, tech]
+            if solve_type:
+                filename_parts.append(solve_type)
+            filename_parts.append(f"{current_sample_grid_w}x{current_sample_grid_h}")
+            filename_parts.append(timestamp)
+            filename_parts.append(unique_id)
+            filename = "_".join(filename_parts) + ".npz"
             saved_filepath = os.path.join(tech_output_dir, filename)
             print(
                 f"Saving {len(new_y_np)} generated samples (incl. augmentations) to {saved_filepath}..."
@@ -770,6 +767,13 @@ if __name__ == "__main__":
         metavar="PROB",
     )
     parser.add_argument(
+        "--solve_type",
+        type=str,
+        default=None,
+        help="Specific solve type to use (optional).",
+        metavar="SOLVE_TYPE",
+    )
+    parser.add_argument(
         "--experimental",
         action="store_true",
         help="If set, applies experimental data generation logic (e.g., for pulse 4x3).",
@@ -787,7 +791,8 @@ if __name__ == "__main__":
         "specific_tech_to_process": args.tech,
         "output_dir": args.output_dir,
         "solve_map_prob": args.solve_prob,
-        "experimental": args.experimental,  # <<< Updated in config
+        "solve_type": args.solve_type,
+        "experimental": args.experimental,
     }
 
     start_time_all = time.time()
@@ -801,6 +806,7 @@ if __name__ == "__main__":
             tech_keys_to_process = [config["specific_tech_to_process"]]
             print(f"Processing specific tech: {tech_keys_to_process[0]}")
         else:
+            modules = get_all_module_data()
             ship_data = modules.get(config["ship"])
             if (
                 not ship_data
@@ -815,7 +821,7 @@ if __name__ == "__main__":
                 raise KeyError(
                     f"Category '{config['tech_category_to_process']}' not found or invalid for ship '{config['ship']}'."
                 )
-            tech_keys_to_process = [
+            tech_keys_to_process = [ 
                 t["key"] for t in category_data if isinstance(t, dict) and "key" in t
             ]
             if not tech_keys_to_process:
@@ -846,6 +852,7 @@ if __name__ == "__main__":
             tech=tech,
             base_output_dir=config["output_dir"],
             solve_map_prob=config["solve_map_prob"],
+            solve_type=config["solve_type"],
             experimental=config["experimental"],  # <<< Pass updated flag
         )
         total_samples_generated_overall += generated_count
