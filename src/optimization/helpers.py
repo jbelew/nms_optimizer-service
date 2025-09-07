@@ -1,11 +1,11 @@
 # optimization/helpers.py
 import logging
-from ..modules_utils import get_tech_modules
-from ..module_placement import place_module
+from src.modules_utils import get_tech_modules
+from src.module_placement import place_module
 
 
 def determine_window_dimensions(
-    module_count: int, tech: str, solve_type: str = ""
+    module_count: int, tech: str, solve_type: str = "normal"
 ) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules.
@@ -54,7 +54,7 @@ def place_all_modules_in_empty_slots(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type=None,
+    solve_type: str = "normal",
     tech_modules=None,
 ):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
@@ -115,7 +115,7 @@ def check_all_modules_placed(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type=None,
+    solve_type: str = "normal",
     tech_modules=None,
 ):
     """

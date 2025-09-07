@@ -1,13 +1,18 @@
 # /home/jbelew/projects/nms_optimizer/nms_optimizer-service/debugging_utils/solve_map_generator.py
 import argparse
+import sys
+import os
 
-from ..grid_utils import Grid
-from ..data_loader import get_all_module_data
-from ..optimization.training import refine_placement_for_training
-from ..optimization.refinement import simulated_annealing
-from ..grid_display import print_grid
+
+from src.grid_utils import Grid
+from src.data_loader import get_all_module_data
 
 modules = get_all_module_data()
+
+# Import both solver options
+from src.optimization.training import refine_placement_for_training
+from src.optimization.refinement import simulated_annealing
+from src.grid_display import print_grid
 
 
 # <<< Update function signature to accept ship_type >>>
@@ -64,7 +69,7 @@ def generate_solve_map(
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
             optimized_grid, optimized_score = simulated_annealing(
-                grid, ship_type, ship_modules, tech, player_owned_rewards, solve_type=solve_type if solve_type is not None else "", **sa_params
+                grid, ship_type, ship_modules, tech, player_owned_rewards, solve_type=solve_type or "normal", **sa_params
             )
         elif solver_choice == "refine_training":
             print(f"INFO -- Using refine_placement_for_training for {ship_type}/{tech}")

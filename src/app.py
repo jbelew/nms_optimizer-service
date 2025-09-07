@@ -1,4 +1,3 @@
-# ruff: noqa: E402
 # --- Gevent monkey-patching ---
 # IMPORTANT: This must be the very first import and execution in the app
 from gevent import monkey
@@ -12,21 +11,21 @@ monkey.patch_all()
 from flask import Flask, jsonify, request  # noqa: E402
 from flask_compress import Compress  # noqa: E402
 from flask_cors import CORS  # noqa: E402
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit  # noqa: E402
 
 
-from src.optimization import optimize_placement
-from src.grid_utils import Grid
-from src.modules_utils import get_tech_tree_json
-from src.data_loader import get_module_data, get_all_module_data
-from data_definitions.recommended_builds import recommended_builds
-from data_definitions.grids import grids
-import os
-import uuid
-import time
-from google.oauth2 import service_account
-from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import (
+from src.optimization import optimize_placement  # noqa: E402
+from src.grid_utils import Grid  # noqa: E402
+from src.modules_utils import get_tech_tree_json  # noqa: E402
+from src.data_loader import get_module_data, get_all_module_data  # noqa: E402
+from src.data_definitions.recommended_builds import recommended_builds  # noqa: E402
+from src.data_definitions.grids import grids  # noqa: E402
+import os  # noqa: E402
+import uuid  # noqa: E402
+import time  # noqa: E402
+from google.oauth2 import service_account  # noqa: E402
+from google.analytics.data_v1beta import BetaAnalyticsDataClient  # noqa: E402
+from google.analytics.data_v1beta.types import (  # noqa: E402
     DateRange,
     Dimension,
     Metric,
@@ -35,7 +34,7 @@ from google.analytics.data_v1beta.types import (
     FilterExpression,
     Filter,
 )
-from typing import cast
+from typing import cast  # noqa: E402
 
 
 # Define a custom Request type for Flask-SocketIO to include 'sid'

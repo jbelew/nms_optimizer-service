@@ -2,14 +2,16 @@
 import random
 import numpy as np  # type: ignore
 from copy import deepcopy  # Import deepcopy
+import sys
 import os
 import time
 import argparse
 import uuid
 
+
 # --- Imports from your project ---
 from src.grid_utils import Grid
-from src.data_loader import get_module_data, get_training_module_ids, get_all_module_data, get_solve_map
+from src.modules_utils import get_tech_modules_for_training
 from src.optimization.training import refine_placement_for_training
 from src.optimization.helpers import determine_window_dimensions
 from src.optimization.windowing import _scan_grid_with_window, calculate_window_score
@@ -18,10 +20,12 @@ from src.pattern_matching import get_all_unique_pattern_variations
 from src.bonus_calculations import (
     calculate_grid_score,
 )
+from src.data_loader import get_all_module_data, get_all_solve_data
 from src.grid_display import print_grid
-from src.module_placement import place_module
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+modules = get_all_module_data()
+solves = get_all_solve_data()
+from src.module_placement import place_module
 
 # --- Configuration for Data Storage ---
 GENERATED_BATCH_DIR = "generated_batches"
@@ -67,31 +71,12 @@ def generate_training_batch(
     """  # <<< Corrected docstring indentation
     start_time_tech = time.time()
 
-    module_data = get_module_data(ship)
-    if not module_data:
-        print(f"Error: No module data found for ship '{ship}'. Cannot generate data.")
-        return 0, 0, None
-
-    training_module_ids = get_training_module_ids(ship, tech)
-    if not training_module_ids:
-        print(f"Error: No training modules found for {ship}/{tech}. Cannot generate data.")
-        return 0, 0, None
-
-    all_modules_for_ship = []
-    for tech_list in module_data.get("types", {}).values():
-        all_modules_for_ship.extend(tech_list)
-
-    tech_modules = []
-    for tech_info in all_modules_for_ship:
-        if tech_info.get("key") == tech:
-            for module in tech_info.get("modules", []):
-                if module.get("id") in training_module_ids:
-                    tech_modules.append(module)
-
+    tech_modules = get_tech_modules_for_training(modules, ship, tech)
     if not tech_modules:
-        print(f"Error: Could not find module definitions for the training modules of {ship}/{tech}.")
+        print(
+            f"Error: No tech modules found for ship='{ship}', tech='{tech}'. Cannot determine grid size or generate data."
+        )
         return 0, 0, None
-
     module_count = len(tech_modules)
 
     # --- Initial default grid dimensions (might be overridden by experimental logic) ---
@@ -125,9 +110,8 @@ def generate_training_batch(
     current_sample_grid_w = default_grid_width
     current_sample_grid_h = default_grid_height
 
-    solve_maps = get_solve_map(ship)
-    if solve_maps and tech in solve_maps:
-        original_pattern = solve_maps[tech].get("map")
+    if ship in solves and tech in solves[ship]:
+        original_pattern = solves[ship][tech].get("map")
         if original_pattern:
             solve_map_exists = True
             # Convert string keys like "(0, 0)" to tuples if necessary
@@ -551,7 +535,7 @@ def generate_training_batch(
                     optimized_grid, best_bonus = refine_placement_for_training(
                         original_grid_layout,
                         ship,
-                        module_data,
+                        modules,
                         tech,  # <<< Pass modules from modules_for_training.py
                     )
                 else:  # module_count >= 10
@@ -575,7 +559,7 @@ def generate_training_batch(
                     optimized_grid, sa_score = simulated_annealing(
                         original_grid_layout,
                         ship,
-                        module_data,  # <<< Pass modules from modules_for_training.py
+                        modules,  # <<< Pass modules from modules_for_training.py
                         tech,
                         player_owned_rewards=None,  # Not needed when overriding modules
                         **sa_params_for_ground_truth,
@@ -798,8 +782,7 @@ if __name__ == "__main__":
             tech_keys_to_process = [config["specific_tech_to_process"]]
             print(f"Processing specific tech: {tech_keys_to_process[0]}")
         else:
-            all_module_data = get_all_module_data()
-            ship_data = all_module_data.get(config["ship"])
+            ship_data = modules.get(config["ship"])
             if (
                 not ship_data
                 or "types" not in ship_data

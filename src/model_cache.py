@@ -2,7 +2,7 @@ import torch
 import logging
 import os
 from functools import lru_cache
-from training.model_definition import ModulePlacementCNN
+from src.training.model_definition import ModulePlacementCNN
 
 # A conservative cache size, suitable for memory-constrained environments.
 # This can be overridden by an environment variable if needed.

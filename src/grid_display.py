@@ -1,7 +1,7 @@
 # grid_display.py
 import logging
-from grid_utils import Grid
-from data_loader import get_all_module_data
+from src.grid_utils import Grid
+from src.data_loader import get_all_module_data
 
 # Load all module data once for display purposes.
 modules = get_all_module_data()

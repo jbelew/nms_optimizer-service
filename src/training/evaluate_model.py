@@ -9,13 +9,17 @@ import time
 import argparse
 from tqdm import tqdm  # For progress bar
 
+
 # --- Imports from your project ---
-from .train_model import ModulePlacementCNN, PlacementDataset  # Import model and dataset
-from ..data_loader import get_module_data, get_training_module_ids
-from ..grid_utils import Grid  # Grid class
-from ..bonus_calculations import calculate_grid_score  # Scoring function
-from ..module_placement import place_module  # To build grids
-from ..optimization.refinement import simulated_annealing
+from src.training.train_model import ModulePlacementCNN, PlacementDataset  # Import model and dataset
+from src.data_loader import get_all_module_data
+from src.modules_utils import get_tech_modules_for_training  # To get module mapping
+
+modules = get_all_module_data()
+from src.grid_utils import Grid  # Grid class
+from src.bonus_calculations import calculate_grid_score  # Scoring function
+from src.module_placement import place_module  # To build grids
+from src.optimization.refinement import simulated_annealing
 
 # --- Import Metrics Library ---
 try:
@@ -26,7 +30,7 @@ except ImportError:
 
 # --- Configuration ---
 DEFAULT_TEST_DATA_DIR = "generated_batches"  # Directory containing test .npz files
-DEFAULT_MODEL_DIR = "trained_models"  # Directory containing trained models
+DEFAULT_MODEL_DIR = "training/trained_models"  # Directory containing trained models
 
 
 # --- Helper Function to Reconstruct Grid from Target Tensor ---
@@ -208,34 +212,10 @@ def evaluate_model(
     print(f"Using device: {device}")
 
     # Get module mapping (consistent with training)
-    module_data = get_module_data(ship)
-    if not module_data:
-        print(f"Error: No module data found for ship '{ship}'. Cannot evaluate.")
-        return
-
-    training_module_ids = get_training_module_ids(ship, tech)
-    if not training_module_ids:
+    tech_modules_list = get_tech_modules_for_training(modules, ship, tech)
+    if not tech_modules_list:
         print(f"Error: No training modules found for {ship}/{tech}. Cannot evaluate.")
         return
-
-    # The get_training_module_ids function returns only the IDs. We need to get the full module definitions.
-    # We can do this by looking up each ID in the main module_data dictionary.
-
-    all_modules_for_ship = []
-    for tech_list in module_data.get("types", {}).values():
-        all_modules_for_ship.extend(tech_list)
-
-    tech_modules_list = []
-    for tech_info in all_modules_for_ship:
-        if tech_info.get("key") == tech:
-            for module in tech_info.get("modules", []):
-                if module.get("id") in training_module_ids:
-                    tech_modules_list.append(module)
-
-    if not tech_modules_list:
-        print(f"Error: Could not find module definitions for the training modules of {ship}/{tech}.")
-        return
-
     tech_modules_list.sort(key=lambda m: m["id"])
     module_id_mapping = {module["id"]: i + 1 for i, module in enumerate(tech_modules_list)}
     reverse_module_mapping = {v: k for k, v in module_id_mapping.items()}
@@ -302,12 +282,12 @@ def evaluate_model(
         X_test_tensor = torch.tensor(X_test_np, dtype=torch.float32)
         # Target y needs to be long for loss/metrics
         y_test_tensor = torch.tensor(y_test_np, dtype=torch.long)
-        test_dataset = PlacementDataset(X_test_tensor, y_test_tensor, X_inactive_mask=None)
+        test_dataset = PlacementDataset(X_supercharge=X_test_tensor, y=y_test_tensor)
         test_loader = torch.utils.data.DataLoader(
             test_dataset,
             batch_size=batch_size,
             shuffle=False,  # No need to shuffle test data
-            num_workers=min(2, os.cpu_count() or 0),
+            num_workers=min(2, os.cpu_count() or 2),
             pin_memory=torch.cuda.is_available(),
         )
     except Exception as e:
@@ -422,7 +402,7 @@ def evaluate_model(
                         sa_grid, sa_score = simulated_annealing(
                             sa_input_grid,
                             ship,
-                            module_data,
+                            modules,
                             tech,
                             full_grid=sa_input_grid,
                             player_owned_rewards=None,  # Assuming SA doesn't need rewards here, adjust if needed
