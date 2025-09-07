@@ -1,15 +1,15 @@
 # optimization/core.py
 import logging
 
-from ..grid_utils import Grid
-from ..modules_utils import get_tech_modules
-from ..grid_display import print_grid_compact
-from ..bonus_calculations import calculate_grid_score
-from ..module_placement import clear_all_modules_of_tech
+from src.grid_utils import Grid
+from src.modules_utils import get_tech_modules
+from src.grid_display import print_grid_compact
+from src.bonus_calculations import calculate_grid_score
+from src.module_placement import clear_all_modules_of_tech
 from .refinement import simulated_annealing, _handle_ml_opportunity, _handle_sa_refine_opportunity
-from ..data_loader import get_solve_map
-from ..solve_map_utils import filter_solves
-from ..pattern_matching import (
+from src.data_loader import get_solve_map
+from src.solve_map_utils import filter_solves
+from src.pattern_matching import (
     apply_pattern_to_grid,
     get_all_unique_pattern_variations,
 )
@@ -77,7 +77,7 @@ def optimize_placement(
     # This list is used to determine module_count for experimental window sizing
     # and for the check_all_modules_placed function.
     tech_modules = get_tech_modules(
-        modules, ship, tech, player_owned_rewards, solve_type=solve_type
+        modules, ship, tech, player_owned_rewards, solve_type=solve_type or "normal"
     )
     if not tech_modules:
         # This case should ideally be caught by has_empty_active_slots or other checks,
@@ -119,11 +119,11 @@ def optimize_placement(
     solve_method = "Unknown"  # <<< Initialize solve_method >>>
 
     # --- Load Solves On-Demand ---
-    all_solves_for_ship = get_solve_map(ship, solve_type)
+    all_solves_for_ship = get_solve_map(ship, solve_type or "normal")
     # Create the structure that filter_solves expects
     solves_for_filtering = {ship: all_solves_for_ship} if all_solves_for_ship else {}
     filtered_solves = filter_solves(
-        solves_for_filtering, ship, modules, tech, player_owned_rewards, solve_type=solve_type
+        solves_for_filtering, ship, modules, tech, player_owned_rewards, solve_type=solve_type or "normal"
     )
     # --- End On-Demand Loading ---
 
@@ -143,7 +143,7 @@ def optimize_placement(
             ship,
             tech,
             player_owned_rewards,
-            solve_type=solve_type,
+            solve_type=solve_type or "normal",
             tech_modules=tech_modules,
         )
         solved_bonus = calculate_grid_score(solved_grid, tech)
@@ -187,7 +187,7 @@ def optimize_placement(
                         start_y,
                         ship,
                         player_owned_rewards,
-                        solve_type=solve_type,
+                        solve_type=solve_type or "normal",
                         tech_modules=tech_modules,
                     )
                     if temp_result_grid is not None:
@@ -253,7 +253,7 @@ def optimize_placement(
                     run_id=run_id,
                     stage="initial_placement",
                     send_grid_updates=send_grid_updates,
-                    solve_type=solve_type if solve_type is not None else "",
+                    solve_type=solve_type or "normal",
                     tech_modules=tech_modules,
                 )
                 if solved_grid is None:
@@ -324,7 +324,7 @@ def optimize_placement(
         ship,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
+        solve_type=solve_type or "normal",
         tech_modules=tech_modules,
     )
 
@@ -516,7 +516,7 @@ def optimize_placement(
                 run_id=run_id,
                 stage="refinement_ml",
                 send_grid_updates=send_grid_updates,
-                solve_type=solve_type,
+                solve_type=solve_type or "normal",
                 tech_modules=tech_modules,
             )
             if refined_grid_candidate is None:
@@ -541,7 +541,7 @@ def optimize_placement(
                         run_id=run_id,
                         stage="refinement_sa_fallback",
                         send_grid_updates=send_grid_updates,
-                        solve_type=solve_type,
+                        solve_type=solve_type or "normal",
                         tech_modules=tech_modules,
                     )
                 )
@@ -598,7 +598,7 @@ def optimize_placement(
                         run_id=run_id,
                         stage="final_fallback_sa",
                         send_grid_updates=send_grid_updates,
-                        solve_type=solve_type,
+                        solve_type=solve_type or "normal",
                         tech_modules=tech_modules,
                     )
                     if (
@@ -652,7 +652,7 @@ def optimize_placement(
         tech,
         player_owned_rewards,
         tech_modules=tech_modules,
-        solve_type=solve_type,
+        solve_type=solve_type or "normal",
     )
     if not all_modules_placed and not sa_was_initial_placement:
         # <<< KEEP: Important fallback >>>
@@ -676,7 +676,7 @@ def optimize_placement(
             run_id=run_id,
             stage="final_sa_unplaced_modules",
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type if solve_type is not None else "",
+            solve_type=solve_type or "normal",
             tech_modules=tech_modules,
         )
         if temp_solved_grid is not None:

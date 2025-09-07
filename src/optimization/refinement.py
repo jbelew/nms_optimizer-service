@@ -7,10 +7,10 @@ import logging
 from copy import deepcopy
 from itertools import permutations
 
-from ..grid_utils import restore_original_state, apply_localized_grid_changes
-from ..modules_utils import get_tech_modules
-from ..bonus_calculations import calculate_grid_score
-from ..module_placement import place_module, clear_all_modules_of_tech
+from src.grid_utils import restore_original_state, apply_localized_grid_changes
+from src.modules_utils import get_tech_modules
+from src.bonus_calculations import calculate_grid_score
+from src.module_placement import place_module, clear_all_modules_of_tech
 from .helpers import check_all_modules_placed
 from .windowing import create_localized_grid, create_localized_grid_ml
 
@@ -29,11 +29,11 @@ def _handle_ml_opportunity(
     run_id=None,
     stage=None,
     send_grid_updates=False,
-    solve_type=None,
+    solve_type: str = "normal",
     tech_modules=None,
 ):
     """Handles the ML-based refinement within an opportunity window."""
-    from ..ml_placement import ml_placement  # Keep import local if possible
+    from src.ml_placement import ml_placement  # Keep import local if possible
 
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -111,7 +111,7 @@ def _handle_sa_refine_opportunity(
     run_id=None,
     stage=None,
     send_grid_updates=False,
-    solve_type=None,
+    solve_type: str = "normal",
     tech_modules=None,
 ):
     """Handles the SA/Refine-based refinement within an opportunity window."""
@@ -174,8 +174,8 @@ def _handle_sa_refine_opportunity(
             run_id=run_id,
             stage=stage,
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type if solve_type is not None else "",
-            tech_modules=tech_modules if tech_modules is not None else [],
+            solve_type=solve_type,
+            tech_modules=tech_modules or [],
         )
 
     # Process SA/Refine result (logic remains the same)
@@ -200,7 +200,7 @@ def refine_placement(
     modules,
     tech,
     player_owned_rewards=None,
-    solve_type=None,
+    solve_type: str = "normal",
     tech_modules=None,
 ):
     optimal_grid = None
@@ -461,8 +461,8 @@ def simulated_annealing(
     send_grid_updates=False,
     start_x: int = 0,  # Added start_x
     start_y: int = 0,  # Added start_y
-    solve_type: str = "",  # Added solve_type
-    tech_modules: list = [],  # Added tech_modules
+    solve_type: str = "normal",
+    tech_modules: list = None,
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -547,6 +547,8 @@ def simulated_annealing(
                     modules_on_grid_ids.add(cell["module"])
 
         # Get the full definitions for these modules
+        if tech_modules is None:
+            tech_modules = []
         modules_to_consider = [
             m for m in tech_modules if m["id"] in modules_on_grid_ids
         ]
@@ -746,7 +748,7 @@ def simulated_annealing(
 
     # Final check for validity (especially important if polishing)
     final_modules_placed = check_all_modules_placed(
-        best_grid, modules, ship, tech, player_owned_rewards, tech_modules=modules_to_consider, solve_type=solve_type if solve_type is not None else ""
+        best_grid, modules, ship, tech, player_owned_rewards, tech_modules=modules_to_consider, solve_type=solve_type
     )
     if not final_modules_placed:
         logging.warning(

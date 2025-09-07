@@ -5,6 +5,7 @@ import torch.optim as optim
 import torch.utils.data as data
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.tensorboard.writer import SummaryWriter
+import sys
 import os
 import sys
 import time
@@ -49,6 +50,8 @@ class PlacementDataset(data.Dataset):
         # Use the length of the first available array
         if self.X_supercharge is not None:
             return len(self.X_supercharge)
+        elif self.X_inactive_mask is not None:
+            return len(self.X_inactive_mask)
         elif self.y is not None:
             return len(self.y)
         else:
@@ -56,13 +59,11 @@ class PlacementDataset(data.Dataset):
 
     def __getitem__(self, idx):
         x_sc = self.X_supercharge[idx]
-        target = self.y[idx]
-
-        # If inactive mask is not provided, create a tensor of zeros
         if self.X_inactive_mask is not None:
             x_inactive = self.X_inactive_mask[idx]
         else:
             x_inactive = np.zeros_like(x_sc)
+        target = self.y[idx]
 
         # Ensure tensors are created correctly
         input_tensor = torch.stack(
@@ -249,10 +250,8 @@ def train_model(
             model.eval()
             running_val_loss = 0.0
             if metrics_available:
-                if val_accuracy:
-                    val_accuracy.reset()
-                if val_iou:
-                    val_iou.reset()
+                if val_accuracy: val_accuracy.reset()
+                if val_iou: val_iou.reset()
 
             with torch.no_grad():
                 for i, (inputs, targets_placement) in enumerate(val_loader):
@@ -278,10 +277,8 @@ def train_model(
 
                     if metrics_available:
                         preds = torch.argmax(outputs_placement, dim=1)
-                        if val_accuracy:
-                            val_accuracy.update(preds, targets_placement)
-                        if val_iou:
-                            val_iou.update(preds, targets_placement)
+                        if val_accuracy: val_accuracy.update(preds, targets_placement)
+                        if val_iou: val_iou.update(preds, targets_placement)
 
             if early_stop_triggered:  # Check if NaN loss caused break
                 break  # Exit outer loop

@@ -1,4 +1,3 @@
-# ruff: noqa: E402
 # --- Gevent monkey-patching ---
 # IMPORTANT: This must be the very first import and execution in the app
 from gevent import monkey
@@ -35,7 +34,7 @@ from google.analytics.data_v1beta.types import (
     FilterExpression,
     Filter,
 )
-from typing import cast
+from typing import cast  # noqa: E402
 
 
 # Define a custom Request type for Flask-SocketIO to include 'sid'

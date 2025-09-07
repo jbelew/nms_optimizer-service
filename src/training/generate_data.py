@@ -2,10 +2,12 @@
 import random
 import numpy as np  # type: ignore
 from copy import deepcopy  # Import deepcopy
+import sys
 import os
 import time
 import argparse
 import uuid
+
 
 # --- Imports from your project ---
 from ..grid_utils import Grid
@@ -90,9 +92,10 @@ def generate_training_batch(
                     tech_modules.append(module)
 
     if not tech_modules:
-        print(f"Error: Could not find module definitions for the training modules of {ship}/{tech}.")
+        print(
+            f"Error: No tech modules found for ship='{ship}', tech='{tech}'. Cannot determine grid size or generate data."
+        )
         return 0, 0, None
-
     module_count = len(tech_modules)
 
     # --- Initial default grid dimensions (might be overridden by experimental logic) ---
@@ -126,9 +129,8 @@ def generate_training_batch(
     current_sample_grid_w = default_grid_width
     current_sample_grid_h = default_grid_height
 
-    solve_maps = get_solve_map(ship)
-    if solve_maps and tech in solve_maps:
-        original_pattern = solve_maps[tech].get("map")
+    if ship in solves and tech in solves[ship]:
+        original_pattern = solves[ship][tech].get("map")
         if original_pattern:
             solve_map_exists = True
             # Convert string keys like "(0, 0)" to tuples if necessary
@@ -800,8 +802,7 @@ if __name__ == "__main__":
             tech_keys_to_process = [config["specific_tech_to_process"]]
             print(f"Processing specific tech: {tech_keys_to_process[0]}")
         else:
-            all_module_data = get_all_module_data()
-            ship_data = all_module_data.get(config["ship"])
+            ship_data = modules.get(config["ship"])
             if (
                 not ship_data
                 or "types" not in ship_data

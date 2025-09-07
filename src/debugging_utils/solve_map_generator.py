@@ -17,6 +17,11 @@ from src.modules_utils import get_tech_modules, get_tech_modules_for_training
 
 modules = get_all_module_data()
 
+# Import both solver options
+from src.optimization.training import refine_placement_for_training
+from src.optimization.refinement import simulated_annealing
+from src.grid_display import print_grid
+
 
 # <<< Update function signature to accept ship_type >>>
 def generate_solve_map(

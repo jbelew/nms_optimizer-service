@@ -2,6 +2,7 @@
 import logging
 from .grid_utils import Grid
 from enum import Enum
+from src.grid_utils import Grid
 
 # --- Constants ---
 

@@ -5,21 +5,41 @@ import numpy as np
 import os
 import time
 import logging
-from typing import Optional, List, Tuple, Dict
+from typing import Optional, List, Tuple
 from collections import Counter
 
-from .model_cache import get_model
-from .modules_utils import get_tech_modules
-from .data_loader import get_module_data, get_training_module_ids
-from .module_placement import place_module, clear_all_modules_of_tech
-from .bonus_calculations import calculate_grid_score
-from .grid_utils import Grid, apply_localized_grid_changes, restore_original_state
-from .data_definitions.model_mapping import (
-    get_model_keys,
-)
-from .optimization.refinement import (
-    simulated_annealing,
-)
+# --- Add project root to sys.path if needed ---
+# Ensure the project root is in the path if running this script directly
+# or if imports fail in your environment.
+import sys
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+# --- End Add project root ---
+
+# --- Imports from your project ---
+try:
+    from src.model_cache import get_model  # <<< Import the new model cache function
+
+    # <<< Import both module definition sources >>>
+    from src.modules_utils import get_tech_modules
+    from src.data_loader import get_module_data, get_training_module_ids
+
+    # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
+    # <<< End import changes >>>
+    from src.module_placement import place_module, clear_all_modules_of_tech
+    from src.bonus_calculations import calculate_grid_score
+    from src.grid_utils import Grid, apply_localized_grid_changes, restore_original_state
+    from src.data_definitions.model_mapping import (
+        get_model_keys,
+    )  # Import the modified get_model_keys
+    from src.optimization.refinement import (
+        simulated_annealing,
+    )  # Import simulated_annealing
+except ImportError as e:
+    logging.error(f"ERROR in ml_placement.py: Failed to import dependencies - {e}")
+    raise
 
 # --- Constants ---
 DEFAULT_MODEL_DIR = "training/trained_models"
@@ -47,8 +67,8 @@ def ml_placement(
     progress_offset=0,
     progress_scale=100,
     send_grid_updates=False,
-    solve_type: Optional[str] = None,  # Added solve_type
-    tech_modules: Optional[list] = None,  # Added tech_modules
+    solve_type: str = "normal",
+    tech_modules: list = None,
 ) -> Tuple[Optional[Grid], float]:
     """
     Uses a pre-trained Machine Learning model to predict module placement.
@@ -80,7 +100,7 @@ def ml_placement(
 
     # --- 1. Determine Model Keys using Mapping ---
     model_keys_info = get_model_keys(
-        ship, tech, model_grid_width, model_grid_height, player_owned_rewards
+        ship, tech, model_grid_width, model_grid_height, player_owned_rewards  # pyright: ignore
     )
     filename_ship_key = model_keys_info["filename_ship_key"]
     filename_tech_key = model_keys_info["filename_tech_key"]
@@ -127,7 +147,7 @@ def ml_placement(
         module_id: i + 1 for i, module_id in enumerate(training_module_ids)
     }
     num_output_classes = len(module_id_mapping) + 1  # +1 for background
-    reverse_module_mapping: Dict[int, Optional[str]] = {v: k for k, v in module_id_mapping.items()}
+    reverse_module_mapping = {v: k for k, v in module_id_mapping.items()}
     reverse_module_mapping[0] = None  # Background class is 0
     # logging.info(f"INFO -- ML Placement: Determined num_output_classes = {num_output_classes} based on Module Def keys ('{module_def_ship_key}', '{module_def_tech_key}').") # Less critical detail
     # --- End Model Loading Setup ---
@@ -289,7 +309,7 @@ def ml_placement(
 
         if cell_coord in used_cells:
             continue
-        if current_modules_needed.get(predicted_module_id, 0) <= 0:
+        if predicted_module_id is None or current_modules_needed.get(predicted_module_id, 0) <= 0:  # pyright: ignore
             continue
 
         try:
@@ -421,8 +441,8 @@ def ml_placement(
                 send_grid_updates=send_grid_updates,
                 start_x=start_x_original,
                 start_y=start_y_original,
-            solve_type=solve_type if solve_type is not None else "",
-            tech_modules=tech_modules if tech_modules is not None else [],
+                solve_type=solve_type,
+                tech_modules=tech_modules,
                 **polish_params,
             )
 

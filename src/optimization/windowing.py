@@ -2,9 +2,9 @@
 import logging
 from copy import deepcopy
 
-from ..grid_utils import Grid
-from ..modules_utils import get_tech_modules
-from ..module_placement import clear_all_modules_of_tech
+from src.grid_utils import Grid
+from src.modules_utils import get_tech_modules
+from src.module_placement import clear_all_modules_of_tech
 from .helpers import determine_window_dimensions
 
 
@@ -99,7 +99,7 @@ def find_supercharged_opportunities(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type=None,
+    solve_type: str = "normal",
     tech_modules=None,
 ):
     """
@@ -150,7 +150,7 @@ def find_supercharged_opportunities(
         return None
     module_count = len(tech_modules)
     window_width, window_height = determine_window_dimensions(
-        module_count, tech, solve_type=solve_type if solve_type is not None else ""
+        module_count, tech, solve_type=solve_type
     )
     logging.info(
         f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules)."
