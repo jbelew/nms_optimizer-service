@@ -9,10 +9,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the service code
-COPY . /app/src
+COPY . .
 
 # Expose the port your service listens on (change if different)
 EXPOSE 2016
 
 # Default command to run the service
-CMD ["python", "src/app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:2016", "--workers", "2", "--preload", "--timeout", "120", "--keep-alive", "60", "--worker-class", "gevent", "src.app:app"]

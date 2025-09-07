@@ -2,7 +2,6 @@
 import random
 import numpy as np  # type: ignore
 from copy import deepcopy  # Import deepcopy
-import sys
 import os
 import time
 import argparse
@@ -10,20 +9,20 @@ import uuid
 
 
 # --- Imports from your project ---
-from ..grid_utils import Grid
-from ..data_loader import get_module_data, get_training_module_ids, get_all_module_data, get_solve_map
-from ..optimization.training import refine_placement_for_training
-from ..optimization.helpers import determine_window_dimensions
-from ..optimization.windowing import _scan_grid_with_window, calculate_window_score
-from ..optimization.refinement import simulated_annealing
-from ..pattern_matching import get_all_unique_pattern_variations
-from ..bonus_calculations import (
+from src.grid_utils import Grid
+from src.data_loader import get_module_data, get_training_module_ids
+from src.data_definitions.modules import modules
+from src.data_definitions.solves import solves
+from src.optimization.training import refine_placement_for_training
+from src.optimization.helpers import determine_window_dimensions
+from src.optimization.windowing import _scan_grid_with_window, calculate_window_score
+from src.optimization.refinement import simulated_annealing
+from src.pattern_matching import get_all_unique_pattern_variations
+from src.bonus_calculations import (
     calculate_grid_score,
 )
-from ..grid_display import print_grid
-from ..module_placement import place_module
-
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+from src.grid_display import print_grid
+from src.module_placement import place_module
 
 # --- Configuration for Data Storage ---
 GENERATED_BATCH_DIR = "generated_batches"

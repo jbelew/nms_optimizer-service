@@ -1,34 +1,23 @@
 # test_optimization.py
 import unittest
 from unittest.mock import patch
-import sys
-import os
-
-# Add the project root to the Python path
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, project_root)
 
 # --- Imports from your project ---
-from src.optimization import (
-    optimize_placement,
-)
-from src.optimization.helpers import (
-    place_all_modules_in_empty_slots,
-    check_all_modules_placed,
-)
-from src.optimization.windowing import (
-    find_supercharged_opportunities,
-)
-from src.grid_utils import apply_localized_grid_changes
+from src.data_loader import get_all_module_data, get_all_solve_data
+from src.grid_utils import Grid, apply_localized_grid_changes
 from src.module_placement import clear_all_modules_of_tech
+from src.optimization import optimize_placement
+from src.optimization.helpers import (
+    check_all_modules_placed,
+    place_all_modules_in_empty_slots,
+)
+from src.optimization.windowing import find_supercharged_opportunities
 from src.pattern_matching import (
-    rotate_pattern,
+    get_all_unique_pattern_variations,
     mirror_pattern_horizontally,
     mirror_pattern_vertically,
-    get_all_unique_pattern_variations,
+    rotate_pattern,
 )
-from src.grid_utils import Grid
-from src.data_loader import get_all_module_data, get_all_solve_data
 
 # Load all data for testing purposes
 sample_modules = get_all_module_data()

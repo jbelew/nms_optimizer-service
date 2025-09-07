@@ -1,12 +1,5 @@
 # /home/jbelew/projects/nms_optimizer/nms_optimizer-service/debugging_utils/solve_map_generator.py
 import argparse
-import sys
-import os
-
-# --- Project Root and Path Setup ---
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
 
 from src.grid_utils import Grid
 from src.data_loader import get_all_module_data
@@ -18,9 +11,6 @@ from src.modules_utils import get_tech_modules, get_tech_modules_for_training
 modules = get_all_module_data()
 
 # Import both solver options
-from src.optimization.training import refine_placement_for_training
-from src.optimization.refinement import simulated_annealing
-from src.grid_display import print_grid
 
 
 # <<< Update function signature to accept ship_type >>>

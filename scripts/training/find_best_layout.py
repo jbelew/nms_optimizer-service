@@ -1,23 +1,18 @@
-
 import numpy as np
 import os
 import argparse
-import sys
 import glob
-
-
-import os
 from src.grid_utils import Grid
 from src.bonus_calculations import calculate_grid_score
 from src.data_loader import get_all_module_data
 from src.grid_display import print_grid_compact
-
-modules = get_all_module_data()
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 from src.module_placement import place_module
 from src.modules_utils import get_tech_modules_for_training
 from src.data_definitions.model_mapping import get_model_keys
 from src.optimization.helpers import determine_window_dimensions
+
+modules = get_all_module_data()
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
 def find_best_layout(directory, num_supercharged, ship, tech):
     """
@@ -99,7 +94,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Find the best layout from generated data.")
     parser.add_argument("num_supercharged", type=int, help="Number of supercharged slots.")
     parser.add_argument("--ship", type=str, required=True, help="Ship type (e.g., sentinel, standard).")
-    parser.add_argument("--tech", type=str, required=True, help="Tech type (e.g., photonix, infra).")
+    parser.add_argument("--tech", type=str, required=True, help="Tech type (e.g., infra).")
     parser.add_argument("--rewards", nargs='*', help="List of player-owned reward module IDs.")
     args = parser.parse_args()
 
@@ -123,7 +118,7 @@ if __name__ == "__main__":
     data_tech_key = keys["module_def_tech_key"]
 
     # Construct the directory path from the mapped keys
-    directory = os.path.join(project_root, "training", "generated_batches", data_ship_key, data_tech_key)
+    directory = os.path.join(project_root, "src", "training", "generated_batches", data_ship_key, data_tech_key)
     print(f"Searching for data in: {directory}")
 
     # Call the function with the mapped keys for data processing

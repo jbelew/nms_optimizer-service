@@ -5,36 +5,36 @@ from gevent import monkey
 monkey.patch_all()
 # --- End Gevent monkey-patching ---
 
-# app.py
-# Configure logging as the first step after monkey-patching
-
-from flask import Flask, jsonify, request 
-from flask_compress import Compress  
-from flask_cors import CORS 
-from flask_socketio import SocketIO, emit
-
-
-from .optimization import optimize_placement
-from .grid_utils import Grid
-from .modules_utils import get_tech_tree_json
-from .data_loader import get_module_data, get_all_module_data
-from .data_definitions.recommended_builds import recommended_builds
-from .data_definitions.grids import grids
 import os
-import uuid
 import time
-from google.oauth2 import service_account
+import uuid
+from typing import cast
+
+from flask import Flask, jsonify, request
+from flask_compress import Compress
+from flask_cors import CORS
+from flask_socketio import SocketIO, emit
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (
     DateRange,
     Dimension,
-    Metric,
-    RunReportRequest,
-    OrderBy,
-    FilterExpression,
     Filter,
+    FilterExpression,
+    Metric,
+    OrderBy,
+    RunReportRequest,
 )
-from typing import cast  # noqa: E402
+from google.oauth2 import service_account
+
+from .data_definitions.grids import grids
+from .data_definitions.recommended_builds import recommended_builds
+from .data_loader import get_all_module_data, get_module_data
+from .grid_utils import Grid
+from .modules_utils import get_tech_tree_json
+from .optimization import optimize_placement
+
+# app.py
+# Configure logging as the first step after monkey-patching
 
 
 # Define a custom Request type for Flask-SocketIO to include 'sid'

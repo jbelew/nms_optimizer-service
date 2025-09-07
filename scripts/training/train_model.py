@@ -5,19 +5,12 @@ import torch.optim as optim
 import torch.utils.data as data
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.tensorboard.writer import SummaryWriter
-import sys
 import os
-import sys
 import time
 import glob
 import argparse
 import numpy as np
 from typing import Optional, List
-
-# --- Project Root and Path Setup ---
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
 
 # --- Imports from your project ---
 from src.training.model_definition import ModulePlacementCNN
@@ -250,8 +243,10 @@ def train_model(
             model.eval()
             running_val_loss = 0.0
             if metrics_available:
-                if val_accuracy: val_accuracy.reset()
-                if val_iou: val_iou.reset()
+                if val_accuracy:
+                    val_accuracy.reset()
+                if val_iou:
+                    val_iou.reset()
 
             with torch.no_grad():
                 for i, (inputs, targets_placement) in enumerate(val_loader):
@@ -277,8 +272,10 @@ def train_model(
 
                     if metrics_available:
                         preds = torch.argmax(outputs_placement, dim=1)
-                        if val_accuracy: val_accuracy.update(preds, targets_placement)
-                        if val_iou: val_iou.update(preds, targets_placement)
+                        if val_accuracy:
+                            val_accuracy.update(preds, targets_placement)
+                        if val_iou:
+                            val_iou.update(preds, targets_placement)
 
             if early_stop_triggered:  # Check if NaN loss caused break
                 break  # Exit outer loop
