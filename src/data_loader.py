@@ -4,7 +4,7 @@ import os
 from functools import lru_cache
 from typing import List, Union
 
-from data_definitions.modules_for_training import MODULES_FOR_TRAINING
+from .data_definitions.modules_for_training import MODULES_FOR_TRAINING
 
 # --- Constants ---
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data_definitions")

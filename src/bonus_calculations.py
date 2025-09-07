@@ -1,6 +1,6 @@
 # bonus_calculations.py
 import logging
-from grid_utils import Grid
+from .grid_utils import Grid
 from enum import Enum
 
 # --- Constants ---

@@ -1,11 +1,19 @@
 # /home/jbelew/projects/nms_optimizer/nms_optimizer-service/debugging_utils/solve_map_generator.py
 import argparse
+import sys
+import os
 
-from ..grid_utils import Grid
-from ..data_loader import get_all_module_data
-from ..optimization.training import refine_placement_for_training
-from ..optimization.refinement import simulated_annealing
-from ..grid_display import print_grid
+# --- Project Root and Path Setup ---
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from src.grid_utils import Grid
+from src.data_loader import get_all_module_data
+from src.optimization.training import refine_placement_for_training
+from src.optimization.refinement import simulated_annealing
+from src.grid_display import print_grid
+from src.modules_utils import get_tech_modules, get_tech_modules_for_training
 
 modules = get_all_module_data()
 
@@ -63,12 +71,29 @@ def generate_solve_map(
                 "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
+            tech_modules = get_tech_modules(
+                ship_modules, ship_type, tech, player_owned_rewards, solve_type=solve_type
+            )
+            if not tech_modules:
+                print(
+                    f"Error: No modules found for {ship_type}/{tech} with solve_type {solve_type}"
+                )
+                return None, None
             optimized_grid, optimized_score = simulated_annealing(
-                grid, ship_type, ship_modules, tech, player_owned_rewards, solve_type=solve_type if solve_type is not None else "", **sa_params
+                grid=grid,
+                ship=ship_type,
+                modules=ship_modules,
+                tech=tech,
+                full_grid=grid,
+                player_owned_rewards=player_owned_rewards,
+                tech_modules=tech_modules,
+                solve_type=solve_type if solve_type is not None else "",
+                **sa_params,
             )
         elif solver_choice == "refine_training":
             print(f"INFO -- Using refine_placement_for_training for {ship_type}/{tech}")
-            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, ship_modules, tech)
+            tech_modules = get_tech_modules_for_training(ship_modules, ship_type, tech)
+            optimized_grid, optimized_score = refine_placement_for_training(grid, tech_modules, tech)
         else:
             print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine_training'.")
             return None, None

@@ -5,7 +5,6 @@ import multiprocessing
 import time
 from itertools import permutations
 
-from ..modules_utils import get_tech_modules_for_training
 from ..bonus_calculations import calculate_grid_score
 from ..module_placement import place_module, clear_all_modules_of_tech
 
@@ -84,7 +83,7 @@ def _evaluate_permutation_worker(args):
     return (grid_bonus, placement_indices)
 
 
-def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
+def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
     """
     Optimizes module placement using brute-force permutations with multiprocessing,
     intended for generating optimal ground truth for training data.
@@ -94,11 +93,9 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     optimal_grid = None
     highest_bonus = -1.0  # Use -1 to clearly distinguish from a valid 0 score
 
-    tech_modules = get_tech_modules_for_training(modules, ship, tech)
-
     # --- Initial Checks (same as before) ---
     if not tech_modules:
-        logging.warning(f"No modules for {ship}/{tech}. Returning cleared grid.")
+        logging.warning(f"No modules for {tech}. Returning cleared grid.")
         cleared_grid = grid.copy()
         clear_all_modules_of_tech(cleared_grid, tech)
         return cleared_grid, 0.0
@@ -282,13 +279,13 @@ def refine_placement_for_training(grid, ship, modules, tech, num_workers=None):
     # --- Handle No Valid Placement Found ---
     elif num_modules_to_place > 0:  # Check if modules existed but no solution found
         logging.warning(
-            f"No optimal grid found for {ship}/{tech}. Returning cleared grid."
+            f"No optimal grid found for {tech}. Returning cleared grid."
         )
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)
         highest_bonus = 0.0  # Score is 0 for a cleared grid
     else:  # No modules to place initially
-        logging.info(f"No modules to place for {ship}/{tech}. Returning cleared grid.")
+        logging.info(f"No modules to place for {tech}. Returning cleared grid.")
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)
         highest_bonus = 0.0

@@ -9,18 +9,18 @@ monkey.patch_all()
 # app.py
 # Configure logging as the first step after monkey-patching
 
-from flask import Flask, jsonify, request  # noqa: E402
-from flask_compress import Compress  # noqa: E402
-from flask_cors import CORS  # noqa: E402
+from flask import Flask, jsonify, request 
+from flask_compress import Compress  
+from flask_cors import CORS 
 from flask_socketio import SocketIO, emit
 
 
-from src.optimization import optimize_placement
-from src.grid_utils import Grid
-from src.modules_utils import get_tech_tree_json
-from src.data_loader import get_module_data, get_all_module_data
-from data_definitions.recommended_builds import recommended_builds
-from data_definitions.grids import grids
+from .optimization import optimize_placement
+from .grid_utils import Grid
+from .modules_utils import get_tech_tree_json
+from .data_loader import get_module_data, get_all_module_data
+from .data_definitions.recommended_builds import recommended_builds
+from .data_definitions.grids import grids
 import os
 import uuid
 import time

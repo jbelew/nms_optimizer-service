@@ -1,5 +1,5 @@
-from module_placement import place_module, clear_all_modules_of_tech
-from modules_utils import get_tech_modules
+from .module_placement import place_module, clear_all_modules_of_tech
+from .modules_utils import get_tech_modules
 import logging
 
 def rotate_pattern(pattern):

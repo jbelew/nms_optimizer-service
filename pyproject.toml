@@ -1,3 +1,10 @@
 [tool.black]
 line-length = 120
 src = ["src/"]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint.per-file-ignores]
+"src/debugging_utils/solve_map_generator.py" = ["E402"]
+"src/training/train_model.py" = ["E402"]

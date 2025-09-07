@@ -1,5 +1,5 @@
 # solve_map_utils.py
-from modules_utils import get_tech_modules
+from .modules_utils import get_tech_modules
 
 
 def filter_solves(
