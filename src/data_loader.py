@@ -2,7 +2,7 @@ import json
 import logging
 import os
 from functools import lru_cache
-from typing import List
+from typing import List, Optional
 
 from .data_definitions.modules_for_training import MODULES_FOR_TRAINING
 
@@ -37,7 +37,7 @@ def _convert_map_keys_to_tuple(data):
 
 
 @lru_cache(maxsize=64)
-def get_solve_map(ship_type: str, solve_type: str | None = None):
+def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
     """
     Loads the solve map for a specific ship type from its JSON file.
     If solve_type is specified, it will be used. Otherwise, it defaults to "normal".
