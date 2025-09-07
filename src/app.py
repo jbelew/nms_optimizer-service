@@ -1,3 +1,4 @@
+# ruff: noqa: E402
 # --- Gevent monkey-patching ---
 # IMPORTANT: This must be the very first import and execution in the app
 from gevent import monkey

@@ -1,11 +1,11 @@
 # optimization/helpers.py
 import logging
-from modules_utils import get_tech_modules
-from module_placement import place_module
+from ..modules_utils import get_tech_modules
+from ..module_placement import place_module
 
 
 def determine_window_dimensions(
-    module_count: int, tech: str, solve_type: str = None
+    module_count: int, tech: str, solve_type: str = ""
 ) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules.

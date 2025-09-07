@@ -7,10 +7,10 @@ import logging
 from copy import deepcopy
 from itertools import permutations
 
-from grid_utils import Grid, restore_original_state, apply_localized_grid_changes
-from modules_utils import get_tech_modules
-from bonus_calculations import calculate_grid_score
-from module_placement import place_module, clear_all_modules_of_tech
+from ..grid_utils import restore_original_state, apply_localized_grid_changes
+from ..modules_utils import get_tech_modules
+from ..bonus_calculations import calculate_grid_score
+from ..module_placement import place_module, clear_all_modules_of_tech
 from .helpers import check_all_modules_placed
 from .windowing import create_localized_grid, create_localized_grid_ml
 
@@ -33,7 +33,7 @@ def _handle_ml_opportunity(
     tech_modules=None,
 ):
     """Handles the ML-based refinement within an opportunity window."""
-    from ml_placement import ml_placement  # Keep import local if possible
+    from ..ml_placement import ml_placement  # Keep import local if possible
 
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -174,8 +174,8 @@ def _handle_sa_refine_opportunity(
             run_id=run_id,
             stage=stage,
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type,
-            tech_modules=tech_modules,
+            solve_type=solve_type if solve_type is not None else "",
+            tech_modules=tech_modules if tech_modules is not None else [],
         )
 
     # Process SA/Refine result (logic remains the same)
@@ -461,8 +461,8 @@ def simulated_annealing(
     send_grid_updates=False,
     start_x: int = 0,  # Added start_x
     start_y: int = 0,  # Added start_y
-    solve_type: str = None,  # Added solve_type
-    tech_modules: list = None,  # Added tech_modules
+    solve_type: str = "",  # Added solve_type
+    tech_modules: list = [],  # Added tech_modules
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -746,7 +746,7 @@ def simulated_annealing(
 
     # Final check for validity (especially important if polishing)
     final_modules_placed = check_all_modules_placed(
-        best_grid, modules, ship, tech, player_owned_rewards, tech_modules=modules_to_consider, solve_type=solve_type
+        best_grid, modules, ship, tech, player_owned_rewards, tech_modules=modules_to_consider, solve_type=solve_type if solve_type is not None else ""
     )
     if not final_modules_placed:
         logging.warning(

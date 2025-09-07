@@ -1,19 +1,16 @@
 # /home/jbelew/projects/nms_optimizer/nms_optimizer-service/debugging_utils/generate_solves.py
 import argparse
-import sys
 import os
 import json
 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.insert(0, project_root)
-
-from grid_utils import Grid
-from data_definitions.modules import modules
+from ..grid_utils import Grid
+from ..data_loader import get_all_module_data
 
 # Import both solver options
-from optimization.training import refine_placement_for_training
-from optimization.refinement import refine_placement, simulated_annealing
-from grid_display import print_grid, print_grid_compact
+from ..optimization.training import refine_placement_for_training
+from ..optimization.refinement import simulated_annealing
+
+modules = get_all_module_data()
 
 
 def generate_solve_map(

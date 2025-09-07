@@ -1,16 +1,15 @@
 # optimization/core.py
 import logging
-from copy import deepcopy
 
-from grid_utils import Grid, restore_original_state, apply_localized_grid_changes
-from modules_utils import get_tech_modules
-from grid_display import print_grid_compact
-from bonus_calculations import calculate_grid_score
-from module_placement import clear_all_modules_of_tech
+from ..grid_utils import Grid
+from ..modules_utils import get_tech_modules
+from ..grid_display import print_grid_compact
+from ..bonus_calculations import calculate_grid_score
+from ..module_placement import clear_all_modules_of_tech
 from .refinement import simulated_annealing, _handle_ml_opportunity, _handle_sa_refine_opportunity
-from data_loader import get_solve_map
-from solve_map_utils import filter_solves
-from pattern_matching import (
+from ..data_loader import get_solve_map
+from ..solve_map_utils import filter_solves
+from ..pattern_matching import (
     apply_pattern_to_grid,
     get_all_unique_pattern_variations,
 )
@@ -23,7 +22,6 @@ from .windowing import (
     find_supercharged_opportunities,
     calculate_window_score,
     _scan_grid_with_window,
-    create_localized_grid_ml,
 )
 
 
@@ -255,7 +253,7 @@ def optimize_placement(
                     run_id=run_id,
                     stage="initial_placement",
                     send_grid_updates=send_grid_updates,
-                    solve_type=solve_type,
+                    solve_type=solve_type if solve_type is not None else "",
                     tech_modules=tech_modules,
                 )
                 if solved_grid is None:
@@ -678,7 +676,7 @@ def optimize_placement(
             run_id=run_id,
             stage="final_sa_unplaced_modules",
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type,
+            solve_type=solve_type if solve_type is not None else "",
             tech_modules=tech_modules,
         )
         if temp_solved_grid is not None:

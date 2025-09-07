@@ -1,5 +1,4 @@
 import subprocess
-import pkg_resources
 import logging
 
 # Step 1: Freeze current environment

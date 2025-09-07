@@ -5,9 +5,9 @@ import multiprocessing
 import time
 from itertools import permutations
 
-from modules_utils import get_tech_modules_for_training
-from bonus_calculations import calculate_grid_score
-from module_placement import place_module, clear_all_modules_of_tech
+from ..modules_utils import get_tech_modules_for_training
+from ..bonus_calculations import calculate_grid_score
+from ..module_placement import place_module, clear_all_modules_of_tech
 
 
 def _evaluate_permutation_worker(args):

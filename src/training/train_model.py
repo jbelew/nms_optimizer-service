@@ -3,9 +3,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
-from torch.optim.lr_scheduler import StepLR, ReduceLROnPlateau
-from torch.utils.tensorboard import SummaryWriter
-import sys
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.utils.tensorboard.writer import SummaryWriter
 import os
 import time
 import glob
@@ -13,18 +12,13 @@ import argparse
 import numpy as np
 from typing import Optional, List # <<< Added List for type hinting
 
-# --- Add project root to sys.path ---
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-# --- End Add project root ---
-
 # --- Imports from your project ---
-from training.model_definition import ModulePlacementCNN
-from modules_utils import get_tech_modules_for_training
-from data_definitions.modules import modules
-from optimization.helpers import determine_window_dimensions
+from .model_definition import ModulePlacementCNN
+from ..data_loader import get_all_module_data, get_training_module_ids
+from ..optimization.helpers import determine_window_dimensions
 from sklearn.model_selection import train_test_split
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 try:
     import torchmetrics
@@ -41,7 +35,7 @@ DEFAULT_LOG_DIR = "runs_placement_only"
 
 # --- Dataset ---
 class PlacementDataset(data.Dataset):
-    def __init__(self, X_supercharge, X_inactive_mask, y):
+    def __init__(self, X_supercharge, y, X_inactive_mask=None):
         self.X_supercharge = X_supercharge
         self.X_inactive_mask = X_inactive_mask
         self.y = y
@@ -50,8 +44,6 @@ class PlacementDataset(data.Dataset):
         # Use the length of the first available array
         if self.X_supercharge is not None:
             return len(self.X_supercharge)
-        elif self.X_inactive_mask is not None:
-            return len(self.X_inactive_mask)
         elif self.y is not None:
             return len(self.y)
         else:
@@ -59,8 +51,13 @@ class PlacementDataset(data.Dataset):
 
     def __getitem__(self, idx):
         x_sc = self.X_supercharge[idx]
-        x_inactive = self.X_inactive_mask[idx]
         target = self.y[idx]
+
+        # If inactive mask is not provided, create a tensor of zeros
+        if self.X_inactive_mask is not None:
+            x_inactive = self.X_inactive_mask[idx]
+        else:
+            x_inactive = np.zeros_like(x_sc)
 
         # Ensure tensors are created correctly
         input_tensor = torch.stack(
@@ -153,7 +150,7 @@ def train_model(
     # --- Early Stopping Initialization ---
     if early_stopping_metric == "val_miou" and not metrics_available:
         print(
-            f"Warning: Cannot monitor 'val_miou' as torchmetrics failed or is not installed. Defaulting to 'val_loss'."
+            "Warning: Cannot monitor 'val_miou' as torchmetrics failed or is not installed. Defaulting to 'val_loss'."
         )
         early_stopping_metric = "val_loss"
         metric_mode = "min" # Ensure metric_mode matches the actual metric
@@ -218,8 +215,10 @@ def train_model(
             model.eval()
             running_val_loss = 0.0
             if metrics_available:
-                if val_accuracy: val_accuracy.reset()
-                if val_iou: val_iou.reset()
+                if val_accuracy:
+                    val_accuracy.reset()
+                if val_iou:
+                    val_iou.reset()
 
             with torch.no_grad():
                 for i, (inputs, targets_placement) in enumerate(val_loader):
@@ -238,8 +237,10 @@ def train_model(
 
                     if metrics_available:
                         preds = torch.argmax(outputs_placement, dim=1)
-                        if val_accuracy: val_accuracy.update(preds, targets_placement)
-                        if val_iou: val_iou.update(preds, targets_placement)
+                        if val_accuracy:
+                            val_accuracy.update(preds, targets_placement)
+                        if val_iou:
+                            val_iou.update(preds, targets_placement)
 
             if early_stop_triggered: # Check if NaN loss caused break
                  break # Exit outer loop
@@ -399,7 +400,8 @@ def run_training_from_files(
     """
     # --- Get Ship Data ---
     try:
-        ship_data = modules.get(ship)
+        all_module_data = get_all_module_data()
+        ship_data = all_module_data.get(ship)
         if not ship_data or "types" not in ship_data or not isinstance(ship_data["types"], dict):
             raise KeyError(f"Ship '{ship}' or its 'types' dictionary not found/invalid.")
     except KeyError as e:
@@ -460,7 +462,7 @@ def run_training_from_files(
             print(f"\n--- Processing Tech: {tech} ---")
 
             # <<< Determine num_output_classes AND grid dimensions >>>
-            tech_modules_for_class_count = get_tech_modules_for_training(modules, ship, tech)
+            tech_modules_for_class_count = get_training_module_ids(ship, tech)
             if not tech_modules_for_class_count:
                 print(f"Warning: Could not get modules for tech '{tech}' to determine class count/size. Skipping.")
                 continue
@@ -622,14 +624,14 @@ def run_training_from_files(
 
             # --- 3. Prepare Datasets and DataLoaders ---
             try:
-                train_dataset = PlacementDataset(X_train_sc_np, X_train_in_np, y_train_np)
+                train_dataset = PlacementDataset(X_train_sc_np, y_train_np, X_inactive_mask=X_train_in_np)
                 if X_val_sc_np is not None and X_val_in_np is not None and y_val_np is not None and len(X_val_sc_np) > 0:
-                    val_dataset = PlacementDataset(X_val_sc_np, X_val_in_np, y_val_np)
+                    val_dataset = PlacementDataset(X_val_sc_np, y_val_np, X_inactive_mask=X_val_in_np)
                     val_batch_size = min(batch_size, len(val_dataset))
                     if val_batch_size > 0:
                         val_loader = data.DataLoader(
                             val_dataset, batch_size=val_batch_size, shuffle=False,
-                            num_workers=min(2, os.cpu_count()), pin_memory=torch.cuda.is_available()
+                            num_workers=min(2, (os.cpu_count() or 1)), pin_memory=torch.cuda.is_available()
                         )
                     else:
                         print(f"Warning: Validation dataset for tech '{tech}' is empty. Skipping validation.")
@@ -648,7 +650,7 @@ def run_training_from_files(
 
             train_loader = data.DataLoader(
                 train_dataset, batch_size=effective_batch_size, shuffle=True,
-                num_workers=min(4, os.cpu_count()), pin_memory=torch.cuda.is_available()
+                num_workers=min(4, (os.cpu_count() or 1)), pin_memory=torch.cuda.is_available()
             )
             # --- End Prepare DataLoaders ---
 
@@ -734,7 +736,7 @@ if __name__ == "__main__":
     }
 
     start_time_all = time.time()
-    print(f"Starting model training process...")
+    print("Starting model training process...")
     print(f"Configuration: {config}")
 
     os.makedirs(config["base_model_save_dir"], exist_ok=True)

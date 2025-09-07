@@ -2,23 +2,17 @@
 import numpy as np
 import os
 import argparse
-import sys
 import glob
 
-# --- Add project root to sys.path ---
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-# --- End Add project root ---
+from src.grid_utils import Grid
+from src.bonus_calculations import calculate_grid_score
+from src.data_loader import get_module_data, get_training_module_ids
+from src.grid_display import print_grid_compact
+from src.module_placement import place_module
+from src.data_definitions.model_mapping import get_model_keys
+from src.optimization.helpers import determine_window_dimensions
 
-from grid_utils import Grid
-from bonus_calculations import calculate_grid_score
-from data_definitions.modules import modules
-from grid_display import print_grid_compact
-from module_placement import place_module
-from modules_utils import get_tech_modules_for_training
-from data_definitions.model_mapping import get_model_keys
-from optimization.helpers import determine_window_dimensions
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 def find_best_layout(directory, num_supercharged, ship, tech):
     """
@@ -28,9 +22,29 @@ def find_best_layout(directory, num_supercharged, ship, tech):
     best_grid = None
     best_file = None
 
-    tech_modules = get_tech_modules_for_training(modules, ship, tech)
+    module_data = get_module_data(ship)
+    if not module_data:
+        print(f"Error: No module data found for ship '{ship}'.")
+        return
+
+    training_module_ids = get_training_module_ids(ship, tech)
+    if not training_module_ids:
+        print(f"Error: No training modules found for {ship}/{tech}.")
+        return
+
+    all_modules_for_ship = []
+    for tech_list in module_data.get("types", {}).values():
+        all_modules_for_ship.extend(tech_list)
+
+    tech_modules = []
+    for tech_info in all_modules_for_ship:
+        if tech_info.get("key") == tech:
+            for module in tech_info.get("modules", []):
+                if module.get("id") in training_module_ids:
+                    tech_modules.append(module)
+
     if not tech_modules:
-        print(f"Error: No tech modules found for ship='{ship}', tech='{tech}'.")
+        print(f"Error: Could not find module definitions for the training modules of {ship}/{tech}.")
         return
 
     tech_modules.sort(key=lambda m: m["id"])
@@ -105,11 +119,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Determine grid dimensions dynamically based on UI-facing keys
-    tech_modules_for_dims = get_tech_modules_for_training(modules, args.ship, args.tech)
-    if not tech_modules_for_dims:
+    training_module_ids = get_training_module_ids(args.ship, args.tech)
+    if not training_module_ids:
         print(f"Error: No tech modules found for UI keys ship='{args.ship}', tech='{args.tech}' to determine grid size.")
         exit()
-    module_count = len(tech_modules_for_dims)
+    module_count = len(training_module_ids)
     grid_w, grid_h = determine_window_dimensions(module_count, args.tech)
 
     # Get the correct internal keys for locating data, which may be different from UI keys

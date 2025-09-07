@@ -1,7 +1,7 @@
 # grid_utils.py
 import logging
 from copy import deepcopy
-from module_placement import place_module, clear_all_modules_of_tech
+from .module_placement import place_module, clear_all_modules_of_tech
 
 class Grid:
     def __init__(self, width, height):
