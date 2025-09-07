@@ -42,7 +42,7 @@ except ImportError as e:
     raise
 
 # --- Constants ---
-DEFAULT_MODEL_DIR = "training/trained_models"
+DEFAULT_MODEL_DIR = "trained_models"
 DEFAULT_MODEL_GRID_WIDTH = 4
 DEFAULT_MODEL_GRID_HEIGHT = 3
 # --- End Constants ---

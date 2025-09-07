@@ -26,8 +26,8 @@ except ImportError:
     torchmetrics = None
 
 # --- Configuration ---
-DEFAULT_DATA_SOURCE_DIR = "src/training/generated_batches"
-DEFAULT_MODEL_SAVE_DIR = "trained_models"
+DEFAULT_DATA_SOURCE_DIR = "generated_batches"
+DEFAULT_MODEL_SAVE_DIR = "../../src/trained_models"
 DEFAULT_LOG_DIR = "runs_placement_only"
 # --- End Configuration ---
 

@@ -118,7 +118,7 @@ if __name__ == "__main__":
     data_tech_key = keys["module_def_tech_key"]
 
     # Construct the directory path from the mapped keys
-    directory = os.path.join(project_root, "src", "training", "generated_batches", data_ship_key, data_tech_key)
+    directory = os.path.join(os.path.dirname(__file__), "generated_batches", data_ship_key, data_tech_key)
     print(f"Searching for data in: {directory}")
 
     # Call the function with the mapped keys for data processing
