@@ -6,6 +6,7 @@ import gevent
 import logging
 from copy import deepcopy
 from itertools import permutations
+from typing import Optional
 
 from src.grid_utils import restore_original_state, apply_localized_grid_changes
 from src.modules_utils import get_tech_modules
@@ -29,7 +30,7 @@ def _handle_ml_opportunity(
     run_id=None,
     stage=None,
     send_grid_updates=False,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """Handles the ML-based refinement within an opportunity window."""
@@ -71,7 +72,7 @@ def _handle_ml_opportunity(
         stage=stage,
         send_grid_updates=send_grid_updates,
         original_state_map=original_state_map,
-        solve_type=str(solve_type) if solve_type is not None else "",
+        solve_type=solve_type,
         tech_modules=tech_modules,  # type: ignore
     )
 
@@ -111,7 +112,7 @@ def _handle_sa_refine_opportunity(
     run_id=None,
     stage=None,
     send_grid_updates=False,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """Handles the SA/Refine-based refinement within an opportunity window."""
@@ -174,7 +175,7 @@ def _handle_sa_refine_opportunity(
             run_id=run_id,
             stage=stage,
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type if solve_type is not None else "",
+            solve_type=solve_type,
             tech_modules=tech_modules or [],
         )
 
@@ -200,7 +201,7 @@ def refine_placement(
     modules,
     tech,
     player_owned_rewards=None,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     optimal_grid = None
@@ -461,7 +462,7 @@ def simulated_annealing(
     send_grid_updates=False,
     start_x: int = 0,  # Added start_x
     start_y: int = 0,  # Added start_y
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules: list = None,
 ):
     """

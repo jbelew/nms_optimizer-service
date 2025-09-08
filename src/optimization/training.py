@@ -4,6 +4,7 @@ import math
 import multiprocessing
 import time
 from itertools import permutations
+from typing import Optional
 
 from ..bonus_calculations import calculate_grid_score
 from ..module_placement import place_module, clear_all_modules_of_tech
@@ -77,7 +78,7 @@ def _evaluate_permutation_worker(args):
     return (grid_bonus, placement_indices)
 
 
-def refine_placement_for_training(grid, tech_modules, tech, num_workers=None, solve_type: str = "normal"):
+def refine_placement_for_training(grid, tech_modules, tech, num_workers=None, solve_type: Optional[str] = None):
     """
     Optimizes module placement using brute-force permutations with multiprocessing,
     intended for generating optimal ground truth for training data.

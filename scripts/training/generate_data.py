@@ -86,42 +86,21 @@ def generate_training_batch(
     tech_modules = []
 
     candidates_for_tech = []
-    print(f"DEBUG: Filtering modules for tech: {tech}, solve_type: {solve_type}")
     for tech_info_candidate in all_modules_for_ship:
-        print(
-            f"DEBUG: Considering candidate: key={tech_info_candidate.get('key')}, type={tech_info_candidate.get('type')}"
-        )
         if tech_info_candidate.get("key") == tech:
             candidates_for_tech.append(tech_info_candidate)
-    print(f"DEBUG: Candidates for tech '{tech}': {len(candidates_for_tech)} found.")
 
     selected_tech_info = None
-    if solve_type == "max":
-        print("DEBUG: solve_type is 'max'. Searching for 'max' type candidate.")
+    for candidate in candidates_for_tech:
+        if candidate.get("type") == solve_type:
+            selected_tech_info = candidate
+            break
+
+    if selected_tech_info is None and solve_type is None:
         for candidate in candidates_for_tech:
-            print(f"DEBUG: Checking candidate type: {candidate.get('type')}")
-            if candidate.get("type") == "max":
+            if candidate.get("type") is None:
                 selected_tech_info = candidate
-                print(f"DEBUG: Selected tech info (max): {selected_tech_info.get('label')}")
                 break
-    else:  # solve_type is "normal" or None
-        print(f"DEBUG: solve_type is '{solve_type}'. Searching for 'normal' or no type candidate.")
-        # Prioritize explicit "normal" type
-        for candidate in candidates_for_tech:
-            print(f"DEBUG: Checking candidate type: {candidate.get('type')}")
-            if candidate.get("type") == "normal":
-                selected_tech_info = candidate
-                print(f"DEBUG: Selected tech info (normal): {selected_tech_info.get('label')}")
-                break
-        # If no explicit "normal" found, look for one without a type field
-        if selected_tech_info is None:
-            print("DEBUG: No explicit 'normal' found. Searching for candidate without type field.")
-            for candidate in candidates_for_tech:
-                print(f"DEBUG: Checking candidate type: {candidate.get('type')}")
-                if candidate.get("type") is None:
-                    selected_tech_info = candidate
-                    print(f"DEBUG: Selected tech info (no type): {selected_tech_info.get('label')}")
-                    break
 
     if selected_tech_info:
         print(
@@ -552,7 +531,7 @@ def generate_training_batch(
                         full_grid=original_grid_layout,
                         player_owned_rewards=None,  # Not needed when overriding modules
                         tech_modules=tech_modules,
-                        solve_type=solve_type if solve_type is not None else "",
+                        solve_type=solve_type,
                         **sa_params_for_ground_truth,
                     )
                     best_bonus = sa_score  # Assign the score from SA

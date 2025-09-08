@@ -1,5 +1,6 @@
 # optimization/helpers.py
 import logging
+from typing import Optional
 from src.modules_utils import get_tech_modules
 from src.module_placement import place_module
 
@@ -54,7 +55,7 @@ def place_all_modules_in_empty_slots(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
@@ -115,7 +116,7 @@ def check_all_modules_placed(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """

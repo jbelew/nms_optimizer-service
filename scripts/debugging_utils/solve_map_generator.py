@@ -82,7 +82,7 @@ def generate_solve_map(
                 full_grid=grid,
                 player_owned_rewards=player_owned_rewards,
                 tech_modules=tech_modules,
-                solve_type=solve_type if solve_type is not None else "",
+                solve_type=solve_type,
                 **sa_params,
             )
         elif solver_choice == "refine_training":

@@ -67,7 +67,7 @@ def ml_placement(
     progress_offset=0,
     progress_scale=100,
     send_grid_updates=False,
-    solve_type: str = "normal",
+    solve_type: Optional[str] = None,
     tech_modules: list = None,
 ) -> Tuple[Optional[Grid], float]:
     """
@@ -441,7 +441,7 @@ def ml_placement(
                 send_grid_updates=send_grid_updates,
                 start_x=start_x_original,
                 start_y=start_y_original,
-                solve_type=solve_type if solve_type is not None else "",
+                solve_type=solve_type,
                 tech_modules=tech_modules,
                 **polish_params,
             )

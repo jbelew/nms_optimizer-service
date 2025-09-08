@@ -40,7 +40,8 @@ def _convert_map_keys_to_tuple(data):
 def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
     """
     Loads the solve map for a specific ship type from its JSON file.
-    If solve_type is specified, it will be used. Otherwise, it defaults to "normal".
+    - If solve_type is specified, it looks for a solve with a matching key.
+    - If solve_type is None, it looks for a solve that is not nested under a type key.
     """
     file_path = os.path.join(DATA_DIR, "solves", f"{ship_type}.json")
 
@@ -54,14 +55,16 @@ def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
         processed_data = {}
         for tech_name, tech_info in data.items():
             solve_data_to_use = None
-            # Determine the key to look for in the tech_info dictionary
-            key_to_find = solve_type if solve_type else "normal"
 
-            # Check if the tech_info itself contains the map and score (flat structure)
+            # Case 1: The tech_info itself is the solve (flat structure, e.g., "infra" in corvette.json)
+            # This is the default solve when no solve_type is requested.
             if "map" in tech_info and "score" in tech_info:
-                solve_data_to_use = tech_info
-            elif key_to_find in tech_info:
-                solve_data_to_use = tech_info[key_to_find]
+                if solve_type is None:
+                    solve_data_to_use = tech_info
+
+            # Case 2: The tech_info contains multiple solves keyed by type (e.g., "cyclotron" in corvette.json)
+            elif solve_type in tech_info:
+                solve_data_to_use = tech_info[solve_type]
 
             if solve_data_to_use and 'map' in solve_data_to_use:
                 processed_data[tech_name] = {
@@ -154,63 +157,65 @@ def get_all_module_data():
 
 
 def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[str] = None) -> List[str]:
-    print(f"DEBUG: get_training_module_ids called with ship_key={ship_key}, tech_key={tech_key}")
     """
-    Gets the list of module IDs for a given technology, using the specific
-    training definition if available, otherwise falling back to the main
-    module data. This is used to define the ML model architecture.
+    Gets the list of module IDs for a given technology.
+
+    This function defines the modules that a model should be trained on.
+    It first checks for a specific override in `modules_for_training.py`.
+    If no override exists, it falls back to the main module data, matching based on `solve_type`.
 
     Args:
         ship_key: The key for the ship/platform (e.g., "standard").
         tech_key: The key for the technology (e.g., "pulse").
-        solve_type: The type of solve (e.g., "normal", "max").
+        solve_type: The specific solve type (e.g., "max") or None for the default.
 
     Returns:
-        A list of module ID strings.
+        A list of module ID strings for training.
     """
     # 1. Check for a specific override in modules_for_training.py
     if ship_key in MODULES_FOR_TRAINING and tech_key in MODULES_FOR_TRAINING[ship_key]:
-        module_ids = MODULES_FOR_TRAINING[ship_key][tech_key]
-        print(f"DEBUG: get_training_module_ids returning {len(module_ids)} modules from MODULES_FOR_TRAINING for {ship_key}/{tech_key}")
-        return module_ids
+        override_modules = MODULES_FOR_TRAINING[ship_key][tech_key]
+        logging.debug(f"get_training_module_ids: Found override for {ship_key}/{tech_key}, returning {len(override_modules)} modules.")
+        return override_modules
 
-    # 2. If no override, load from the main JSON data and extract the IDs
+    # 2. If no override, load from the main JSON data
     module_data = get_module_data(ship_key)
     if not module_data:
+        logging.warning(f"get_training_module_ids: No module data found for ship_key '{ship_key}'.")
         return []
 
-    types_data = module_data.get("types", {})
-    
+    # 3. Find all candidate technology definitions for the given tech_key
     candidates_for_tech = []
-    for tech_list in types_data.values():
+    for tech_list in module_data.get("types", {}).values():
         for tech_data in tech_list:
             if tech_data.get("key") == tech_key:
                 candidates_for_tech.append(tech_data)
 
-    selected_tech_data = None
-    if solve_type == "max":
-        for candidate in candidates_for_tech:
-            if candidate.get("type") == "max":
-                selected_tech_data = candidate
-                break
-    else: # solve_type is "normal" or None
-        # Prioritize explicit "normal" type
-        for candidate in candidates_for_tech:
-            if candidate.get("type") == "normal":
-                selected_tech_data = candidate
-                break
-        # If no explicit "normal" found, look for one without a type field
-        if selected_tech_data is None:
-            for candidate in candidates_for_tech:
-                if candidate.get("type") is None:
-                    selected_tech_data = candidate
-                    break
+    if not candidates_for_tech:
+        logging.warning(f"get_training_module_ids: No technology found with key '{tech_key}' for ship '{ship_key}'.")
+        return []
 
+    # 4. Select the correct candidate based on solve_type
+    selected_tech_data = None
+    for candidate in candidates_for_tech:
+        if candidate.get("type") == solve_type:
+            selected_tech_data = candidate
+            break
+
+    # If no exact match was found, and solve_type is None, this implies we are looking for the "default"
+    # untyped technology. This maintains the principle that `None` should not arbitrarily match "normal".
+    if selected_tech_data is None and solve_type is None:
+        for candidate in candidates_for_tech:
+            if candidate.get("type") is None:
+                selected_tech_data = candidate
+                break
+
+    # 5. Extract module IDs from the selected technology data
     if selected_tech_data:
         modules = selected_tech_data.get("modules", [])
         module_ids = [m['id'] for m in modules]
-        print(f"DEBUG: get_training_module_ids returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key} (solve_type: {solve_type})")
+        logging.debug(f"get_training_module_ids: Returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key} (solve_type: {solve_type})")
         return module_ids
-    
-    print(f"DEBUG: get_training_module_ids returning {len([])} modules for {ship_key}/{tech_key} (solve_type: {solve_type})")
+
+    logging.warning(f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key} with solve_type '{solve_type}'.")
     return []
