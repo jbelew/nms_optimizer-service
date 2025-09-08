@@ -154,6 +154,7 @@ def get_all_module_data():
 
 
 def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
+    print(f"DEBUG: get_training_module_ids called with ship_key={ship_key}, tech_key={tech_key}")
     """
     Gets the list of module IDs for a given technology, using the specific
     training definition if available, otherwise falling back to the main
@@ -168,7 +169,9 @@ def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
     """
     # 1. Check for a specific override in modules_for_training.py
     if ship_key in MODULES_FOR_TRAINING and tech_key in MODULES_FOR_TRAINING[ship_key]:
-        return MODULES_FOR_TRAINING[ship_key][tech_key]
+        module_ids = MODULES_FOR_TRAINING[ship_key][tech_key]
+        print(f"DEBUG: get_training_module_ids returning {len(module_ids)} modules from MODULES_FOR_TRAINING for {ship_key}/{tech_key}")
+        return module_ids
 
     # 2. If no override, load from the main JSON data and extract the IDs
     module_data = get_module_data(ship_key)
@@ -184,6 +187,9 @@ def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
                 # Return a list of just the IDs. For technologies not explicitly
                 # defined in MODULES_FOR_TRAINING, we assume the training set
                 # included all modules listed in the main data file.
-                return [m['id'] for m in modules]
+                module_ids = [m['id'] for m in modules]
+                print(f"DEBUG: get_training_module_ids returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key}")
+                return module_ids
 
+    print(f"DEBUG: get_training_module_ids returning {len([])} modules for {ship_key}/{tech_key}")
     return []  # Return empty list if tech_key not found

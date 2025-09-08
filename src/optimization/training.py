@@ -16,9 +16,7 @@ def _evaluate_permutation_worker(args):
     Creates its own grid copy internally to avoid modifying the shared base.
     """
     # 1. Unpack arguments
-    placement_indices, original_base_grid, tech_modules, available_positions, tech = (
-        args
-    )
+    placement_indices, original_base_grid, tech_modules, available_positions, tech, solve_type = args
     num_modules_to_place = len(tech_modules)
 
     # 2. Create a local copy *inside* the worker for this specific permutation
@@ -61,15 +59,11 @@ def _evaluate_permutation_worker(args):
                 module["image"],
             )
         except IndexError:
-            logging.error(
-                f"IndexError during place_module at ({x},{y}) in worker. Skipping."
-            )
+            logging.error(f"IndexError during place_module at ({x},{y}) in worker. Skipping.")
             placement_successful = False
             break
         except Exception as e:  # Catch other potential errors
-            logging.error(
-                f"Exception during place_module at ({x},{y}) in worker: {e}. Skipping."
-            )
+            logging.error(f"Exception during place_module at ({x},{y}) in worker: {e}. Skipping.")
             placement_successful = False
             break
 
@@ -83,7 +77,7 @@ def _evaluate_permutation_worker(args):
     return (grid_bonus, placement_indices)
 
 
-def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
+def refine_placement_for_training(grid, tech_modules, tech, num_workers=None, solve_type: str = "normal"):
     """
     Optimizes module placement using brute-force permutations with multiprocessing,
     intended for generating optimal ground truth for training data.
@@ -102,10 +96,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
 
     num_modules_to_place = len(tech_modules)
     available_positions = [
-        (x, y)
-        for y in range(grid.height)
-        for x in range(grid.width)
-        if grid.get_cell(x, y)["active"]
+        (x, y) for y in range(grid.height) for x in range(grid.width) if grid.get_cell(x, y)["active"]
     ]
     num_available = len(available_positions)
 
@@ -148,13 +139,11 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
 
     # --- Task Preparation ---
     # Generate permutations of *indices* into available_positions
-    permutation_indices_iterator = permutations(
-        range(num_available), num_modules_to_place
-    )
+    permutation_indices_iterator = permutations(range(num_available), num_modules_to_place)
 
     # Package arguments: Pass the single base_working_grid. It gets pickled by the pool mechanism.
     tasks = (
-        (indices, base_working_grid, tech_modules, available_positions, tech)
+        (indices, base_working_grid, tech_modules, available_positions, tech, solve_type)
         for indices in permutation_indices_iterator
     )
     # --- End Task Preparation ---
@@ -168,8 +157,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
         chunks_per_worker_target = 500  # Tune this value
         calculated_chunksize = int(
-            num_permutations
-            // (num_workers * chunks_per_worker_target)  # Ensure integer
+            num_permutations // (num_workers * chunks_per_worker_target)  # Ensure integer
         )
         chunksize = max(chunksize, calculated_chunksize)
         # Add an upper limit to prevent huge chunks consuming too much memory at once
@@ -184,9 +172,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
     logging.info(f"Setting maxtasksperchild={maxtasks}")
     with multiprocessing.Pool(processes=num_workers, maxtasksperchild=maxtasks) as pool:
         # imap_unordered is good for performance when order doesn't matter
-        results_iterator = pool.imap_unordered(
-            _evaluate_permutation_worker, tasks, chunksize=chunksize
-        )
+        results_iterator = pool.imap_unordered(_evaluate_permutation_worker, tasks, chunksize=chunksize)
 
         # Progress reporting frequency
         update_frequency = max(
@@ -210,9 +196,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
                 num_permutations != float("inf") and processed_count == num_permutations
             ):
                 elapsed = time.time() - start_time
-                (processed_count / num_permutations * 100) if num_permutations != float(
-                    "inf"
-                ) else 0
+                (processed_count / num_permutations * 100) if num_permutations != float("inf") else 0
                 # Use \r and flush=True for inline updating
                 logging.debug(
                     f"Processed ~{processed_count // 1000}k permutations. Best: {highest_bonus:.4f} ({elapsed:.1f}s)"
@@ -220,9 +204,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
 
     end_time = time.time()
     total_time = end_time - start_time
-    logging.info(
-        f"Parallel evaluation finished in {total_time:.2f} seconds. Processed {processed_count} permutations."
-    )
+    logging.info(f"Parallel evaluation finished in {total_time:.2f} seconds. Processed {processed_count} permutations.")
     if total_time > 0:
         perms_per_sec = processed_count / total_time
         logging.info(f"Rate: {perms_per_sec:,.0f} permutations/sec")
@@ -256,9 +238,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
                     module["image"],
                 )
             except Exception as e:
-                logging.error(
-                    f"ERROR during final grid reconstruction at ({x},{y}): {e}"
-                )
+                logging.error(f"ERROR during final grid reconstruction at ({x},{y}): {e}")
                 reconstruction_successful = False
                 break
 
@@ -278,9 +258,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None):
 
     # --- Handle No Valid Placement Found ---
     elif num_modules_to_place > 0:  # Check if modules existed but no solution found
-        logging.warning(
-            f"No optimal grid found for {tech}. Returning cleared grid."
-        )
+        logging.warning(f"No optimal grid found for {tech}. Returning cleared grid.")
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)
         highest_bonus = 0.0  # Score is 0 for a cleared grid

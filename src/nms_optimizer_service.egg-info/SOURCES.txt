@@ -17,10 +17,12 @@ src/optimization_context.py
 src/optimizer.py
 src/pattern_matching.py
 src/solve_map_utils.py
+src/data_definitions/__init__.py
 src/data_definitions/grids.py
 src/data_definitions/model_mapping.py
 src/data_definitions/modules_for_training.py
 src/data_definitions/recommended_builds.py
+src/data_definitions/solves/__init__.py
 src/nms_optimizer_service.egg-info/PKG-INFO
 src/nms_optimizer_service.egg-info/SOURCES.txt
 src/nms_optimizer_service.egg-info/dependency_links.txt

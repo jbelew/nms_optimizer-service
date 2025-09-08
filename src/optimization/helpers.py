@@ -32,7 +32,7 @@ def determine_window_dimensions(
         window_width, window_height = 1, 3
     elif module_count < 7:
         window_width, window_height = 2, 3
-    elif module_count < 8 and tech == "pulse-spitter" or tech == "jetpack":
+    elif module_count < 8 and (tech == "pulse-spitter" or tech == "jetpack"):
         window_width, window_height = 3, 3
     elif module_count < 8:
         window_width, window_height = 4, 2

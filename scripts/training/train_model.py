@@ -13,7 +13,7 @@ import numpy as np
 from typing import Optional, List
 
 # --- Imports from your project ---
-from src.training.model_definition import ModulePlacementCNN
+from src.model_definition import ModulePlacementCNN
 from src.data_loader import get_all_module_data, get_training_module_ids
 from src.optimization.helpers import determine_window_dimensions
 from sklearn.model_selection import train_test_split # type: ignore
@@ -974,6 +974,7 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+    print(f"DEBUG: args.data_source_dir = {args.data_source_dir}")
 
     if not 0.0 <= args.val_split < 1.0:
         parser.error("--val_split must be between 0.0 and 1.0 (exclusive of 1.0)")

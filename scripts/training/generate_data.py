@@ -84,23 +84,29 @@ def generate_training_batch(
         all_modules_for_ship.extend(tech_list)
 
     tech_modules = []
-    for tech_info in all_modules_for_ship:
-        if tech_info.get("key") == tech:
-            for module in tech_info.get("modules", []):
-                if module.get("id") in training_module_ids:
-                    tech_modules.append(module)
+    # Find the specific tech_info that matches both the key and the solve_type
+    selected_tech_info = None
+    for tech_info_candidate in all_modules_for_ship:
+        if tech_info_candidate.get("key") == tech and tech_info_candidate.get("type") == solve_type:
+            selected_tech_info = tech_info_candidate
+            break # Found the specific one, no need to continue
+
+    if selected_tech_info:
+        for module in selected_tech_info.get("modules", []):
+            if module.get("id") in training_module_ids:
+                tech_modules.append(module)
 
     if not tech_modules:
         print(
             f"Error: No tech modules found for ship='{ship}', tech='{tech}'. Cannot determine grid size or generate data."
         )
         return 0, 0, None
-    module_count = len(tech_modules)
+    module_count = len(training_module_ids)
 
     # --- Initial default grid dimensions (might be overridden by experimental logic) ---
     # This call uses the *production* logic of determine_window_dimensions
     default_grid_width, default_grid_height = determine_window_dimensions(
-        module_count, tech
+        module_count, tech, solve_type=solve_type
     )
 
     # --- End Determine Dynamic Grid Dimensions ---
@@ -130,7 +136,7 @@ def generate_training_batch(
 
     solves = get_all_solve_data()
     if ship in solves and tech in solves[ship]:
-        original_pattern = solves[ship][tech].get("map")
+        original_pattern = solves[ship][tech].get(solve_type, {}).get("map")
         if original_pattern:
             solve_map_exists = True
             # Convert string keys like "(0, 0)" to tuples if necessary
@@ -572,6 +578,7 @@ def generate_training_batch(
                         full_grid=original_grid_layout,
                         player_owned_rewards=None,  # Not needed when overriding modules
                         tech_modules=tech_modules,
+                        solve_type=solve_type,
                         **sa_params_for_ground_truth,
                     )
                     best_bonus = sa_score  # Assign the score from SA
@@ -824,6 +831,8 @@ if __name__ == "__main__":
             tech_keys_to_process = [ 
                 t["key"] for t in category_data if isinstance(t, dict) and "key" in t
             ]
+            # Remove duplicates
+            tech_keys_to_process = list(set(tech_keys_to_process))
             if not tech_keys_to_process:
                 raise ValueError(
                     f"No valid tech keys found for ship '{config['ship']}', category '{config['tech_category_to_process']}'."
