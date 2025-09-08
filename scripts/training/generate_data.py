@@ -24,7 +24,7 @@ from src.grid_display import print_grid
 from src.module_placement import place_module
 
 # --- Configuration for Data Storage ---
-GENERATED_BATCH_DIR = "generated_batches"
+GENERATED_BATCH_DIR = "scripts/training/generated_batches"
 # --- End Configuration ---
 
 
@@ -74,7 +74,7 @@ def generate_training_batch(
         print(f"Error: No module data found for ship '{ship}'. Cannot generate data.")
         return 0, 0, None
 
-    training_module_ids = get_training_module_ids(ship, tech)
+    training_module_ids = get_training_module_ids(ship, tech, solve_type=solve_type)
     if not training_module_ids:
         print(f"Error: No training modules found for {ship}/{tech}. Cannot generate data.")
         return 0, 0, None
@@ -84,35 +84,73 @@ def generate_training_batch(
         all_modules_for_ship.extend(tech_list)
 
     tech_modules = []
-    # Find the specific tech_info that matches both the key and the solve_type
-    selected_tech_info = None
+
+    candidates_for_tech = []
+    print(f"DEBUG: Filtering modules for tech: {tech}, solve_type: {solve_type}")
     for tech_info_candidate in all_modules_for_ship:
-        if tech_info_candidate.get("key") == tech and tech_info_candidate.get("type") == solve_type:
-            selected_tech_info = tech_info_candidate
-            break # Found the specific one, no need to continue
+        print(
+            f"DEBUG: Considering candidate: key={tech_info_candidate.get('key')}, type={tech_info_candidate.get('type')}"
+        )
+        if tech_info_candidate.get("key") == tech:
+            candidates_for_tech.append(tech_info_candidate)
+    print(f"DEBUG: Candidates for tech '{tech}': {len(candidates_for_tech)} found.")
+
+    selected_tech_info = None
+    if solve_type == "max":
+        print("DEBUG: solve_type is 'max'. Searching for 'max' type candidate.")
+        for candidate in candidates_for_tech:
+            print(f"DEBUG: Checking candidate type: {candidate.get('type')}")
+            if candidate.get("type") == "max":
+                selected_tech_info = candidate
+                print(f"DEBUG: Selected tech info (max): {selected_tech_info.get('label')}")
+                break
+    else:  # solve_type is "normal" or None
+        print(f"DEBUG: solve_type is '{solve_type}'. Searching for 'normal' or no type candidate.")
+        # Prioritize explicit "normal" type
+        for candidate in candidates_for_tech:
+            print(f"DEBUG: Checking candidate type: {candidate.get('type')}")
+            if candidate.get("type") == "normal":
+                selected_tech_info = candidate
+                print(f"DEBUG: Selected tech info (normal): {selected_tech_info.get('label')}")
+                break
+        # If no explicit "normal" found, look for one without a type field
+        if selected_tech_info is None:
+            print("DEBUG: No explicit 'normal' found. Searching for candidate without type field.")
+            for candidate in candidates_for_tech:
+                print(f"DEBUG: Checking candidate type: {candidate.get('type')}")
+                if candidate.get("type") is None:
+                    selected_tech_info = candidate
+                    print(f"DEBUG: Selected tech info (no type): {selected_tech_info.get('label')}")
+                    break
 
     if selected_tech_info:
+        print(
+            f"DEBUG: Final selected_tech_info label: {selected_tech_info.get('label')}, type: {selected_tech_info.get('type')}"
+        )
         for module in selected_tech_info.get("modules", []):
             if module.get("id") in training_module_ids:
                 tech_modules.append(module)
+    else:
+        print("DEBUG: No selected_tech_info found after filtering.")
 
     if not tech_modules:
         print(
             f"Error: No tech modules found for ship='{ship}', tech='{tech}'. Cannot determine grid size or generate data."
         )
         return 0, 0, None
-    module_count = len(training_module_ids)
+    module_count = len(tech_modules)  # Changed from training_module_ids
 
     # --- Initial default grid dimensions (might be overridden by experimental logic) ---
     # This call uses the *production* logic of determine_window_dimensions
-    default_grid_width, default_grid_height = determine_window_dimensions(
-        module_count, tech, solve_type=solve_type
-    )
+    default_grid_width, default_grid_height = determine_window_dimensions(module_count, tech, solve_type=solve_type)
 
     # --- End Determine Dynamic Grid Dimensions ---
 
     # --- Construct specific output directory ---
-    tech_output_dir = os.path.join(base_output_dir, ship, tech)
+    if solve_type:
+        tech_output_dir = os.path.join(base_output_dir, ship, tech, solve_type)
+    else:
+        tech_output_dir = os.path.join(base_output_dir, ship, tech)
     # --- End Construct specific output directory ---
 
     # --- 1. Generate Samples ---
@@ -147,13 +185,8 @@ def generate_training_batch(
                     coord_tuple = eval(k) if isinstance(k, str) else k
                     if isinstance(coord_tuple, tuple) and len(coord_tuple) == 2:
                         # <<< Check if pattern fits within dynamic grid dimensions >>>
-                        px, py = (
-                            coord_tuple  # Use default_grid_width/height for initial solve map check
-                        )
-                        if (
-                            0 <= px < default_grid_width
-                            and 0 <= py < default_grid_height
-                        ):
+                        px, py = coord_tuple  # Use default_grid_width/height for initial solve map check
+                        if 0 <= px < default_grid_width and 0 <= py < default_grid_height:
                             pattern_tuple_keys[coord_tuple] = v
                         else:
                             print(
@@ -165,18 +198,12 @@ def generate_training_batch(
                     else:
                         print(f"Warning: Skipping invalid pattern key format: {k}")
                 except Exception as e:
-                    print(
-                        f"Warning: Skipping invalid pattern key format: {k} due to error: {e}"
-                    )
+                    print(f"Warning: Skipping invalid pattern key format: {k} due to error: {e}")
 
             if pattern_tuple_keys:  # Only generate variations if the pattern fits
-                solve_map_variations = get_all_unique_pattern_variations(
-                    pattern_tuple_keys
-                )
+                solve_map_variations = get_all_unique_pattern_variations(pattern_tuple_keys)
                 if not solve_map_variations:
-                    print(
-                        f"Warning: Solve map exists for {ship}/{tech} and fits, but generated no variations."
-                    )
+                    print(f"Warning: Solve map exists for {ship}/{tech} and fits, but generated no variations.")
                     solve_map_exists = False  # Treat as non-existent if no variations
             else:
                 # Pattern didn't fit or had invalid keys
@@ -210,42 +237,28 @@ def generate_training_batch(
         # Populate SC/inactive on original_grid_layout (using current_sample_grid_w/h)
         total_cells_current_sample = current_sample_grid_w * current_sample_grid_h
         all_positions_current_sample = [
-            (x, y)
-            for y in range(current_sample_grid_h)
-            for x in range(current_sample_grid_w)
+            (x, y) for y in range(current_sample_grid_h) for x in range(current_sample_grid_w)
         ]
 
-        num_inactive = random.randint(
-            0, min(max_inactive_cells, total_cells_current_sample)
-        )
+        num_inactive = random.randint(0, min(max_inactive_cells, total_cells_current_sample))
         if num_inactive > 0 and num_inactive <= len(all_positions_current_sample):
-            inactive_positions = random.sample(
-                all_positions_current_sample, num_inactive
-            )
+            inactive_positions = random.sample(all_positions_current_sample, num_inactive)
             inactive_positions_set = set(inactive_positions)
             for x, y in inactive_positions:
                 original_grid_layout.set_active(x, y, False)
 
         active_positions_current_sample = [
-            pos
-            for pos in all_positions_current_sample
-            if pos not in inactive_positions_set
+            pos for pos in all_positions_current_sample if pos not in inactive_positions_set
         ]
         num_active_cells_current_sample = len(active_positions_current_sample)
         if num_active_cells_current_sample == 0:
             continue
 
         supercharged_positions_set = set()
-        max_possible_supercharged = min(
-            max_supercharged, num_active_cells_current_sample
-        )
+        max_possible_supercharged = min(max_supercharged, num_active_cells_current_sample)
         num_supercharged_actual = random.randint(0, max_possible_supercharged)
-        if num_supercharged_actual > 0 and num_supercharged_actual <= len(
-            active_positions_current_sample
-        ):
-            supercharged_positions = random.sample(
-                active_positions_current_sample, num_supercharged_actual
-            )
+        if num_supercharged_actual > 0 and num_supercharged_actual <= len(active_positions_current_sample):
+            supercharged_positions = random.sample(active_positions_current_sample, num_supercharged_actual)
             supercharged_positions_set = set(supercharged_positions)
             for x, y in supercharged_positions:
                 original_grid_layout.set_supercharged(x, y, True)
@@ -256,13 +269,13 @@ def generate_training_batch(
             continue  # Skip this attempt entirely, don't even run the experimental filter below
         # --- End Early Skip ---
 
-        print_grid(
-            original_grid_layout
-        )  # Optional: for debugging the layout before filters
+        print_grid(original_grid_layout)  # Optional: for debugging the layout before filters
 
         # --- Experimental 4x3 Data Generation Filter ---
         # This filter runs if 'experimental' is true, which also means current_sample_grid_w/h will be 4x3.
-        if experimental:  # By this point, current_sample_grid_w and current_sample_grid_h are 4,3 if experimental is true
+        if (
+            experimental
+        ):  # By this point, current_sample_grid_w and current_sample_grid_h are 4,3 if experimental is true
             # This filter's purpose is to generate 4x3 data only if its raw SC score is "better"
             # than what could be achieved on the tech's standard (often smaller) grid.
             # If the tech's standard grid IS ALREADY 4x3 (i.e., default_grid_width/height match current_sample_grid_w/h),
@@ -272,13 +285,9 @@ def generate_training_batch(
                 current_sample_grid_w,
                 current_sample_grid_h,
             ):
-                print(
-                    f"\nDEBUG_EXPERIMENTAL_FILTER (Tech: {tech}, Attempt: {attempt_count}, Experimental Flag: True):"
-                )
+                print(f"\nDEBUG_EXPERIMENTAL_FILTER (Tech: {tech}, Attempt: {attempt_count}, Experimental Flag: True):")
                 print(f"  - Module Count: {module_count}")
-                print(
-                    f"  - Current Sample Grid (Experimental): {current_sample_grid_w}x{current_sample_grid_h}"
-                )
+                print(f"  - Current Sample Grid (Experimental): {current_sample_grid_w}x{current_sample_grid_h}")
                 print(
                     f"  - Default Grid for Comparison (Standard for this tech): {default_grid_width}x{default_grid_height}"
                 )
@@ -293,14 +302,12 @@ def generate_training_batch(
                 print(f"  - Raw Score for 4x3 Layout: {raw_score_4x3:.4f}")
 
                 # Scan the 4x3 layout to find the best raw score for a default-sized window (e.g., 4x2) within it.
-                best_default_slice_raw_score, best_default_slice_pos = (
-                    _scan_grid_with_window(
-                        deepcopy(original_grid_layout),
-                        default_grid_width,
-                        default_grid_height,
-                        module_count,
-                        tech,
-                    )
+                best_default_slice_raw_score, best_default_slice_pos = _scan_grid_with_window(
+                    deepcopy(original_grid_layout),
+                    default_grid_width,
+                    default_grid_height,
+                    module_count,
+                    tech,
                 )
                 print(
                     f"  - Best Raw Score for {default_grid_width}x{default_grid_height} slice within 4x3: {best_default_slice_raw_score:.4f} (at pos: {best_default_slice_pos})"
@@ -318,15 +325,9 @@ def generate_training_batch(
             else:
                 # Experimental mode is on, AND the default grid size for this tech IS 4x3.
                 # The comparative filter is not needed/meaningful in this case. Proceed with 4x3 generation.
-                print(
-                    f"\nDEBUG_EXPERIMENTAL_INFO (Tech: {tech}, Attempt: {attempt_count}, Experimental Flag: True):"
-                )
-                print(
-                    f"  - Current Sample Grid (Experimental): {current_sample_grid_w}x{current_sample_grid_h}"
-                )
-                print(
-                    f"  - Default Grid for this tech IS ALSO {default_grid_width}x{default_grid_height}."
-                )
+                print(f"\nDEBUG_EXPERIMENTAL_INFO (Tech: {tech}, Attempt: {attempt_count}, Experimental Flag: True):")
+                print(f"  - Current Sample Grid (Experimental): {current_sample_grid_w}x{current_sample_grid_h}")
+                print(f"  - Default Grid for this tech IS ALSO {default_grid_width}x{default_grid_height}.")
                 print(
                     "  - Skipping comparative raw score filter. Proceeding with 4x3 data generation as per experimental flag."
                 )
@@ -358,15 +359,9 @@ def generate_training_batch(
         # --- End Decision ---
         # --- Create Input and Output Matrices ---
         # <<< Use dynamic grid dimensions >>>
-        input_supercharge_np = np.zeros(
-            (current_sample_grid_h, current_sample_grid_w), dtype=np.int8
-        )
-        input_inactive_mask_np = np.zeros(
-            (current_sample_grid_h, current_sample_grid_w), dtype=np.int8
-        )
-        output_matrix = np.zeros(
-            (current_sample_grid_h, current_sample_grid_w), dtype=np.int8
-        )
+        input_supercharge_np = np.zeros((current_sample_grid_h, current_sample_grid_w), dtype=np.int8)
+        input_inactive_mask_np = np.zeros((current_sample_grid_h, current_sample_grid_w), dtype=np.int8)
+        output_matrix = np.zeros((current_sample_grid_h, current_sample_grid_w), dtype=np.int8)
         sample_valid = True  # Assume valid initially
 
         # Create Input Matrices
@@ -377,9 +372,7 @@ def generate_training_batch(
                 is_active = pos not in inactive_positions_set
                 is_supercharged = pos in supercharged_positions_set
                 input_supercharge_np[y, x] = int(is_active and is_supercharged)
-                input_inactive_mask_np[y, x] = int(
-                    not is_active
-                )  # 1 if inactive, 0 if active
+                input_inactive_mask_np[y, x] = int(not is_active)  # 1 if inactive, 0 if active
 
         # Create Output Matrix
         if use_solve_map:
@@ -393,17 +386,11 @@ def generate_training_batch(
             # --- Try to find a fitting variation ---
             fitting_variation_found = False
             tried_variations_indices = set()
-            max_variation_attempts = len(
-                solve_map_variations
-            )  # Try all variations once
+            max_variation_attempts = len(solve_map_variations)  # Try all variations once
             current_pattern_data = {}  # Initialize to an empty dict
 
             for _ in range(max_variation_attempts):
-                available_indices = [
-                    i
-                    for i, _ in enumerate(solve_map_variations)
-                    if i not in tried_variations_indices
-                ]
+                available_indices = [i for i, _ in enumerate(solve_map_variations) if i not in tried_variations_indices]
                 if not available_indices:
                     break
                 chosen_variation_index = random.choice(available_indices)
@@ -417,10 +404,7 @@ def generate_training_batch(
                         continue
 
                     # Bounds check (already done when creating variations, but safe)
-                    if not (
-                        0 <= px < current_sample_grid_w
-                        and 0 <= py < current_sample_grid_h
-                    ):
+                    if not (0 <= px < current_sample_grid_w and 0 <= py < current_sample_grid_h):
                         pattern_fits = False
                         break
 
@@ -431,12 +415,8 @@ def generate_training_batch(
                 if pattern_fits:
                     fitting_variation_found = True
                     # <<< Use dynamic grid dimensions >>>
-                    for y in range(
-                        current_sample_grid_h
-                    ):  # <<< Use current sample dimensions
-                        for x in range(
-                            current_sample_grid_w
-                        ):  # <<< Use current sample dimensions
+                    for y in range(current_sample_grid_h):  # <<< Use current sample dimensions
+                        for x in range(current_sample_grid_w):  # <<< Use current sample dimensions
                             if not original_grid_layout.get_cell(x, y)["active"]:
                                 output_matrix[y, x] = 0
                                 continue
@@ -481,9 +461,7 @@ def generate_training_batch(
                         temp_display_grid.set_supercharged(
                             x_disp,
                             y_disp,
-                            original_grid_layout.get_cell(x_disp, y_disp)[
-                                "supercharged"
-                            ],
+                            original_grid_layout.get_cell(x_disp, y_disp)["supercharged"],
                         )
                         module_id_disp = current_pattern_data.get((x_disp, y_disp))
 
@@ -517,13 +495,9 @@ def generate_training_batch(
                                         f"Warning: Error placing module {module_id_disp} for display. TypeError: {te}. Check place_module signature and arguments passed."
                                     )
                                 except Exception as e:
-                                    print(
-                                        f"Warning: Error placing module {module_id_disp} for display: {e}"
-                                    )
+                                    print(f"Warning: Error placing module {module_id_disp} for display: {e}")
                             else:
-                                print(
-                                    f"Warning: Module data for ID '{module_id_disp}' not found for display."
-                                )
+                                print(f"Warning: Module data for ID '{module_id_disp}' not found for display.")
                         else:
                             # Ensure cells without modules are cleared properly for display grid
                             temp_display_grid.set_module(x_disp, y_disp, None)
@@ -578,7 +552,7 @@ def generate_training_batch(
                         full_grid=original_grid_layout,
                         player_owned_rewards=None,  # Not needed when overriding modules
                         tech_modules=tech_modules,
-                        solve_type=solve_type,
+                        solve_type=solve_type if solve_type is not None else "",
                         **sa_params_for_ground_truth,
                     )
                     best_bonus = sa_score  # Assign the score from SA
@@ -586,27 +560,19 @@ def generate_training_batch(
                 if optimized_grid is None:
                     sample_valid = False
             except ValueError as ve:
-                print(
-                    f"\nOptimization failed for attempt {attempt_count} with ValueError: {ve}. Skipping."
-                )
+                print(f"\nOptimization failed for attempt {attempt_count} with ValueError: {ve}. Skipping.")
                 sample_valid = False
             except Exception as e:
-                print(
-                    f"\nUnexpected error during optimization for attempt {attempt_count}: {e}"
-                )
+                print(f"\nUnexpected error during optimization for attempt {attempt_count}: {e}")
                 sample_valid = False
 
             if sample_valid and optimized_grid is not None:
-                print(
-                    f"\n--- Using Optimized Layout for Sample {original_generated_count + 1} (Tech: {tech}) ---"
-                )
+                print(f"\n--- Using Optimized Layout for Sample {original_generated_count + 1} (Tech: {tech}) ---")
                 print(f"Optimized Score: {best_bonus:.4f}")
                 print_grid(optimized_grid)
                 # <<< Use dynamic grid dimensions >>>
                 for y in range(current_sample_grid_h):
-                    for x in range(
-                        current_sample_grid_w
-                    ):  # <<< Corrected loop variable
+                    for x in range(current_sample_grid_w):  # <<< Corrected loop variable
                         if not original_grid_layout.get_cell(x, y)["active"]:
                             output_matrix[y, x] = 0
                             continue
@@ -642,17 +608,12 @@ def generate_training_batch(
             new_X_inactive_mask_list.append(np.flipud(input_inactive_mask_np))
             new_y_list.append(np.flipud(output_matrix))
             new_X_supercharge_list.append(np.flipud(np.fliplr(input_supercharge_np)))
-            new_X_inactive_mask_list.append(
-                np.flipud(np.fliplr(input_inactive_mask_np))
-            )
+            new_X_inactive_mask_list.append(np.flipud(np.fliplr(input_inactive_mask_np)))
             new_y_list.append(np.flipud(np.fliplr(output_matrix)))
 
             original_generated_count += 1
             total_samples_in_list = len(new_y_list)
-            if (
-                original_generated_count % 1 == 0
-                or original_generated_count == num_samples
-            ):
+            if original_generated_count % 1 == 0 or original_generated_count == num_samples:
                 print(
                     f"-- Generated {original_generated_count}/{num_samples} original samples for tech '{tech}' (Attempt {attempt_count}, Total in list: {total_samples_in_list}) --"
                 )
@@ -687,16 +648,12 @@ def generate_training_batch(
             unique_id = uuid.uuid4().hex[:8]
             # <<< Use dynamic grid dimensions in filename >>>
             filename_parts = ["data", ship, tech]
-            if solve_type:
-                filename_parts.append(solve_type)
             filename_parts.append(f"{current_sample_grid_w}x{current_sample_grid_h}")
             filename_parts.append(timestamp)
             filename_parts.append(unique_id)
             filename = "_".join(filename_parts) + ".npz"
             saved_filepath = os.path.join(tech_output_dir, filename)
-            print(
-                f"Saving {len(new_y_np)} generated samples (incl. augmentations) to {saved_filepath}..."
-            )
+            print(f"Saving {len(new_y_np)} generated samples (incl. augmentations) to {saved_filepath}...")
             np.savez_compressed(
                 saved_filepath,
                 X_supercharge=new_X_supercharge_np,
@@ -722,9 +679,7 @@ def generate_training_batch(
 
 # --- Main Execution ---
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate a batch of training data for NMS Optimizer."
-    )
+    parser = argparse.ArgumentParser(description="Generate a batch of training data for NMS Optimizer.")
     parser.add_argument(
         "--category",
         type=str,
@@ -739,19 +694,15 @@ if __name__ == "__main__":
         help="Specific tech key to process (optional). If provided, only this tech is processed.",
         metavar="TECH_KEY",
     )
-    parser.add_argument(
-        "--ship", type=str, default="standard", help="Ship type.", metavar="SHIP_TYPE"
-    )
+    parser.add_argument("--ship", type=str, default="standard", help="Ship type.", metavar="SHIP_TYPE")
     parser.add_argument(
         "--samples",
         type=int,
-        default=64,
+        default=64,  # Changed from 64 to 1
         help="Original samples per tech (before augmentation).",
         metavar="NUM_SAMPLES",
     )
-    parser.add_argument(
-        "--max_sc", type=int, default=4, help="Max supercharged.", metavar="MAX_SC"
-    )
+    parser.add_argument("--max_sc", type=int, default=4, help="Max supercharged.", metavar="MAX_SC")
     parser.add_argument(
         "--max_inactive",
         type=int,
@@ -815,22 +766,14 @@ if __name__ == "__main__":
         else:
             modules = get_all_module_data()
             ship_data = modules.get(config["ship"])
-            if (
-                not ship_data
-                or "types" not in ship_data
-                or not isinstance(ship_data["types"], dict)
-            ):
-                raise KeyError(
-                    f"Ship '{config['ship']}' or its 'types' dictionary not found/invalid."
-                )
+            if not ship_data or "types" not in ship_data or not isinstance(ship_data["types"], dict):
+                raise KeyError(f"Ship '{config['ship']}' or its 'types' dictionary not found/invalid.")
             category_data = ship_data["types"].get(config["tech_category_to_process"])
             if not category_data or not isinstance(category_data, list):
                 raise KeyError(
                     f"Category '{config['tech_category_to_process']}' not found or invalid for ship '{config['ship']}'."
                 )
-            tech_keys_to_process = [ 
-                t["key"] for t in category_data if isinstance(t, dict) and "key" in t
-            ]
+            tech_keys_to_process = [t["key"] for t in category_data if isinstance(t, dict) and "key" in t]
             # Remove duplicates
             tech_keys_to_process = list(set(tech_keys_to_process))
             if not tech_keys_to_process:
@@ -872,6 +815,4 @@ if __name__ == "__main__":
         f"Total samples generated across all techs (incl. augmentations) in this run: {total_samples_generated_overall}"
     )
     print(f"Total time: {end_time_all - start_time_all:.2f} seconds.")
-    print(
-        f"Generated files saved in subdirectories under: {os.path.abspath(config['output_dir'])}"
-    )
+    print(f"Generated files saved in subdirectories under: {os.path.abspath(config['output_dir'])}")

@@ -5,7 +5,7 @@ from src.module_placement import place_module
 
 
 def determine_window_dimensions(
-    module_count: int, tech: str, solve_type: str = "normal"
+    module_count: int, tech: str, solve_type: str | None = None
 ) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules.

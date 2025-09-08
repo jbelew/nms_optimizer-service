@@ -351,7 +351,6 @@
                 "modules": [
                     {"id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/pulse.webp"},
                     {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp"},
-                    {"id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp"},
                     {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sublight.webp"},
                     {"id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/instability.webp"},
                     {"id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 1.14, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp"},

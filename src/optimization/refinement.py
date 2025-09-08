@@ -174,7 +174,7 @@ def _handle_sa_refine_opportunity(
             run_id=run_id,
             stage=stage,
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type,
+            solve_type=solve_type if solve_type is not None else "",
             tech_modules=tech_modules or [],
         )
 

@@ -153,7 +153,7 @@ def get_all_module_data():
     return all_modules
 
 
-def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
+def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[str] = None) -> List[str]:
     print(f"DEBUG: get_training_module_ids called with ship_key={ship_key}, tech_key={tech_key}")
     """
     Gets the list of module IDs for a given technology, using the specific
@@ -163,6 +163,7 @@ def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
     Args:
         ship_key: The key for the ship/platform (e.g., "standard").
         tech_key: The key for the technology (e.g., "pulse").
+        solve_type: The type of solve (e.g., "normal", "max").
 
     Returns:
         A list of module ID strings.
@@ -178,18 +179,38 @@ def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
     if not module_data:
         return []
 
-    # This logic is adapted from modules_utils.get_tech_modules_for_training
     types_data = module_data.get("types", {})
+    
+    candidates_for_tech = []
     for tech_list in types_data.values():
         for tech_data in tech_list:
             if tech_data.get("key") == tech_key:
-                modules = tech_data.get("modules", [])
-                # Return a list of just the IDs. For technologies not explicitly
-                # defined in MODULES_FOR_TRAINING, we assume the training set
-                # included all modules listed in the main data file.
-                module_ids = [m['id'] for m in modules]
-                print(f"DEBUG: get_training_module_ids returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key}")
-                return module_ids
+                candidates_for_tech.append(tech_data)
 
-    print(f"DEBUG: get_training_module_ids returning {len([])} modules for {ship_key}/{tech_key}")
-    return []  # Return empty list if tech_key not found
+    selected_tech_data = None
+    if solve_type == "max":
+        for candidate in candidates_for_tech:
+            if candidate.get("type") == "max":
+                selected_tech_data = candidate
+                break
+    else: # solve_type is "normal" or None
+        # Prioritize explicit "normal" type
+        for candidate in candidates_for_tech:
+            if candidate.get("type") == "normal":
+                selected_tech_data = candidate
+                break
+        # If no explicit "normal" found, look for one without a type field
+        if selected_tech_data is None:
+            for candidate in candidates_for_tech:
+                if candidate.get("type") is None:
+                    selected_tech_data = candidate
+                    break
+
+    if selected_tech_data:
+        modules = selected_tech_data.get("modules", [])
+        module_ids = [m['id'] for m in modules]
+        print(f"DEBUG: get_training_module_ids returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key} (solve_type: {solve_type})")
+        return module_ids
+    
+    print(f"DEBUG: get_training_module_ids returning {len([])} modules for {ship_key}/{tech_key} (solve_type: {solve_type})")
+    return []

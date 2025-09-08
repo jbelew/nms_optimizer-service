@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SESSION_NAME="nms_solvers"
-BASE_CMD="python generate_data.py --ship standard --category Hyperdrive --tech pulse"
+BASE_CMD="cd /home/jbelew/projects/nms_optimizer-service && ./venv/bin/python -m scripts.training.generate_data --ship corvette --category \"Hyperdrive\" --solve_type max"
 
 /usr/bin/tmux kill-session -t $SESSION_NAME 2>/dev/null
 /usr/bin/tmux new-session -d -s $SESSION_NAME

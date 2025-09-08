@@ -253,7 +253,7 @@ def optimize_placement(
                     run_id=run_id,
                     stage="initial_placement",
                     send_grid_updates=send_grid_updates,
-                    solve_type=solve_type,
+                    solve_type=solve_type if solve_type is not None else "",
                     tech_modules=tech_modules,
                 )
                 if solved_grid is None:
@@ -676,7 +676,7 @@ def optimize_placement(
             run_id=run_id,
             stage="final_sa_unplaced_modules",
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type,
+            solve_type=solve_type if solve_type is not None else "",
             tech_modules=tech_modules,
         )
         if temp_solved_grid is not None:
