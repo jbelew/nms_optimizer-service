@@ -25,7 +25,7 @@ MODULES_FOR_TRAINING = {
             "ID",  # Instability Drive
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
-            "Xc"   # Pulse Engine Upgrade Sigma
+            "Xc",  # Pulse Engine Upgrade Sigma
         ],
         "photonix": [
             "PE",  # Pulse Engine
@@ -35,8 +35,8 @@ MODULES_FOR_TRAINING = {
             "ID",  # Instability Drive
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
-            "Xc"   # Pulse Engine Upgrade Sigma
-        ]
+            "Xc",  # Pulse Engine Upgrade Sigma
+        ],
     },
     "solar": {
         "pulse": [
@@ -47,7 +47,7 @@ MODULES_FOR_TRAINING = {
             "ID",  # Instability Drive
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
-            "Xc"   # Pulse Engine Upgrade Sigma
+            "Xc",  # Pulse Engine Upgrade Sigma
         ],
         "photonix": [
             "PE",  # Pulse Engine
@@ -58,7 +58,11 @@ MODULES_FOR_TRAINING = {
             "ID",  # Instability Drive
             "Xa",  # Pulse Engine Upgrade Theta
             "Xb",  # Pulse Engine Upgrade Tau
-            "Xc"   # Pulse Engine Upgrade Sigma
-        ]
-    }
+            "Xc",  # Pulse Engine Upgrade Sigma
+        ],
+    },
+    "corvette": {
+        "pulse": ["SL", "Ba", "Bb", "PE", "Xb", "Xa", "Xc", "Bc", "FA", "ID"],
+        "photonix": ["SL", "Ba", "Bb", "PE", "Xb", "Xa", "Xc", "Bc", "PC", "FA", "ID"],
+    },
 }

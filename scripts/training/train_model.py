@@ -193,7 +193,7 @@ def train_model(
             )
             loss = loss_placement
 
-            # >>>>> ADD THIS IMMEDIATE CHECK <<<<<
+            # >>>>> ADD THIS IMMEDIATE CHECK <<<<< 
             if torch.isnan(loss):
                 print(
                     f"!!! WARNING: NaN detected *immediately* after loss calculation (Epoch {epoch + 1}, Batch {i}) !!!"
@@ -204,7 +204,7 @@ def train_model(
                 )
                 early_stop_triggered = True
                 break  # Exit inner loop
-            # >>>>> END ADDED CHECK <<<<<
+            # >>>>> END ADDED CHECK <<<<< 
 
             # Check for NaN loss before backward pass (keep your original check too, though the one above might catch it first)
             if torch.isnan(loss):
@@ -411,8 +411,8 @@ def train_model(
             best_metric_value_float = best_metric_value
             if isinstance(best_metric_value, torch.Tensor):
                 best_metric_value_float = (
-                    best_metric_value.cpu().item()
-                )  # Get Python float from tensor
+                    best_metric_value.cpu().item() # Get Python float from tensor
+                )
 
             # Now use the float version for checks and printing
             is_best_invalid = np.isinf(best_metric_value_float) or np.isnan(
@@ -462,6 +462,7 @@ def run_training_from_files(
     base_data_source_dir,
     scheduler_factor,
     scheduler_patience,
+    solve_type: Optional[str],
     validation_split=0.2,
     early_stopping_patience=10,
     early_stopping_metric="val_loss",
@@ -566,7 +567,9 @@ def run_training_from_files(
         print(f"\n--- Processing Tech: {tech} ---")
 
         # <<< Determine num_output_classes AND grid dimensions >>>
-        tech_modules_for_class_count = get_training_module_ids(ship, tech)
+        tech_modules_for_class_count = get_training_module_ids(
+            ship, tech, solve_type=solve_type
+        )
         if not tech_modules_for_class_count:
             print(
                 f"Warning: Could not get modules for tech '{tech}' to determine class count/size. Skipping."
@@ -592,6 +595,8 @@ def run_training_from_files(
 
         # --- 1. Find and Load Data ---
         tech_data_source_dir = os.path.join(base_data_source_dir, ship, tech)
+        if solve_type:
+            tech_data_source_dir = os.path.join(tech_data_source_dir, solve_type)
         # <<< Use dynamic dimensions in file pattern >>>
         file_pattern = os.path.join(
             tech_data_source_dir, f"data_{ship}_{tech}_{grid_width}x{grid_height}_*.npz"
@@ -786,9 +791,7 @@ def run_training_from_files(
 
             # Calculate weights only for present classes to avoid division by zero
             if np.any(present_classes_mask):
-                class_weights[present_classes_mask] = total_pixels / (
-                    num_output_classes * class_counts[present_classes_mask]
-                )
+                class_weights[present_classes_mask] = total_pixels / (num_output_classes * class_counts[present_classes_mask])
 
             if np.any(class_counts == 0):
                 zero_count_classes = np.where(class_counts == 0)[0]
@@ -857,7 +860,10 @@ def run_training_from_files(
 
         # --- 4. Train Model ---
         log_dir = os.path.join(base_log_dir, ship, tech)
-        model_filename = f"model_{ship}_{tech}_{grid_width}x{grid_height}.pth"
+        if solve_type:
+            model_filename = f"model_{ship}_{tech}_{solve_type}.pth"
+        else:
+            model_filename = f"model_{ship}_{tech}_{grid_width}x{grid_height}.pth"
         model_save_path = os.path.join(base_model_save_dir, model_filename)
 
         can_early_stop = val_loader is not None
@@ -913,6 +919,12 @@ if __name__ == "__main__":
         help="Comma-separated list of specific tech keys to train (e.g., 'pulse,hyper'). Overrides --category.",
     )
     parser.add_argument("--ship", type=str, default="standard", help="Ship type.")
+    parser.add_argument(
+        "--solve_type",
+        type=str,
+        default=None,
+        help="Optional solve type to specify a subdirectory for data and model naming.",
+    )
     parser.add_argument("--lr", type=float, default=2e-5, help="Initial learning rate.")
     parser.add_argument(
         "--wd", type=float, default=5e-5, help="Weight decay (L2 regularization)."
@@ -1001,6 +1013,7 @@ if __name__ == "__main__":
         # <<< Pass the potentially None category >>>
         "tech_category_to_train": args.category,
         "specific_techs_to_train": specific_techs_list,
+        "solve_type": args.solve_type,
         "learning_rate": args.lr,
         "weight_decay": args.wd,
         "num_epochs": args.epochs,
@@ -1039,6 +1052,7 @@ if __name__ == "__main__":
         base_data_source_dir=config["base_data_source_dir"],
         scheduler_factor=config["scheduler_factor"],
         scheduler_patience=config["scheduler_patience"],
+        solve_type=config["solve_type"],
         validation_split=config["validation_split"],
         early_stopping_patience=config["early_stopping_patience"],
         early_stopping_metric=config["early_stopping_metric"],

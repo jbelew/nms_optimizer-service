@@ -68,24 +68,24 @@ def ml_placement(
     progress_scale=100,
     send_grid_updates=False,
     solve_type: Optional[str] = None,
-    tech_modules: list = None,
+    tech_modules: Optional[list] = None,
 ) -> Tuple[Optional[Grid], float]:
     """
     Uses a pre-trained Machine Learning model to predict module placement.
-    Applies mapping (including reward variants) via get_model_keys.
+    Applies mapping (including reward variants and solve type) via get_model_keys.
     Uses UI-facing module definitions for the final grid construction.
     Optionally polishes the result using a quick simulated annealing run.
 
     Args:
         grid (Grid): The input grid state (active/inactive, supercharged).
         ship (str): The UI ship key.
-        modules_data (dict): The main modules dictionary (user-facing definitions).
         tech (str): The UI tech key.
         player_owned_rewards (Optional[List[str]]): List of reward module IDs owned.
         model_dir (str): Directory containing trained models.
         model_grid_width (int): Width the model expects.
         model_grid_height (int): Height the model expects.
         polish_result (bool): If True, run a quick SA polish on the ML output.
+        solve_type (Optional[str]): The solve type, e.g., "max" or "normal".
 
     Returns:
         Tuple[Optional[Grid], float]: The predicted (and potentially polished) grid
@@ -100,7 +100,12 @@ def ml_placement(
 
     # --- 1. Determine Model Keys using Mapping ---
     model_keys_info = get_model_keys(
-        ship, tech, model_grid_width, model_grid_height, player_owned_rewards  # pyright: ignore
+        ship,
+        tech,
+        model_grid_width,
+        model_grid_height,
+        player_owned_rewards,  # pyright: ignore
+        solve_type=solve_type,
     )
     filename_ship_key = model_keys_info["filename_ship_key"]
     filename_tech_key = model_keys_info["filename_tech_key"]
@@ -109,12 +114,8 @@ def ml_placement(
 
     # Important mapping info
     logging.info(f"ML Placement: UI keys ('{ship}', '{tech}') mapped to:")
-    logging.info(
-        f"       Filename keys: ('{filename_ship_key}', '{filename_tech_key}')"
-    )
-    logging.info(
-        f"       Module Def keys: ('{module_def_ship_key}', '{module_def_tech_key}')"
-    )
+    logging.info(f"       Filename keys: ('{filename_ship_key}', '{filename_tech_key}')")
+    logging.info(f"       Module Def keys: ('{module_def_ship_key}', '{module_def_tech_key}')")
 
     # --- 2. Determine Model Path & Check Existence ---
     model_filename = f"model_{filename_ship_key}_{filename_tech_key}.pth"
@@ -131,7 +132,7 @@ def ml_placement(
     # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) ---
     # Use the new data loader to get the exact list of module IDs the model was trained on.
     training_module_ids = get_training_module_ids(
-        module_def_ship_key, module_def_tech_key
+        module_def_ship_key, module_def_tech_key, solve_type=solve_type
     )
 
     if not training_module_ids:
@@ -143,12 +144,10 @@ def ml_placement(
 
     # --- Sort module IDs and create mappings ---
     training_module_ids.sort()  # Sort the IDs alphabetically for consistency
-    module_id_mapping = {
-        module_id: i + 1 for i, module_id in enumerate(training_module_ids)
-    }
+    module_id_mapping = {module_id: i + 1 for i, module_id in enumerate(training_module_ids)}
     num_output_classes = len(module_id_mapping) + 1  # +1 for background
     reverse_module_mapping = {v: k for k, v in module_id_mapping.items()}
-    reverse_module_mapping[0] = None  # Background class is 0
+    reverse_module_mapping[0] = "None"  # Background class is 0
     # logging.info(f"INFO -- ML Placement: Determined num_output_classes = {num_output_classes} based on Module Def keys ('{module_def_ship_key}', '{module_def_tech_key}').") # Less critical detail
     # --- End Model Loading Setup ---
 
@@ -195,12 +194,8 @@ def ml_placement(
         return None, 0.0
 
     # --- 6. Prepare Input Tensor ---
-    input_supercharge_np = np.zeros(
-        (model_grid_height, model_grid_width), dtype=np.float32
-    )
-    input_inactive_mask_np = np.ones(
-        (model_grid_height, model_grid_width), dtype=np.int8
-    )  # 1=inactive, 0=active
+    input_supercharge_np = np.zeros((model_grid_height, model_grid_width), dtype=np.float32)
+    input_inactive_mask_np = np.ones((model_grid_height, model_grid_width), dtype=np.int8)  # 1=inactive, 0=active
     for y in range(min(grid.height, model_grid_height)):
         for x in range(min(grid.width, model_grid_width)):
             try:
@@ -211,19 +206,11 @@ def ml_placement(
                     input_supercharge_np[y, x] = 1.0 if is_supercharged else 0.0
                     input_inactive_mask_np[y, x] = 0  # Mark as active
             except IndexError:
-                logging.warning(
-                    f"Warning: Input grid access out of bounds at ({x},{y}) during tensor prep."
-                )
+                logging.warning(f"Warning: Input grid access out of bounds at ({x},{y}) during tensor prep.")
                 continue
-    input_supercharge_tensor = torch.tensor(
-        input_supercharge_np, dtype=torch.float32
-    ).unsqueeze(0)
-    input_inactive_tensor = torch.tensor(
-        input_inactive_mask_np, dtype=torch.float32
-    ).unsqueeze(0)
-    input_tensor = torch.stack(
-        [input_supercharge_tensor, input_inactive_tensor], dim=1
-    ).to(device)
+    input_supercharge_tensor = torch.tensor(input_supercharge_np, dtype=torch.float32).unsqueeze(0)
+    input_inactive_tensor = torch.tensor(input_inactive_mask_np, dtype=torch.float32).unsqueeze(0)
+    input_tensor = torch.stack([input_supercharge_tensor, input_inactive_tensor], dim=1).to(device)
 
     # --- 7. Get Prediction ---
     # logging.info("ML Placement: Generating prediction...") # Less critical step
@@ -237,9 +224,7 @@ def ml_placement(
         return None, 0.0
 
     # --- 8. Process Output (Generate Potential Placements) ---
-    output_scores = (
-        output_probs.squeeze(0).cpu().numpy()
-    )  # Shape: [num_classes, height, width]
+    output_scores = output_probs.squeeze(0).cpu().numpy()  # Shape: [num_classes, height, width]
     potential_placements = []
     for class_idx in range(1, num_output_classes):  # Skip background class 0
         predicted_module_id = reverse_module_mapping.get(class_idx)
@@ -291,9 +276,7 @@ def ml_placement(
                 predicted_grid.set_module(x, y, None)
                 predicted_grid.set_tech(x, y, None)
             except IndexError:
-                logging.warning(
-                    f"Warning: Index out of bounds ({y},{x}) during predicted_grid initialization."
-                )
+                logging.warning(f"Warning: Index out of bounds ({y},{x}) during predicted_grid initialization.")
                 continue
 
     # logging.info(f"INFO -- ML Placement: Assigning modules based on confidence...") # Less critical step
@@ -332,13 +315,11 @@ def ml_placement(
                     module_data_for_placement["id"],
                     module_data_for_placement["label"],
                     tech,  # <<< Use original UI tech key here
-                    module_data_for_placement["type"],
+                    module_data_for_placement.get("type"),
                     module_data_for_placement["bonus"],
                     module_data_for_placement["adjacency"],
                     module_data_for_placement["sc_eligible"],
-                    module_data_for_placement[
-                        "image"
-                    ],  # This now comes from the UI definition
+                    module_data_for_placement["image"],  # This now comes from the UI definition
                 )
                 used_cells.add(cell_coord)
                 current_modules_needed[predicted_module_id] -= 1
@@ -347,9 +328,7 @@ def ml_placement(
 
             except Exception as e:
                 # Important error
-                logging.error(
-                    f"ML Placement: Error placing module {predicted_module_id} at ({x},{y}): {e}"
-                )
+                logging.error(f"ML Placement: Error placing module {predicted_module_id} at ({x},{y}): {e}")
                 try:
                     predicted_grid.set_module(x, y, None)
                     predicted_grid.set_tech(x, y, None)
@@ -461,28 +440,20 @@ def ml_placement(
                 )
             else:
                 # Important failure condition
-                logging.warning(
-                    "ML Placement: SA polish failed or returned None. Keeping ML result."
-                )
+                logging.warning("ML Placement: SA polish failed or returned None. Keeping ML result.")
 
         except ValueError as e:
             # Important warning
-            logging.warning(
-                f"ML Placement: SA polishing step failed with ValueError: {e}. Skipping polish."
-            )
+            logging.warning(f"ML Placement: SA polishing step failed with ValueError: {e}. Skipping polish.")
         except Exception as e:
             # Important warning
-            logging.warning(
-                f"ML Placement: Unexpected error during SA polishing: {e}. Skipping polish."
-            )
+            logging.warning(f"ML Placement: Unexpected error during SA polishing: {e}. Skipping polish.")
     # --- End Optional Polishing Step ---
 
     # --- 12. Return Result ---
     end_time = time.time()
     # Final result
-    logging.info(
-        f"ML Placement: Finished in {end_time - start_time:.2f} seconds. Final Score: {predicted_score:.4f}"
-    )
+    logging.info(f"ML Placement: Finished in {end_time - start_time:.2f} seconds. Final Score: {predicted_score:.4f}")
     # print_grid(predicted_grid) # Optional: print final grid
 
     return predicted_grid, predicted_score

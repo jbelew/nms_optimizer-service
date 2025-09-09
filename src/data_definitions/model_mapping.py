@@ -145,6 +145,7 @@ def get_model_keys(
     grid_width: int,
     grid_height: int,
     player_owned_rewards: Optional[List[str]] = None,
+    solve_type: Optional[str] = None,
 ) -> Dict[str, str]:
     """
     Determines keys for model filename and module definitions.
@@ -154,6 +155,7 @@ def get_model_keys(
        updating both module definition tech key and filename tech key.
     3. Applies grid-size specific overrides, which primarily modify the
        filename keys, while the module definition keys remain from step 2.
+    4. Appends solve_type to filename_tech_key if it exists.
 
     Args:
         ui_ship_key: The ship key provided by the user/UI.
@@ -161,6 +163,7 @@ def get_model_keys(
         grid_width: The expected grid width for this tech (from determine_window_dimensions).
         grid_height: The expected grid height for this tech (from determine_window_dimensions).
         player_owned_rewards: List of reward module IDs owned by the player.
+        solve_type: The solve type, e.g., "max" or "normal".
 
     Returns:
         A dictionary with keys:
@@ -235,7 +238,11 @@ def get_model_keys(
     # if model_ship_key == "some_ship" and model_tech_key == "some_tech" and grid_width == X and grid_height == Y:
     #     return "specific_model_ship_for_size", "specific_model_tech_for_size"
 
-    # --- Step 4: Return the (potentially modified) model keys ---
+    # --- Step 4: Append solve_type to filename_tech_key if it exists ---
+    if solve_type:
+        filename_tech_key = f"{filename_tech_key}_{solve_type}"
+
+    # --- Step 5: Return the (potentially modified) model keys ---
     return {
         "filename_ship_key": filename_ship_key,
         "filename_tech_key": filename_tech_key,

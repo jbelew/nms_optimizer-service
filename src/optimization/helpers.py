@@ -5,9 +5,7 @@ from src.modules_utils import get_tech_modules
 from src.module_placement import place_module
 
 
-def determine_window_dimensions(
-    module_count: int, tech: str, solve_type: str | None = None
-) -> tuple[int, int]:
+def determine_window_dimensions(module_count: int, tech: str, solve_type: str | None = None) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules.
 
@@ -23,9 +21,7 @@ def determine_window_dimensions(
 
     if module_count < 1:
         # Handle cases with zero or negative modules (optional, but good practice)
-        logging.warning(
-            f"Module count is {module_count}. Returning default 1x1 window."
-        )
+        logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
         return 1, 1
     elif module_count < 3:
         window_width, window_height = 1, 2
@@ -43,6 +39,8 @@ def determine_window_dimensions(
         window_width, window_height = 4, 3
     elif module_count < 10:
         window_width, window_height = 3, 3
+    elif module_count >= 10 and tech == "hyper":
+        window_width, window_height = 4, 3
     elif module_count >= 10:
         window_width, window_height = 4, 3
 
@@ -60,9 +58,7 @@ def place_all_modules_in_empty_slots(
 ):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     if tech_modules is None:
-        tech_modules = get_tech_modules(
-            modules, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
     if tech_modules is None:
         logging.error(f"No modules found for ship: '{ship}' -- tech: '{tech}'")
         return grid
@@ -92,9 +88,7 @@ def place_all_modules_in_empty_slots(
                 module_index += 1  # Move to the next module
 
     if module_index < len(tech_modules) and len(tech_modules) > 0:
-        logging.warning(
-            f"Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'"
-        )
+        logging.warning(f"Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'")
 
     return grid
 
@@ -140,9 +134,7 @@ def check_all_modules_placed(
         if player_owned_rewards is None:
             player_owned_rewards = []  # Ensure it's an empty list if None
 
-        tech_modules = get_tech_modules(
-            modules, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
 
     if tech_modules is None:
         logging.warning(
