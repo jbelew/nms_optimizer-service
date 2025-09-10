@@ -296,15 +296,11 @@
             {
                 "label": "Launch Thruster",
                 "key": "launch",
-                "type": "max",
+                "type": "normal",
                 "image": "starship/launch.webp",
                 "color": "blue",
                 "modules": [
                     {"id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": false, "image": "starship/launch.webp"},
-                    {"id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/efficient.webp"},
-                    {"id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp"},
-                    {"id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp"},
-                    {"id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp"},
                     {"id": "La", "type": "bonus", "label": "Thunderbird Landing Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp"},
                     {"id": "Lb", "type": "bonus", "label": "Thunderbird Landing Thruster Tau", "bonus": 0.029, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp"},
                     {"id": "Lc", "type": "bonus", "label": "Mag-Field Landing Thruster Sigma", "bonus": 0.028, "adjacency": "greater", "sc_eligible": true, "image": "corvette/mag-field.webp"},
@@ -316,11 +312,15 @@
             {
                 "label": "Launch Thruster",
                 "key": "launch",
-                "type": "normal",
+                "type": "max",
                 "image": "starship/launch.webp",
                 "color": "blue",
                 "modules": [
                     {"id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": false, "image": "starship/launch.webp"},
+                    {"id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/efficient.webp"},
+                    {"id": "Xa", "type": "bonus", "label": "Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp"},
+                    {"id": "Xb", "type": "bonus", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp"},
+                    {"id": "Xc", "type": "bonus", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp"},
                     {"id": "La", "type": "bonus", "label": "Thunderbird Landing Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp"},
                     {"id": "Lb", "type": "bonus", "label": "Thunderbird Landing Thruster Tau", "bonus": 0.029, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp"},
                     {"id": "Lc", "type": "bonus", "label": "Mag-Field Landing Thruster Sigma", "bonus": 0.028, "adjacency": "greater", "sc_eligible": true, "image": "corvette/mag-field.webp"},
