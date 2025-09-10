@@ -113,6 +113,22 @@ def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
         print(f"Best layout found in file: {best_file}")
         print(f"Best score: {best_score}")
         print_grid_compact(best_grid)
+        print('            "map": {')
+        
+        map_items = []
+        for r in range(best_grid.height):
+            for c in range(best_grid.width):
+                key = f"{c},{r}"
+                cell = best_grid.cells[r][c]
+                module_id = cell.get('module')
+                if module_id:
+                    map_items.append(f'                "{key}": "{module_id}"')
+                else:
+                    map_items.append(f'                "{key}": "None"')
+
+        print(",\n".join(map_items))
+        print('            },')
+        print(f'            "score": {best_score:.4f}')
     else:
         print(f"No layout found with {num_supercharged} supercharged slots.")
 
