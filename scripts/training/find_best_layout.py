@@ -7,14 +7,13 @@ from src.bonus_calculations import calculate_grid_score
 from src.data_loader import get_all_module_data
 from src.grid_display import print_grid_compact
 from src.module_placement import place_module
-from src.modules_utils import get_tech_modules_for_training
 from src.data_definitions.model_mapping import get_model_keys
 from src.optimization.helpers import determine_window_dimensions
 
 modules = get_all_module_data()
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 
-def find_best_layout(directory, num_supercharged, ship, tech):
+def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
     """
     Finds the best layout for a given number of supercharged slots in a directory of generated data.
     """
@@ -22,10 +21,37 @@ def find_best_layout(directory, num_supercharged, ship, tech):
     best_grid = None
     best_file = None
 
-    tech_modules = get_tech_modules_for_training(modules, ship, tech)
-    if not tech_modules:
+    ship_data = modules.get(ship)
+    if not ship_data:
+        print(f"Error: Ship '{ship}' not found in module data.")
+        return
+
+    all_modules_for_ship = []
+    for tech_list in ship_data.get("types", {}).values():
+        all_modules_for_ship.extend(tech_list)
+
+    candidates_for_tech = []
+    for tech_info_candidate in all_modules_for_ship:
+        if tech_info_candidate.get("key") == tech:
+            candidates_for_tech.append(tech_info_candidate)
+
+    selected_tech_info = None
+    for candidate in candidates_for_tech:
+        if candidate.get("type") == solve_type:
+            selected_tech_info = candidate
+            break
+
+    if selected_tech_info is None and solve_type is None:
+        for candidate in candidates_for_tech:
+            if candidate.get("type") is None:
+                selected_tech_info = candidate
+                break
+    
+    if not selected_tech_info:
         print(f"Error: No tech modules found for ship='{ship}', tech='{tech}'.")
         return
+
+    tech_modules = selected_tech_info.get("modules", [])
 
     tech_modules.sort(key=lambda m: m["id"])
     module_id_mapping = {i + 1: module["id"] for i, module in enumerate(tech_modules)}
@@ -96,30 +122,14 @@ if __name__ == "__main__":
     parser.add_argument("--ship", type=str, required=True, help="Ship type (e.g., sentinel, standard).")
     parser.add_argument("--tech", type=str, required=True, help="Tech type (e.g., infra).")
     parser.add_argument("--rewards", nargs='*', help="List of player-owned reward module IDs.")
+    parser.add_argument("--solve_type", type=str, default=None, help="Specific solve type to use (optional).")
     args = parser.parse_args()
 
-    # Determine grid dimensions dynamically based on UI-facing keys
-    tech_modules_for_dims = get_tech_modules_for_training(modules, args.ship, args.tech)
-    if not tech_modules_for_dims:
-        print(f"Error: No tech modules found for UI keys ship='{args.ship}', tech='{args.tech}' to determine grid size.")
-        exit()
-    module_count = len(tech_modules_for_dims)
-    grid_w, grid_h = determine_window_dimensions(module_count, args.tech)
-
-    # Get the correct internal keys for locating data, which may be different from UI keys
-    keys = get_model_keys(
-        ui_ship_key=args.ship,
-        ui_tech_key=args.tech,
-        grid_width=grid_w,
-        grid_height=grid_h,
-        player_owned_rewards=args.rewards
-    )
-    data_ship_key = keys["module_def_ship_key"]
-    data_tech_key = keys["module_def_tech_key"]
-
-    # Construct the directory path from the mapped keys
-    directory = os.path.join(os.path.dirname(__file__), "generated_batches", data_ship_key, data_tech_key)
+    # Construct the directory path from the arguments
+    directory = os.path.join(os.path.dirname(__file__), "generated_batches", args.ship, args.tech)
+    if args.solve_type:
+        directory = os.path.join(directory, args.solve_type)
     print(f"Searching for data in: {directory}")
 
-    # Call the function with the mapped keys for data processing
-    find_best_layout(directory, args.num_supercharged, data_ship_key, data_tech_key)
+    # Call the function with the arguments
+    find_best_layout(directory, args.num_supercharged, args.ship, args.tech, args.solve_type)
