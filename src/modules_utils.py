@@ -71,11 +71,12 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_t
     # Filter the found modules by ownership
     filtered_modules = []
     for module in tech_modules:
-        if module.get("reward"):
+        if module.get("type") == "reward":
             if module.get("id") in player_owned_rewards:
-                # For now, we are just including reward modules.
-                # In the future, we might change their type.
-                filtered_modules.append(module)
+                modified_module = module.copy()
+                # We change the type to bonus so that it's not filtered again.
+                modified_module["type"] = "bonus"
+                filtered_modules.append(modified_module)
         else:
             filtered_modules.append(module)
 
@@ -151,7 +152,7 @@ def get_tech_tree(ship, module_data):
                 "image": tech.get("image"),
                 "color": tech.get("color"),
                 "module_count": len(
-                    [m for m in tech["modules"] if m.get("type") != "reward"]
+                    [m for m in tech["modules"] if not m.get("reward")]
                 ),
             }
             if "type" in tech:
