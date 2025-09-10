@@ -328,7 +328,8 @@ def generate_training_batch(
         else:  # Not experimental
             if num_supercharged_actual == 0 and solve_map_exists:
                 # If not experimental, 0 SC slots, and a map exists, always use it.
-                use_solve_map = True
+                # use_solve_map = True
+                use_solve_map = False
                 # print(f"DEBUG: Not experimental, 0 SC slots, map exists. Forcing solve map.")
             else:  # Not experimental, and (num_supercharged_actual > 0 or not solve_map_exists)
                 # Probabilistic use of solve map
