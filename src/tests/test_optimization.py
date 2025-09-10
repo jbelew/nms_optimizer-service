@@ -146,7 +146,7 @@ class TestOptimization(unittest.TestCase):
         sc_grid_test.set_module(1, 0, "OTHER")
         sc_grid_test.set_tech(1, 0, "other_tech")
 
-        result = find_supercharged_opportunities(sc_grid_test, self.modules, self.ship, self.tech)
+        result = find_supercharged_opportunities(sc_grid_test, self.modules, self.ship, self.tech, self.player_owned_rewards)
         # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
         self.assertIsNotNone(result)
         self.assertEqual(result, (0, 1, 4, 2))

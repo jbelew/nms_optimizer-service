@@ -43,6 +43,8 @@ def determine_window_dimensions(module_count: int, tech: str, solve_type: str | 
         window_width, window_height = 4, 3
     elif module_count >= 10:
         window_width, window_height = 4, 3
+    elif module_count >= 12 and tech == "hyper":
+        window_width, window_height = 4, 4
 
     return window_width, window_height
 
