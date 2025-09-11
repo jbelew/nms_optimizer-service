@@ -240,6 +240,76 @@ def populate_all_module_bonuses(
         grid.get_cell(x, y)["adjacency_bonus"] = round(adj_factor, 4)
 
 
+def get_affected_module_coords(grid: Grid, changed_coords: set[tuple[int, int]]) -> set[tuple[int, int]]:
+    """
+    Given a set of coordinates that have changed, returns a set of all module
+    coordinates that need their scores recalculated. This includes the changed
+    modules and their orthogonal neighbors.
+    """
+    affected_coords = set()
+    for x, y in changed_coords:
+        # Add the changed module itself, if it's a module
+        cell = grid.get_cell(x, y)
+        if cell and cell.get("module") is not None:
+            affected_coords.add((x, y))
+
+        # Add all its orthogonal neighbors (if they are modules)
+        # We also need to consider the neighbors of the *original* position
+        # in case a module was moved. The easiest way is to just get neighbors
+        # for all changed_coords.
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < grid.width and 0 <= ny < grid.height:
+                neighbor_cell = grid.get_cell(nx, ny)
+                if neighbor_cell and neighbor_cell.get("module") is not None:
+                    affected_coords.add((nx, ny))
+
+    return affected_coords
+
+
+def calculate_score_for_modules(
+    grid: Grid,
+    module_coords: set[tuple[int, int]],
+    tech: str,
+    apply_supercharge_first: bool = False,
+) -> float:
+    """
+    Calculates the total score for a specific set of modules, without modifying the grid.
+    Returns the sum of the 'total' for the specified module coordinates.
+    """
+    if not module_coords:
+        return 0.0
+
+    total_score = 0.0
+    for x, y in module_coords:
+        cell = grid.get_cell(x, y)
+        if cell.get("module") is None or cell.get("tech") != tech:
+            continue
+
+        base_bonus = cell.get("bonus", 0.0)
+        is_supercharged = cell.get("supercharged", False)
+        is_sc_eligible = cell.get("sc_eligible", False)
+        module_type = cell.get("type")
+
+        adj_factor = _calculate_adjacency_factor(grid, x, y, tech)
+
+        total_bonus = 0.0
+        if apply_supercharge_first:
+            calculation_base = base_bonus * SUPERCHARGE_MULTIPLIER if is_supercharged and is_sc_eligible else base_bonus
+            adjacency_boost_amount = adj_factor if module_type == ModuleType.CORE.value else calculation_base * adj_factor
+            total_bonus = base_bonus + adjacency_boost_amount
+        else:
+            adjacency_boost_amount_on_base = adj_factor if module_type == ModuleType.CORE.value else base_bonus * adj_factor
+            total_bonus = base_bonus + adjacency_boost_amount_on_base
+            if is_supercharged and is_sc_eligible:
+                total_bonus *= SUPERCHARGE_MULTIPLIER
+
+        total_score += round(total_bonus, 4)
+
+    return total_score
+
+
 def clear_scores(grid: Grid, tech: str) -> None:
     """
     Clears calculated 'total' and the 'adjacency_bonus' (boost amount)

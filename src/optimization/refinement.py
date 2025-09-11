@@ -10,7 +10,11 @@ from typing import Optional
 
 from src.grid_utils import restore_original_state, apply_localized_grid_changes
 from src.modules_utils import get_tech_modules
-from src.bonus_calculations import calculate_grid_score
+from src.bonus_calculations import (
+    calculate_grid_score,
+    get_affected_module_coords,
+    calculate_score_for_modules,
+)
 from src.module_placement import place_module, clear_all_modules_of_tech
 from .helpers import check_all_modules_placed
 from .windowing import create_localized_grid, create_localized_grid_ml
@@ -610,29 +614,32 @@ def simulated_annealing(
 
             modified_cells_info = []  # Initialize for each iteration
 
-            if random.random() < swap_probability:
-                pos1, original_cell_1_data, pos2, original_cell_2_data = swap_modules(
-                    current_grid, tech, current_modules_on_grid_defs
-                )
-                if pos1 is None:  # Not enough modules to swap
-                    continue
-                modified_cells_info = [(pos1, original_cell_1_data), (pos2, original_cell_2_data)]
+            neighbor_grid = current_grid.copy()
+            is_swap = random.random() < swap_probability
+            if is_swap:
+                changed_coords, revert_info = swap_modules(neighbor_grid, tech, current_modules_on_grid_defs)
             else:
-                pos_from, original_from_cell_data, pos_to, original_to_cell_data = move_module(
-                    current_grid, tech, current_modules_on_grid_defs
-                )
-                if pos_from is None:  # No modules to move or no empty slots
-                    continue
-                modified_cells_info = [(pos_from, original_from_cell_data), (pos_to, original_to_cell_data)]
+                changed_coords, revert_info = move_module(neighbor_grid, tech, current_modules_on_grid_defs)
 
-            neighbor_score = calculate_grid_score(current_grid, tech)
+            if not changed_coords:
+                continue
+
+            affected_coords = get_affected_module_coords(current_grid, changed_coords)
+
+            score_before = calculate_score_for_modules(current_grid, affected_coords, tech)
+            score_after = calculate_score_for_modules(neighbor_grid, affected_coords, tech)
+
+            score_delta = score_after - score_before
+            neighbor_score = current_score + score_delta
 
             delta_e = neighbor_score - current_score
             if delta_e > 0 or random.random() < math.exp(delta_e / temperature):
                 current_score = neighbor_score
+                current_grid = neighbor_grid
+
                 if current_score > best_score:
                     best_grid = current_grid.copy()
-                    best_score_time = time.time()  # Update time when new best score is found
+                    best_score_time = time.time()
                     elapsed_time_at_best_score = best_score_time - start_time
                     logging.info(
                         f"SA: New best score for {tech}: {current_score:.4f} (Temp: {temperature:.2f}, Time: {elapsed_time_at_best_score:.2f}s)"
@@ -650,30 +657,19 @@ def simulated_annealing(
                             "status": "new_best",
                         }
                         if send_grid_updates:
-                            # Reconstitute the full grid from the localized best_grid
-                            # Assuming start_x, start_y, localized_width, localized_height are available
-                            # from the context where simulated_annealing is called.
-                            # For now, we'll use a placeholder for these values.
-                            # In a real scenario, these would need to be passed into simulated_annealing.
                             reconstituted_full_grid = full_grid.copy()
-                            # Clear the tech modules from the full grid before applying localized changes
                             clear_all_modules_of_tech(reconstituted_full_grid, tech)
                             apply_localized_grid_changes(
                                 reconstituted_full_grid,
                                 best_grid,
                                 tech,
-                                # These values need to be passed from the calling function (optimize_placement)
-                                # For now, using dummy values. This will cause an error if not handled.
-                                start_x,  # Placeholder for start_x
-                                start_y,  # Placeholder for start_y
+                                start_x,
+                                start_y,
                             )
                             progress_data["best_grid"] = reconstituted_full_grid.to_dict()
                         progress_callback(progress_data)
                         gevent.sleep(0)
-            else:
-                # Revert changes if the new state is not accepted
-                for (x, y), original_data in modified_cells_info:
-                    current_grid.cells[y][x].update(original_data)
+            # No 'else' block needed, as we just discard the neighbor_grid if the move is not accepted.
 
         temperature *= cooling_rate
         if progress_callback and (step % 5 == 0 or temperature <= stopping_temperature):
@@ -762,86 +758,62 @@ def get_swap_probability(
 
 def swap_modules(grid, tech, tech_modules_on_grid):
     """
-    Swaps the positions of two randomly selected modules of the specified tech
-    that are currently on the grid. Returns the original state of the swapped cells.
+    Swaps two random modules and returns info needed to revert the swap.
+    Returns: A tuple containing:
+             - A set of changed coordinates {(x1, y1), (x2, y2)}
+             - A list of tuples for reverting, e.g., [((x1, y1), original_cell_1_data), ...]
     """
-    module_positions = []
-    for y in range(grid.height):
-        for x in range(grid.width):
-            cell = grid.get_cell(x, y)
-            # Ensure the module is of the target tech AND is one we are considering
-            if cell["tech"] == tech and cell["module"] in {m["id"] for m in tech_modules_on_grid}:
-                module_positions.append((x, y))
-
+    module_positions = [
+        (x, y)
+        for y in range(grid.height)
+        for x in range(grid.width)
+        if grid.get_cell(x, y)["tech"] == tech and grid.get_cell(x, y)["module"] in {m["id"] for m in tech_modules_on_grid}
+    ]
     if len(module_positions) < 2:
-        return None, None, None, None  # Not enough modules to swap
+        return set(), []
 
     pos1, pos2 = random.sample(module_positions, 2)
     x1, y1 = pos1
     x2, y2 = pos2
 
-    # Get the full module data from each cell before swapping
     original_cell_1_data = grid.get_cell(x1, y1).copy()
     original_cell_2_data = grid.get_cell(x2, y2).copy()
 
+    # Swap data
     module_data_1 = original_cell_1_data.copy()
     module_data_2 = original_cell_2_data.copy()
 
-    # Place module 2 data into cell 1
-    place_module(
-        grid,
-        x1,
-        y1,
-        module_data_2["module"],
-        module_data_2["label"],
-        module_data_2["tech"],
-        module_data_2["type"],
-        module_data_2["bonus"],
-        module_data_2["adjacency"],
-        module_data_2["sc_eligible"],
-        module_data_2["image"],
-    )
-    # Update module_position after placement
+    # Place module 2 into cell 1
+    place_module(grid, x1, y1, module_data_2["module"], module_data_2["label"], tech, module_data_2["type"], module_data_2["bonus"], module_data_2["adjacency"], module_data_2["sc_eligible"], module_data_2["image"])
     grid.cells[y1][x1]["module_position"] = (x1, y1)
 
-    # Place module 1 data into cell 2
-    place_module(
-        grid,
-        x2,
-        y2,
-        module_data_1["module"],
-        module_data_1["label"],
-        module_data_1["tech"],
-        module_data_1["type"],
-        module_data_1["bonus"],
-        module_data_1["adjacency"],
-        module_data_1["sc_eligible"],
-        module_data_1["image"],
-    )
-    # Update module_position after placement
+    # Place module 1 into cell 2
+    place_module(grid, x2, y2, module_data_1["module"], module_data_1["label"], tech, module_data_1["type"], module_data_1["bonus"], module_data_1["adjacency"], module_data_1["sc_eligible"], module_data_1["image"])
     grid.cells[y2][x2]["module_position"] = (x2, y2)
 
-    return (x1, y1), original_cell_1_data, (x2, y2), original_cell_2_data
+    changed_coords = {(x1, y1), (x2, y2)}
+    revert_info = [((x1, y1), original_cell_1_data), ((x2, y2), original_cell_2_data)]
+
+    return changed_coords, revert_info
 
 
 def move_module(grid, tech, tech_modules_on_grid):
     """
-    Moves a randomly selected module of the specified tech (that's on the grid)
-    to a random empty active slot. Returns the original state of the modified cells.
+    Moves a random module to a random empty slot and returns info to revert.
+    Returns: A tuple containing:
+             - A set of changed coordinates {(x_from, y_from), (x_to, y_to)}
+             - A list of tuples for reverting, e.g., [((x_from, y_from), original_from_data), ...]
     """
-    module_positions = []
-    for y in range(grid.height):
-        for x in range(grid.width):
-            cell = grid.get_cell(x, y)
-            if cell["tech"] == tech and cell["module"] in {m["id"] for m in tech_modules_on_grid}:
-                module_positions.append((x, y))
-
+    module_positions = [
+        (x, y)
+        for y in range(grid.height)
+        for x in range(grid.width)
+        if grid.get_cell(x, y)["tech"] == tech and grid.get_cell(x, y)["module"] in {m["id"] for m in tech_modules_on_grid}
+    ]
     if not module_positions:
-        return None, None, None, None  # No modules to move
+        return set(), []
 
     x_from, y_from = random.choice(module_positions)
-    original_from_cell_data = grid.get_cell(x_from, y_from).copy()
-    module_data_to_move = original_from_cell_data.copy()
 
     empty_active_positions = [
         (ex, ey)
@@ -849,42 +821,27 @@ def move_module(grid, tech, tech_modules_on_grid):
         for ex in range(grid.width)
         if grid.get_cell(ex, ey)["module"] is None and grid.get_cell(ex, ey)["active"]
     ]
-
     if not empty_active_positions:
-        return None, None, None, None  # No empty slots to move to
+        return set(), []
 
-    # --- Simple Random Move (Original Logic) ---
     x_to, y_to = random.choice(empty_active_positions)
-    original_to_cell_data = grid.get_cell(x_to, y_to).copy()
 
-    # Place the module in the new empty slot
-    place_module(
-        grid,
-        x_to,
-        y_to,
-        module_data_to_move["module"],
-        module_data_to_move["label"],
-        module_data_to_move["tech"],
-        module_data_to_move["type"],
-        module_data_to_move["bonus"],
-        module_data_to_move["adjacency"],
-        module_data_to_move["sc_eligible"],
-        module_data_to_move["image"],
-    )
-    # Update module_position after placement
+    original_from_cell_data = grid.get_cell(x_from, y_from).copy()
+    original_to_cell_data = grid.get_cell(x_to, y_to).copy()
+    module_data_to_move = original_from_cell_data.copy()
+
+    # Place module in the new slot
+    place_module(grid, x_to, y_to, module_data_to_move["module"], module_data_to_move["label"], tech, module_data_to_move["type"], module_data_to_move["bonus"], module_data_to_move["adjacency"], module_data_to_move["sc_eligible"], module_data_to_move["image"])
     grid.cells[y_to][x_to]["module_position"] = (x_to, y_to)
 
-    # Clear the original position (preserving active/supercharged status)
-    grid.cells[y_from][x_from]["module"] = None
-    grid.cells[y_from][x_from]["label"] = ""
-    grid.cells[y_from][x_from]["tech"] = None
-    grid.cells[y_from][x_from]["type"] = ""
-    grid.cells[y_from][x_from]["bonus"] = 0.0
-    grid.cells[y_from][x_from]["adjacency"] = False  # Adjacency type is part of module def
-    grid.cells[y_from][x_from]["sc_eligible"] = False
-    grid.cells[y_from][x_from]["image"] = None
-    grid.cells[y_from][x_from]["module_position"] = None
-    grid.cells[y_from][x_from]["total"] = 0.0
-    grid.cells[y_from][x_from]["adjacency_bonus"] = 0.0
+    # Clear the original slot
+    grid.cells[y_from][x_from].update({
+        "module": None, "label": "", "tech": None, "type": "", "bonus": 0.0,
+        "adjacency": False, "sc_eligible": False, "image": None,
+        "module_position": None, "total": 0.0, "adjacency_bonus": 0.0
+    })
 
-    return (x_from, y_from), original_from_cell_data, (x_to, y_to), original_to_cell_data
+    changed_coords = {(x_from, y_from), (x_to, y_to)}
+    revert_info = [((x_from, y_from), original_from_cell_data), ((x_to, y_to), original_to_cell_data)]
+
+    return changed_coords, revert_info
