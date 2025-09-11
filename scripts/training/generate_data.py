@@ -12,6 +12,13 @@ import uuid
 from src.grid_utils import Grid
 from src.data_loader import get_module_data, get_training_module_ids, get_all_module_data, get_all_solve_data
 
+# --- Suppress Numba Debug Logging ---
+import logging
+# Get the Numba logger and set its level to WARNING to suppress INFO and DEBUG messages
+# This is to counteract a potentially noisy environment setting.
+logging.getLogger('numba').setLevel(logging.WARNING)
+# --- End Suppression ---
+
 from src.optimization.training import refine_placement_for_training
 from src.optimization.helpers import determine_window_dimensions
 from src.optimization.windowing import _scan_grid_with_window, calculate_window_score
