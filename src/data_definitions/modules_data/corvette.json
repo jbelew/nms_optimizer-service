@@ -28,9 +28,9 @@
                     {"id": "Xa", "type": "bonus", "label": "Cyclotron Ballista Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron-upgrade.webp"},
                     {"id": "Xb", "type": "bonus", "label": "Cyclotron Ballista Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron-upgrade.webp"},
                     {"id": "Xc", "type": "bonus", "label": "Cyclotron Ballista Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron-upgrade.webp"},
-                    {"id": "Ta", "type": "bonus", "label": "Torpedo Launcher Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"},
-                    {"id": "Tb", "type": "bonus", "label": "Torpedo Launcher Tau", "bonus": 0.12, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"},
-                    {"id": "Tc", "type": "bonus", "label": "Torpedo Launcher Sigma", "bonus": 0.13, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"}
+                    {"id": "Ca", "type": "bonus", "label": "Torpedo Launcher Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"},
+                    {"id": "Cb", "type": "bonus", "label": "Torpedo Launcher Tau", "bonus": 0.12, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"},
+                    {"id": "Cc", "type": "bonus", "label": "Torpedo Launcher Sigma", "bonus": 0.13, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cyclotron.webp"}
                 ]
             },
             {
@@ -111,9 +111,9 @@
                     {"id": "Xa", "type": "bonus", "label": "Phase Beam Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp"},
                     {"id": "Xb", "type": "bonus", "label": "Phase Beam Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp"},
                     {"id": "Xc", "type": "bonus", "label": "Phase Beam Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp"},
-                    {"id": "Pa", "type": "bonus", "label": "Phase Beam Array Theta", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"},
-                    {"id": "Pb", "type": "bonus", "label": "Phase Beam Array Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"},
-                    {"id": "Pc", "type": "bonus", "label": "Phase Beam Array Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"}
+                    {"id": "Ca", "type": "bonus", "label": "Phase Beam Array Theta", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"},
+                    {"id": "Cb", "type": "bonus", "label": "Phase Beam Array Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"},
+                    {"id": "Cc", "type": "bonus", "label": "Phase Beam Array Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp"}
                 ]
             },
             {
@@ -141,9 +141,9 @@
                     {"id": "Xa", "type": "bonus", "label": "Photon Cannon Upgrade Theta", "bonus": 0.40, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon-upgrade.webp"},
                     {"id": "Xb", "type": "bonus", "label": "Photon Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon-upgrade.webp"},
                     {"id": "Xc", "type": "bonus", "label": "Photon Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon-upgrade.webp"},
-                    {"id": "Pa", "type": "bonus", "label": "Photon Cannon Array Theta", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"},
-                    {"id": "Pb", "type": "bonus", "label": "Photon Cannon Array Tau", "bonus": 0.19, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"},
-                    {"id": "Pc", "type": "bonus", "label": "Photon Cannon Array Sigma", "bonus": 0.18, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"}
+                    {"id": "Ca", "type": "bonus", "label": "Photon Cannon Array Theta", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"},
+                    {"id": "Cb", "type": "bonus", "label": "Photon Cannon Array Tau", "bonus": 0.19, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"},
+                    {"id": "Cc", "type": "bonus", "label": "Photon Cannon Array Sigma", "bonus": 0.18, "adjacency": "greater", "sc_eligible": true, "image": "corvette/photon.webp"}
                 ]
             },
             {
@@ -171,9 +171,9 @@
                     { "id": "Xa", "type": "bonus", "label": "Positron Ejector Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp" },
                     { "id": "Xb", "type": "bonus", "label": "Positron Ejector Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp" },
                     { "id": "Xc", "type": "bonus", "label": "Positron Ejector Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp" },
-                    { "id": "Da", "type": "bonus", "label": "Deadeye Cannon Theta", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
-                    { "id": "Db", "type": "bonus", "label": "Deadeye Cannon Tau", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
-                    { "id": "Dc", "type": "bonus", "label": "Deadeye Cannon Sigma", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" }
+                    { "id": "Ca", "type": "bonus", "label": "Deadeye Cannon Theta", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
+                    { "id": "Cb", "type": "bonus", "label": "Deadeye Cannon Tau", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" },
+                    { "id": "Cc", "type": "bonus", "label": "Deadeye Cannon Sigma", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp" }
                 ]
             },
             {
