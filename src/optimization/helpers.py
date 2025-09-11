@@ -38,6 +38,8 @@ def determine_window_dimensions(module_count: int, tech: str, solve_type: str | 
         window_width, window_height = 4, 3
     elif module_count < 10 and tech == "pulse" and solve_type == "4x2":
         window_width, window_height = 4, 2
+    elif module_count < 9 and (solve_type == "max"):
+        window_width, window_height = 3, 3
     elif module_count < 9:
         window_width, window_height = 4, 2
     elif module_count < 8 and (tech == "pulse-spitter" or tech == "jetpack"):
