@@ -63,8 +63,8 @@ def grid_to_numba_data(grid: Grid, tech: str):
                 module_grid[y, x] = True
                 tech_module_coords.append((x, y))
 
-                adjacency_grid[y, x] = _get_adjacency_int(cell.get("adjacency"))
-                type_grid[y, x] = _get_module_type_int(cell.get("type"))
+                adjacency_grid[y, x] = _get_adjacency_int(str(cell.get("adjacency")))
+                type_grid[y, x] = _get_module_type_int(str(cell.get("type")))
                 bonus_grid[y, x] = cell.get("bonus", 0.0)
                 supercharged_grid[y, x] = cell.get("supercharged", False)
                 sc_eligible_grid[y, x] = cell.get("sc_eligible", False)

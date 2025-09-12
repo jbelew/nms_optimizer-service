@@ -1,6 +1,7 @@
 __init__
 app
 bonus_calculations
+bonus_calculations_numba
 data_definitions
 data_loader
 grid_display
@@ -11,6 +12,7 @@ model_cache
 model_definition
 module_placement
 modules_utils
+numba_utils
 optimization
 optimization_context
 optimizer

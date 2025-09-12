@@ -4,6 +4,7 @@ pyproject.toml
 src/__init__.py
 src/app.py
 src/bonus_calculations.py
+src/bonus_calculations_numba.py
 src/data_loader.py
 src/grid_display.py
 src/grid_utils.py
@@ -13,6 +14,7 @@ src/model_cache.py
 src/model_definition.py
 src/module_placement.py
 src/modules_utils.py
+src/numba_utils.py
 src/optimization_context.py
 src/optimizer.py
 src/pattern_matching.py
