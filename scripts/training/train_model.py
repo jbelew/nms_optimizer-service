@@ -578,7 +578,7 @@ def run_training_from_files(
 
         module_count = len(tech_modules_for_class_count)
         grid_width, grid_height = determine_window_dimensions(
-            module_count, tech
+            module_count, tech, solve_type=solve_type
         )  # <<< Dynamic dimensions
         print(f"  Determined dynamic grid size: {grid_width}x{grid_height}")
 

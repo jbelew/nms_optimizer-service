@@ -358,9 +358,8 @@
                     {"id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp"},
                     {"id": "Ba", "type": "bonus", "label": "Arcadia Heavy Booster Theta", "bonus": 1.02, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
                     {"id": "Bb", "type": "bonus", "label": "Arcadia Heavy Booster Tau", "bonus": 1.019, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
-                    {"id": "Bc", "type": "bonus", "label": "Arcadia Heavy Booster Sigma", "bonus": 1.018, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
-                    {"id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp"}
-                ]
+                    {"id": "Bc", "type": "bonus", "label": "Arcadia Heavy Booster Sigma", "bonus": 1.018, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"}
+                 ]
             },
             {
                 "label": "Pulse Engine",
@@ -379,7 +378,7 @@
                     {"id": "Ba", "type": "bonus", "label": "Arcadia Heavy Booster Theta", "bonus": 1.02, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
                     {"id": "Bb", "type": "bonus", "label": "Arcadia Heavy Booster Tau", "bonus": 1.019, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
                     {"id": "Bc", "type": "bonus", "label": "Arcadia Heavy Booster Sigma", "bonus": 1.018, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
-                    {"id": "PC", "type": "bonux", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp"}
+                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp"}
                 ]
             }
         ],
