@@ -1,6 +1,7 @@
 # optimization/core.py
 import logging
 
+from src.data_definitions.npz_mapping import get_npz_keys
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules
 from src.grid_display import print_grid_compact
@@ -118,12 +119,18 @@ def optimize_placement(
     sa_was_initial_placement = False
     solve_method = "Unknown"  # <<< Initialize solve_method >>>
 
+    from src.data_definitions.npz_mapping import get_npz_keys
+
+    # Determine the actual tech key to use for NPZ files and solve maps
+    npz_keys = get_npz_keys(ship, tech, solve_type, player_owned_rewards)
+    mapped_tech_key = npz_keys["npz_tech_key"]
+
     # --- Load Solves On-Demand ---
     all_solves_for_ship = get_solve_map(ship, solve_type)
     # Create the structure that filter_solves expects
     solves_for_filtering = {ship: all_solves_for_ship} if all_solves_for_ship else {}
     filtered_solves = filter_solves(
-        solves_for_filtering, ship, modules, tech, player_owned_rewards, solve_type=solve_type
+        solves_for_filtering, ship, modules, mapped_tech_key, player_owned_rewards, solve_type=solve_type
     )
     # --- End On-Demand Loading ---
 
