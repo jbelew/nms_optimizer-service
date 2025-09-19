@@ -1,21 +1,21 @@
 #!/bin/bash
 
 SESSION_NAME="nms_solvers"
-BASE_CMD="cd /home/jbelew/projects/nms_optimizer-service && ./venv/bin/python -m scripts.training.generate_data --ship corvette --category \"Hyperdrive\" --tech photonix --solve_type max"
+BASE_CMD="cd /home/jbelew/projects/nms_optimizer-service && ./venv/bin/python -m scripts.training.generate_data --ship corvette --category \"Hyperdrive\" --tech hyper --solve_type max"
+NUM_SOLVERS=4
 
-/usr/bin/tmux kill-session -t $SESSION_NAME 2>/dev/null
-/usr/bin/tmux new-session -d -s $SESSION_NAME
+/usr/bin/tmux kill-session -t $SESSION_NAME 2>/dev/null || true
 
-# Setup a 3-pane layout: three stacked rows
-/usr/bin/tmux split-window -v
-/usr/bin/tmux split-window -v
+# Create the first window and run the command
+/usr/bin/tmux new-session -d -s $SESSION_NAME -n "solver-0" "while true; do $BASE_CMD; echo \"Restarting...\"; sleep 5; done"
 
-# Send commands to each pane explicitly by pane index
-# Pane 0: pulse
-/usr/bin/tmux send-keys -t $SESSION_NAME:0.0 "while true; do $BASE_CMD; echo \"Restarting...\"; sleep 5; done" C-m
+# Create additional windows for the remaining solvers
+for i in $(seq 1 $((NUM_SOLVERS-1))); do
+    /usr/bin/tmux new-window -t $SESSION_NAME:$i -n "solver-$i" "while true; do $BASE_CMD; echo \"Restarting...\"; sleep 5; done"
+done
 
-# Pane 1: solar photonix
-/usr/bin/tmux send-keys -t $SESSION_NAME:0.1 "while true; do $BASE_CMD; echo \"Restarting...\"; sleep 5; done" C-m
+echo "Tmux session '$SESSION_NAME' created with $NUM_SOLVERS windows."
+echo "Attach with: tmux attach -t $SESSION_NAME"
+echo "Switch between windows using Ctrl+b <window-number> or Ctrl+b n/p."
 
-# Pane 2: sentinel photonix
-/usr/bin/tmux send-keys -t $SESSION_NAME:0.2 "while true; do $BASE_CMD; echo \"Restarting...\"; sleep 5; done" C-m
+

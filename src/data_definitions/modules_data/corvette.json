@@ -358,30 +358,11 @@
                     {"id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp"},
                     {"id": "Ba", "type": "bonus", "label": "Arcadia Heavy Booster Theta", "bonus": 1.02, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
                     {"id": "Bb", "type": "bonus", "label": "Arcadia Heavy Booster Tau", "bonus": 1.019, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
-                    {"id": "Bc", "type": "bonus", "label": "Arcadia Heavy Booster Sigma", "bonus": 1.018, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"}
-                 ]
-            },
-            {
-                "label": "Pulse Engine",
-                "key": "photonix",
-                "type": "max",
-                "image": "starship/pulse.webp",
-                "color": "orange",
-                "modules": [
-                    {"id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/pulse.webp"},
-                    {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp"},
-                    {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sublight.webp"},
-                    {"id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/instability.webp"},
-                    {"id": "Xa", "type": "bonus", "label": "Pulse Engine Upgrade Theta", "bonus": 1.14, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp"},
-                    {"id": "Xb", "type": "bonus", "label": "Pulse Engine Upgrade Tau", "bonus": 1.13, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp"},
-                    {"id": "Xc", "type": "bonus", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp"},
-                    {"id": "Ba", "type": "bonus", "label": "Arcadia Heavy Booster Theta", "bonus": 1.02, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
-                    {"id": "Bb", "type": "bonus", "label": "Arcadia Heavy Booster Tau", "bonus": 1.019, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
                     {"id": "Bc", "type": "bonus", "label": "Arcadia Heavy Booster Sigma", "bonus": 1.018, "adjacency": "greater", "sc_eligible": true, "image": "corvette/booster.webp"},
-                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp"}
+                    {"id": "PC", "type": "reward", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp"}
                 ]
             }
-        ],
+       ],
         "Utilities": [
             {
                 "label": "Habitation Modelus",
