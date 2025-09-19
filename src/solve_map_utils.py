@@ -2,9 +2,7 @@
 from .modules_utils import get_tech_modules
 
 
-def filter_solves(
-    solves, ship, modules, tech, player_owned_rewards=None, solve_type=None
-):
+def filter_solves(solves, ship, modules, tech, player_owned_rewards=None, solve_type=None):
     """
     Filters the solves dictionary to remove modules that the player does not own.
 
@@ -21,20 +19,16 @@ def filter_solves(
     """
 
     filtered_solves = {}
+
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]
 
-        if player_owned_rewards == ["PC"] and tech == "pulse":
-            solve_data = solves[ship]["photonix"]
-            print("INFO -- Forcing tech to 'photonix' for PC")
 
         if not solve_data:
             return {}
 
         filtered_solves[ship] = {tech: {}}
-        tech_modules = get_tech_modules(
-            modules, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
         if tech_modules is None:
             print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
             return {}  # Return empty dict if no modules are found
@@ -44,9 +38,8 @@ def filter_solves(
         filtered_solves[ship][tech]["map"] = {}
         filtered_solves[ship][tech]["score"] = solve_data.get("score", 0)
 
-        for position, module_id in solve_data.get(
-            "map", {}
-        ).items():  # Access the nested 'map'
+        for position, module_id in solve_data.get("map", {}).items():  # Access the nested 'map'
             if module_id is None or module_id in owned_module_ids:
                 filtered_solves[ship][tech]["map"][position] = module_id
+
     return filtered_solves

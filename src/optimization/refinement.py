@@ -34,7 +34,6 @@ def _handle_ml_opportunity(
     tech_modules=None,
 ):
     """Handles the ML-based refinement within an opportunity window."""
-    from src.ml_placement import ml_placement  # Keep import local if possible
 
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -53,27 +52,11 @@ def _handle_ml_opportunity(
         window_height,  # <<< Pass dimensions
     )
 
-    # 2. Run ML placement on the localized grid
-    #    Make sure player_owned_rewards is passed correctly!
-    # <<< Pass localized grid dimensions to ml_placement >>>
-    ml_refined_grid, ml_refined_score_local = ml_placement(
-        localized_grid_ml,
-        ship,
-        tech,
-        full_grid_original=grid,  # Pass the original full grid
-        start_x_original=opportunity_x,  # Pass the original start_x
-        start_y_original=opportunity_y,  # Pass the original start_y
-        player_owned_rewards=player_owned_rewards,
-        model_grid_width=localized_grid_ml.width,  # <<< Use actual localized width
-        model_grid_height=localized_grid_ml.height,  # <<< Use actual localized height
-        polish_result=True,  # Usually don't polish within the main polish step
-        progress_callback=progress_callback,
-        run_id=run_id,
-        stage=stage,
-        send_grid_updates=send_grid_updates,
-        original_state_map=original_state_map,
-        solve_type=solve_type,
-        tech_modules=tech_modules,  # type: ignore
+    # 2. Run NPZ solver on the localized grid
+    from src.optimization.npz_solver import find_best_layout_from_npz
+
+    ml_refined_grid, _ = find_best_layout_from_npz(
+        localized_grid_ml, ship, tech, solve_type=solve_type, player_owned_rewards=player_owned_rewards
     )
 
     # 3. Process ML result (logic remains the same)

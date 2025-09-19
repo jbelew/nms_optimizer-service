@@ -128,9 +128,30 @@ class Grid:
         else:
             raise IndexError("Cell out of bounds")
 
+    def count_supercharged(self):
+        """Counts the number of supercharged cells in the grid."""
+        count = 0
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.is_supercharged(x, y):
+                    count += 1
+        return count
+
     def to_dict(self):
         """Convert the grid into a JSON-serializable dictionary."""
         return {"width": self.width, "height": self.height, "cells": self.cells}
+
+    def rotate_grid(self):
+        """Rotates the grid 90 degrees clockwise."""
+        new_width = self.height
+        new_height = self.width
+        rotated_grid = Grid(new_width, new_height)
+
+        for y in range(self.height):
+            for x in range(self.width):
+                rotated_grid.cells[new_height - 1 - x][y] = deepcopy(self.cells[y][x])
+        return rotated_grid
+
 
     @classmethod
     def from_dict(cls, data: dict) -> "Grid":

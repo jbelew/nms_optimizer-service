@@ -122,7 +122,7 @@ def train_model(
     print(f"  Grid Dimensions: {grid_height}x{grid_width}")  # <<< Use passed-in dynamic dimensions
     print(f"  Num Output Classes: {num_output_classes}")
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
-    print(f"  Scheduler: CosineAnnealingLR")
+    print("  Scheduler: CosineAnnealingLR")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Training device: {device}")
