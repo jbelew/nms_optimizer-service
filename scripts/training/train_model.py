@@ -113,7 +113,6 @@ def train_model(
 
     # <<< Initialize model with dynamic dimensions >>>
     model = ModulePlacementCNN(
-        input_channels=1,
         grid_height=grid_height,
         grid_width=grid_width,
         num_output_classes=num_output_classes,

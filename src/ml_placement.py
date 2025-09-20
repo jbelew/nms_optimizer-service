@@ -195,22 +195,24 @@ def ml_placement(
 
     # --- 6. Prepare Input Tensor ---
     input_supercharge_np = np.zeros((model_grid_height, model_grid_width), dtype=np.float32)
-    input_inactive_mask_np = np.ones((model_grid_height, model_grid_width), dtype=np.int8)  # 1=inactive, 0=active
+    # Create a simple mask of active cells to be used later, but not as a model input
+    active_cell_mask = np.zeros((model_grid_height, model_grid_width), dtype=bool)
+
     for y in range(min(grid.height, model_grid_height)):
         for x in range(min(grid.width, model_grid_width)):
             try:
                 cell = grid.get_cell(x, y)
-                is_active = cell["active"]
-                is_supercharged = cell["supercharged"]
-                if is_active:
-                    input_supercharge_np[y, x] = 1.0 if is_supercharged else 0.0
-                    input_inactive_mask_np[y, x] = 0  # Mark as active
+                if cell and cell["active"]:
+                    input_supercharge_np[y, x] = 1.0 if cell["supercharged"] else 0.0
+                    active_cell_mask[y, x] = True
             except IndexError:
                 logging.warning(f"Warning: Input grid access out of bounds at ({x},{y}) during tensor prep.")
                 continue
-    input_supercharge_tensor = torch.tensor(input_supercharge_np, dtype=torch.float32).unsqueeze(0)
-    input_inactive_tensor = torch.tensor(input_inactive_mask_np, dtype=torch.float32).unsqueeze(0)
-    input_tensor = torch.stack([input_supercharge_tensor, input_inactive_tensor], dim=1).to(device)
+
+    # Create a single-channel tensor for the supercharge grid.
+    # The model now only expects this one channel.
+    # Shape: (N, C, H, W) -> (1, 1, H, W)
+    input_tensor = torch.tensor(input_supercharge_np, dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
 
     # --- 7. Get Prediction ---
     # logging.info("ML Placement: Generating prediction...") # Less critical step
@@ -238,7 +240,7 @@ def ml_placement(
         for y in range(model_grid_height):
             for x in range(model_grid_width):
                 try:
-                    if input_inactive_mask_np[y, x] == 0:  # Check if the cell is active
+                    if active_cell_mask[y, x]:  # Check if the cell is active
                         score = output_scores[class_idx, y, x]
                         potential_placements.append(
                             {
@@ -267,12 +269,10 @@ def ml_placement(
     for y in range(model_grid_height):
         for x in range(model_grid_width):
             try:
-                is_active_np = input_inactive_mask_np[y, x] == 0
-                is_supercharged_np = input_supercharge_np[y, x] == 1.0
-                py_bool_is_active = bool(is_active_np)
-                py_bool_is_supercharged = bool(is_supercharged_np and py_bool_is_active)
-                predicted_grid.set_active(x, y, py_bool_is_active)
-                predicted_grid.set_supercharged(x, y, py_bool_is_supercharged)
+                is_active = active_cell_mask[y, x]
+                is_supercharged = input_supercharge_np[y, x] == 1.0
+                predicted_grid.set_active(x, y, is_active)
+                predicted_grid.set_supercharged(x, y, is_supercharged and is_active)
                 predicted_grid.set_module(x, y, None)
                 predicted_grid.set_tech(x, y, None)
             except IndexError:

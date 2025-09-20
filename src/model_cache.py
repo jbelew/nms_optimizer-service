@@ -19,7 +19,6 @@ def _load_model_from_disk(model_path, model_grid_width, model_grid_height, num_o
         raise FileNotFoundError(f"Model file not found: {model_path}")
 
     model = ModulePlacementCNN(
-        input_channels=2,
         grid_height=model_grid_height,
         grid_width=model_grid_width,
         num_output_classes=num_output_classes,
