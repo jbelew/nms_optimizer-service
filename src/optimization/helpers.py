@@ -24,30 +24,28 @@ def determine_window_dimensions(module_count: int, tech: str, solve_type: str | 
     window_width, window_height = 3, 3
 
     # Start with the most specific conditions first
-    if module_count >= 11 and tech == "hyper":
-        window_width, window_height = 4, 4
-    elif module_count >= 10 and tech == "hyper":
-        window_width, window_height = 4, 3
-    elif module_count >= 10:
-        window_width, window_height = 4, 3
-    elif module_count < 10 and tech == "bolt-caster":
-        window_width, window_height = 4, 3
-    elif module_count < 10 and tech == "photonix" and solve_type == "4x3":
-        window_width, window_height = 4, 3
-    elif module_count < 10 and tech == "pulse" and solve_type == "4x3":
-        window_width, window_height = 4, 3
-    elif module_count < 10 and tech == "pulse" and solve_type == "4x2":
-        window_width, window_height = 4, 2
-    elif module_count < 9 and (solve_type == "max"):
-        window_width, window_height = 3, 3
-    elif module_count < 9:
-        window_width, window_height = 4, 2
-    elif module_count < 8 and (tech == "pulse-spitter" or tech == "jetpack"):
-        window_width, window_height = 3, 3
-    elif module_count < 8:
-        window_width, window_height = 4, 2
-    elif module_count < 7:
-        window_width, window_height = 2, 3
+    if tech == "hyper":
+        if module_count >= 11:
+            window_width, window_height = 4, 4
+        elif module_count >= 10:
+            window_width, window_height = 4, 3
+        else:
+            window_width, window_height = 4, 2
+
+    elif tech in ("bolt-caster", "photonix", "pulse"):
+        if solve_type == "4x3" and module_count < 10:
+            window_width, window_height = 4, 3
+        elif tech == "pulse" and solve_type == "4x2" and module_count < 10:
+            window_width, window_height = 4, 2
+        else:
+            window_width, window_height = 4, 2  # default
+
+    elif tech in ("pulse-spitter", "jetpack"):
+        if module_count < 8:
+            window_width, window_height = 3, 3
+        else:
+            window_width, window_height = 4, 2
+
     elif module_count < 4:
         window_width, window_height = 1, 3
     elif module_count < 3:
@@ -55,6 +53,9 @@ def determine_window_dimensions(module_count: int, tech: str, solve_type: str | 
     elif module_count < 1:
         logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
         return 1, 1
+    else:
+        # fallback default
+        window_width, window_height = 2, 3
 
     return window_width, window_height
 

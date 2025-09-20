@@ -31,35 +31,31 @@ DEFAULT_LOG_DIR = "runs_placement_only"
 # --- End Configuration ---
 
 
-def random_augmentations(x_sc, x_inactive, y):
+def random_augmentations(x_sc, y):
     """Applies random horizontal flips, vertical flips, and 90-degree rotations."""
     # Horizontal Flip
     if np.random.rand() > 0.5:
         x_sc = np.fliplr(x_sc)
-        x_inactive = np.fliplr(x_inactive)
         y = np.fliplr(y)
 
     # Vertical Flip
     if np.random.rand() > 0.5:
         x_sc = np.flipud(x_sc)
-        x_inactive = np.flipud(x_inactive)
         y = np.flipud(y)
 
     # Rotation (only if the grid is square)
     if x_sc.shape[0] == x_sc.shape[1] and np.random.rand() > 0.5:
         k = np.random.randint(1, 4) # rotate 90, 180, or 270 degrees
         x_sc = np.rot90(x_sc, k)
-        x_inactive = np.rot90(x_inactive, k)
         y = np.rot90(y, k)
 
-    return x_sc, x_inactive, y
+    return x_sc, y
 
 
 # --- Dataset ---
 class PlacementDataset(data.Dataset):
-    def __init__(self, X_supercharge, y, X_inactive_mask=None, augmentations=None):
+    def __init__(self, X_supercharge, y, augmentations=None):
         self.X_supercharge = X_supercharge
-        self.X_inactive_mask = X_inactive_mask
         self.y = y
         self.augmentations = augmentations
 
@@ -67,8 +63,6 @@ class PlacementDataset(data.Dataset):
         # Use the length of the first available array
         if self.X_supercharge is not None:
             return len(self.X_supercharge)
-        elif self.X_inactive_mask is not None:
-            return len(self.X_inactive_mask)
         elif self.y is not None:
             return len(self.y)
         else:
@@ -76,24 +70,14 @@ class PlacementDataset(data.Dataset):
 
     def __getitem__(self, idx):
         x_sc = self.X_supercharge[idx]
-        if self.X_inactive_mask is not None:
-            x_inactive = self.X_inactive_mask[idx]
-        else:
-            x_inactive = np.zeros_like(x_sc)
         target = self.y[idx]
 
         # Apply augmentations if they exist
         if self.augmentations:
-            x_sc, x_inactive, target = self.augmentations(x_sc, x_inactive, target)
+            x_sc, target = self.augmentations(x_sc, target)
 
         # Ensure tensors are created correctly
-        input_tensor = torch.stack(
-            [
-                torch.tensor(x_sc.copy(), dtype=torch.float32),
-                torch.tensor(x_inactive.copy(), dtype=torch.float32),
-            ],
-            dim=0,
-        )
+        input_tensor = torch.tensor(x_sc.copy(), dtype=torch.float32).unsqueeze(0) # Add channel dimension
         target_tensor = torch.tensor(target.copy(), dtype=torch.long)
 
         return input_tensor, target_tensor
@@ -129,7 +113,7 @@ def train_model(
 
     # <<< Initialize model with dynamic dimensions >>>
     model = ModulePlacementCNN(
-        input_channels=2,
+        input_channels=1,
         grid_height=grid_height,
         grid_width=grid_width,
         num_output_classes=num_output_classes,
@@ -528,7 +512,7 @@ def run_training_from_files(
             continue
         print(f"Found {len(data_files)} data files for tech '{tech}'. Loading and validating...")  # <<< Updated print
 
-        all_X_supercharge_data, all_X_inactive_mask_data, all_y_data = [], [], []
+        all_X_supercharge_data, all_y_data = [], []
         total_loaded_samples = 0
         invalid_files_count = 0  # <<< Track invalid files
         load_start_time = time.time()
@@ -536,33 +520,31 @@ def run_training_from_files(
         for filepath in data_files:
             try:
                 with np.load(filepath) as npz_file:
-                    if "X_supercharge" not in npz_file or "X_inactive_mask" not in npz_file or "y" not in npz_file:
+                    if "X_supercharge" not in npz_file or "y" not in npz_file:
                         print(f"Warning: Required keys not found in {filepath}. Skipping file.")
                         invalid_files_count += 1
                         continue
 
-                    x_sc_batch, x_inactive_batch, y_batch = (
+                    x_sc_batch, y_batch = (
                         npz_file["X_supercharge"],
-                        npz_file["X_inactive_mask"],
                         npz_file["y"],
                     )
 
                     # --- Data Validation Checks ---
                     valid_file = True
-                    if len(x_sc_batch.shape) < 3 or len(x_inactive_batch.shape) < 3 or len(y_batch.shape) < 3:
+                    if len(x_sc_batch.shape) < 3 or len(y_batch.shape) < 3:
                         print(f"Warning: Unexpected array dimensions in {filepath}. Skipping file.")
                         valid_file = False
                     # <<< Use dynamic dimensions for shape check >>>
                     elif (
                         x_sc_batch.shape[1:] != (grid_height, grid_width)
-                        or x_inactive_batch.shape[1:] != (grid_height, grid_width)
                         or y_batch.shape[1:] != (grid_height, grid_width)
                     ):
                         print(
                             f"Warning: Shape mismatch in {filepath} (Expected {grid_height}x{grid_width}). Skipping file."
                         )
                         valid_file = False
-                    elif not (x_sc_batch.shape[0] == x_inactive_batch.shape[0] == y_batch.shape[0]):
+                    elif not (x_sc_batch.shape[0] == y_batch.shape[0]):
                         print(f"Warning: Sample count mismatch in {filepath}. Skipping file.")
                         valid_file = False
                     # <<< Add Label Validation >>>
@@ -583,7 +565,6 @@ def run_training_from_files(
                     # --- End Data Validation Checks ---
 
                     all_X_supercharge_data.append(x_sc_batch)
-                    all_X_inactive_mask_data.append(x_inactive_batch)
                     all_y_data.append(y_batch)
                     total_loaded_samples += x_sc_batch.shape[0]
 
@@ -601,7 +582,6 @@ def run_training_from_files(
 
         try:
             X_supercharge_data_np = np.concatenate(all_X_supercharge_data, axis=0)
-            X_inactive_mask_data_np = np.concatenate(all_X_inactive_mask_data, axis=0)
             y_data_np = np.concatenate(all_y_data, axis=0)
             load_time = time.time() - load_start_time
             print(
@@ -614,22 +594,19 @@ def run_training_from_files(
 
         # --- 2. Perform Train/Validation Split ---
         X_train_sc_np, X_val_sc_np = None, None
-        X_train_in_np, X_val_in_np = None, None
         y_train_np, y_val_np = None, None
         val_loader = None
 
         if len(X_supercharge_data_np) < 2:
             print(f"Warning: Not enough samples ({len(X_supercharge_data_np)}) for tech '{tech}' for validation.")
-            X_train_sc_np, X_train_in_np, y_train_np = (
+            X_train_sc_np, y_train_np = (
                 X_supercharge_data_np,
-                X_inactive_mask_data_np,
                 y_data_np,
             )
         elif validation_split <= 0 or validation_split >= 1:
             print(f"Warning: Invalid validation_split ({validation_split}). Training without validation.")
-            X_train_sc_np, X_train_in_np, y_train_np = (
+            X_train_sc_np, y_train_np = (
                 X_supercharge_data_np,
-                X_inactive_mask_data_np,
                 y_data_np,
             )
         else:
@@ -643,17 +620,12 @@ def run_training_from_files(
                     X_supercharge_data_np[train_indices],
                     X_supercharge_data_np[val_indices],
                 )
-                X_train_in_np, X_val_in_np = (
-                    X_inactive_mask_data_np[train_indices],
-                    X_inactive_mask_data_np[val_indices],
-                )
                 y_train_np, y_val_np = y_data_np[train_indices], y_data_np[val_indices]
                 print(f"Split data: {len(X_train_sc_np)} train, {len(X_val_sc_np)} validation samples.")
             except Exception as e:
                 print(f"Error during train/val split for tech '{tech}': {e}. Training without validation.")
-                X_train_sc_np, X_train_in_np, y_train_np = (
+                X_train_sc_np, y_train_np = (
                     X_supercharge_data_np,
-                    X_inactive_mask_data_np,
                     y_data_np,
                 )
         # --- End Split ---
@@ -692,9 +664,9 @@ def run_training_from_files(
 
         # --- 3. Prepare Datasets and DataLoaders ---
         try:
-            train_dataset = PlacementDataset(X_train_sc_np, y_train_np, X_inactive_mask=X_train_in_np, augmentations=random_augmentations)
-            if X_val_sc_np is not None and X_val_in_np is not None and y_val_np is not None and len(X_val_sc_np) > 0:
-                val_dataset = PlacementDataset(X_val_sc_np, y_val_np, X_inactive_mask=X_val_in_np)
+            train_dataset = PlacementDataset(X_train_sc_np, y_train_np, augmentations=random_augmentations)
+            if X_val_sc_np is not None and y_val_np is not None and len(X_val_sc_np) > 0:
+                val_dataset = PlacementDataset(X_val_sc_np, y_val_np)
                 val_batch_size = min(batch_size, len(val_dataset))
                 if val_batch_size > 0:
                     val_loader = data.DataLoader(
