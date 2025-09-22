@@ -151,7 +151,7 @@ def find_supercharged_opportunities(
         return None
     module_count = len(tech_modules)
     window_width, window_height = determine_window_dimensions(
-        module_count, tech, solve_type=solve_type
+        module_count, tech, ship, solve_type=solve_type
     )
     logging.info(
         f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules)."

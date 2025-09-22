@@ -121,7 +121,7 @@ def generate_training_batch(
 
     # --- Initial default grid dimensions (might be overridden by experimental logic) ---
     # This call uses the *production* logic of determine_window_dimensions
-    default_grid_width, default_grid_height = determine_window_dimensions(module_count, tech, solve_type=solve_type)
+    default_grid_width, default_grid_height = determine_window_dimensions(module_count, tech, ship, solve_type=solve_type)
 
     # --- End Determine Dynamic Grid Dimensions ---
 

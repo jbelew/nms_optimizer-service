@@ -25,7 +25,7 @@ except ImportError:
     torchmetrics = None
 
 # --- Configuration ---
-DEFAULT_DATA_SOURCE_DIR = "generated_batches"
+DEFAULT_DATA_SOURCE_DIR = "scripts/training/generated_batches"
 DEFAULT_MODEL_SAVE_DIR = "../../src/trained_models"
 DEFAULT_LOG_DIR = "runs_placement_only"
 # --- End Configuration ---
@@ -106,7 +106,7 @@ def train_model(
     print(f"  Grid Dimensions: {grid_height}x{grid_width}")  # <<< Use passed-in dynamic dimensions
     print(f"  Num Output Classes: {num_output_classes}")
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
-    print(f"  Scheduler: CosineAnnealingLR")
+    print("  Scheduler: CosineAnnealingLR")
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"  Training device: {device}")
@@ -488,7 +488,7 @@ def run_training_from_files(
 
         module_count = len(tech_modules_for_class_count)
         grid_width, grid_height = determine_window_dimensions(
-            module_count, tech, solve_type=solve_type
+            module_count, tech, ship, solve_type=solve_type
         )  # <<< Dynamic dimensions
         print(f"  Determined dynamic grid size: {grid_width}x{grid_height}")
 

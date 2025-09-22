@@ -153,9 +153,10 @@ def get_model_keys(
        These serve as the primary keys for module definitions.
     2. Applies reward-based overrides (e.g., "pulse" + "PC" -> "photonix"),
        updating both module definition tech key and filename tech key.
-    3. Applies grid-size specific overrides, which primarily modify the
-       filename keys, while the module definition keys remain from step 2.
-    4. Appends solve_type to filename_tech_key if it exists.
+    3. Appends the `solve_type` to the `filename_tech_key` if it is provided
+       (e.g., "pulse" -> "pulse_max").
+    4. If `solve_type` is not provided, appends the grid dimensions to the
+       `filename_tech_key` (e.g., "pulse" -> "pulse_4x3").
 
     Args:
         ui_ship_key: The ship key provided by the user/UI.
@@ -174,8 +175,7 @@ def get_model_keys(
     """
     player_rewards_set = set(player_owned_rewards) if player_owned_rewards else set()
 
-    # --- Step 1: Determine initial base keys (primarily for module definitions) ---
-    # These will also be the starting point for filename keys.
+    # --- Step 1: Determine initial base keys (for module definitions and filenames) ---
     if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
         initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[
             ui_ship_key
@@ -193,56 +193,16 @@ def get_model_keys(
     # This affects both module definition tech key and filename tech key.
     if ui_tech_key == "pulse" and "PC" in player_rewards_set:
         # If Photonix Core is owned, "pulse" tech effectively becomes "photonix".
-        # The ship key (e.g., "standard") remains as determined by initial_model_ship_key.
         module_def_tech_key = "photonix"
         filename_tech_key = "photonix"
 
-    # --- Step 3: Apply grid-size specific overrides ---
-    # These conditions use the module_def_ship_key and module_def_tech_key (which may have been
-    # updated by reward logic) to decide if FILENAME keys need further specialization.
-    # The module_def keys themselves are NOT changed by this step.
-    if (
-        module_def_ship_key == "standard"
-        and module_def_tech_key == "photonix"
-        and grid_width == 4
-        and grid_height == 3
-    ):
-        # This specific model filename is "model_sentinel_photonix_4x3.pth"
-        # but it's trained on "standard" "photonix" modules.
-        filename_ship_key = "standard"
-        filename_tech_key = "photonix_4x3"
-
-    if (
-        module_def_ship_key == "solar"
-        and module_def_tech_key == "pulse"
-        and grid_width == 4
-        and grid_height == 3
-    ):
-        # This specific model filename is "model_sentinel_photonix_4x3.pth"
-        # but it's trained on "standard" "photonix" modules.
-        filename_ship_key = "solar"
-        filename_tech_key = "pulse_4x3"
-
-    if (
-        module_def_ship_key == "solar"
-        and module_def_tech_key == "photonix"
-        and grid_width == 4
-        and grid_height == 3
-    ):
-        # This specific model filename is "model_sentinel_photonix_4x3.pth"
-        # but it's trained on "standard" "photonix" modules.
-        filename_ship_key = "solar"
-        filename_tech_key = "photonix_4x3"
-
-    # Add other grid-size specific conditions here, for example:
-    # if model_ship_key == "some_ship" and model_tech_key == "some_tech" and grid_width == X and grid_height == Y:
-    #     return "specific_model_ship_for_size", "specific_model_tech_for_size"
-
-    # --- Step 4: Append solve_type to filename_tech_key if it exists ---
+    # --- Step 3: Append solve_type OR grid dimensions to filename_tech_key ---
     if solve_type:
         filename_tech_key = f"{filename_tech_key}_{solve_type}"
+    else:
+        filename_tech_key = f"{filename_tech_key}_{grid_width}x{grid_height}"
 
-    # --- Step 5: Return the (potentially modified) model keys ---
+    # --- Step 4: Return the final keys ---
     return {
         "filename_ship_key": filename_ship_key,
         "filename_tech_key": filename_tech_key,

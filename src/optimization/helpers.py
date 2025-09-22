@@ -5,7 +5,9 @@ from src.modules_utils import get_tech_modules
 from src.module_placement import place_module
 
 
-def determine_window_dimensions(module_count: int, tech: str, solve_type: str | None = None) -> tuple[int, int]:
+def determine_window_dimensions(
+    module_count: int, tech: str, ship: str, solve_type: str | None = None
+) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules and technology type.
 
@@ -15,30 +17,32 @@ def determine_window_dimensions(module_count: int, tech: str, solve_type: str | 
     Args:
         module_count: The total number of modules for a given technology.
         tech: The technology key.
+        ship: The ship type, which can influence the grid size.
         solve_type: The specific solve type, which may influence the decision.
 
     Returns:
         A tuple containing the calculated window_width and window_height.
     """
+    # --- Ship- and tech-specific overrides ---
+    if (ship == "solar" or ship == "sentinel") and tech == "photonix":
+        return 4, 3
+
     # Default window size if no other conditions are met
     window_width, window_height = 3, 3
 
-    # Start with the most specific conditions first
+    # --- Technology-specific rules ---
     if tech == "hyper":
-        if module_count >= 11:
+        if module_count >= 12:
             window_width, window_height = 4, 4
         elif module_count >= 10:
             window_width, window_height = 4, 3
+        elif module_count >= 9:
+            window_width, window_height = 3, 3
         else:
             window_width, window_height = 4, 2
 
-    elif tech in ("bolt-caster", "photonix", "pulse"):
-        if solve_type == "4x3" and module_count < 10:
-            window_width, window_height = 4, 3
-        elif tech == "pulse" and solve_type == "4x2" and module_count < 10:
-            window_width, window_height = 4, 2
-        else:
-            window_width, window_height = 4, 2  # default
+    elif tech in ("bolt-caster"):
+        window_width, window_height = 4, 3
 
     elif tech in ("pulse-spitter", "jetpack"):
         if module_count < 8:
@@ -46,16 +50,27 @@ def determine_window_dimensions(module_count: int, tech: str, solve_type: str | 
         else:
             window_width, window_height = 4, 2
 
-    elif module_count < 4:
-        window_width, window_height = 1, 3
-    elif module_count < 3:
-        window_width, window_height = 1, 2
-    elif module_count < 1:
-        logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
-        return 1, 1
+    # --- Generic fallback rules ---
     else:
-        # fallback default
-        window_width, window_height = 2, 3
+        if module_count < 1:
+            logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
+            return 1, 1
+        elif module_count < 3:
+            window_width, window_height = 1, 2
+        elif module_count < 4:
+            window_width, window_height = 1, 3
+        elif module_count < 5:
+            window_width, window_height = 2, 2
+        elif module_count < 7:
+            window_width, window_height = 2, 3
+        elif module_count < 8:
+            window_width, window_height = 4, 2
+        elif module_count < 9:
+            window_width, window_height = 4, 2
+        elif module_count >= 10:
+            window_width, window_height = 4, 3
+        else:
+            window_width, window_height = 2, 3
 
     return window_width, window_height
 
