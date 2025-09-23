@@ -3,7 +3,9 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_type=None):
+def get_tech_modules(
+    modules, ship, tech_key, player_owned_rewards=None, solve_type=None, available_modules=None
+):
     """
     Retrieves a list of module definitions for a given technology, filtered by ownership.
 
@@ -20,6 +22,7 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_t
         tech_key (str): The technology key.
         player_owned_rewards (list, optional): A list of reward module IDs. Defaults to [].
         solve_type (str, optional): The specific type of solve. Defaults to None.
+        available_modules (list, optional): A list of available module IDs. Defaults to None.
 
     Returns:
         list: A filtered list of module dictionaries, or None if not found.
@@ -62,11 +65,12 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_t
         if tech_key in modules and solve_type is None:
             tech_modules = modules[tech_key].get("modules", [])
         else:
-             logging.error(f"Technology '{tech_key}' with solve_type '{solve_type}' not found or has no modules for ship '{ship}'.")
-             return None
+            logging.error(
+                f"Technology '{tech_key}' with solve_type '{solve_type}' not found or has no modules for ship '{ship}'."
+            )
+            return None
     else:
         tech_modules = selected_tech_data.get("modules", [])
-
 
     # Filter the found modules by ownership
     filtered_modules = []
@@ -79,6 +83,11 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_t
                 filtered_modules.append(modified_module)
         else:
             filtered_modules.append(module)
+
+    # If a list of available modules is provided, filter the list against it
+    if available_modules is not None:
+        logging.debug(f"Filtering modules based on available_modules: {available_modules}")
+        filtered_modules = [m for m in filtered_modules if m.get("id") in available_modules]
 
     return filtered_modules
 

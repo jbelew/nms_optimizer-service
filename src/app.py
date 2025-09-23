@@ -97,6 +97,7 @@ def run_optimization(data, progress_callback=None, run_id=None, solve_type=None)
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
+    available_modules = data.get("available_modules")
     forced_solve = data.get("forced", False)
     experimental_window_sizing_req = data.get("experimental_window_sizing", True)
     send_grid_updates = data.get("send_grid_updates", False)
@@ -129,6 +130,7 @@ def run_optimization(data, progress_callback=None, run_id=None, solve_type=None)
             run_id=run_id,
             send_grid_updates=send_grid_updates,
             solve_type=solve_type,
+            available_modules=available_modules,
         )
 
         result = {
