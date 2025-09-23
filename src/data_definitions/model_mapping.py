@@ -177,9 +177,9 @@ def get_model_keys(
 
     # --- Step 1: Determine initial base keys (for module definitions and filenames) ---
     if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
-        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[
-            ui_ship_key
-        ].get(ui_tech_key, (ui_ship_key, ui_tech_key))
+        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(
+            ui_tech_key, (ui_ship_key, ui_tech_key)
+        )
     else:
         initial_model_ship_key, initial_model_tech_key = ui_ship_key, ui_tech_key
 
@@ -195,6 +195,13 @@ def get_model_keys(
         # If Photonix Core is owned, "pulse" tech effectively becomes "photonix".
         module_def_tech_key = "photonix"
         filename_tech_key = "photonix"
+
+        # Re-evaluate ship key for the new tech, as some ships (like Sentinel)
+        # have a unique model for Photonix.
+        if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
+            ship_key, _ = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get("photonix", (ui_ship_key, "photonix"))
+            module_def_ship_key = ship_key
+            filename_ship_key = ship_key
 
     # --- Step 3: Append solve_type OR grid dimensions to filename_tech_key ---
     if solve_type:

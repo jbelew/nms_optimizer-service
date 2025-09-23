@@ -518,15 +518,6 @@
                         "image": "starship/luminance.webp"
                     },
                     {
-                        "id": "FA",
-                        "type": "bonus",
-                        "label": "Flight Assist Override",
-                        "bonus": 1.07,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/flight-assist.webp"
-                    },
-                    {
                         "id": "PC",
                         "type": "reward",
                         "label": "Photonix Core",
@@ -536,68 +527,6 @@
                         "image": "starship/photonix.webp"
                     },
                     {
-                        "id": "SL",
-                        "type": "bonus",
-                        "label": "Sub-Light Amplifier",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/sublight.webp"
-                    },
-                    {
-                        "id": "ID",
-                        "type": "bonus",
-                        "label": "Instability Drive",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/instability.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Pulse Engine Upgrade Theta",
-                        "bonus": 1.14,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/pulse-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Pulse Engine Upgrade Tau",
-                        "bonus": 1.13,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/pulse-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Pulse Engine Upgrade Sigma",
-                        "bonus": 1.12,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/pulse-upgrade.webp"
-                    }
-                ]
-            },
-            {
-                "label": "Luminance Drive",
-                "key": "photonix",
-                "image": "starship/luminance.webp",
-                "color": "orange",
-                "modules": [
-                    {
-                        "id": "PE",
-                        "type": "core",
-                        "label": "Luminance Drive",
-                        "bonus": 1.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/luminance.webp"
-                    },
-                    {
                         "id": "FA",
                         "type": "bonus",
                         "label": "Flight Assist Override",
@@ -605,15 +534,6 @@
                         "adjacency": "greater",
                         "sc_eligible": false,
                         "image": "starship/flight-assist.webp"
-                    },
-                    {
-                        "id": "PC",
-                        "type": "bonus",
-                        "label": "Photonix Core",
-                        "bonus": 1.1,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/photonix.webp"
                     },
                     {
                         "id": "SL",

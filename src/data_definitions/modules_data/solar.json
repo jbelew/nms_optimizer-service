@@ -518,6 +518,15 @@
                         "image": "starship/pulse.webp"
                     },
                     {
+                        "id": "PC",
+                        "type": "reward",
+                        "label": "Photonix Core",
+                        "bonus": 1.1,
+                        "adjacency": "greater",
+                        "sc_eligible": false,
+                        "image": "starship/photonix.webp"
+                    },
+                    {
                         "id": "FA",
                         "type": "bonus",
                         "label": "Flight Assist Override",
