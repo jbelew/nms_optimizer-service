@@ -47,6 +47,6 @@ def filter_solves(
         for position, module_id in solve_data.get(
             "map", {}
         ).items():  # Access the nested 'map'
-            if module_id is None or module_id in owned_module_ids:
+            if module_id is None or module_id == "None" or module_id in owned_module_ids:
                 filtered_solves[ship][tech]["map"][position] = module_id
     return filtered_solves

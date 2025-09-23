@@ -207,6 +207,9 @@ def get_model_keys(
     if solve_type:
         filename_tech_key = f"{filename_tech_key}_{solve_type}"
     else:
+        # Canonicalize dimensions to ensure width >= height for consistent filenames
+        if grid_width < grid_height:
+            grid_width, grid_height = grid_height, grid_width
         filename_tech_key = f"{filename_tech_key}_{grid_width}x{grid_height}"
 
     # --- Step 4: Return the final keys ---

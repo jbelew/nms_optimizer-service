@@ -475,7 +475,7 @@
                     {
                         "id": "Xa",
                         "type": "bonus",
-                        "label": "Defense Systems Theta",
+                        "label": "Defense Systems Upgrade Theta",
                         "bonus": 0.3,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -484,7 +484,7 @@
                     {
                         "id": "Xb",
                         "type": "bonus",
-                        "label": "Defense Systems Tau",
+                        "label": "Defense Systems Upgrade Tau",
                         "bonus": 0.29,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -493,7 +493,7 @@
                     {
                         "id": "Xc",
                         "type": "bonus",
-                        "label": "Defense Systems Sigma",
+                        "label": "Defense Systems Upgrade Sigma",
                         "bonus": 0.28,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -510,7 +510,7 @@
                     {
                         "id": "Xa",
                         "type": "bonus",
-                        "label": "Rebuilt Exosuit Module Theta",
+                        "label": "Rebuilt Exosuit Upgrade Module Theta",
                         "bonus": 0.3,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -519,7 +519,7 @@
                     {
                         "id": "Xb",
                         "type": "bonus",
-                        "label": "Rebuilt Exosuit Module Tau",
+                        "label": "Rebuilt Exosuit Upgrade Module Tau",
                         "bonus": 0.29,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -528,7 +528,7 @@
                     {
                         "id": "Xc",
                         "type": "bonus",
-                        "label": "Rebuilt Exosuit Module Sigma",
+                        "label": "Rebuilt Exosuit Upgrade Module Sigma",
                         "bonus": 0.28,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -545,7 +545,7 @@
                     {
                         "id": "Xa",
                         "type": "bonus",
-                        "label": "Forbidden Exosuit Module Theta",
+                        "label": "Forbidden Exosuit Upgrade Module Theta",
                         "bonus": 0.3,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -554,7 +554,7 @@
                     {
                         "id": "Xb",
                         "type": "bonus",
-                        "label": "Forbidden Exosuit Module Tau",
+                        "label": "Forbidden Exosuit Upgrade Module Tau",
                         "bonus": 0.29,
                         "adjacency": "greater_1",
                         "sc_eligible": true,
@@ -563,7 +563,7 @@
                     {
                         "id": "Xc",
                         "type": "bonus",
-                        "label": "Forbidden Exosuit Module Sigma",
+                        "label": "Forbidden Exosuit Upgrade Module Sigma",
                         "bonus": 0.28,
                         "adjacency": "greater_1",
                         "sc_eligible": true,

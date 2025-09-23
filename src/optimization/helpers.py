@@ -24,7 +24,7 @@ def determine_window_dimensions(
         A tuple containing the calculated window_width and window_height.
     """
     # --- Ship- and tech-specific overrides ---
-    if (ship == "solar" or ship == "sentinel") and tech == "photonix":
+    if ship == "sentinel" and tech == "photonix":
         return 4, 3
 
     # Default window size if no other conditions are met
@@ -51,26 +51,25 @@ def determine_window_dimensions(
             window_width, window_height = 4, 2
 
     # --- Generic fallback rules ---
+    elif module_count < 1:
+        logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
+        return 1, 1
+    elif module_count < 3:
+        window_width, window_height = 2, 1
+    elif module_count < 4:
+        window_width, window_height = 3, 1
+    elif module_count < 5:
+        window_width, window_height = 2, 2
+    elif module_count < 7:
+        window_width, window_height = 3, 2
+    elif module_count < 8:
+        window_width, window_height = 4, 2
+    elif module_count < 9:
+        window_width, window_height = 4, 2
+    elif module_count >= 9:
+        window_width, window_height = 3, 3
     else:
-        if module_count < 1:
-            logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
-            return 1, 1
-        elif module_count < 3:
-            window_width, window_height = 1, 2
-        elif module_count < 4:
-            window_width, window_height = 1, 3
-        elif module_count < 5:
-            window_width, window_height = 2, 2
-        elif module_count < 7:
-            window_width, window_height = 2, 3
-        elif module_count < 8:
-            window_width, window_height = 4, 2
-        elif module_count < 9:
-            window_width, window_height = 4, 2
-        elif module_count >= 9:
-            window_width, window_height = 3, 3
-        else:
-            window_width, window_height = 4, 3
+        window_width, window_height = 4, 3
 
     return window_width, window_height
 
