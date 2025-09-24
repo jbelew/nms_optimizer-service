@@ -104,166 +104,6 @@ def optimize_placement(
         clear_all_modules_of_tech(cleared_grid_on_fail, tech)
         return cleared_grid_on_fail, 0.0, 0.0, "Module Definition Error"
 
-    # --- Partial Module Set Path ---
-    # If the number of available modules for this tech is less than the full set,
-    # skip pattern matching and go straight to a windowed SA solve.
-    if available_modules is not None and len(tech_modules) < len(full_tech_modules_list):
-        logging.info(
-            f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
-        )
-
-        # We need solve_score for percentage calculation. Let's get it now.
-        solve_score = 0
-        all_solves_for_ship = get_solve_map(ship, solve_type)
-        if all_solves_for_ship:
-            solves_for_filtering = {ship: all_solves_for_ship}
-            # Filter with full module list to find the official solve score
-            temp_filtered_solves = filter_solves(
-                solves_for_filtering,
-                ship,
-                modules,
-                tech,
-                player_owned_rewards,
-                solve_type=solve_type,
-            )
-            if ship in temp_filtered_solves and tech in temp_filtered_solves[ship]:
-                solve_score = temp_filtered_solves[ship][tech].get("score", 0)
-
-        grid_for_sa = grid.copy()
-        clear_all_modules_of_tech(grid_for_sa, tech)
-
-        # Find the best window for the available modules.
-        opportunity_result = find_supercharged_opportunities(
-            grid_for_sa,
-            modules,
-            ship,
-            tech,
-            player_owned_rewards,
-            solve_type=solve_type,
-            tech_modules=tech_modules,
-        )
-
-        solved_grid = None
-        solved_bonus = -float("inf")
-        solve_method = "Unknown"
-
-        if opportunity_result:
-            opp_x, opp_y, opp_w, opp_h = opportunity_result
-            logging.info(
-                f"Found supercharged opportunity window for partial solve: {opp_w}x{opp_h} at ({opp_x}, {opp_y})"
-            )
-            solved_grid, solved_bonus = _handle_sa_refine_opportunity(
-                grid_for_sa,
-                modules,
-                ship,
-                tech,
-                player_owned_rewards,
-                opp_x,
-                opp_y,
-                opp_w,
-                opp_h,
-                progress_callback=progress_callback,
-                run_id=run_id,
-                stage="partial_set_sa",
-                send_grid_updates=send_grid_updates,
-                solve_type=solve_type,
-                tech_modules=tech_modules,
-            )
-            solve_method = "Partial Set SA"
-        else:
-            logging.warning(
-                "No supercharged opportunity window found. Finding first available window for SA."
-            )
-            num_modules = len(tech_modules)
-            w, h = 0, 0
-            if num_modules <= 2:
-                w, h = 2, 1
-            elif num_modules <= 4:
-                w, h = 2, 2
-            elif num_modules <= 6:
-                w, h = 3, 2
-            elif num_modules <= 8:
-                w, h = 4, 2
-            elif num_modules == 9:
-                w, h = 3, 3
-            elif num_modules <= 12:
-                w, h = 4, 3
-            else:
-                w, h = 5, 3  # Fallback
-
-            best_pos = None
-            # Find the first top-left position that can fit the window and is composed of active, empty slots
-            for y in range(grid_for_sa.height - h + 1):
-                for x in range(grid_for_sa.width - w + 1):
-                    is_valid = True
-                    for j in range(h):
-                        for i in range(w):
-                            cell = grid_for_sa.get_cell(x + i, y + j)
-                            if not cell["active"] or cell["module"] is not None:
-                                is_valid = False
-                                break
-                        if not is_valid:
-                            break
-                    if is_valid:
-                        best_pos = (x, y)
-                        break
-                if best_pos:
-                    break
-
-            if best_pos:
-                opp_x, opp_y = best_pos
-                logging.info(f"Found first available window: {w}x{h} at ({opp_x}, {opp_y})")
-                solved_grid, solved_bonus = _handle_sa_refine_opportunity(
-                    grid_for_sa,
-                    modules,
-                    ship,
-                    tech,
-                    player_owned_rewards,
-                    opp_x,
-                    opp_y,
-                    w,
-                    h,
-                    progress_callback=progress_callback,
-                    run_id=run_id,
-                    stage="partial_set_sa_scanned",
-                    send_grid_updates=send_grid_updates,
-                    solve_type=solve_type,
-                    tech_modules=tech_modules,
-                )
-                solve_method = "Partial Set SA (First Fit)"
-            else:
-                logging.error(
-                    "Could not find any suitable window for partial module set. Placing modules directly."
-                )
-                solved_grid = place_all_modules_in_empty_slots(
-                    grid_for_sa,
-                    modules,
-                    ship,
-                    tech,
-                    player_owned_rewards,
-                    solve_type=solve_type,
-                    tech_modules=tech_modules,
-                )
-                solved_bonus = calculate_grid_score(solved_grid, tech)
-                solve_method = "Partial Set Placement (No Window)"
-
-        if solved_grid is None:
-            logging.error(f"Partial module set SA failed for {ship}/{tech}.")
-            cleared_grid_on_fail = grid.copy()
-            clear_all_modules_of_tech(cleared_grid_on_fail, tech)
-            return cleared_grid_on_fail, 0.0, 0.0, "Partial SA Failed"
-
-        if solve_score > 1e-9:
-            percentage = (solved_bonus / solve_score) * 100
-        else:
-            percentage = 100.0 if solved_bonus > 1e-9 else 0.0
-
-        logging.info(
-            f"SUCCESS -- Final Score (Partial Set): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
-        )
-        print_grid_compact(solved_grid)
-        return solved_grid, round(percentage, 2), solved_bonus, solve_method
-
     # --- Early Check: Any Empty, Active Slots? ---
     has_empty_active_slots = False
     for y in range(grid.height):
@@ -330,6 +170,166 @@ def optimize_placement(
         # print_grid_compact(solved_grid) # Optional: Can be noisy for many calls
         return solved_grid, round(percentage, 4), solved_bonus, solve_method
     else:
+        # --- Partial Module Set Path ---
+        # If the number of available modules for this tech is less than the full set,
+        # skip pattern matching and go straight to a windowed SA solve.
+        if available_modules is not None and len(tech_modules) < len(full_tech_modules_list):
+            logging.info(
+                f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
+            )
+
+            # We need solve_score for percentage calculation. Let's get it now.
+            solve_score = 0
+            all_solves_for_ship = get_solve_map(ship, solve_type)
+            if all_solves_for_ship:
+                solves_for_filtering = {ship: all_solves_for_ship}
+                # Filter with full module list to find the official solve score
+                temp_filtered_solves = filter_solves(
+                    solves_for_filtering,
+                    ship,
+                    modules,
+                    tech,
+                    player_owned_rewards,
+                    solve_type=solve_type,
+                )
+                if ship in temp_filtered_solves and tech in temp_filtered_solves[ship]:
+                    solve_score = temp_filtered_solves[ship][tech].get("score", 0)
+
+            grid_for_sa = grid.copy()
+            clear_all_modules_of_tech(grid_for_sa, tech)
+
+            # Find the best window for the available modules.
+            opportunity_result = find_supercharged_opportunities(
+                grid_for_sa,
+                modules,
+                ship,
+                tech,
+                player_owned_rewards,
+                solve_type=solve_type,
+                tech_modules=tech_modules,
+            )
+
+            solved_grid = None
+            solved_bonus = -float("inf")
+            solve_method = "Unknown"
+
+            if opportunity_result:
+                opp_x, opp_y, opp_w, opp_h = opportunity_result
+                logging.info(
+                    f"Found supercharged opportunity window for partial solve: {opp_w}x{opp_h} at ({opp_x}, {opp_y})"
+                )
+                solved_grid, solved_bonus = _handle_sa_refine_opportunity(
+                    grid_for_sa,
+                    modules,
+                    ship,
+                    tech,
+                    player_owned_rewards,
+                    opp_x,
+                    opp_y,
+                    opp_w,
+                    opp_h,
+                    progress_callback=progress_callback,
+                    run_id=run_id,
+                    stage="partial_set_sa",
+                    send_grid_updates=send_grid_updates,
+                    solve_type=solve_type,
+                    tech_modules=tech_modules,
+                )
+                solve_method = "Partial Set SA"
+            else:
+                logging.warning(
+                    "No supercharged opportunity window found. Finding first available window for SA."
+                )
+                num_modules = len(tech_modules)
+                w, h = 0, 0
+                if num_modules <= 2:
+                    w, h = 2, 1
+                elif num_modules <= 4:
+                    w, h = 2, 2
+                elif num_modules <= 6:
+                    w, h = 3, 2
+                elif num_modules <= 8:
+                    w, h = 4, 2
+                elif num_modules == 9:
+                    w, h = 3, 3
+                elif num_modules <= 12:
+                    w, h = 4, 3
+                else:
+                    w, h = 5, 3  # Fallback
+
+                best_pos = None
+                # Find the first top-left position that can fit the window and is composed of active, empty slots
+                for y in range(grid_for_sa.height - h + 1):
+                    for x in range(grid_for_sa.width - w + 1):
+                        is_valid = True
+                        for j in range(h):
+                            for i in range(w):
+                                cell = grid_for_sa.get_cell(x + i, y + j)
+                                if not cell["active"] or cell["module"] is not None:
+                                    is_valid = False
+                                    break
+                            if not is_valid:
+                                break
+                        if is_valid:
+                            best_pos = (x, y)
+                            break
+                    if best_pos:
+                        break
+
+                if best_pos:
+                    opp_x, opp_y = best_pos
+                    logging.info(f"Found first available window: {w}x{h} at ({opp_x}, {opp_y})")
+                    solved_grid, solved_bonus = _handle_sa_refine_opportunity(
+                        grid_for_sa,
+                        modules,
+                        ship,
+                        tech,
+                        player_owned_rewards,
+                        opp_x,
+                        opp_y,
+                        w,
+                        h,
+                        progress_callback=progress_callback,
+                        run_id=run_id,
+                        stage="partial_set_sa_scanned",
+                        send_grid_updates=send_grid_updates,
+                        solve_type=solve_type,
+                        tech_modules=tech_modules,
+                    )
+                    solve_method = "Partial Set SA (First Fit)"
+                else:
+                    logging.error(
+                        "Could not find any suitable window for partial module set. Placing modules directly."
+                    )
+                    solved_grid = place_all_modules_in_empty_slots(
+                        grid_for_sa,
+                        modules,
+                        ship,
+                        tech,
+                        player_owned_rewards,
+                        solve_type=solve_type,
+                        tech_modules=tech_modules,
+                    )
+                    solved_bonus = calculate_grid_score(solved_grid, tech)
+                    solve_method = "Partial Set Placement (No Window)"
+
+            if solved_grid is None:
+                logging.error(f"Partial module set SA failed for {ship}/{tech}.")
+                cleared_grid_on_fail = grid.copy()
+                clear_all_modules_of_tech(cleared_grid_on_fail, tech)
+                return cleared_grid_on_fail, 0.0, 0.0, "Partial SA Failed"
+
+            if solve_score > 1e-9:
+                percentage = (solved_bonus / solve_score) * 100
+            else:
+                percentage = 100.0 if solved_bonus > 1e-9 else 0.0
+
+            logging.info(
+                f"SUCCESS -- Final Score (Partial Set): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
+            )
+            print_grid_compact(solved_grid)
+            return solved_grid, round(percentage, 2), solved_bonus, solve_method
+
         # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
         original_pattern = solve_data.get("map")
