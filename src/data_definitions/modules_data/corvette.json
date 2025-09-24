@@ -229,7 +229,6 @@
             {
                 "label": "Pulse Engine",
                 "key": "pulse",
-                "type": "max",
                 "image": "starship/pulse.webp",
                 "color": "orange",
                 "modules": [

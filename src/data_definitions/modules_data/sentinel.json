@@ -519,7 +519,7 @@
                     },
                     {
                         "id": "PC",
-                        "type": "reward",
+                        "type": "bonus",
                         "label": "Photonix Core",
                         "bonus": 1.1,
                         "adjacency": "greater",
@@ -555,7 +555,7 @@
                     },
                     {
                         "id": "Xa",
-                        "type": "bonus",
+                        "type": "upgrade",
                         "label": "Pulse Engine Upgrade Theta",
                         "bonus": 1.14,
                         "adjacency": "greater",
@@ -564,7 +564,7 @@
                     },
                     {
                         "id": "Xb",
-                        "type": "bonus",
+                        "type": "upgrade",
                         "label": "Pulse Engine Upgrade Tau",
                         "bonus": 1.13,
                         "adjacency": "greater",
@@ -573,7 +573,7 @@
                     },
                     {
                         "id": "Xc",
-                        "type": "bonus",
+                        "type": "upgrade",
                         "label": "Pulse Engine Upgrade Sigma",
                         "bonus": 1.12,
                         "adjacency": "greater",
