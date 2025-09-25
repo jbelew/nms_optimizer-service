@@ -9,51 +9,11 @@
                 "image": "exocraft/daedalus.webp",
                 "color": "orange",
                 "modules": [
-                    {
-                        "id": "DE",
-                        "type": "core",
-                        "label": "Daedalus Engine",
-                        "bonus": 1.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": false,
-                        "image": "exocraft/daedalus.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Daedalus Engine Upgrade Theta",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/daedalus-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Daedalus Engine Upgrade Tau",
-                        "bonus": 0.29,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/daedalus-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Daedalus Engine Upgrade Sigma",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/daedalus-upgrade.webp"
-                    },
-                    {
-                        "id": "SG",
-                        "type": "bonus",
-                        "label": "Self-Greasing Servos",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/servos.webp"
-                    }
+                    {"id": "DE", "type": "core", "label": "Daedalus Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/daedalus.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Daedalus Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Daedalus Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Daedalus Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "SG", "type": "bonus", "label": "Self-Greasing Servos", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/servos.webp", "checked": true}
                 ]
             },
             {
@@ -62,15 +22,7 @@
                 "image": "exocraft/ariadnes.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "AF",
-                        "type": "core",
-                        "label": "Ariadne's Flame",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/ariadnes.webp"
-                    }
+                    {"id": "AF", "type": "core", "label": "Ariadne's Flame", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/ariadnes.webp", "checked": true}
                 ]
             },
             {
@@ -79,15 +31,7 @@
                 "image": "exocraft/icarus.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "FS",
-                        "type": "core",
-                        "label": "Icarus Fuel System",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/icarus.webp"
-                    }
+                    {"id": "FS", "type": "core", "label": "Icarus Fuel System", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/icarus.webp", "checked": true}
                 ]
             },
             {
@@ -96,15 +40,7 @@
                 "image": "exocraft/hardframe-legs.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "HL",
-                        "type": "core",
-                        "label": "Hardframe Legs",
-                        "bonus": 0.36,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/hardframe-legs.webp"
-                    }
+                    {"id": "HL", "type": "core", "label": "Hardframe Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": false, "image": "exocraft/hardframe-legs.webp", "checked": true}
                 ]
             },
             {
@@ -113,15 +49,7 @@
                 "image": "exocraft/liquidator-legs.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "LL",
-                        "type": "core",
-                        "label": "Liquidator Legs",
-                        "bonus": 0.36,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/liquidator-legs.webp"
-                    }
+                    {"id": "LL", "type": "core", "label": "Liquidator Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": false, "image": "exocraft/liquidator-legs.webp", "checked": true}
                 ]
             }
         ],
@@ -132,51 +60,11 @@
                 "image": "exocraft/minotaur-laser.webp",
                 "color": "green",
                 "modules": [
-                    {
-                        "id": "ML",
-                        "type": "core",
-                        "label": "Minotaur Laser",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/minotaur-laser.webp"
-                    },
-                    {
-                        "id": "AL",
-                        "type": "bonus",
-                        "label": "Precision Minotaur Laser",
-                        "bonus": 0.04,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/precision.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Exocraft Mining Laser Upgrade Theta",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/mining-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Exocraft Mining Laser Upgrade Tau",
-                        "bonus": 0.29,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/mining-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Exocraft Mining Laser Upgrade Sigma",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/mining-upgrade.webp"
-                    }
+                    {"id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-laser.webp", "checked": true},
+                    {"id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/precision.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -185,42 +73,10 @@
                 "image": "exocraft/minotaur.webp",
                 "color": "blue",
                 "modules": [
-                    {
-                        "id": "MC",
-                        "type": "core",
-                        "label": "Minotaur Cannon",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/minotaur.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Minotaur Cannon Upgrade Theta",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/minotaur-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Minotaur Cannon Upgrade Tau",
-                        "bonus": 0.29,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/minotaur-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Minotaur Cannon Upgrade Sigma",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/minotaur-upgrade.webp"
-                    }
+                    {"id": "MC", "type": "core", "label": "Minotaur Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Minotaur Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Minotaur Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Minotaur Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -229,15 +85,7 @@
                 "image": "exocraft/hardframe-right.webp",
                 "color": "sky",
                 "modules": [
-                    {
-                        "id": "HR",
-                        "type": "core",
-                        "label": "Hardframe Right Arm",
-                        "bonus": 1.0,
-                        "adjacency": "none",
-                        "sc_eligible": true,
-                        "image": "exocraft/hardframe-right.webp"
-                    }
+                    {"id": "HR", "type": "core", "label": "Hardframe Right Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/hardframe-right.webp", "checked": true}
                 ]
             },
             {
@@ -246,15 +94,7 @@
                 "image": "exocraft/hardframe-left.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "HL",
-                        "type": "core",
-                        "label": "Hardframe Left Arm",
-                        "bonus": 1.0,
-                        "adjacency": "none",
-                        "sc_eligible": true,
-                        "image": "exocraft/hardframe-left.webp"
-                    }
+                    {"id": "HL", "type": "core", "label": "Hardframe Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/hardframe-left.webp", "checked": true}
                 ]
             },
             {
@@ -263,42 +103,10 @@
                 "image": "exocraft/liquidator-right.webp",
                 "color": "sky",
                 "modules": [
-                    {
-                        "id": "LR",
-                        "type": "core",
-                        "label": "Liquidator Right Arm",
-                        "bonus": 1.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "exocraft/liquidator-right.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Flamethrower Upgrade Theta",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/liquidator-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Flamethrower Upgrade Tau",
-                        "bonus": 0.29,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/liquidator-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Flamethrower Upgrade Sigma",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "exocraft/liquidator-upgrade.webp"
-                    }
+                    {"id": "LR", "type": "core", "label": "Liquidator Right Arm", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "exocraft/liquidator-right.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Flamethrower Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Flamethrower Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Flamethrower Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -307,15 +115,7 @@
                 "image": "exocraft/liquidator-left.webp",
                 "color": "sky",
                 "modules": [
-                    {
-                        "id": "LL",
-                        "type": "core",
-                        "label": "Liquidator Left Arm",
-                        "bonus": 1.0,
-                        "adjacency": "none",
-                        "sc_eligible": true,
-                        "image": "exocraft/liquidator-left.webp"
-                    }
+                    {"id": "LL", "type": "core", "label": "Liquidator Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/liquidator-left.webp", "checked": true}
                 ]
             }
         ],
@@ -326,15 +126,7 @@
                 "image": "exocraft/environment.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "EC",
-                        "type": "core",
-                        "label": "Environment Control Unit",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/environment.webp"
-                    }
+                    {"id": "EC", "type": "core", "label": "Environment Control Unit", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/environment.webp", "checked": true}
                 ]
             }
         ],
@@ -345,15 +137,7 @@
                 "image": "exocraft/array.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "RA",
-                        "type": "core",
-                        "label": "Radar Array",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/array.webp"
-                    }
+                    {"id": "RA", "type": "core", "label": "Radar Array", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/array.webp", "checked": true}
                 ]
             },
             {
@@ -362,15 +146,7 @@
                 "image": "exocraft/ai.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "AI",
-                        "type": "core",
-                        "label": "AI Pilot",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/ai.webp"
-                    }
+                    {"id": "AI", "type": "core", "label": "AI Pilot", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/ai.webp", "checked": true}
                 ]
             },
             {
@@ -379,15 +155,7 @@
                 "image": "exocraft/bore.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "MB",
-                        "type": "core",
-                        "label": "Minotaur Bore",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/bore.webp"
-                    }
+                    {"id": "MB", "type": "core", "label": "Minotaur Bore", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/bore.webp", "checked": true}
                 ]
             },
             {
@@ -396,15 +164,7 @@
                 "image": "exocraft/hardframe-body.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "HB",
-                        "type": "core",
-                        "label": "Hardframe Body",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/hardframe-body.webp"
-                    }
+                    {"id": "HB", "type": "core", "label": "Hardframe Body", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/hardframe-body.webp", "checked": true}
                 ]
             },
             {
@@ -413,15 +173,7 @@
                 "image": "exocraft/liquidator-body.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "LB",
-                        "type": "core",
-                        "label": "Liquidator Body",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "exocraft/liquidator-body.webp"
-                    }
+                    {"id": "LB", "type": "core", "label": "Liquidator Body", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/liquidator-body.webp", "checked": true}
                 ]
             }
         ]

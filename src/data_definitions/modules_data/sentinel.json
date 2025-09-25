@@ -9,51 +9,11 @@
                 "image": "starship/cyclotron.webp",
                 "color": "purple",
                 "modules": [
-                    {
-                        "id": "CB",
-                        "type": "core",
-                        "label": "Cyclotron Ballista",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/cyclotron.webp"
-                    },
-                    {
-                        "id": "QR",
-                        "type": "bonus",
-                        "label": "Dyson Pump",
-                        "bonus": 0.04,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/dyson.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Cyclotron Ballista Upgrade Theta",
-                        "bonus": 0.4,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/cyclotron-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Cyclotron Ballista Upgrade Tau",
-                        "bonus": 0.39,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/cyclotron-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Cyclotron Ballista Upgrade Sigma",
-                        "bonus": 0.38,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/cyclotron-upgrade.webp"
-                    }
+                    {"id": "CB", "type": "core", "label": "Cyclotron Ballista", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron.webp", "checked": true},
+                    {"id": "QR", "type": "bonus", "label": "Dyson Pump", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "starship/dyson.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Cyclotron Ballista Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Cyclotron Ballista Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Cyclotron Ballista Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/cyclotron-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -62,51 +22,11 @@
                 "image": "starship/infra.webp",
                 "color": "red",
                 "modules": [
-                    {
-                        "id": "IK",
-                        "type": "core",
-                        "label": "Infraknife Accelerator",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/infra.webp"
-                    },
-                    {
-                        "id": "QR",
-                        "type": "bonus",
-                        "label": "Q-Resonator",
-                        "bonus": 0.04,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/q-resonator.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Infraknife Accelerator Upgrade Theta",
-                        "bonus": 0.4,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/infra-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Infraknife Accelerator Upgrade Tau",
-                        "bonus": 0.39,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/infra-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Infraknife Accelerator Upgrade Sigma",
-                        "bonus": 0.38,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/infra-upgrade.webp"
-                    }
+                    {"id": "IK", "type": "core", "label": "Infraknife Accelerator", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra.webp", "checked": true},
+                    {"id": "QR", "type": "bonus", "label": "Q-Resonator", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "starship/q-resonator.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Infraknife Accelerator Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Infraknife Accelerator Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Infraknife Accelerator Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -115,51 +35,11 @@
                 "image": "starship/phase.webp",
                 "color": "green",
                 "modules": [
-                    {
-                        "id": "PB",
-                        "type": "core",
-                        "label": "Phase Beam",
-                        "bonus": 1.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/phase-beam.webp"
-                    },
-                    {
-                        "id": "FD",
-                        "type": "bonus",
-                        "label": "Fourier De-Limiter",
-                        "bonus": 0.07,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/fourier.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Phase Beam Upgrade Theta",
-                        "bonus": 0.4,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/phase-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Phase Beam Upgrade Tau",
-                        "bonus": 0.39,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/phase-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Phase Beam Upgrade Sigma",
-                        "bonus": 0.38,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/phase-upgrade.webp"
-                    }
+                    {"id": "PB", "type": "core", "label": "Phase Beam", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/phase-beam.webp", "checked": true},
+                    {"id": "FD", "type": "bonus", "label": "Fourier De-Limiter", "bonus": 0.07, "adjacency": "lesser", "sc_eligible": true, "image": "starship/fourier.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Phase Beam Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Phase Beam Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Phase Beam Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -168,51 +48,11 @@
                 "image": "starship/positron.webp",
                 "color": "amber",
                 "modules": [
-                    {
-                        "id": "PE",
-                        "type": "core",
-                        "label": "Positron Ejector",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron.webp"
-                    },
-                    {
-                        "id": "FS",
-                        "type": "bonus",
-                        "label": "Fragment Supercharger",
-                        "bonus": 0.04,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/fragment.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Positron Ejector Upgrade Theta",
-                        "bonus": 0.4,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Positron Ejector Upgrade Tau",
-                        "bonus": 0.39,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Positron Ejector Upgrade Sigma",
-                        "bonus": 0.38,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/positron-upgrade.webp"
-                    }
+                    {"id": "PE", "type": "core", "label": "Positron Ejector", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron.webp", "checked": true},
+                    {"id": "FS", "type": "bonus", "label": "Fragment Supercharger", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "starship/fragment.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Positron Ejector Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Positron Ejector Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Positron Ejector Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -221,24 +61,8 @@
                 "image": "starship/rocket.webp",
                 "color": "iris",
                 "modules": [
-                    {
-                        "id": "RL",
-                        "type": "core",
-                        "label": "Rocket Launger",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/rocket.webp"
-                    },
-                    {
-                        "id": "LR",
-                        "type": "bonus",
-                        "label": "Large Rocket Tubes",
-                        "bonus": 0.056,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/tubes.webp"
-                    }
+                    {"id": "RL", "type": "core", "label": "Rocket Launger", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/rocket.webp", "checked": true},
+                    {"id": "LR", "type": "bonus", "label": "Large Rocket Tubes", "bonus": 0.056, "adjacency": "greater", "sc_eligible": true, "image": "starship/tubes.webp", "checked": true}
                 ]
             },
             {
@@ -247,51 +71,11 @@
                 "image": "starship/cannon.webp",
                 "color": "teal",
                 "modules": [
-                    {
-                        "id": "PC",
-                        "type": "core",
-                        "label": "Sentinel Cannon",
-                        "bonus": 1.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/cannon.webp"
-                    },
-                    {
-                        "id": "NO",
-                        "type": "bonus",
-                        "label": "Nonlinear Optics",
-                        "bonus": 0.04,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/nonlinear.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Photon Cannon Upgrade Theta",
-                        "bonus": 0.4,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/photon-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Photon Cannon Upgrade Tau",
-                        "bonus": 0.39,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/photon-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Photon Cannon Upgrade Sigma",
-                        "bonus": 0.38,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/photon-upgrade.webp"
-                    }
+                    {"id": "PC", "type": "core", "label": "Sentinel Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/cannon.webp", "checked": true},
+                    {"id": "NO", "type": "bonus", "label": "Nonlinear Optics", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "starship/nonlinear.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Photon Cannon Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Photon Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Photon Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/photon-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -302,51 +86,11 @@
                 "image": "starship/aeron.webp",
                 "color": "yellow",
                 "modules": [
-                    {
-                        "id": "DS",
-                        "type": "core",
-                        "label": "Aeron Shields",
-                        "bonus": 0.01,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/aeron.webp"
-                    },
-                    {
-                        "id": "AA",
-                        "type": "bonus",
-                        "label": "Ablative Armor",
-                        "bonus": 0.07,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/ablative.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Shield Upgrade Theta",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/shield-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Shield Upgrade Tau",
-                        "bonus": 0.29,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/shield-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Shield Upgrade Sigma",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/shield-upgrade.webp"
-                    }
+                    {"id": "DS", "type": "core", "label": "Aeron Shields", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/aeron.webp", "checked": true},
+                    {"id": "AA", "type": "bonus", "label": "Ablative Armor", "bonus": 0.07, "adjacency": "greater", "sc_eligible": true, "image": "starship/ablative.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Shield Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Shield Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Shield Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -357,60 +101,12 @@
                 "image": "starship/anti-gravity.webp",
                 "color": "jade",
                 "modules": [
-                    {
-                        "id": "LT",
-                        "type": "core",
-                        "label": "Anti-Gravity Well",
-                        "bonus": 0.01,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/anti-gravity.webp"
-                    },
-                    {
-                        "id": "EF",
-                        "type": "bonus",
-                        "label": "Efficient Thrusters",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/efficient.webp"
-                    },
-                    {
-                        "id": "RC",
-                        "type": "bonus",
-                        "label": "Launch Atuo-Charger",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/recharger.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Launch Thruster Upgrade Theta",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/launch-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Launch Thruster Upgrade Tau",
-                        "bonus": 0.29,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/launch-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Launch Thruster Upgrade Sigma",
-                        "bonus": 0.28,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/launch-upgrade.webp"
-                    }
+                    {"id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/anti-gravity.webp", "checked": true},
+                    {"id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/efficient.webp", "checked": true},
+                    {"id": "RC", "type": "bonus", "label": "Launch Atuo-Charger", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/recharger.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -419,87 +115,15 @@
                 "image": "starship/crimson.webp",
                 "color": "sky",
                 "modules": [
-                    {
-                        "id": "HD",
-                        "type": "core",
-                        "label": "Crimson Core",
-                        "bonus": 0.01,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/crimson.webp"
-                    },
-                    {
-                        "id": "AD",
-                        "type": "bonus",
-                        "label": "Atlantid Drive",
-                        "bonus": 0.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": false,
-                        "image": "starship/atlantid.webp"
-                    },
-                    {
-                        "id": "CD",
-                        "type": "bonus",
-                        "label": "Cadmium Drive",
-                        "bonus": 0.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": false,
-                        "image": "starship/cadmium.webp"
-                    },
-                    {
-                        "id": "ED",
-                        "type": "bonus",
-                        "label": "Emeril Drive",
-                        "bonus": 0.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": false,
-                        "image": "starship/emeril.webp"
-                    },
-                    {
-                        "id": "ID",
-                        "type": "bonus",
-                        "label": "Indium Drive",
-                        "bonus": 0.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": false,
-                        "image": "starship/indium.webp"
-                    },
-                    {
-                        "id": "EW",
-                        "type": "bonus",
-                        "label": "Emergency Warp Unit",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/emergency.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "bonus",
-                        "label": "Crimson Core Upgrade Theta",
-                        "bonus": 0.32,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/hyper-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "bonus",
-                        "label": "Crimson Core Upgrade Tau",
-                        "bonus": 0.31,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/hyper-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "bonus",
-                        "label": "Crimson Core Upgrade Sigma",
-                        "bonus": 0.3,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/hyper-upgrade.webp"
-                    }
+                    {"id": "HD", "type": "core", "label": "Crimson Core", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/crimson.webp", "checked": true},
+                    {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/atlantid.webp", "checked": true},
+                    {"id": "CD", "type": "bonus", "label": "Cadmium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/cadmium.webp", "checked": true},
+                    {"id": "ED", "type": "bonus", "label": "Emeril Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/emeril.webp", "checked": true},
+                    {"id": "ID", "type": "bonus", "label": "Indium Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/indium.webp", "checked": true},
+                    {"id": "EW", "type": "bonus", "label": "Emergency Warp Unit", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/emergency.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Crimson Core Upgrade Theta", "bonus": 0.32, "adjacency": "greater", "sc_eligible": true, "image": "starship/hyper-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Crimson Core Upgrade Tau", "bonus": 0.31, "adjacency": "greater", "sc_eligible": true, "image": "starship/hyper-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Crimson Core Upgrade Sigma", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/hyper-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -508,78 +132,14 @@
                 "image": "starship/luminance.webp",
                 "color": "orange",
                 "modules": [
-                    {
-                        "id": "PE",
-                        "type": "core",
-                        "label": "Luminance Drive",
-                        "bonus": 1.0,
-                        "adjacency": "lesser",
-                        "sc_eligible": true,
-                        "image": "starship/luminance.webp"
-                    },
-                    {
-                        "id": "PC",
-                        "type": "bonus",
-                        "label": "Photonix Core",
-                        "bonus": 1.1,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/photonix.webp"
-                    },
-                    {
-                        "id": "FA",
-                        "type": "bonus",
-                        "label": "Flight Assist Override",
-                        "bonus": 1.07,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/flight-assist.webp"
-                    },
-                    {
-                        "id": "SL",
-                        "type": "bonus",
-                        "label": "Sub-Light Amplifier",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/sublight.webp"
-                    },
-                    {
-                        "id": "ID",
-                        "type": "bonus",
-                        "label": "Instability Drive",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/instability.webp"
-                    },
-                    {
-                        "id": "Xa",
-                        "type": "upgrade",
-                        "label": "Pulse Engine Upgrade Theta",
-                        "bonus": 1.14,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/pulse-upgrade.webp"
-                    },
-                    {
-                        "id": "Xb",
-                        "type": "upgrade",
-                        "label": "Pulse Engine Upgrade Tau",
-                        "bonus": 1.13,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/pulse-upgrade.webp"
-                    },
-                    {
-                        "id": "Xc",
-                        "type": "upgrade",
-                        "label": "Pulse Engine Upgrade Sigma",
-                        "bonus": 1.12,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/pulse-upgrade.webp"
-                    }
+                    {"id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/luminance.webp", "checked": true},
+                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": true},
+                    {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp", "checked": true},
+                    {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/sublight.webp", "checked": true},
+                    {"id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/instability.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "Pulse Engine Upgrade Theta", "bonus": 1.14, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Pulse Engine Upgrade Tau", "bonus": 1.13, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Pulse Engine Upgrade Sigma", "bonus": 1.12, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -590,15 +150,7 @@
                 "image": "starship/aquajet.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "AJ",
-                        "type": "core",
-                        "label": "Aqua-Jets",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/aquajets.webp"
-                    }
+                    {"id": "AJ", "type": "core", "label": "Aqua-Jets", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/aquajets.webp", "checked": true}
                 ]
             },
             {
@@ -607,42 +159,10 @@
                 "image": "starship/bobble.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "AP",
-                        "type": "core",
-                        "label": "Apollo Figurine",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/apollo.webp"
-                    },
-                    {
-                        "id": "AT",
-                        "type": "core",
-                        "label": "Atlas Figurine",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/atlas.webp"
-                    },
-                    {
-                        "id": "NA",
-                        "type": "bonus",
-                        "label": "Nada Figurine",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/nada.webp"
-                    },
-                    {
-                        "id": "NB",
-                        "type": "bonus",
-                        "label": "-null- Figurine",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/null.webp"
-                    }
+                    {"id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/apollo.webp", "checked": true},
+                    {"id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/atlas.webp", "checked": true},
+                    {"id": "NA", "type": "bonus", "label": "Nada Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/nada.webp", "checked": true},
+                    {"id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/null.webp", "checked": true}
                 ]
             },
             {
@@ -651,15 +171,7 @@
                 "image": "starship/pilot.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "PI",
-                        "type": "bonus",
-                        "label": "Pilot Interface",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/pilot.webp"
-                    }
+                    {"id": "PI", "type": "bonus", "label": "Pilot Interface", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/pilot.webp", "checked": true}
                 ]
             },
             {
@@ -668,15 +180,7 @@
                 "image": "starship/conflict.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "CS",
-                        "type": "core",
-                        "label": "Conflict Scanner",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/conflict.webp"
-                    }
+                    {"id": "CS", "type": "core", "label": "Conflict Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/conflict.webp", "checked": true}
                 ]
             },
             {
@@ -685,15 +189,7 @@
                 "image": "starship/economy.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "ES",
-                        "type": "core",
-                        "label": "Economy Scanner",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/economy.webp"
-                    }
+                    {"id": "ES", "type": "core", "label": "Economy Scanner", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/economy.webp", "checked": true}
                 ]
             },
             {
@@ -702,15 +198,7 @@
                 "image": "starship/cargo.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "CD",
-                        "type": "core",
-                        "label": "Cargo Scan Deflector",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/cargo.webp"
-                    }
+                    {"id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/cargo.webp", "checked": true}
                 ]
             },
             {
@@ -719,96 +207,16 @@
                 "image": "starship/trails.webp",
                 "color": "white",
                 "modules": [
-                    {
-                        "id": "AB",
-                        "type": "bonus",
-                        "label": "Artemis Figurine",
-                        "bonus": 0.05,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/artemis.webp"
-                    },
-                    {
-                        "id": "PB",
-                        "type": "core",
-                        "label": "Polo Figurine",
-                        "bonus": 0.06,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/polo.webp"
-                    },
-                    {
-                        "id": "SB",
-                        "type": "reward",
-                        "label": "Tentacled Figurine",
-                        "bonus": 0.05,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/squid.webp"
-                    },
-                    {
-                        "id": "SP",
-                        "type": "reward",
-                        "label": "Sputtering Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/sputtering-trail.webp"
-                    },
-                    {
-                        "id": "CT",
-                        "type": "bonus",
-                        "label": "Cadmium Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/cadmium-trail.webp"
-                    },
-                    {
-                        "id": "ET",
-                        "type": "bonus",
-                        "label": "Emeril Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/emeril-trail.webp"
-                    },
-                    {
-                        "id": "TT",
-                        "type": "reward",
-                        "label": "Temporal Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/temporal-trail.webp"
-                    },
-                    {
-                        "id": "ST",
-                        "type": "bonus",
-                        "label": "Stealth Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/stealth-trail.webp"
-                    },
-                    {
-                        "id": "GT",
-                        "type": "bonus",
-                        "label": "Golden Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/golden-trail.webp"
-                    },
-                    {
-                        "id": "RT",
-                        "type": "bonus",
-                        "label": "Chromatic Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/chromatic-trail.webp"
-                    }
+                    {"id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "starship/artemis.webp", "checked": true},
+                    {"id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": true, "image": "starship/polo.webp", "checked": true},
+                    {"id": "SB", "type": "bonus", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "starship/squid.webp", "checked": false},
+                    {"id": "SP", "type": "bonus", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sputtering-trail.webp", "checked": false},
+                    {"id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/cadmium-trail.webp", "checked": true},
+                    {"id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/emeril-trail.webp", "checked": true},
+                    {"id": "TT", "type": "bonus", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/temporal-trail.webp", "checked": false},
+                    {"id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/stealth-trail.webp", "checked": true},
+                    {"id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/golden-trail.webp", "checked": true},
+                    {"id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/chromatic-trail.webp", "checked": true}
                 ]
             },
             {
@@ -817,15 +225,7 @@
                 "image": "starship/teleport.webp",
                 "color": "gray",
                 "modules": [
-                    {
-                        "id": "TP",
-                        "type": "core",
-                        "label": "Teleport Receiver",
-                        "bonus": 0.0,
-                        "adjacency": "none",
-                        "sc_eligible": false,
-                        "image": "starship/teleport.webp"
-                    }
+                    {"id": "TP", "type": "core", "label": "Teleport Receiver", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/teleport.webp", "checked": true}
                 ]
             }
         ]
