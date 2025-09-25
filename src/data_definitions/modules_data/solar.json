@@ -152,7 +152,7 @@
                     {"id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/pulse.webp", "checked": true},
                     {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp", "checked": true},
                     {"id": "VS", "type": "bonus", "label": "Vesper Sail", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/vesper.webp", "checked": true},
-                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": true},
+                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": false},
                     {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sublight.webp", "checked": true},
                     {"id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/instability.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "Pulse Engine Upgrade Theta", "bonus": 1.14, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulse-upgrade.webp", "checked": true},

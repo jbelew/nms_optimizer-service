@@ -133,7 +133,7 @@
                 "color": "orange",
                 "modules": [
                     {"id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/luminance.webp", "checked": true},
-                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": true},
+                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": false},
                     {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp", "checked": true},
                     {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/sublight.webp", "checked": true},
                     {"id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/instability.webp", "checked": true},
