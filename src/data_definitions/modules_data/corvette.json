@@ -216,6 +216,7 @@
                 "modules": [
                     {"id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": false, "image": "starship/launch.webp", "checked": true},
                     {"id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/efficient.webp", "checked": true},
+                    {"id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/recharger.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
