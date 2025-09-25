@@ -446,6 +446,8 @@ def simulated_annealing(
     start_y: int = 0,  # Added start_y
     solve_type: Optional[str] = None,
     tech_modules: Optional[list] = None,
+    max_steps_without_improvement=150,
+    reheat_factor=0.6,
 ):
     """
     Performs simulated annealing to optimize module placement on a grid.
@@ -579,11 +581,41 @@ def simulated_annealing(
     # --- End Progress Reporting Setup ---
 
     # --- Annealing Loop ---
+    steps_without_improvement = 0
+    reheat_count = 0
+    max_reheats = 5  # Set a limit on the number of reheats
+
     while temperature > stopping_temperature:
         step += 1
         if time.time() - start_time > max_processing_time:
             logging.info(f"SA: Max processing time ({max_processing_time}s) exceeded. Returning best found.")
             break
+
+        # --- Reheating Logic ---
+        if steps_without_improvement >= max_steps_without_improvement:
+            if reheat_count < max_reheats:
+                reheat_count += 1
+                temperature = initial_temperature * (reheat_factor**reheat_count)
+                current_grid = best_grid.copy()
+                current_score = best_score
+                steps_without_improvement = 0
+                logging.info(f"SA: No improvement for {max_steps_without_improvement} steps. Reheating {reheat_count}/{max_reheats} to {temperature:.2f} and reverting to best grid.")
+                if progress_callback:
+                    progress_data = {
+                        "tech": tech,
+                        "run_id": run_id,
+                        "stage": stage,
+                        "progress_percent": progress_offset + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                        "current_temp": temperature,
+                        "best_score": best_score,
+                        "status": "reheating",
+                    }
+                    progress_callback(progress_data)
+                    gevent.sleep(0)
+            else:
+                logging.info("SA: Max reheats reached. Continuing cool down without further reheating.")
+                steps_without_improvement = -1  # Disable further reheating checks
+
 
         swap_probability = get_swap_probability(
             temperature,
@@ -593,6 +625,7 @@ def simulated_annealing(
             final_swap_probability,
         )
 
+        made_improvement_in_batch = False
         for _ in range(iterations_per_temp):
             # Ensure modules_to_consider reflects the modules actually on the grid now
             current_modules_on_grid_defs = [
@@ -612,19 +645,27 @@ def simulated_annealing(
 
             modified_cells_info = []  # Initialize for each iteration
 
-            if random.random() < swap_probability:
+            # Decide which move to make based on temperature
+            # At high temps, favor wide-ranging swaps. At low temps, favor local swaps and moves.
+            move_type_roll = random.random()
+
+            if move_type_roll < swap_probability: # Global swap
                 pos1, original_cell_1_data, pos2, original_cell_2_data = swap_modules(
                     current_grid, tech, current_modules_on_grid_defs
                 )
-                if pos1 is None:  # Not enough modules to swap
-                    continue
+                if pos1 is None: continue
                 modified_cells_info = [(pos1, original_cell_1_data), (pos2, original_cell_2_data)]
-            else:
+            elif move_type_roll < swap_probability + (1 - swap_probability) / 2: # Adjacent swap
+                pos1, original_cell_1_data, pos2, original_cell_2_data = swap_adjacent_modules(
+                    current_grid, tech
+                )
+                if pos1 is None: continue
+                modified_cells_info = [(pos1, original_cell_1_data), (pos2, original_cell_2_data)]
+            else: # Move
                 pos_from, original_from_cell_data, pos_to, original_to_cell_data = move_module(
                     current_grid, tech, current_modules_on_grid_defs
                 )
-                if pos_from is None:  # No modules to move or no empty slots
-                    continue
+                if pos_from is None: continue
                 modified_cells_info = [(pos_from, original_from_cell_data), (pos_to, original_to_cell_data)]
 
             neighbor_score = calculate_grid_score(current_grid, tech)
@@ -640,6 +681,7 @@ def simulated_annealing(
                         f"SA: New best score for {tech}: {current_score:.4f} (Temp: {temperature:.2f}, Time: {elapsed_time_at_best_score:.2f}s)"
                     )
                     best_score = current_score
+                    made_improvement_in_batch = True
                     if progress_callback:
                         progress_data = {
                             "tech": tech,
@@ -676,6 +718,12 @@ def simulated_annealing(
                 # Revert changes if the new state is not accepted
                 for (x, y), original_data in modified_cells_info:
                     current_grid.cells[y][x].update(original_data)
+
+        if made_improvement_in_batch:
+            steps_without_improvement = 0
+        elif steps_without_improvement != -1: # Only increment if reheating is not disabled
+            steps_without_improvement += 1
+
 
         temperature *= cooling_rate
         if progress_callback and (step % 5 == 0 or temperature <= stopping_temperature):
@@ -828,8 +876,9 @@ def swap_modules(grid, tech, tech_modules_on_grid):
 
 def move_module(grid, tech, tech_modules_on_grid):
     """
-    Moves a randomly selected module of the specified tech (that's on the grid)
-    to a random empty active slot. Returns the original state of the modified cells.
+    Moves a randomly selected module of the specified tech to a more strategic
+    empty active slot, prioritizing supercharged and adjacent slots.
+    Returns the original state of the modified cells.
     """
     module_positions = []
     for y in range(grid.height):
@@ -839,24 +888,42 @@ def move_module(grid, tech, tech_modules_on_grid):
                 module_positions.append((x, y))
 
     if not module_positions:
-        return None, None, None, None  # No modules to move
+        return None, None, None, None
 
     x_from, y_from = random.choice(module_positions)
     original_from_cell_data = grid.get_cell(x_from, y_from).copy()
     module_data_to_move = original_from_cell_data.copy()
 
-    empty_active_positions = [
-        (ex, ey)
-        for ey in range(grid.height)
-        for ex in range(grid.width)
-        if grid.get_cell(ex, ey)["module"] is None and grid.get_cell(ex, ey)["active"]
-    ]
+    # --- Intelligent Slot Selection ---
+    empty_active_positions = []
+    weights = []
+    for ey in range(grid.height):
+        for ex in range(grid.width):
+            cell = grid.get_cell(ex, ey)
+            if cell["module"] is None and cell["active"]:
+                pos = (ex, ey)
+                weight = 1.0  # Base weight
+
+                # Prioritize supercharged slots for eligible modules
+                if cell["supercharged"] and module_data_to_move.get("sc_eligible", False):
+                    weight *= 5.0
+
+                # Prioritize slots adjacent to same-tech modules
+                for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                    nx, ny = ex + dx, ey + dy
+                    if 0 <= nx < grid.width and 0 <= ny < grid.height:
+                        neighbor_cell = grid.get_cell(nx, ny)
+                        if neighbor_cell["tech"] == tech:
+                            weight *= 2.0
+
+                empty_active_positions.append(pos)
+                weights.append(weight)
 
     if not empty_active_positions:
-        return None, None, None, None  # No empty slots to move to
+        return None, None, None, None
 
-    # --- Simple Random Move (Original Logic) ---
-    x_to, y_to = random.choice(empty_active_positions)
+    # Choose a position based on the calculated weights
+    x_to, y_to = random.choices(empty_active_positions, weights=weights, k=1)[0]
     original_to_cell_data = grid.get_cell(x_to, y_to).copy()
 
     # Place the module in the new empty slot
@@ -890,3 +957,56 @@ def move_module(grid, tech, tech_modules_on_grid):
     grid.cells[y_from][x_from]["adjacency_bonus"] = 0.0
 
     return (x_from, y_from), original_from_cell_data, (x_to, y_to), original_to_cell_data
+
+
+def swap_adjacent_modules(grid, tech):
+    """
+    Finds a pair of adjacent modules of the specified tech and swaps them.
+    This is a more localized move for fine-tuning.
+    """
+    adjacent_pairs = []
+    for y in range(grid.height):
+        for x in range(grid.width):
+            cell = grid.get_cell(x, y)
+            if cell["tech"] == tech:
+                # Check right neighbor
+                if x + 1 < grid.width:
+                    right_neighbor = grid.get_cell(x + 1, y)
+                    if right_neighbor["tech"] == tech:
+                        adjacent_pairs.append(((x, y), (x + 1, y)))
+                # Check bottom neighbor
+                if y + 1 < grid.height:
+                    bottom_neighbor = grid.get_cell(x, y + 1)
+                    if bottom_neighbor["tech"] == tech:
+                        adjacent_pairs.append(((x, y), (x, y + 1)))
+
+    if not adjacent_pairs:
+        return None, None, None, None
+
+    pos1, pos2 = random.choice(adjacent_pairs)
+    x1, y1 = pos1
+    x2, y2 = pos2
+
+    original_cell_1_data = grid.get_cell(x1, y1).copy()
+    original_cell_2_data = grid.get_cell(x2, y2).copy()
+
+    module_data_1 = original_cell_1_data.copy()
+    module_data_2 = original_cell_2_data.copy()
+
+    place_module(
+        grid, x1, y1,
+        module_data_2["module"], module_data_2["label"], module_data_2["tech"],
+        module_data_2["type"], module_data_2["bonus"], module_data_2["adjacency"],
+        module_data_2["sc_eligible"], module_data_2["image"]
+    )
+    grid.cells[y1][x1]["module_position"] = (x1, y1)
+
+    place_module(
+        grid, x2, y2,
+        module_data_1["module"], module_data_1["label"], module_data_1["tech"],
+        module_data_1["type"], module_data_1["bonus"], module_data_1["adjacency"],
+        module_data_1["sc_eligible"], module_data_1["image"]
+    )
+    grid.cells[y2][x2]["module_position"] = (x2, y2)
+
+    return (x1, y1), original_cell_1_data, (x2, y2), original_cell_2_data
