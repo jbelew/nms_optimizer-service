@@ -10,7 +10,7 @@ from typing import Optional
 
 from src.grid_utils import restore_original_state, apply_localized_grid_changes
 from src.modules_utils import get_tech_modules
-from src.bonus_calculations import calculate_grid_score
+from src.bonus_calculations import calculate_grid_score, calculate_score_delta
 from src.module_placement import place_module, clear_all_modules_of_tech
 from .helpers import check_all_modules_placed
 from .windowing import create_localized_grid, create_localized_grid_ml
@@ -668,9 +668,9 @@ def simulated_annealing(
                 if pos_from is None: continue
                 modified_cells_info = [(pos_from, original_from_cell_data), (pos_to, original_to_cell_data)]
 
-            neighbor_score = calculate_grid_score(current_grid, tech)
+            delta_e = calculate_score_delta(current_grid, modified_cells_info, tech)
+            neighbor_score = current_score + delta_e
 
-            delta_e = neighbor_score - current_score
             if delta_e > 0 or random.random() < math.exp(delta_e / temperature):
                 current_score = neighbor_score
                 if current_score > best_score:
