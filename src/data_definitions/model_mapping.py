@@ -150,6 +150,7 @@ def get_model_keys(
     grid_height: int,
     player_owned_rewards: Optional[List[str]] = None,
     solve_type: Optional[str] = None,
+    available_modules: Optional[List[str]] = None,
 ) -> Dict[str, str]:
     """
     Determines keys for model filename and module definitions.
@@ -169,6 +170,7 @@ def get_model_keys(
         grid_height: The expected grid height for this tech (from determine_window_dimensions).
         player_owned_rewards: List of reward module IDs owned by the player.
         solve_type: The solve type, e.g., "max" or "normal".
+        available_modules (list, optional): A list of available module IDs. Defaults to None.
 
     Returns:
         A dictionary with keys:
@@ -177,13 +179,13 @@ def get_model_keys(
             "module_def_ship_key": Key for ship lookup in module definitions.
             "module_def_tech_key": Key for tech lookup in module definitions.
     """
-    player_rewards_set = set(player_owned_rewards) if player_owned_rewards else set()
+    # player_rewards_set = set(player_owned_rewards) if player_owned_rewards else set()
 
     # --- Step 1: Determine initial base keys (for module definitions and filenames) ---
     if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
-        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(
-            ui_tech_key, (ui_ship_key, ui_tech_key)
-        )
+        initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[
+            ui_ship_key
+        ].get(ui_tech_key, (ui_ship_key, ui_tech_key))
     else:
         initial_model_ship_key, initial_model_tech_key = ui_ship_key, ui_tech_key
 
@@ -195,7 +197,11 @@ def get_model_keys(
 
     # --- Step 2: Apply reward-based overrides ---
     # This affects both module definition tech key and filename tech key.
-    if ui_tech_key == "pulse" and "PC" in player_rewards_set:
+    if (
+        ui_tech_key == "pulse"
+        and available_modules is not None
+        and "PC" in available_modules
+    ):
         # If Photonix Core is owned, "pulse" tech effectively becomes "photonix".
         module_def_tech_key = "photonix"
         filename_tech_key = "photonix"
@@ -203,7 +209,9 @@ def get_model_keys(
         # Re-evaluate ship key for the new tech, as some ships (like Sentinel)
         # have a unique model for Photonix.
         if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
-            ship_key, _ = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get("photonix", (ui_ship_key, "photonix"))
+            ship_key, _ = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(
+                "photonix", (ui_ship_key, "photonix")
+            )
             module_def_ship_key = ship_key
             filename_ship_key = ship_key
 

@@ -137,7 +137,13 @@ def optimize_placement(
     # Create the structure that filter_solves expects
     solves_for_filtering = {ship: all_solves_for_ship} if all_solves_for_ship else {}
     filtered_solves = filter_solves(
-        solves_for_filtering, ship, modules, tech, player_owned_rewards, solve_type=solve_type
+        solves_for_filtering,
+        ship,
+        modules,
+        tech,
+        player_owned_rewards,
+        solve_type=solve_type,
+        available_modules=available_modules,
     )
     # --- End On-Demand Loading ---
 
@@ -692,6 +698,7 @@ def optimize_placement(
                 send_grid_updates=send_grid_updates,
                 solve_type=solve_type,
                 tech_modules=tech_modules,
+                available_modules=available_modules,
             )
             if refined_grid_candidate is None:
                 logging.info(

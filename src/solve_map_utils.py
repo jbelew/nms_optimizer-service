@@ -3,7 +3,13 @@ from .modules_utils import get_tech_modules
 
 
 def filter_solves(
-    solves, ship, modules, tech, player_owned_rewards=None, solve_type=None
+    solves,
+    ship,
+    modules,
+    tech,
+    player_owned_rewards=None,
+    solve_type=None,
+    available_modules=None,
 ):
     """
     Filters the solves dictionary to remove modules that the player does not own.
@@ -15,6 +21,7 @@ def filter_solves(
         tech (str): The technology key.
         player_owned_rewards (list, optional): A list of reward module IDs owned by the player. Defaults to None.
         solve_type (str, optional): The type of solve, e.g., "normal" or "max". Defaults to None.
+        available_modules (list, optional): A list of available module IDs. Defaults to None.
 
     Returns:
         dict: A new solves dictionary with unowned modules removed from the solve map.  Returns an empty dictionary if no solves are found for the given ship and tech.
@@ -24,7 +31,11 @@ def filter_solves(
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]
 
-        if player_owned_rewards == ["PC"] and tech == "pulse":
+        if (
+            tech == "pulse"
+            and available_modules is not None
+            and "PC" in available_modules
+        ):
             solve_data = solves[ship]["photonix"]
             print("INFO -- Forcing tech to 'photonix' for PC")
 

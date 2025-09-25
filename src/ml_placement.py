@@ -69,6 +69,7 @@ def ml_placement(
     send_grid_updates=False,
     solve_type: Optional[str] = None,
     tech_modules: Optional[list] = None,
+    available_modules: Optional[list] = None,
 ) -> Tuple[Optional[Grid], float]:
     """
     Uses a pre-trained Machine Learning model to predict module placement.
@@ -106,6 +107,7 @@ def ml_placement(
         model_grid_height,
         player_owned_rewards,  # pyright: ignore
         solve_type=solve_type,
+        available_modules=available_modules,
     )
     filename_ship_key = model_keys_info["filename_ship_key"]
     filename_tech_key = model_keys_info["filename_tech_key"]

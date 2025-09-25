@@ -32,6 +32,7 @@ def _handle_ml_opportunity(
     send_grid_updates=False,
     solve_type: Optional[str] = None,
     tech_modules=None,
+    available_modules=None,
 ):
     """Handles the ML-based refinement within an opportunity window."""
     from src.ml_placement import ml_placement  # Keep import local if possible
@@ -74,6 +75,7 @@ def _handle_ml_opportunity(
         original_state_map=original_state_map,
         solve_type=solve_type,
         tech_modules=tech_modules,  # type: ignore
+        available_modules=available_modules,
     )
 
     # 3. Process ML result (logic remains the same)
