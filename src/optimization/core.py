@@ -179,7 +179,24 @@ def optimize_placement(
         # --- Partial Module Set Path ---
         # If the number of available modules for this tech is less than the full set,
         # skip pattern matching and go straight to a windowed SA solve.
-        if available_modules is not None and len(tech_modules) < len(full_tech_modules_list):
+        # --- Partial Module Set Path ---
+        is_partial_set = (
+            available_modules is not None
+            and len(tech_modules) < len(full_tech_modules_list)
+        )
+
+        # Special case for 'pulse' tech: if only 'PC' is missing, it's not a partial set
+        if is_partial_set and tech == "pulse":
+            full_tech_module_ids = {m["id"] for m in full_tech_modules_list}
+            tech_module_ids = {m["id"] for m in tech_modules}
+            missing_modules = full_tech_module_ids - tech_module_ids
+            if missing_modules == {"PC"}:
+                logging.info(
+                    "Pulse tech with only 'PC' module missing is considered a full set. Proceeding with normal optimization."
+                )
+                is_partial_set = False
+
+        if is_partial_set:
             logging.info(
                 f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
             )
