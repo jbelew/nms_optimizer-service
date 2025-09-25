@@ -172,10 +172,14 @@ def optimize_placement(
         # If the number of available modules for this tech is less than the full set,
         # skip pattern matching and go straight to a windowed SA solve.
         # --- Partial Module Set Path ---
-        is_partial_set = available_modules is not None and len(tech_modules) < len(full_tech_modules_list)
+        is_partial_set = (
+            available_modules is not None
+            and full_tech_modules_list is not None
+            and len(tech_modules) < len(full_tech_modules_list)
+        )
 
         # Special case for 'pulse' tech: if only 'PC' is missing, it's not a partial set
-        if is_partial_set and tech == "pulse":
+        if is_partial_set and tech == "pulse" and full_tech_modules_list:
             full_tech_module_ids = {m["id"] for m in full_tech_modules_list}
             tech_module_ids = {m["id"] for m in tech_modules}
             missing_modules = full_tech_module_ids - tech_module_ids
@@ -192,9 +196,15 @@ def optimize_placement(
             is_partial_set = False
 
         if is_partial_set:
-            logging.info(
-                f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
-            )
+            if full_tech_modules_list:
+                logging.info(
+                    f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
+                )
+            else:
+                # This path should not be taken given the is_partial_set check, but it satisfies pyright
+                logging.info(
+                    f"Partial module set ({len(tech_modules)}/Unknown) for {ship}/{tech}. Skipping patterns, running windowed SA."
+                )
 
             # We need solve_score for percentage calculation. Let's get it now.
             solve_score = 0
