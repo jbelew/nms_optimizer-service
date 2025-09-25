@@ -46,7 +46,7 @@
                     },
                     {
                         "id": "Xa",
-                        "type": "bonus",
+                        "type": "upgrade",
                         "label": "Infraknife Accelerator Upgrade Theta",
                         "bonus": 0.4,
                         "adjacency": "greater",
@@ -55,7 +55,7 @@
                     },
                     {
                         "id": "Xb",
-                        "type": "bonus",
+                        "type": "upgrade",
                         "label": "Infraknife Accelerator Upgrade Tau",
                         "bonus": 0.39,
                         "adjacency": "greater",
@@ -64,7 +64,7 @@
                     },
                     {
                         "id": "Xc",
-                        "type": "bonus",
+                        "type": "upgrade",
                         "label": "Infraknife Accelerator Upgrade Sigma",
                         "bonus": 0.38,
                         "adjacency": "greater",
