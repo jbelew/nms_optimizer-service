@@ -295,3 +295,35 @@ def calculate_grid_score(
                 total_grid_score += cell.get("total", 0.0)
 
     return round(total_grid_score, 4)
+
+
+def calculate_score_delta(grid: Grid, changed_cells_info: list, tech: str) -> float:
+    """
+    Calculates the change in grid score based on a move, by only recalculating
+    the scores of the affected modules and their neighbors.
+    """
+    old_grid = grid.copy()
+    for (x, y), original_cell_data in changed_cells_info:
+        old_grid.cells[y][x].update(original_cell_data)
+
+    affected_coords = set()
+    for (x, y), _ in changed_cells_info:
+        affected_coords.add((x, y))
+        for neighbor in _get_orthogonal_neighbors(grid, x, y):
+            affected_coords.add((neighbor['x'], neighbor['y']))
+        for neighbor in _get_orthogonal_neighbors(old_grid, x, y):
+            affected_coords.add((neighbor['x'], neighbor['y']))
+
+    old_score_contribution = 0
+    populate_all_module_bonuses(old_grid, tech)
+    for x, y in affected_coords:
+        if old_grid.get_cell(x, y)['tech'] == tech:
+            old_score_contribution += old_grid.get_cell(x, y).get("total", 0.0)
+
+    new_score_contribution = 0
+    populate_all_module_bonuses(grid, tech)
+    for x, y in affected_coords:
+        if grid.get_cell(x, y)['tech'] == tech:
+            new_score_contribution += grid.get_cell(x, y).get("total", 0.0)
+
+    return new_score_contribution - old_score_contribution

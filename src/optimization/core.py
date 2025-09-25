@@ -66,9 +66,7 @@ def optimize_placement(
     Raises:
         ValueError: If no empty, active slots are available or if critical steps fail.
     """
-    logging.info(
-        f"Attempting solve for ship: '{ship}' -- tech: '{tech}' -- Exp. Window: {experimental_window_sizing}"
-    )
+    logging.info(f"Attempting solve for ship: '{ship}' -- tech: '{tech}' -- Exp. Window: {experimental_window_sizing}")
     logging.debug(f"send_grid_updates: {send_grid_updates}")
 
     if player_owned_rewards is None:
@@ -96,9 +94,7 @@ def optimize_placement(
     if not tech_modules:
         # This case should ideally be caught by has_empty_active_slots or other checks,
         # but as a safeguard if get_tech_modules returns None or empty for a valid tech key.
-        logging.warning(
-            f"No modules retrieved for ship '{ship}', tech '{tech}'. Cannot proceed with optimization."
-        )
+        logging.warning(f"No modules retrieved for ship '{ship}', tech '{tech}'. Cannot proceed with optimization.")
         # Return a grid that's essentially empty for this tech, with 0 score.
         cleared_grid_on_fail = grid.copy()
         clear_all_modules_of_tech(cleared_grid_on_fail, tech)
@@ -114,9 +110,7 @@ def optimize_placement(
         if has_empty_active_slots:
             break
     if not has_empty_active_slots:
-        raise ValueError(
-            f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'."
-        )
+        raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
 
     # Initialize variables for tracking best results
     solved_grid = grid.copy()  # Grid state after initial pattern/SA fallback
@@ -148,9 +142,7 @@ def optimize_placement(
     # --- End On-Demand Loading ---
 
     # --- Initial Placement Strategy ---
-    if ship not in filtered_solves or (
-        ship in filtered_solves and tech not in filtered_solves[ship]
-    ):
+    if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
         # --- Special Case: No Solve Available ---
         logging.info(
             f"No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots."
@@ -182,11 +174,12 @@ def optimize_placement(
         # --- Partial Module Set Path ---
         is_partial_set = (
             available_modules is not None
+            and full_tech_modules_list is not None
             and len(tech_modules) < len(full_tech_modules_list)
         )
 
         # Special case for 'pulse' tech: if only 'PC' is missing, it's not a partial set
-        if is_partial_set and tech == "pulse":
+        if is_partial_set and tech == "pulse" and full_tech_modules_list:
             full_tech_module_ids = {m["id"] for m in full_tech_modules_list}
             tech_module_ids = {m["id"] for m in tech_modules}
             missing_modules = full_tech_module_ids - tech_module_ids
@@ -196,10 +189,22 @@ def optimize_placement(
                 )
                 is_partial_set = False
 
-        if is_partial_set:
+        if is_partial_set and tech == "trails":
             logging.info(
-                f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
+                "Trails are always considered a full set. Proceeding with normal optimization."
             )
+            is_partial_set = False
+
+        if is_partial_set:
+            if full_tech_modules_list:
+                logging.info(
+                    f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
+                )
+            else:
+                # This path should not be taken given the is_partial_set check, but it satisfies pyright
+                logging.info(
+                    f"Partial module set ({len(tech_modules)}/Unknown) for {ship}/{tech}. Skipping patterns, running windowed SA."
+                )
 
             # We need solve_score for percentage calculation. Let's get it now.
             solve_score = 0
@@ -260,9 +265,7 @@ def optimize_placement(
                 )
                 solve_method = "Partial Set SA"
             else:
-                logging.warning(
-                    "No supercharged opportunity window found. Finding first available window for SA."
-                )
+                logging.warning("No supercharged opportunity window found. Finding first available window for SA.")
                 num_modules = len(tech_modules)
                 w, h = 0, 0
                 if num_modules <= 2:
@@ -388,9 +391,7 @@ def optimize_placement(
                         tech_modules=tech_modules,
                     )
                     if temp_result_grid is not None:
-                        current_pattern_bonus = calculate_grid_score(
-                            temp_result_grid, tech
-                        )
+                        current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
                             best_pattern_grid = temp_result_grid.copy()
@@ -460,9 +461,7 @@ def optimize_placement(
                 logging.info(
                     f"Forced fallback SA score (no pattern fit): {solved_bonus:.4f}"
                 )  # <<< KEEP: Result of fallback >>>
-                solve_method = (
-                    "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
-                )
+                solve_method = "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
                 sa_was_initial_placement = True
 
     # --- Opportunity Refinement Stage ---
@@ -473,9 +472,7 @@ def optimize_placement(
         raise ValueError(
             "optimize_placement: solved_grid is None before opportunity refinement, indicating an unexpected state."
         )
-    grid_after_initial_placement = (
-        solved_grid.copy()
-    )  # Grid state before refinement starts
+    grid_after_initial_placement = solved_grid.copy()  # Grid state before refinement starts
     current_best_score = calculate_grid_score(grid_after_initial_placement, tech)
 
     # Prepare grid for opportunity scanning (clear target tech)
@@ -485,11 +482,7 @@ def optimize_placement(
     # --- Calculate Pattern Window Score (if applicable) ---
     pattern_window_score = 0.0
     pattern_opportunity_result = None
-    if (
-        highest_pattern_bonus > -float("inf")
-        and best_pattern_start_x != -1
-        and best_pattern_width > 0
-    ):
+    if highest_pattern_bonus > -float("inf") and best_pattern_start_x != -1 and best_pattern_width > 0:
         try:
             # Assuming create_localized_grid and calculate_window_score are defined elsewhere
             pattern_window_grid, _, _ = create_localized_grid(
@@ -549,10 +542,7 @@ def optimize_placement(
     # --- Compare Scores and Select Final Opportunity ---
     final_opportunity_result = None
     opportunity_source = "None"  # For logging
-    if (
-        pattern_window_score >= scanned_window_score
-        and pattern_opportunity_result is not None
-    ):
+    if pattern_window_score >= scanned_window_score and pattern_opportunity_result is not None:
         logging.info(
             "Using pattern location as the refinement opportunity window (score >= scanned)."
         )  # <<< COMMENT OUT >>>
@@ -564,9 +554,7 @@ def optimize_placement(
         )  # <<< COMMENT OUT >>>
         final_opportunity_result = scanned_opportunity_result
         opportunity_source = "Scan"
-    elif (
-        pattern_opportunity_result is not None
-    ):  # Fallback if scanning failed but pattern exists
+    elif pattern_opportunity_result is not None:  # Fallback if scanning failed but pattern exists
         logging.info(
             "Using pattern location as the refinement opportunity window (scanning failed)."
         )  # <<< COMMENT OUT >>>
@@ -577,16 +565,9 @@ def optimize_placement(
 
     # --- Perform Refinement using the Selected Opportunity ---
     # --- Experimental Window Sizing for 'pulse' tech ---
-    if (
-        experimental_window_sizing
-        and tech == "pulse"
-        and final_opportunity_result
-        and len(tech_modules) >= 8
-    ):
+    if experimental_window_sizing and tech == "pulse" and final_opportunity_result and len(tech_modules) >= 8:
         logging.info("Experimental window sizing active for 'pulse' tech.")
-        opp_x_anchor, opp_y_anchor, current_opp_w, current_opp_h = (
-            final_opportunity_result
-        )
+        opp_x_anchor, opp_y_anchor, current_opp_w, current_opp_h = final_opportunity_result
 
         # Determine the score of the current best opportunity (before considering 4x3 override)
         score_of_current_best_opportunity = -1.0
@@ -609,9 +590,7 @@ def optimize_placement(
                 current_opp_w,
                 current_opp_h,
             )
-            score_of_current_best_opportunity = calculate_window_score(
-                temp_loc_grid, tech
-            )
+            score_of_current_best_opportunity = calculate_window_score(temp_loc_grid, tech)
 
         logging.info(
             f"Experimental: Current best opportunity ({current_opp_w}x{current_opp_h} from {opportunity_source}) score: {score_of_current_best_opportunity:.4f}"
@@ -652,15 +631,11 @@ def optimize_placement(
                 )
                 # final_opportunity_result remains unchanged
         else:
-            logging.info(
-                "Experimental: No suitable 4x3 window found by full scan. Keeping original dimensions."
-            )
+            logging.info("Experimental: No suitable 4x3 window found by full scan. Keeping original dimensions.")
             # final_opportunity_result remains unchanged
     # --- End Experimental Window Sizing ---
     if final_opportunity_result:
-        opportunity_x, opportunity_y, window_width, window_height = (
-            final_opportunity_result
-        )
+        opportunity_x, opportunity_y, window_width, window_height = final_opportunity_result
         # <<< KEEP: Selected window info >>>
         # print(f"INFO -- Selected opportunity window ({opportunity_source}): Start ({opportunity_x}, {opportunity_y}), Size {window_width}x{window_height}")
 
@@ -670,16 +645,9 @@ def optimize_placement(
         for y_win in range(opportunity_y, opportunity_y + window_height):
             for x_win in range(opportunity_x, opportunity_x + window_width):
                 # Bounds check for safety
-                if (
-                    0 <= x_win < grid_for_opportunity_scan.width
-                    and 0 <= y_win < grid_for_opportunity_scan.height
-                ):
+                if 0 <= x_win < grid_for_opportunity_scan.width and 0 <= y_win < grid_for_opportunity_scan.height:
                     cell = grid_for_opportunity_scan.get_cell(x_win, y_win)
-                    if (
-                        cell["active"]
-                        and cell["supercharged"]
-                        and cell["module"] is None
-                    ):
+                    if cell["active"] and cell["supercharged"] and cell["module"] is None:
                         window_has_available_sc = True
                         break
             if window_has_available_sc:
@@ -724,31 +692,26 @@ def optimize_placement(
                 sa_was_ml_fallback = True
                 refinement_method = "ML->SA/Refine Fallback"
                 # Assuming _handle_sa_refine_opportunity is defined elsewhere - THIS WAS THE BUG
-                refined_grid_candidate, refined_score_global = (
-                    _handle_sa_refine_opportunity(
-                        grid_after_initial_placement.copy(),  # Pass a fresh copy
-                        modules,
-                        ship,
-                        tech,
-                        player_owned_rewards,
-                        opportunity_x,
-                        opportunity_y,
-                        window_width,
-                        window_height,
-                        progress_callback=progress_callback,
-                        run_id=run_id,
-                        stage="refinement_sa_fallback",
-                        send_grid_updates=send_grid_updates,
-                        solve_type=solve_type,
-                        tech_modules=tech_modules,
-                    )
+                refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
+                    grid_after_initial_placement.copy(),  # Pass a fresh copy
+                    modules,
+                    ship,
+                    tech,
+                    player_owned_rewards,
+                    opportunity_x,
+                    opportunity_y,
+                    window_width,
+                    window_height,
+                    progress_callback=progress_callback,
+                    run_id=run_id,
+                    stage="refinement_sa_fallback",
+                    send_grid_updates=send_grid_updates,
+                    solve_type=solve_type,
+                    tech_modules=tech_modules,
                 )
 
             # --- Compare and Update based on Refinement Result ---
-            if (
-                refined_grid_candidate is not None
-                and refined_score_global >= current_best_score
-            ):
+            if refined_grid_candidate is not None and refined_score_global >= current_best_score:
                 # <<< KEEP: Score improvement >>>
                 logging.info(
                     f"Opportunity refinement ({refinement_method}) improved score from {current_best_score:.4f} to {refined_score_global:.4f}"
@@ -773,9 +736,7 @@ def optimize_placement(
                 # solve_method remains what it was before refinement
 
                 # --- Final Fallback SA Logic ---
-                if (
-                    not sa_was_ml_fallback
-                ):  # Only run if the previous SA wasn't already a fallback from ML
+                if not sa_was_ml_fallback:  # Only run if the previous SA wasn't already a fallback from ML
                     # <<< KEEP: Important fallback >>>
                     logging.info(
                         "Refinement didn't improve/failed (and was not ML->SA fallback). Attempting final fallback Simulated Annealing."
@@ -799,10 +760,7 @@ def optimize_placement(
                         solve_type=solve_type,
                         tech_modules=tech_modules,
                     )
-                    if (
-                        sa_fallback_grid is not None
-                        and sa_fallback_bonus > current_best_score
-                    ):
+                    if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
                         # <<< KEEP: Score improvement >>>
                         logging.info(
                             f"Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}"
@@ -817,9 +775,7 @@ def optimize_placement(
                             f"Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best."
                         )
                     else:
-                        logging.error(
-                            "Final fallback Simulated Annealing failed. Keeping previous best."
-                        )
+                        logging.error("Final fallback Simulated Annealing failed. Keeping previous best.")
 
         # <<< --- Else block for the supercharged check --- >>>
         else:
@@ -834,9 +790,7 @@ def optimize_placement(
 
     else:  # No final_opportunity_result found
         # <<< KEEP: Reason for skipping refinement >>>
-        print(
-            "INFO -- No refinement performed as no suitable opportunity window was selected."
-        )
+        print("INFO -- No refinement performed as no suitable opportunity window was selected.")
         # solved_grid remains grid_after_initial_placement
         solved_bonus = current_best_score
         # solve_method remains what it was before refinement
@@ -854,9 +808,7 @@ def optimize_placement(
     )
     if not all_modules_placed and not sa_was_initial_placement:
         # <<< KEEP: Important fallback >>>
-        logging.warning(
-            "Not all modules placed AND initial placement wasn't SA. Running final SA."
-        )
+        logging.warning("Not all modules placed AND initial placement wasn't SA. Running final SA.")
         grid_for_final_sa = solved_grid.copy()
         clear_all_modules_of_tech(grid_for_final_sa, tech)
         temp_solved_grid, temp_solved_bonus_sa = simulated_annealing(
@@ -899,9 +851,7 @@ def optimize_placement(
             )
     elif not all_modules_placed and sa_was_initial_placement:
         # <<< KEEP: Important warning >>>
-        logging.warning(
-            "Not all modules placed, but initial placement WAS SA. Skipping final SA check."
-        )
+        logging.warning("Not all modules placed, but initial placement WAS SA. Skipping final SA check.")
 
     # --- Final Result Calculation ---
     best_grid = solved_grid
