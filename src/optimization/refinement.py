@@ -431,7 +431,7 @@ def simulated_annealing(
     initial_temperature=4000,
     cooling_rate=0.995,
     stopping_temperature=1.5,
-    iterations_per_temp=35,
+    iterations_per_temp=30,
     initial_swap_probability=0.55,
     final_swap_probability=0.25,
     start_from_current_grid: bool = False,
