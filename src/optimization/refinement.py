@@ -49,7 +49,7 @@ def _handle_ml_opportunity(
                 "tech": tech,
                 "run_id": run_id,
                 "stage": stage,
-                "status": "Loaded ML model",
+                "status": "Loading ML Model",
                 "progress_percent": 0,
             }
         )
@@ -618,7 +618,7 @@ def simulated_annealing(
     # --- Send Initial Status Update ---
     if progress_callback:
         if start_from_current_grid:  # Polishing
-            status_message = f"Polishing (0/{max_reheats})"
+            status_message = f"Validating ML Solve (0/{max_reheats})"
         else:  # Full run
             status_message = f"Solving (0/{max_reheats})"
 
