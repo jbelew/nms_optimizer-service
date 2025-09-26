@@ -309,20 +309,34 @@ def optimize_placement(
                     )
                     solve_method = "Partial Set SA (First Fit)"
                 else:
-                    logging.error(
-                        "Could not find any suitable window for partial module set. Placing modules directly."
+                    logging.warning(
+                        "Could not find any suitable window for partial module set. Running full Simulated Annealing."
                     )
-                    solved_grid = place_all_modules_in_empty_slots(
-                        grid_for_sa,
-                        modules,
+                    # We already have grid_for_sa which is a copy with the tech cleared.
+                    solved_grid, solved_bonus = simulated_annealing(
+                        grid_for_sa,  # Use the grid that's already been prepared
                         ship,
+                        modules,
                         tech,
+                        grid,  # full_grid
                         player_owned_rewards,
-                        solve_type=solve_type,
+                        cooling_rate=0.98,
+                        initial_temperature=1500,
+                        iterations_per_temp=35,
+                        initial_swap_probability=0.60,
+                        max_processing_time=20.0,
+                        progress_callback=progress_callback,
+                        run_id=run_id,
+                        stage="initial_sa_no_window",
+                        send_grid_updates=send_grid_updates,
+                        solve_type=solve_type if solve_type is not None else "",
                         tech_modules=tech_modules,
                     )
-                    solved_bonus = calculate_grid_score(solved_grid, tech)
-                    solve_method = "Partial Set Placement (No Window)"
+                    if solved_grid is None:
+                        raise ValueError(
+                            f"Fallback simulated_annealing failed for partial set with no window on {ship}/{tech}."
+                        )
+                    solve_method = "Initial SA (No Window)"
 
             if solved_grid is None:
                 logging.error(f"Partial module set SA failed for {ship}/{tech}.")
