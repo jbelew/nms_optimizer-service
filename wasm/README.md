@@ -11,10 +11,10 @@ First, you need to build the `sa_wasm_optimizer` Python package into a distribut
 Navigate to the `wasm` directory in your terminal and run the following command:
 
 ```bash
-python3 -m pyodide_build build
+pyodide-build
 ```
 
-This command will create a `dist/` directory inside `wasm/` containing the built package, for example: `dist/sa_wasm_optimizer-0.1.0-py3-none-any.whl`.
+This command will build the package and place it in the `dist/` directory inside `wasm/`, for example: `dist/sa_wasm_optimizer-0.1.0-py3-none-any.whl`.
 
 *(Note: If you don't have `pyodide-build` installed, you can install it with `pip install pyodide-build`)*
 
