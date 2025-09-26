@@ -190,9 +190,7 @@ def optimize_placement(
                 is_partial_set = False
 
         if is_partial_set and tech == "trails":
-            logging.info(
-                "Trails are always considered a full set. Proceeding with normal optimization."
-            )
+            logging.info("Trails are always considered a full set. Proceeding with normal optimization.")
             is_partial_set = False
 
         if is_partial_set:
@@ -443,9 +441,10 @@ def optimize_placement(
                     tech,
                     grid,  # full_grid
                     player_owned_rewards,
-                    cooling_rate=0.999,
+                    cooling_rate=0.98,
+                    initial_temperature=1500,
                     iterations_per_temp=35,
-                    initial_swap_probability=0.55,
+                    initial_swap_probability=0.60,
                     max_processing_time=20.0,
                     progress_callback=progress_callback,
                     run_id=run_id,
