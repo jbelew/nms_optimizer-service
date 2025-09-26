@@ -157,6 +157,9 @@ def _handle_sa_refine_opportunity(
             player_owned_rewards,
             solve_type=solve_type,
             tech_modules=tech_modules,
+            progress_callback=progress_callback,
+            run_id=run_id,
+            stage=stage,
         )
     else:
         logging.info(f"{tech} has 6 or more modules, running simulated_annealing")
@@ -201,6 +204,9 @@ def refine_placement(
     player_owned_rewards=None,
     solve_type: Optional[str] = None,
     tech_modules=None,
+    progress_callback=None,
+    run_id=None,
+    stage=None,
 ):
     optimal_grid = None
     highest_bonus = 0.0
@@ -225,6 +231,12 @@ def refine_placement(
 
     # Initialize the iteration counter
     iteration_count = 0
+    # --- Progress Reporting Setup ---
+    try:
+        total_iterations = math.perm(len(available_positions), len(tech_modules))
+    except (ValueError, ZeroDivisionError):
+        total_iterations = 0
+    # --- End Progress Reporting Setup ---
 
     # Generate all permutations of module placements
     for placement in permutations(available_positions, len(tech_modules)):
@@ -264,6 +276,20 @@ def refine_placement(
             optimal_grid = deepcopy(grid)
             # print(highest_bonus)
             # print_grid(optimal_grid)
+
+        # --- Progress Reporting ---
+        if progress_callback and (iteration_count % 5000 == 0 or iteration_count == total_iterations):
+            progress_percent = (iteration_count / total_iterations) * 100 if total_iterations > 0 else 0
+            progress_data = {
+                "tech": tech,
+                "run_id": run_id,
+                "stage": stage,
+                "progress_percent": progress_percent,
+                "best_score": highest_bonus,
+                "status": "in_progress",
+            }
+            progress_callback(progress_data)
+            gevent.sleep(0)
 
     # Print the total number of iterations
     logging.info(f"refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'")
@@ -573,20 +599,43 @@ def simulated_annealing(
     swap_probability = initial_swap_probability
 
     # --- Progress Reporting Setup ---
+    # Using log of temperature for progress calculation to handle reheating correctly
     try:
-        total_steps = math.log(stopping_temperature / initial_temperature) / math.log(cooling_rate)
-    except (ValueError, ZeroDivisionError):
-        total_steps = 0  # Avoid division by zero if cooling_rate is 1 or invalid
-    step = 0
+        log_initial_temp = math.log(initial_temperature)
+        log_stopping_temp = math.log(stopping_temperature)
+        log_temp_range = log_initial_temp - log_stopping_temp
+        if log_temp_range <= 0:  # Avoid division by zero or negative
+            log_temp_range = -1
+    except ValueError:
+        log_temp_range = -1  # Should not happen with default values
     # --- End Progress Reporting Setup ---
+
+    def _calculate_progress():
+        """Calculates progress based on time and temperature."""
+        time_progress = ((time.time() - start_time) / max_processing_time) if max_processing_time > 0 else 0
+        temp_progress = 0
+        if log_temp_range > 0:
+            try:
+                # Clamp temperature to avoid log(0) or log(negative)
+                log_current_temp = math.log(max(temperature, stopping_temperature))
+                temp_progress = (log_initial_temp - log_current_temp) / log_temp_range
+            except ValueError:
+                temp_progress = 0  # Should not happen
+
+        progress = max(time_progress, temp_progress)
+        return max(0, min(1, progress))  # Clamp progress between 0 and 1
 
     # --- Annealing Loop ---
     steps_without_improvement = 0
     reheat_count = 0
-    max_reheats = 5  # Set a limit on the number of reheats
+    if start_from_current_grid:  # Polishing
+        max_reheats = 2
+    else:
+        max_reheats = 5
+    loop_count = 0
 
     while temperature > stopping_temperature:
-        step += 1
+        loop_count += 1
         if time.time() - start_time > max_processing_time:
             logging.info(f"SA: Max processing time ({max_processing_time}s) exceeded. Returning best found.")
             break
@@ -599,13 +648,17 @@ def simulated_annealing(
                 current_grid = best_grid.copy()
                 current_score = best_score
                 steps_without_improvement = 0
-                logging.info(f"SA: No improvement for {max_steps_without_improvement} steps. Reheating {reheat_count}/{max_reheats} to {temperature:.2f} and reverting to best grid.")
+                logging.info(
+                    f"SA: No improvement for {max_steps_without_improvement} steps. Reheating {reheat_count}/{max_reheats} to {temperature:.2f} and reverting to best grid."
+                )
                 if progress_callback:
+                    progress = _calculate_progress()
+                    progress_percent = progress_offset + (progress * progress_scale)
                     progress_data = {
                         "tech": tech,
                         "run_id": run_id,
                         "stage": stage,
-                        "progress_percent": progress_offset + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                        "progress_percent": progress_percent,
                         "current_temp": temperature,
                         "best_score": best_score,
                         "status": "reheating",
@@ -615,7 +668,6 @@ def simulated_annealing(
             else:
                 logging.info("SA: Max reheats reached. Continuing cool down without further reheating.")
                 steps_without_improvement = -1  # Disable further reheating checks
-
 
         swap_probability = get_swap_probability(
             temperature,
@@ -649,23 +701,24 @@ def simulated_annealing(
             # At high temps, favor wide-ranging swaps. At low temps, favor local swaps and moves.
             move_type_roll = random.random()
 
-            if move_type_roll < swap_probability: # Global swap
+            if move_type_roll < swap_probability:  # Global swap
                 pos1, original_cell_1_data, pos2, original_cell_2_data = swap_modules(
                     current_grid, tech, current_modules_on_grid_defs
                 )
-                if pos1 is None: continue
+                if pos1 is None:
+                    continue
                 modified_cells_info = [(pos1, original_cell_1_data), (pos2, original_cell_2_data)]
-            elif move_type_roll < swap_probability + (1 - swap_probability) / 2: # Adjacent swap
-                pos1, original_cell_1_data, pos2, original_cell_2_data = swap_adjacent_modules(
-                    current_grid, tech
-                )
-                if pos1 is None: continue
+            elif move_type_roll < swap_probability + (1 - swap_probability) / 2:  # Adjacent swap
+                pos1, original_cell_1_data, pos2, original_cell_2_data = swap_adjacent_modules(current_grid, tech)
+                if pos1 is None:
+                    continue
                 modified_cells_info = [(pos1, original_cell_1_data), (pos2, original_cell_2_data)]
-            else: # Move
+            else:  # Move
                 pos_from, original_from_cell_data, pos_to, original_to_cell_data = move_module(
                     current_grid, tech, current_modules_on_grid_defs
                 )
-                if pos_from is None: continue
+                if pos_from is None:
+                    continue
                 modified_cells_info = [(pos_from, original_from_cell_data), (pos_to, original_to_cell_data)]
 
             delta_e = calculate_score_delta(current_grid, modified_cells_info, tech)
@@ -683,12 +736,13 @@ def simulated_annealing(
                     best_score = current_score
                     made_improvement_in_batch = True
                     if progress_callback:
+                        progress = _calculate_progress()
+                        progress_percent = progress_offset + (progress * progress_scale)
                         progress_data = {
                             "tech": tech,
                             "run_id": run_id,
                             "stage": stage,
-                            "progress_percent": progress_offset
-                            + ((step / total_steps) * progress_scale if total_steps > 0 else 0),
+                            "progress_percent": progress_percent,
                             "current_temp": temperature,
                             "best_score": best_score,
                             "status": "new_best",
@@ -721,24 +775,18 @@ def simulated_annealing(
 
         if made_improvement_in_batch:
             steps_without_improvement = 0
-        elif steps_without_improvement != -1: # Only increment if reheating is not disabled
+        elif steps_without_improvement != -1:  # Only increment if reheating is not disabled
             steps_without_improvement += 1
 
-
         temperature *= cooling_rate
-        if progress_callback and (step % 5 == 0 or temperature <= stopping_temperature):
+        if progress_callback and (loop_count % 5 == 0 or temperature <= stopping_temperature):
+            progress = _calculate_progress()
+            progress_percent = progress_offset + (progress * progress_scale)
             progress_data = {
                 "tech": tech,
                 "run_id": run_id,
                 "stage": stage,
-                "progress_percent": progress_offset
-                + (
-                    max(
-                        ((time.time() - start_time) / max_processing_time) if max_processing_time > 0 else 0,
-                        ((step / total_steps) if total_steps > 0 else 0),
-                    )
-                    * progress_scale
-                ),
+                "progress_percent": progress_percent,
                 "current_temp": temperature,
                 "best_score": best_score,
                 "status": "in_progress",
@@ -994,18 +1042,32 @@ def swap_adjacent_modules(grid, tech):
     module_data_2 = original_cell_2_data.copy()
 
     place_module(
-        grid, x1, y1,
-        module_data_2["module"], module_data_2["label"], module_data_2["tech"],
-        module_data_2["type"], module_data_2["bonus"], module_data_2["adjacency"],
-        module_data_2["sc_eligible"], module_data_2["image"]
+        grid,
+        x1,
+        y1,
+        module_data_2["module"],
+        module_data_2["label"],
+        module_data_2["tech"],
+        module_data_2["type"],
+        module_data_2["bonus"],
+        module_data_2["adjacency"],
+        module_data_2["sc_eligible"],
+        module_data_2["image"],
     )
     grid.cells[y1][x1]["module_position"] = (x1, y1)
 
     place_module(
-        grid, x2, y2,
-        module_data_1["module"], module_data_1["label"], module_data_1["tech"],
-        module_data_1["type"], module_data_1["bonus"], module_data_1["adjacency"],
-        module_data_1["sc_eligible"], module_data_1["image"]
+        grid,
+        x2,
+        y2,
+        module_data_1["module"],
+        module_data_1["label"],
+        module_data_1["tech"],
+        module_data_1["type"],
+        module_data_1["bonus"],
+        module_data_1["adjacency"],
+        module_data_1["sc_eligible"],
+        module_data_1["image"],
     )
     grid.cells[y2][x2]["module_position"] = (x2, y2)
 
