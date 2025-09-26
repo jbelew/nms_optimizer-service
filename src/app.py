@@ -175,7 +175,14 @@ def handle_optimize_socket(data):
         """Callback to emit progress over the socket, with throttling."""
         nonlocal last_emit_time
         current_time = time.time()
-        if "best_grid" in progress_data:  # Guarantee send_grid_update messages
+
+        # An important event is one with a grid update, or any status
+        # update that is NOT the generic "in_progress".
+        is_important_event = "best_grid" in progress_data or (
+            "status" in progress_data and progress_data["status"] != "in_progress"
+        )
+
+        if is_important_event:
             emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
             last_emit_time = current_time  # Reset throttle for subsequent messages
         elif current_time - last_emit_time > THROTTLE_INTERVAL:

@@ -381,7 +381,7 @@ def ml_placement(
             "stage": stage,
             "progress_percent": 0,
             "best_score": predicted_score,
-            "status": "ml_initial_placement_complete",
+            "status": "in_progress",
             "best_grid": reconstituted_grid_for_update.to_dict(),
         }
         progress_callback(progress_data)

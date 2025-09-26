@@ -43,6 +43,17 @@ def _handle_ml_opportunity(
     logging.info(
         f"Using ML for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}"
     )
+    if progress_callback:
+        progress_callback(
+            {
+                "tech": tech,
+                "run_id": run_id,
+                "stage": stage,
+                "status": "Loaded ML model",
+                "progress_percent": 0,
+            }
+        )
+        gevent.sleep(0)
     # 1. Create localized grid specifically for ML
     # <<< Pass window dimensions to create_localized_grid_ml >>>
     localized_grid_ml, start_x, start_y, original_state_map = create_localized_grid_ml(
@@ -598,6 +609,31 @@ def simulated_annealing(
     temperature = initial_temperature
     swap_probability = initial_swap_probability
 
+    # --- Define max_reheats early ---
+    if start_from_current_grid:  # Polishing
+        max_reheats = 2
+    else:
+        max_reheats = 5
+
+    # --- Send Initial Status Update ---
+    if progress_callback:
+        if start_from_current_grid:  # Polishing
+            status_message = f"Polishing (0/{max_reheats})"
+        else:  # Full run
+            status_message = f"Solving (0/{max_reheats})"
+
+        progress_data = {
+            "tech": tech,
+            "run_id": run_id,
+            "stage": stage,
+            "progress_percent": 0,
+            "current_temp": temperature,
+            "best_score": best_score,
+            "status": status_message,
+        }
+        progress_callback(progress_data)
+        gevent.sleep(0)
+
     # --- Progress Reporting Setup ---
     # Using log of temperature for progress calculation to handle reheating correctly
     try:
@@ -628,10 +664,6 @@ def simulated_annealing(
     # --- Annealing Loop ---
     steps_without_improvement = 0
     reheat_count = 0
-    if start_from_current_grid:  # Polishing
-        max_reheats = 2
-    else:
-        max_reheats = 5
     loop_count = 0
 
     while temperature > stopping_temperature:
@@ -654,6 +686,12 @@ def simulated_annealing(
                 if progress_callback:
                     progress = _calculate_progress()
                     progress_percent = progress_offset + (progress * progress_scale)
+
+                    if start_from_current_grid:  # Polishing
+                        status_message = f"Polishing ({reheat_count}/{max_reheats})"
+                    else:  # Full run
+                        status_message = f"Solving ({reheat_count}/{max_reheats})"
+
                     progress_data = {
                         "tech": tech,
                         "run_id": run_id,
@@ -661,7 +699,7 @@ def simulated_annealing(
                         "progress_percent": progress_percent,
                         "current_temp": temperature,
                         "best_score": best_score,
-                        "status": "reheating",
+                        "status": status_message,
                     }
                     progress_callback(progress_data)
                     gevent.sleep(0)
