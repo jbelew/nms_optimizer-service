@@ -1,0 +1,7 @@
+[build-system]
+requires = ["setuptools", "wheel", "pyodide-build"]
+build-backend = "pyodide_build"
+
+[project]
+name = "sa-wasm-optimizer"
+version = "0.1.0"
