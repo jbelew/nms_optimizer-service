@@ -27,7 +27,10 @@ def determine_window_dimensions(
     if ship == "sentinel" and tech == "photonix":
         return 4, 3
 
-    if ship == "corvette" and module_count == 8:
+    if ship == "corvette" and tech == "pulse" and module_count == 7:
+        return 4, 2
+
+    if ship == "corvette" and (module_count == 8 or module_count == 7):
         return 3, 3
 
     # Default window size if no other conditions are met
@@ -65,14 +68,10 @@ def determine_window_dimensions(
         window_width, window_height = 2, 2
     elif module_count < 7:
         window_width, window_height = 3, 2
-    elif module_count < 8:
-        window_width, window_height = 4, 2
     elif module_count < 9:
         window_width, window_height = 4, 2
-    elif module_count >= 9:
+    else:  # module_count >= 9
         window_width, window_height = 3, 3
-    else:
-        window_width, window_height = 4, 3
 
     return window_width, window_height
 

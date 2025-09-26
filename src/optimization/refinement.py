@@ -158,8 +158,8 @@ def _handle_sa_refine_opportunity(
     num_modules = len(tech_modules) if tech_modules else 0
 
     # Refine the localized grid (no change in logic here)
-    if num_modules < 6:
-        logging.info(f"{tech} has less than 6 modules, running refine_placement")
+    if num_modules < 7:
+        logging.info(f"{tech} has less than 7 modules, running refine_placement")
         temp_refined_grid, temp_refined_bonus_local = refine_placement(
             localized_grid,
             ship,

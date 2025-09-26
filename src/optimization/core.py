@@ -15,6 +15,7 @@ from src.pattern_matching import (
 )
 from .helpers import (
     check_all_modules_placed,
+    determine_window_dimensions,
     place_all_modules_in_empty_slots,
 )
 from .windowing import (
@@ -265,21 +266,7 @@ def optimize_placement(
             else:
                 logging.warning("No supercharged opportunity window found. Finding first available window for SA.")
                 num_modules = len(tech_modules)
-                w, h = 0, 0
-                if num_modules <= 2:
-                    w, h = 2, 1
-                elif num_modules <= 4:
-                    w, h = 2, 2
-                elif num_modules <= 6:
-                    w, h = 3, 2
-                elif num_modules <= 8:
-                    w, h = 4, 2
-                elif num_modules == 9:
-                    w, h = 3, 3
-                elif num_modules <= 12:
-                    w, h = 4, 3
-                else:
-                    w, h = 5, 3  # Fallback
+                w, h = determine_window_dimensions(num_modules, tech, ship)
 
                 best_pos = None
                 # Find the first top-left position that can fit the window and is composed of active, empty slots
