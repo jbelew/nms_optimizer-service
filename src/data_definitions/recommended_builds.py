@@ -809,7 +809,7 @@ recommended_builds = {
                 [
                     {"tech": "refiner", "module": "PR", "adjacency_bonus": 1},
                     {"tech": "translators", "module": "Ta", "adjacency_bonus": 1},
-                    {"tech": "translators", "module": "Tb", "adjacency_bonus": 0},
+                    {"tech": "translators", "module": "Tb", "adjacency_bonus": 1},
                     {"tech": "life", "module": "LS", "adjacency_bonus": 1},
                     {"tech": "life", "module": "Xb", "adjacency_bonus": 1},
                     {"tech": "aeration", "module": "Xa", "adjacency_bonus": 1},
