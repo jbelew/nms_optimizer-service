@@ -94,7 +94,7 @@
                 "image": "exosuit/aeration.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration.webp", "checked": true},
+                    {"id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/aeration.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "Aeration Membrane Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true}
