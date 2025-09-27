@@ -19,6 +19,7 @@ class ModuleType(Enum):
     UPGRADE = "upgrade"
     COSMETIC = "cosmetic"
     REACTOR = "reactor"
+    ATLANTID = "atlantid"
 
 
 # --- Weights (Based on Neighbor Type and Adjacency) ---
@@ -140,6 +141,7 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
                     ModuleType.UPGRADE.value,
                     ModuleType.COSMETIC.value,
                     ModuleType.REACTOR.value,
+                    ModuleType.ATLANTID.value,
                 ]:
                     if temp_adj_cell_adj_type == AdjacencyType.GREATER.value:
                         weight_from_this_neighbor = WEIGHT_FROM_GREATER_BONUS
