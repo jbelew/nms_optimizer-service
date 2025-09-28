@@ -49,7 +49,7 @@ def _handle_ml_opportunity(
                 "tech": tech,
                 "run_id": run_id,
                 "stage": stage,
-                "status": "Loading ML Model",
+                "status": "Loading AI Model",
                 "progress_percent": 0,
             }
         )
@@ -158,7 +158,7 @@ def _handle_sa_refine_opportunity(
     num_modules = len(tech_modules) if tech_modules else 0
 
     # Refine the localized grid (no change in logic here)
-    if num_modules < 7:
+    if num_modules < 6:
         logging.info(f"{tech} has less than 7 modules, running refine_placement")
         temp_refined_grid, temp_refined_bonus_local = refine_placement(
             localized_grid,
@@ -618,7 +618,7 @@ def simulated_annealing(
     # --- Send Initial Status Update ---
     if progress_callback:
         if start_from_current_grid:  # Polishing
-            status_message = f"Validating ML Solve (0/{max_reheats})"
+            status_message = f"Validating AI Solve (0/{max_reheats})"
         else:  # Full run
             status_message = f"Solving (0/{max_reheats})"
 

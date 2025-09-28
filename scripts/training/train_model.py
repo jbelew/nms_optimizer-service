@@ -108,7 +108,7 @@ def train_model(
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
     print("  Scheduler: CosineAnnealingLR")
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cpu" if torch.cuda.is_available() else "cpu")
     print(f"  Training device: {device}")
 
     # <<< Initialize model with dynamic dimensions >>>
