@@ -3,7 +3,8 @@ import os
 import sys
 import random
 
-from src.data_loader import load_ship_data, load_module_data
+from src.data_definitions.ships import ships
+from src.data_loader import get_all_module_data
 from src.grid import Grid
 from src.optimization.refinement import simulated_annealing
 
@@ -17,18 +18,28 @@ def main():
     random.seed(42)
 
     # --- Test Case Configuration ---
-    ship_name = "Sentinel"
+    ship_name = "sentinel"
     tech_name = "infra"
     grid_width = 3
     grid_height = 2
     # ---
 
     # Load data using the correct functions
-    ships = load_ship_data()
-    modules = load_module_data()
+    all_module_data_by_ship = get_all_module_data()
+    # Flatten the module data from all ships into a single list
+    all_modules = []
+    for ship_modules in all_module_data_by_ship.values():
+        for tech_list in ship_modules.get("types", {}).values():
+            for tech_data in tech_list:
+                all_modules.extend(tech_data.get("modules", []))
+
+    # Remove duplicate modules based on 'id'
+    unique_modules = {m['id']: m for m in all_modules}
+    modules = list(unique_modules.values())
+
 
     # Initialize the grid and modules
-    ship = next((s for s in ships if s['name'] == ship_name), None)
+    ship = next((s for s in ships if s['name'].lower() == ship_name), None)
     if not ship:
         raise ValueError(f"Ship '{ship_name}' not found.")
 
@@ -40,8 +51,7 @@ def main():
                 grid.get_cell(x, y).active = True
                 grid.get_cell(x, y).supercharged = cell_info.get('sc', False)
 
-    all_modules = modules
-    tech_modules = [m for m in all_modules if m['tech'] == tech_name]
+    tech_modules = [m for m in modules if m['tech'] == tech_name]
 
     # These parameters are chosen to be simple and fast for a test case.
     params = {
@@ -59,7 +69,7 @@ def main():
 
     # Run the Python implementation
     final_grid, final_score = simulated_annealing(
-        grid, ship_name, all_modules, tech_name, tech_modules, **params
+        grid, ship_name, modules, tech_name, tech_modules, **params
     )
 
     # Prepare data for JSON serialization
@@ -103,7 +113,7 @@ def main():
         "inputs": {
             "grid": grid_to_dict(grid),
             "ship": ship_name,
-            "modules": modules_to_list(all_modules),
+            "modules": modules_to_list(modules),
             "tech": tech_name,
             "tech_modules": modules_to_list(tech_modules),
             "params": params
@@ -115,7 +125,9 @@ def main():
     }
 
     # Save to file
-    output_path = os.path.join(os.path.dirname(__file__), 'golden.json')
+    # Get the directory of the current script to create the golden file path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    output_path = os.path.join(script_dir, 'golden.json')
     with open(output_path, 'w') as f:
         json.dump(golden_data, f, indent=2)
 

@@ -19,7 +19,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 test: all
-	python3 wasm/test/generate_golden.py
+	python3 -m wasm.test.generate_golden
 	node --experimental-modules wasm/test/test_wasm.mjs
 
 clean:
