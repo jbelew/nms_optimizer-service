@@ -43,41 +43,27 @@ function wasmGridToJs(wasmGrid) {
 
 async function main() {
     try {
-        console.log("Loading WASM module...");
         const Module = await loadModule();
-        console.log("WASM module loaded.");
 
-        console.log("Loading golden file...");
         const goldenPath = path.join(__dirname, 'golden.json');
         const goldenData = JSON.parse(fs.readFileSync(goldenPath, 'utf-8'));
         const { inputs, output: goldenOutput } = goldenData;
-        console.log("Golden file loaded.");
 
         // Map JS inputs to WASM data structures
         const grid = new Module.Grid(inputs.grid.width, inputs.grid.height);
         for (let y = 0; y < inputs.grid.height; y++) {
             for (let x = 0; x < inputs.grid.width; x++) {
                 const cellData = inputs.grid.cells[y][x];
-                const cell = grid.get_cell(x, y);
-                cell.active = cellData.active;
-                cell.supercharged = cellData.supercharged;
-                if (cellData.module_id) cell.module_id = cellData.module_id;
-                if (cellData.tech) cell.tech = cellData.tech;
-                if (cellData.adjacency) cell.adjacency = cellData.adjacency;
+                Module.set_cell_properties(grid, x, y, cellData.active, cellData.supercharged);
             }
         }
-
-        const modules = new Module.VectorModule();
-        inputs.modules.forEach(m => modules.push_back(m));
 
         const tech_modules = new Module.VectorModule();
         inputs.tech_modules.forEach(m => tech_modules.push_back(m));
 
-        console.log("Running simulated_annealing in WASM...");
         const wasmResult = Module.simulated_annealing(
             grid,
             inputs.ship,
-            modules,
             inputs.tech,
             tech_modules,
             inputs.params.initial_temperature,
@@ -91,7 +77,6 @@ async function main() {
             inputs.params.max_steps_without_improvement,
             inputs.params.reheat_factor
         );
-        console.log("WASM execution finished.");
 
         const wasmScore = wasmResult.score;
         const goldenScore = goldenOutput.score;
@@ -108,7 +93,6 @@ async function main() {
         // Cleanup WASM memory
         wasmResult.grid.delete();
         grid.delete();
-        modules.delete();
         tech_modules.delete();
 
     } catch (error) {

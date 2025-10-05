@@ -1,11 +1,14 @@
 import json
 import os
-import sys
 import random
+import sys
 
-from src.data_definitions.ships import ships
-from src.data_loader import get_all_module_data
-from src.grid import Grid
+# Add the project root to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
+
+from src.data_definitions.grids import grids
+from src.data_loader import get_module_data
+from src.grid_utils import Grid
 from src.optimization.refinement import simulated_annealing
 
 def main():
@@ -20,40 +23,39 @@ def main():
     # --- Test Case Configuration ---
     ship_name = "sentinel"
     tech_name = "infra"
-    grid_width = 3
-    grid_height = 2
     # ---
 
-    # Load data using the correct functions
-    all_module_data_by_ship = get_all_module_data()
-    # Flatten the module data from all ships into a single list
-    all_modules = []
-    for ship_modules in all_module_data_by_ship.values():
-        for tech_list in ship_modules.get("types", {}).values():
+    # Load the structured module data for the specific ship.
+    ship_modules_data = get_module_data(ship_name)
+
+    # Flatten all modules, adding the 'tech' key to each module from its parent.
+    all_ship_modules = []
+    if ship_modules_data:
+        for tech_list in ship_modules_data.get("types", {}).values():
             for tech_data in tech_list:
-                all_modules.extend(tech_data.get("modules", []))
+                tech_key = tech_data.get("key")
+                for module in tech_data.get("modules", []):
+                    module['tech'] = tech_key
+                    all_ship_modules.append(module)
 
-    # Remove duplicate modules based on 'id'
-    unique_modules = {m['id']: m for m in all_modules}
-    modules = list(unique_modules.values())
+    # Find the specific list of modules for the target technology.
+    tech_modules = [m for m in all_ship_modules if m.get('tech') == tech_name]
 
+    # Initialize the grid
+    ship_info = grids.get(ship_name)
+    if not ship_info:
+        raise ValueError(f"Grid for ship '{ship_name}' not found.")
 
-    # Initialize the grid and modules
-    ship = next((s for s in ships if s['name'].lower() == ship_name), None)
-    if not ship:
-        raise ValueError(f"Ship '{ship_name}' not found.")
-
-    grid_layout = ship['grid']
+    grid_layout = ship_info['grid']
+    grid_height = len(grid_layout)
+    grid_width = len(grid_layout[0]) if grid_height > 0 else 0
     grid = Grid(grid_width, grid_height)
     for y, row in enumerate(grid_layout):
         for x, cell_info in enumerate(row):
             if cell_info:
-                grid.get_cell(x, y).active = True
-                grid.get_cell(x, y).supercharged = cell_info.get('sc', False)
+                grid.set_active(x, y, True)
+                grid.set_supercharged(x, y, cell_info.get('sc', False))
 
-    tech_modules = [m for m in modules if m['tech'] == tech_name]
-
-    # These parameters are chosen to be simple and fast for a test case.
     params = {
         'initial_temperature': 1.0,
         'cooling_rate': 0.95,
@@ -67,12 +69,10 @@ def main():
         'reheat_factor': 0.2
     }
 
-    # Run the Python implementation
     final_grid, final_score = simulated_annealing(
-        grid, ship_name, modules, tech_name, tech_modules, **params
+        grid, ship_name, ship_modules_data, tech_name, tech_modules, **params
     )
 
-    # Prepare data for JSON serialization
     def grid_to_dict(g):
         return {
             "width": g.width,
@@ -80,40 +80,39 @@ def main():
             "cells": [
                 [
                     {
-                        "active": cell.active,
-                        "supercharged": cell.supercharged,
-                        "module_id": cell.module_id,
-                        "tech": cell.tech,
-                        "x": cell.x,
-                        "y": cell.y,
-                        "adjacency": cell.adjacency,
+                        "active": cell.get('active', False),
+                        "supercharged": cell.get('supercharged', False),
+                        "module_id": cell.get('module'),
+                        "tech": cell.get('tech'),
+                        "x": x,
+                        "y": y,
+                        "adjacency": cell.get('adjacency'),
                     }
-                    for cell in row
+                    for x, cell in enumerate(row)
                 ]
-                for row in g.cells
+                for y, row in enumerate(g.cells)
             ],
         }
 
     def modules_to_list(mods):
         return [
             {
-                "id": m["id"],
-                "label": m["label"],
-                "tech": m["tech"],
-                "type": m["type"],
-                "bonus": m["bonus"],
-                "adjacency": m["adjacency"],
-                "sc_eligible": m["sc_eligible"],
-                "image": m["image"]
+                "id": m.get("id") or "",
+                "label": m.get("label") or "",
+                "tech": m.get("tech") or "",
+                "type": m.get("type") or "",
+                "bonus": m.get("bonus") or 0.0,
+                "adjacency": m.get("adjacency") or "",
+                "sc_eligible": m.get("sc_eligible") or False,
+                "image": m.get("image") or ""
             } for m in mods
         ]
-
 
     golden_data = {
         "inputs": {
             "grid": grid_to_dict(grid),
             "ship": ship_name,
-            "modules": modules_to_list(modules),
+            "modules": modules_to_list(all_ship_modules),
             "tech": tech_name,
             "tech_modules": modules_to_list(tech_modules),
             "params": params
@@ -124,8 +123,6 @@ def main():
         },
     }
 
-    # Save to file
-    # Get the directory of the current script to create the golden file path
     script_dir = os.path.dirname(os.path.abspath(__file__))
     output_path = os.path.join(script_dir, 'golden.json')
     with open(output_path, 'w') as f:

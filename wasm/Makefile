@@ -20,7 +20,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 test: all
 	python3 -m wasm.test.generate_golden
-	node --experimental-modules wasm/test/test_wasm.mjs
+	$(EMSDK_NODE) --experimental-modules wasm/test/test_wasm.mjs
 
 clean:
 	rm -rf $(OBJDIR) $(TARGET_JS) $(TARGET_WASM) wasm/test/golden.json

@@ -100,7 +100,6 @@ std::mt19937& get_rng();
 SimulatedAnnealingResult simulated_annealing(
     Grid grid,
     std::string ship,
-    std::vector<Module> modules,
     std::string tech,
     std::vector<Module> tech_modules,
     double initial_temperature,
@@ -314,12 +313,14 @@ void populate_all_module_bonuses(Grid& grid, const std::string& tech, bool apply
         double adj_factor = module_adj_factors[coords];
         std::string module_type = cell.type;
         double total_bonus = 0.0;
+        double adjacency_boost_amount_on_base = 0.0;
 
         if (module_type == "core") {
-            total_bonus = adj_factor;
+            adjacency_boost_amount_on_base = adj_factor;
         } else {
-            total_bonus = base_bonus + (base_bonus * adj_factor);
+            adjacency_boost_amount_on_base = base_bonus * adj_factor;
         }
+        total_bonus = base_bonus + adjacency_boost_amount_on_base;
 
         if (is_supercharged && is_sc_eligible) {
             total_bonus *= SUPERCHARGE_MULTIPLIER;
@@ -333,11 +334,13 @@ double calculate_grid_score(const Grid& grid, const std::string& tech, bool appl
     Grid temp_grid = grid.copy();
     populate_all_module_bonuses(temp_grid, tech, apply_supercharge_first);
     double total_grid_score = 0.0;
+    int module_count = 0;
     for (int y = 0; y < temp_grid.height; ++y) {
         for (int x = 0; x < temp_grid.width; ++x) {
             const auto& cell = temp_grid.get_cell(x, y);
             if (cell.module_id.has_value() && cell.tech.has_value() && cell.tech.value() == tech) {
                 total_grid_score += cell.total;
+                module_count++;
             }
         }
     }
@@ -485,6 +488,14 @@ std::mt19937& get_rng() {
     static std::random_device rd;
     static std::mt19937 g(rd());
     return g;
+}
+
+void set_cell_properties(Grid& grid, int x, int y, bool active, bool supercharged) {
+    if (x >= 0 && x < grid.width && y >= 0 && y < grid.height) {
+        Cell& cell = grid.get_cell(x, y);
+        cell.active = active;
+        cell.supercharged = supercharged;
+    }
 }
 
 std::optional<Module> find_module_by_id(const std::string& id, const std::vector<Module>& modules) {
@@ -737,7 +748,8 @@ EMSCRIPTEN_BINDINGS(my_module) {
         .property("height", &Grid::height)
         .property("cells", &Grid::cells);
 
-    emscripten::function("simulated_annealing", &simulated_annealing);
+    emscripten::function("simulated_annealing", emscripten::select_overload<SimulatedAnnealingResult(Grid, std::string, std::string, std::vector<Module>, double, double, double, int, double, double, bool, double, int, double)>(&simulated_annealing));
+    emscripten::function("set_cell_properties", &set_cell_properties, emscripten::allow_raw_pointers());
 
     emscripten::value_object<SimulatedAnnealingResult>("SimulatedAnnealingResult")
         .field("grid", &SimulatedAnnealingResult::grid)

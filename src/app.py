@@ -42,7 +42,7 @@ class SocketIORequest(request.__class__):
     sid: str
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static')
 CORS(app, resources={r"/*": {"origins": "*"}})
 Compress(app)  # Initialize Flask-Compress
 socketio = SocketIO(app, cors_allowed_origins="*")
