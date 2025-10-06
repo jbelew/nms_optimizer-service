@@ -1,10 +1,15 @@
 # optimizer.py
+"""
+This module serves as a central hub for optimization-related utilities.
+
+It re-exports key functions and classes from other modules to provide a
+single, convenient access point for other parts of the application, such as
+the main Flask app. This also helps in managing imports and avoiding
+circular dependency issues.
+"""
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules, get_tech_modules_for_training, get_tech_tree, get_tech_tree_json
-# --- Remove these imports to break the cycle ---
-# from optimization_algorithms import optimize_placement, refine_placement, refine_placement_for_training, calculate_grid_score
-# --- Keep imports for functions defined elsewhere or used directly if any ---
-from src.bonus_calculations import calculate_grid_score # Keep calculate_grid_score only if optimizer.py uses it directly
+from src.bonus_calculations import calculate_grid_score
 from src.grid_display import print_grid, print_grid_compact
 
 

@@ -1,4 +1,11 @@
 # solve_map_utils.py
+"""
+This module provides utilities for handling "solve maps," which are pre-computed
+optimal layouts for specific technologies on specific ships.
+
+The primary function, `filter_solves`, is used to adapt a generic solve map
+to a player's specific context by removing modules that the player does not own.
+"""
 from .modules_utils import get_tech_modules
 
 
@@ -11,20 +18,28 @@ def filter_solves(
     solve_type=None,
     available_modules=None,
 ):
-    """
-    Filters the solves dictionary to remove modules that the player does not own.
+    """Filters a solve map to only include modules the player owns.
+
+    This function takes a generic solve map and customizes it based on the
+    player's available modules. It checks which modules are owned (including
+    rewards) and creates a new solve map containing only those modules.
 
     Args:
-        solves (dict): The solves dictionary.
-        ship (str): The ship type.
-        modules (dict): The modules data.
+        solves (dict): The dictionary containing all solve maps.
+        ship (str): The ship type key.
+        modules (dict): The complete module data for the ship.
         tech (str): The technology key.
-        player_owned_rewards (list, optional): A list of reward module IDs owned by the player. Defaults to None.
-        solve_type (str, optional): The type of solve, e.g., "normal" or "max". Defaults to None.
-        available_modules (list, optional): A list of available module IDs. Defaults to None.
+        player_owned_rewards (list, optional): A list of reward module IDs
+            owned by the player. Defaults to None.
+        solve_type (str, optional): The type of solve (e.g., "max") which
+            can affect which modules are considered available. Defaults to None.
+        available_modules (list, optional): A specific list of available
+            module IDs to use. Defaults to None.
 
     Returns:
-        dict: A new solves dictionary with unowned modules removed from the solve map.  Returns an empty dictionary if no solves are found for the given ship and tech.
+        dict: A new solves dictionary containing only the filtered solve map
+              for the specified ship and tech. Returns an empty dictionary if
+              no solve is found or if no modules are available.
     """
 
     filtered_solves = {}

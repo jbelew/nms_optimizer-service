@@ -1,9 +1,25 @@
+"""
+This module provides functions for pattern matching and manipulation.
+
+It includes utilities for rotating and mirroring patterns, applying them to a
+grid, generating all unique variations of a pattern, and calculating a
+heuristic score for a pattern's placement. This is used to find optimal
+layouts based on pre-defined "solve maps".
+"""
 from .module_placement import place_module, clear_all_modules_of_tech
 from .modules_utils import get_tech_modules
 import logging
 
 def rotate_pattern(pattern):
-    "Rotates a pattern 90 degrees clockwise."
+    """Rotates a pattern 90 degrees clockwise.
+
+    Args:
+        pattern (dict): A dictionary where keys are (x, y) tuples representing
+            coordinates and values are module IDs.
+
+    Returns:
+        dict: The rotated pattern.
+    """
     x_coords = [coord[0] for coord in pattern.keys()]
     y_coords = [coord[1] for coord in pattern.keys()]
     if not x_coords or not y_coords:
@@ -18,7 +34,15 @@ def rotate_pattern(pattern):
 
 
 def mirror_pattern_horizontally(pattern):
-    "Mirrors a pattern horizontally."
+    """Mirrors a pattern horizontally.
+
+    Args:
+        pattern (dict): A dictionary where keys are (x, y) tuples representing
+            coordinates and values are module IDs.
+
+    Returns:
+        dict: The horizontally mirrored pattern.
+    """
     x_coords = [coord[0] for coord in pattern.keys()]
     if not x_coords:
         return {}
@@ -31,7 +55,15 @@ def mirror_pattern_horizontally(pattern):
 
 
 def mirror_pattern_vertically(pattern):
-    "Mirrors a pattern vertically."
+    """Mirrors a pattern vertically.
+
+    Args:
+        pattern (dict): A dictionary where keys are (x, y) tuples representing
+            coordinates and values are module IDs.
+
+    Returns:
+        dict: The vertically mirrored pattern.
+    """
     y_coords = [coord[1] for coord in pattern.keys()]
     if not y_coords:
         return {}
@@ -55,9 +87,28 @@ def apply_pattern_to_grid(
     solve_type=None,
     tech_modules=None,
 ):
-    """Applies a pattern to a *copy* of the grid at a given starting position.
+    """Applies a pattern to a copy of the grid at a given starting position.
 
-    Returns a new grid with the pattern applied, or None if the pattern cannot be applied.
+    This function checks if a given pattern can be placed on the grid without
+    conflicts (e.g., overlapping existing modules of a different tech, placing
+    on inactive cells). It only places modules that the player owns.
+
+    Args:
+        grid (Grid): The current grid state.
+        pattern (dict): The pattern to apply, with (x, y) coordinates as keys.
+        modules (dict): The complete module data for the ship.
+        tech (str): The technology key for the modules being placed.
+        start_x (int): The starting x-coordinate on the grid to apply the pattern.
+        start_y (int): The starting y-coordinate on the grid to apply the pattern.
+        ship (str): The ship key.
+        player_owned_rewards (list, optional): A list of owned reward modules.
+        solve_type (str, optional): The specific solve type (e.g., "max").
+        tech_modules (list, optional): A pre-filtered list of available modules for this tech.
+
+    Returns:
+        tuple[Grid, int] or tuple[None, int]: A tuple containing the new grid
+            with the pattern applied and the calculated adjacency score, or
+            (None, 0) if the pattern cannot be applied.
     """
     # Create a deep copy of the grid to avoid modifying the original
     new_grid = grid.copy()
@@ -175,14 +226,16 @@ def apply_pattern_to_grid(
 
 
 def get_all_unique_pattern_variations(original_pattern):
-    """
-    Generates all unique variations of a pattern (rotations and mirrors).
+    """Generates all unique variations of a pattern (rotations and mirrors).
+
+    This function creates a comprehensive list of all possible orientations
+    for a given pattern to ensure all potential fits are checked.
 
     Args:
-        original_pattern (dict): The original pattern.
+        original_pattern (dict): The base pattern to transform.
 
     Returns:
-        list: A list of unique pattern variations.
+        list[dict]: A list of unique pattern dictionaries.
     """
     patterns_to_try = [original_pattern]
     rotated_patterns = set()
@@ -223,16 +276,19 @@ def get_all_unique_pattern_variations(original_pattern):
 
 
 def calculate_pattern_adjacency_score(grid, tech):
-    """
-    Calculates the adjacency score for modules of a specific tech on the grid.
-    This includes a boost for modules with group adjacency requirements.
+    """Calculates a heuristic adjacency score for a placed pattern.
+
+    This score is not the final bonus calculation but a heuristic used to
+    quickly evaluate the quality of a pattern's placement during the
+    pattern matching phase. It rewards adjacencies to other modules, grid edges,
+    and modules within the same adjacency group.
 
     Args:
-        grid (Grid): The grid.
-        tech (str): The tech type of the modules to consider.
+        grid (Grid): The grid with the pattern applied.
+        tech (str): The technology type of the modules to consider.
 
     Returns:
-        int: The adjacency score.
+        float: The calculated adjacency score.
     """
     module_edge_weight = 3.0  # Weight for adjacency to other modules
     grid_edge_weight = 0.5  # Weight for adjacency to grid edges

@@ -1,4 +1,13 @@
 # ml_placement.py
+"""
+This module contains the core logic for using a pre-trained machine learning
+model to predict the optimal placement of technology modules within a grid.
+
+The primary function, `ml_placement`, takes a grid state and technology context,
+loads the appropriate PyTorch model, and generates a predicted layout. It also
+includes an optional "polishing" step that uses a simulated annealing algorithm
+to refine the model's output.
+"""
 import torch
 import torch.nn.functional as F
 import numpy as np

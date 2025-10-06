@@ -6,26 +6,31 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 def get_tech_modules(
     modules, ship, tech_key, player_owned_rewards=None, solve_type=None, available_modules=None
 ):
-    """
-    Retrieves a list of module definitions for a given technology, filtered by ownership.
+    """Retrieves and filters module definitions for a specific technology.
 
-    This function finds the correct list of modules for a technology based on the `solve_type`.
-    - If `solve_type` is provided (e.g., "max"), it looks for a technology definition with a matching "type".
-    - If `solve_type` is `None`, it looks for a technology definition that has no "type" key.
-
-    It then filters this list to include all standard modules plus any reward modules
-    that are present in the `player_owned_rewards` list.
+    This function performs several levels of filtering:
+    1.  Finds the technology definition that matches the `tech_key`.
+    2.  Selects the correct variant based on `solve_type` (e.g., "max" for
+        maximum-stat solves vs. standard solves).
+    3.  Filters out reward modules that the player does not own, based on
+        `player_owned_rewards`.
+    4.  Filters the final list against a specific list of `available_modules`
+        if provided.
 
     Args:
         modules (dict): The complete module data for the ship.
-        ship (str): The ship/platform key.
-        tech_key (str): The technology key.
-        player_owned_rewards (list, optional): A list of reward module IDs. Defaults to [].
-        solve_type (str, optional): The specific type of solve. Defaults to None.
-        available_modules (list, optional): A list of available module IDs. Defaults to None.
+        ship (str): The ship/platform key (e.g., "hauler").
+        tech_key (str): The technology key (e.g., "pulse").
+        player_owned_rewards (list, optional): A list of reward module IDs
+            that the player has unlocked. Defaults to [].
+        solve_type (str, optional): The specific type of solve, used to select
+            the correct module list (e.g., "max"). Defaults to None.
+        available_modules (list, optional): A specific list of module IDs to
+            filter the final results against. Defaults to None.
 
     Returns:
-        list: A filtered list of module dictionaries, or None if not found.
+        list: A filtered list of module dictionaries for the optimizer to use,
+              or None if the technology is not found.
     """
     if player_owned_rewards is None:
         player_owned_rewards = []
@@ -93,17 +98,20 @@ def get_tech_modules(
 
 
 def get_tech_modules_for_training(modules_dict, ship, tech_key):
-    """
-    Retrieves modules for training from a provided modules dictionary,
-    returning the modules as they are defined.
+    """Retrieves all modules for a technology without filtering.
+
+    This function is used for training purposes where all possible modules
+    for a technology are required, without considering ownership or solve type.
 
     Args:
-        modules_dict (dict): The modules data dictionary to use (e.g., from modules_for_training.py).
-        ship (str): The ship type.
-        tech_key (str): The technology key.
+        modules_dict (dict): The modules data dictionary to use, typically
+            from a dedicated training data file.
+        ship (str): The ship type (e.g., "hauler").
+        tech_key (str): The technology key (e.g., "pulse").
 
     Returns:
-        list: A list of module dictionaries, or an empty list if not found.
+        list: A list of all module dictionaries for the specified tech,
+              or an empty list if not found.
     """
     # The 'modules_dict' parameter is now the ship-specific data, so we don't need to do a lookup.
     ship_data = modules_dict
@@ -124,8 +132,18 @@ def get_tech_modules_for_training(modules_dict, ship, tech_key):
 
 
 def get_tech_tree_json(ship, module_data):
-    """
-    Generates a technology tree for a given ship and returns it as JSON.
+    """Generates a technology tree and returns it as a JSON string.
+
+    This function serves as a wrapper around `get_tech_tree` to provide
+    the output in a JSON format suitable for API responses.
+
+    Args:
+        ship (str): The ship type (e.g., "hauler").
+        module_data (dict): The complete module data for the ship.
+
+    Returns:
+        str: A JSON string representing the technology tree, or a JSON
+             object with an "error" key if an issue occurs.
     """
     try:
         tech_tree = get_tech_tree(ship, module_data)  # Call your existing function
@@ -140,8 +158,20 @@ def get_tech_tree_json(ship, module_data):
 
 
 def get_tech_tree(ship, module_data):
-    """
-    Generates a technology tree for a given ship.
+    """Generates a structured technology tree for a given ship.
+
+    The tree is organized by technology type (e.g., "ship", "weapon") and
+    contains detailed information for each technology, including its modules.
+
+    Args:
+        ship (str): The ship type (e.g., "hauler").
+        module_data (dict): The complete module data for the ship.
+
+    Returns:
+        dict: A dictionary representing the technology tree. The keys are
+              technology types, and the values are lists of technology
+              information dictionaries. Returns a dictionary with an "error"
+              key if the ship or its data is not found.
     """
     if not module_data:
         return {"error": f"Ship '{ship}' not found."}

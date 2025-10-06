@@ -1,4 +1,12 @@
 # grid_display.py
+"""
+This module provides functions for displaying the grid in the console for debugging.
+
+It includes utilities to print both a detailed and a compact version of the grid,
+using ANSI color codes to represent different technologies and supercharged slots.
+The display functions are designed to only output when the logging level is set
+to DEBUG.
+"""
 import logging
 from .grid_utils import Grid
 from .data_loader import get_all_module_data
@@ -28,7 +36,14 @@ SUPERCHARGED_COLOR = "\033[93m"  # Keep supercharged distinct (Light Yellow)
 
 # --- Helper to get tech color ---
 def get_tech_color_code(tech_key: str) -> str:
-    """Finds the color defined for a tech key in the modules data."""
+    """Finds the ANSI color code for a given technology key.
+
+    Args:
+        tech_key (str): The technology key (e.g., "pulse").
+
+    Returns:
+        str: The ANSI escape code for the color, or an empty string if not found.
+    """
     if not tech_key:
         return ""  # Default color if no tech
 
@@ -45,7 +60,15 @@ def get_tech_color_code(tech_key: str) -> str:
 
 
 def print_grid(grid: Grid) -> None:
-    """Displays the grid with module info, total value, and active state (+/-), using tech colors."""
+    """Displays a detailed, color-coded representation of the grid for debugging.
+
+    This function prints the grid to the debug log, showing the module ID,
+    total bonus, base bonus, and adjacency bonus for each cell. Cells are
+    colored based on their technology type.
+
+    Args:
+        grid (Grid): The grid object to display.
+    """
     if not logging.getLogger().isEnabledFor(logging.DEBUG):
         return
     logging.debug("--- Grid Display ---")
@@ -82,7 +105,14 @@ def print_grid(grid: Grid) -> None:
 
 
 def print_grid_compact(grid: Grid) -> None:
-    """Displays a compact version of the grid with module info, using tech colors."""
+    """Displays a compact, color-coded representation of the grid for debugging.
+
+    This function prints a simplified view of the grid to the debug log,
+    showing only the module IDs, colored by their technology type.
+
+    Args:
+        grid (Grid): The grid object to display.
+    """
     if not logging.getLogger().isEnabledFor(logging.DEBUG):
         return
     logging.debug("--- Compact Grid Display ---")

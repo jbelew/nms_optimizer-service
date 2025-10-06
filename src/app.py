@@ -54,7 +54,16 @@ GA_PROPERTY_ID = "484727815"  # Your GA4 Property ID
 
 
 def initialize_ga4_client():
-    """Initializes the Google Analytics Data API V1Beta client."""
+    """Initializes the Google Analytics Data API V1Beta client.
+
+    It attempts to load credentials first from the environment variable
+    `GOOGLE_APPLICATION_CREDENTIALS_JSON` (for services like Heroku) and
+    falls back to a local JSON key file for development.
+
+    Returns:
+        BetaAnalyticsDataClient: An initialized GA4 client instance, or None
+        if initialization fails.
+    """
     try:
         # Try to get credentials from environment variable first (Heroku)
         gcp_key_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
@@ -93,7 +102,24 @@ if not ga4_client:
 
 
 def run_optimization(data, progress_callback=None, run_id=None, solve_type=None):
-    """Central function to run the optimization logic."""
+    """Executes the core optimization logic based on the provided data.
+
+    This function serves as a central dispatcher for both the REST and
+    WebSocket endpoints. It parses the incoming data, loads the necessary
+    module and grid information, and calls the `optimize_placement` function.
+
+    Args:
+        data (dict): The input data from the request, containing ship, tech,
+            grid, and other optimization parameters.
+        progress_callback (callable, optional): A function to call with
+            progress updates, used by the WebSocket handler.
+        run_id (str, optional): A unique identifier for the optimization run.
+        solve_type (str, optional): The type of solve to perform (e.g., "max").
+
+    Returns:
+        tuple: A tuple containing a dictionary with the optimization result
+               and an HTTP status code.
+    """
     ship = data.get("ship")
     tech = data.get("tech")
     player_owned_rewards = data.get("player_owned_rewards")
@@ -156,7 +182,22 @@ def run_optimization(data, progress_callback=None, run_id=None, solve_type=None)
 
 @app.route("/optimize", methods=["POST"])
 def optimize_grid():
-    """Endpoint to optimize the grid."""
+    """Handles HTTP POST requests for grid optimization.
+
+    This is the main REST endpoint for running an optimization. It expects a
+    JSON payload with the grid configuration and other parameters.
+
+    Request JSON Body:
+        ship (str): The ship type (e.g., "hauler").
+        tech (str): The technology to optimize (e.g., "pulse").
+        grid (dict): The grid object from the client.
+        player_owned_rewards (list, optional): A list of owned reward modules.
+        ... and other parameters for `run_optimization`.
+
+    Returns:
+        JSON: A JSON response containing the optimized grid and bonus stats,
+              or an error message.
+    """
     data = request.get_json()
     result, status_code = run_optimization(data)
     return jsonify(result), status_code
@@ -164,7 +205,19 @@ def optimize_grid():
 
 @socketio.on("optimize")
 def handle_optimize_socket(data):
-    """WebSocket endpoint to optimize the grid."""
+    """Handles WebSocket connections for real-time grid optimization.
+
+    This endpoint allows for a long-running optimization process that can
+    send progress updates back to the client.
+
+    Args:
+        data (dict): The data sent with the socket event, containing the
+                     same parameters as the REST endpoint.
+
+    Emits:
+        'progress': Sent periodically with updates on the optimization process.
+        'optimization_result': Sent when the optimization is complete.
+    """
     req = cast(SocketIORequest, request)
     sid = req.sid
     run_id = str(uuid.uuid4())
@@ -198,7 +251,19 @@ def handle_optimize_socket(data):
 
 @app.route("/tech_tree/<ship_name>")
 def get_technology_tree(ship_name):
-    """Endpoint to get the technology tree for a given ship."""
+    """Retrieves the technology tree for a given ship.
+
+    This endpoint returns a structured JSON object containing all technologies
+    available for a specific ship, along with recommended builds and the
+    grid definition.
+
+    Args:
+        ship_name (str): The name of the ship (e.g., "hauler") from the URL.
+
+    Returns:
+        JSON: A JSON response with the technology tree, recommended builds,
+              and grid layout. Returns a 404 error if the ship is not found.
+    """
     try:
         # --- Load module data on-demand ---
         module_data = get_module_data(ship_name)
@@ -237,7 +302,15 @@ def get_technology_tree(ship_name):
 
 @app.route("/platforms", methods=["GET"])
 def get_ship_types():
-    """Endpoint to get the available ship types, their labels, and their types."""
+    """Retrieves a list of all available ship types (platforms).
+
+    The returned data includes the key, label, and type for each ship,
+    which is used by the frontend to populate selection menus.
+
+    Returns:
+        JSON: A dictionary where keys are ship identifiers and values are
+              objects containing the ship's label and type.
+    """
     # --- Load all module data for this endpoint ---
     all_modules = get_all_module_data()
     # ---
@@ -254,8 +327,22 @@ def get_ship_types():
 
 @app.route("/analytics/popular_data", methods=["GET"])
 def get_popular_analytics_data():
-    """Endpoint to pull Google Analytics data for popular technologies and ship types.
-    Requires GA_PROPERTY_ID to be configured.
+    """Fetches and returns popular optimization data from Google Analytics.
+
+    This endpoint requires the GA4 Data API client to be initialized.
+    It queries for the most frequent "optimize_tech" events and returns
+    the count for different combinations of ship, technology, and
+    supercharged status.
+
+    Query Parameters:
+        start_date (str, optional): The start date for the report, in
+            "YYYY-MM-DD" or "NdaysAgo" format. Defaults to "30daysAgo".
+        end_date (str, optional): The end date for the report. Defaults to
+            "today".
+
+    Returns:
+        JSON: A list of dictionaries, each containing the ship type,
+              technology, supercharged status, and the total event count.
     """
     if not ga4_client:
         return jsonify(

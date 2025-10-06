@@ -1,3 +1,10 @@
+"""
+This module is responsible for loading all necessary data from the file system.
+
+It handles the loading of module definitions, pre-computed solve maps, and
+other data required by the application. Functions in this module use caching
+to minimize disk I/O and improve performance.
+"""
 import json
 import logging
 import os
@@ -12,8 +19,16 @@ DATA_DIR = os.path.join(os.path.dirname(__file__), "data_definitions")
 
 def _convert_map_keys_to_tuple(data):
     """
-    Recursively converts string keys in a 'map' dictionary back to tuples.
-    This is the reverse of the conversion done when saving to JSON.
+    Recursively converts string keys in a dictionary back to tuples.
+
+    This is an internal helper function to reverse the JSON serialization process,
+    where tuple keys are converted to strings (e.g., (0, 0) -> "0,0").
+
+    Args:
+        data (dict or list): The data structure to process.
+
+    Returns:
+        dict or list: The data structure with string keys converted back to tuples.
     """
     if isinstance(data, dict):
         new_dict = {}
@@ -40,8 +55,18 @@ def _convert_map_keys_to_tuple(data):
 def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
     """
     Loads the solve map for a specific ship type from its JSON file.
-    - If solve_type is specified, it looks for a solve with a matching key.
-    - If solve_type is None, it looks for a solve that is not nested under a type key.
+
+    This function retrieves pre-calculated optimal layouts. It can select a
+    specific solve variant if a `solve_type` is provided.
+
+    Args:
+        ship_type (str): The identifier for the ship (e.g., "hauler").
+        solve_type (str, optional): The specific solve variant to load
+            (e.g., "max"). Defaults to None, which loads the default solve.
+
+    Returns:
+        dict: A dictionary containing the solve map and score for the given
+              ship and tech, or an empty dictionary if not found.
     """
     file_path = os.path.join(DATA_DIR, "solves", f"{ship_type}.json")
 
@@ -82,7 +107,16 @@ def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
 def get_module_data(ship_type: str):
     """
     Loads the module data for a specific ship type from its JSON file.
-    Results are cached to avoid repeated file I/O.
+
+    Results are cached using `lru_cache` to avoid repeated file I/O for the
+    same ship type.
+
+    Args:
+        ship_type (str): The identifier for the ship (e.g., "hauler").
+
+    Returns:
+        dict: A dictionary containing the module data, or an empty dictionary
+              if the file is not found or an error occurs.
     """
     file_path = os.path.join(DATA_DIR, "modules_data", f"{ship_type}.json")
 
@@ -102,7 +136,11 @@ def get_module_data(ship_type: str):
 def get_all_solve_data():
     """
     Loads all solve data from all JSON files in the solves directory.
-    This is used for testing purposes.
+
+    This function is primarily intended for testing and validation purposes.
+
+    Returns:
+        dict: A dictionary containing all solve data, keyed by ship type.
     """
     all_solves = {}
     solves_dir = os.path.join(DATA_DIR, "solves")
@@ -134,7 +172,12 @@ def get_all_solve_data():
 def get_all_module_data():
     """
     Loads all module data from all JSON files in the modules_data directory.
-    This is used for endpoints that need to list all available platforms.
+
+    This is used for endpoints that need to list all available platforms or
+    ships.
+
+    Returns:
+        dict: A dictionary containing all module data, keyed by ship type.
     """
     all_modules = {}
     modules_dir = os.path.join(DATA_DIR, "modules_data")
@@ -158,19 +201,21 @@ def get_all_module_data():
 
 def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[str] = None) -> List[str]:
     """
-    Gets the list of module IDs for a given technology.
+    Gets the list of module IDs for training a model for a given technology.
 
-    This function defines the modules that a model should be trained on.
-    It first checks for a specific override in `modules_for_training.py`.
-    If no override exists, it falls back to the main module data, matching based on `solve_type`.
+    This function defines the set of modules that a machine learning model
+    should be trained on. It first checks for a specific override in the
+    `MODULES_FOR_TRAINING` constant. If no override exists, it falls back to
+    the main module data from the JSON files.
 
     Args:
-        ship_key: The key for the ship/platform (e.g., "standard").
-        tech_key: The key for the technology (e.g., "pulse").
-        solve_type: The specific solve type (e.g., "max") or None for the default.
+        ship_key (str): The key for the ship/platform (e.g., "standard").
+        tech_key (str): The key for the technology (e.g., "pulse").
+        solve_type (str, optional): The specific solve type (e.g., "max") to
+            match the correct module set. Defaults to None.
 
     Returns:
-        A list of module ID strings for training.
+        list[str]: A list of module ID strings to be used for training.
     """
     # 1. Check for a specific override in modules_for_training.py
     if ship_key in MODULES_FOR_TRAINING and tech_key in MODULES_FOR_TRAINING[ship_key]:

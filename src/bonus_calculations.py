@@ -1,4 +1,11 @@
 # bonus_calculations.py
+"""This module handles the calculation of technology bonuses in the grid.
+
+It includes functions for determining adjacency bonuses, applying supercharge
+multipliers, and calculating the overall score for a given technology layout.
+The core logic revolves around the concept of "adjacency factors," which are
+weights applied to modules based on their neighbors.
+"""
 import logging
 from .grid_utils import Grid
 from enum import Enum
@@ -8,12 +15,14 @@ from enum import Enum
 
 # Adjacency Types using Enum
 class AdjacencyType(Enum):
+    """Enumeration for module adjacency types."""
     GREATER = "greater"
     LESSER = "lesser"
 
 
 # Module Types using Enum
 class ModuleType(Enum):
+    """Enumeration for module types."""
     CORE = "core"
     BONUS = "bonus"
     UPGRADE = "upgrade"
@@ -35,7 +44,17 @@ SUPERCHARGE_MULTIPLIER = 1.25
 
 # --- Helper Functions ---
 def _get_orthogonal_neighbors(grid: Grid, x: int, y: int) -> list[dict]:
-    """Gets valid orthogonal neighbor cells with modules of the same tech."""
+    """Gets valid orthogonal neighbor cells with modules of the same tech.
+
+    Args:
+        grid: The Grid object representing the layout.
+        x: The x-coordinate of the center cell.
+        y: The y-coordinate of the center cell.
+
+    Returns:
+        A list of dictionaries, where each dictionary represents a neighbor
+        and contains its data and coordinates.
+    """
     neighbors = []
     directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
     center_cell = grid.get_cell(x, y)
@@ -64,9 +83,11 @@ def _get_orthogonal_neighbors(grid: Grid, x: int, y: int) -> list[dict]:
 
 def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
     """
-    Calculates the total adjacency boost *factor* for a module based on the
-    type and adjacency of its neighbors, respecting the receiver's adjacency rules.
-    Modules with adjacency "none" neither give nor receive adjacency bonuses.
+    Calculates the total adjacency boost *factor* for a module.
+
+    This factor is determined by the type and adjacency of its neighbors,
+    respecting the receiver's adjacency rules. Modules with adjacency "none"
+    neither give nor receive adjacency bonuses.
 
     Args:
         grid: The Grid object.
@@ -75,7 +96,8 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
         tech: The technology key of the current module group being processed.
 
     Returns:
-        The total adjacency boost factor (sum of weights from neighbors).
+        The total adjacency boost factor, which is the sum of weights from
+        all valid neighbors.
     """
     cell = grid.get_cell(x, y)
     if cell.get("module") is None:
@@ -161,19 +183,21 @@ def populate_all_module_bonuses(
     grid: Grid, tech: str, apply_supercharge_first: bool = False
 ) -> None:
     """
-    Calculates and populates the total bonuses for all modules of a
-    given tech in the grid using a non-iterative approach.
-    Updates 'adjacency_bonus' to store the raw adjacency factor.
+    Calculates and populates the total bonuses for all modules of a given tech.
+
+    This function uses a non-iterative approach. It first calculates the
+    adjacency factor for every module of the specified tech and then computes
+    the final bonus for each module. The result is stored in the 'total'
+    field of each cell in the grid.
 
     Args:
         grid: The Grid object.
-        tech: The technology type to calculate for.
-        apply_supercharge_first (bool):
-            - If False (default): Calculates boost on base, then applies supercharge
-              multiplier to the final sum (base + boost).
-            - If True: Applies supercharge multiplier to the base bonus *before*
-              calculating adjacency boost amount. The final total is then
-              base_bonus + boost_amount (calculated on supercharged base).
+        tech: The technology type to calculate for (e.g., "pulse").
+        apply_supercharge_first: A flag to determine the order of operations.
+            - If False (default): Calculates boost on base, then applies the
+              supercharge multiplier to the final sum (base + boost).
+            - If True: Applies the supercharge multiplier to the base bonus
+              *before* calculating the adjacency boost amount.
     """
     tech_module_coords = []
     for y in range(grid.height):
@@ -252,8 +276,14 @@ def populate_all_module_bonuses(
 
 def clear_scores(grid: Grid, tech: str) -> None:
     """
-    Clears calculated 'total' and the 'adjacency_bonus' (boost amount)
-    for modules of a given tech.
+    Clears calculated scores for modules of a specific technology.
+
+    Resets the 'total' and 'adjacency_bonus' fields to 0.0 for all
+    modules of the given tech.
+
+    Args:
+        grid: The Grid object.
+        tech: The technology type to clear.
     """
     for y in range(grid.height):
         for x in range(grid.width):
@@ -267,19 +297,20 @@ def calculate_grid_score(
     grid: Grid, tech: str, apply_supercharge_first: bool = False
 ) -> float:
     """
-    Calculates the total grid score for a given technology by summing module totals.
-    Relies on populate_all_module_bonuses to handle adjacency boost internally,
-    passing the apply_supercharge_first flag.
+    Calculates the total grid score for a given technology.
+
+    This function first ensures all module bonuses are up-to-date by calling
+    `populate_all_module_bonuses`, then sums the 'total' of each module
+    of the specified technology.
 
     Args:
         grid: The Grid object.
         tech: The technology type (e.g., "pulse", "hyper") to score.
-        apply_supercharge_first (bool): If True, applies supercharge multiplier
-                                        to the base bonus before calculating
-                                        adjacency boost amount. Defaults to False.
+        apply_supercharge_first: Flag passed to `populate_all_module_bonuses`
+            to control the supercharge calculation order.
 
     Returns:
-        The total calculated score for the specified technology, rounded.
+        The total calculated score for the technology, rounded to 4 decimal places.
     """
     if grid is None:
         logging.warning("calculate_grid_score called with None grid.")
@@ -301,8 +332,20 @@ def calculate_grid_score(
 
 def calculate_score_delta(grid: Grid, changed_cells_info: list, tech: str) -> float:
     """
-    Calculates the change in grid score based on a move, by only recalculating
-    the scores of the affected modules and their neighbors.
+    Calculates the change in grid score based on a move.
+
+    This function provides an optimized way to calculate the score difference
+    after a move by only recalculating the scores of the affected modules
+    and their immediate neighbors, rather than the entire grid.
+
+    Args:
+        grid: The current Grid object after the move.
+        changed_cells_info: A list of tuples, where each tuple contains the
+            coordinates (x, y) and the original cell data before the move.
+        tech: The technology type being evaluated.
+
+    Returns:
+        The difference in score (new_score - old_score).
     """
     old_grid = grid.copy()
     for (x, y), original_cell_data in changed_cells_info:

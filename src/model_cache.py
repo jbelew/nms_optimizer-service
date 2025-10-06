@@ -1,3 +1,11 @@
+"""
+This module provides a caching mechanism for loading PyTorch models.
+
+It uses an in-memory LRU (Least Recently Used) cache to store pre-trained
+models, avoiding the overhead of reading from disk every time a model is
+needed. This is particularly useful in a server environment where the same
+models may be requested frequently.
+"""
 import torch
 import logging
 import os

@@ -4,7 +4,24 @@ from copy import deepcopy
 from src.module_placement import place_module, clear_all_modules_of_tech
 
 class Grid:
+    """Represents the technology grid for a ship or exosuit.
+
+    This class manages the state of the grid, including the placement of
+    modules, their properties, and their interactions.
+
+    Attributes:
+        width (int): The width of the grid.
+        height (int): The height of the grid.
+        cells (list[list[dict]]): A 2D list representing the grid cells.
+            Each cell is a dictionary containing module properties.
+    """
     def __init__(self, width, height):
+        """Initializes a new Grid instance.
+
+        Args:
+            width (int): The width of the grid.
+            height (int): The height of the grid.
+        """
         self.width = width
         self.height = height
         self.cells = [
@@ -30,86 +47,235 @@ class Grid:
         ]
 
     def get_cell(self, x, y):
+        """Retrieves the data for a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+
+        Returns:
+            dict: The dictionary representing the cell's data.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             return self.cells[y][x]
         else:
             raise IndexError("Cell out of bounds")
 
     def set_cell(self, x, y, value):
+        """Sets the 'value' property of a specific cell.
+
+        Note: This method is likely deprecated or of limited use.
+        Consider using more specific setters like `set_module`.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            value: The value to set.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["value"] = value
         else:
             raise IndexError("Cell out of bounds")
         
     def copy(self):
+        """Creates a deep copy of the grid.
+
+        Returns:
+            Grid: A new Grid instance with a deep copy of the cells.
+        """
         new_grid = Grid(self.width, self.height)  # Pass width and height
         new_grid.cells = [deepcopy(row) for row in self.cells]  # Use deepcopy for nested lists
         return new_grid
         
     def set_label(self, x, y, label):
+        """Sets the label for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            label (str): The label to set.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["label"] = label
         else:
             raise IndexError("Cell out of bounds")
 
     def set_supercharged(self, x, y, value):
+        """Sets the supercharged status of a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            value (bool): The supercharged status to set.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["supercharged"] = value
         else:
             raise IndexError("Cell out of bounds")
 
     def set_active(self, x, y, value):
+        """Sets the active status of a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            value (bool): The active status to set.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["active"] = value
         else:
             raise IndexError("Cell out of bounds")
 
     def is_supercharged(self, x, y):
+        """Checks if a specific cell is supercharged.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+
+        Returns:
+            bool: True if the cell is supercharged, False otherwise.
+        """
         return self.get_cell(x, y)["supercharged"]
 
     def set_adjacency_bonus(self, x, y, bonus):
+        """Sets the adjacency bonus for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            bonus (float): The adjacency bonus value.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["adjacency_bonus"] = bonus
         else:
             raise IndexError("Cell out of bounds")
 
     def set_bonus(self, x, y, bonus):
+        """Sets the base bonus for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            bonus (float): The base bonus value.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["bonus"] = bonus
         else:
             raise IndexError("Cell out of bounds")
 
     def set_type(self, x, y, type):
+        """Sets the type for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            type (str): The module type (e.g., "core", "bonus").
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["type"] = type
         else:
             raise IndexError("Cell out of bounds")
 
     def set_value(self, x, y, value):
+        """Sets the 'value' property for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            value: The value to set.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["value"] = value
         else:
             raise IndexError("Cell out of bounds")
 
     def set_total(self, x, y, total):
+        """Sets the total calculated bonus for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            total (float): The total bonus value.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["total"] = total
         else:
             raise IndexError("Cell out of bounds")
 
     def set_module(self, x, y, module):
+        """Sets the module ID in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            module (str): The ID of the module.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["module"] = module
         else:
             raise IndexError("Cell out of bounds")
 
     def set_adjacency(self, x, y, adjacency):
+        """Sets the adjacency property for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            adjacency (str): The adjacency type (e.g., "greater", "lesser").
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["adjacency"] = adjacency
         else:
             raise IndexError("Cell out of bounds")
 
     def set_tech(self, x, y, tech):
+        """Sets the technology type for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            tech (str): The technology type (e.g., "pulse").
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["tech"] = tech
         else:
@@ -123,6 +289,16 @@ class Grid:
             raise IndexError("Cell out of bounds")
 
     def set_image(self, x, y, image):
+        """Sets the image for a module in a specific cell.
+
+        Args:
+            x (int): The x-coordinate of the cell.
+            y (int): The y-coordinate of the cell.
+            image (str): The image URL or identifier.
+
+        Raises:
+            IndexError: If the coordinates are out of bounds.
+        """
         if 0 <= x < self.width and 0 <= y < self.height:
             self.cells[y][x]["image"] = image
         else:
@@ -134,7 +310,14 @@ class Grid:
 
     @classmethod
     def from_dict(cls, data: dict) -> "Grid":
-        """Create a Grid instance from a dictionary."""
+        """Create a Grid instance from a dictionary.
+
+        Args:
+            data (dict): A dictionary containing grid data, typically from JSON.
+
+        Returns:
+            Grid: A new Grid instance populated with the data.
+        """
         grid = cls(data["width"], data["height"])
         for y, row in enumerate(data["cells"]):
             for x, cell_data in enumerate(row):
@@ -159,7 +342,12 @@ class Grid:
         return grid
 
     def __str__(self):
-        """Generate a string representation of the grid."""
+        """Generate a string representation of the grid's total bonuses.
+
+        Returns:
+            str: A string showing the grid layout with the 'total' value
+                 of each cell, or '.' for empty cells.
+        """
         return "\n".join(
             " ".join(
                 "."

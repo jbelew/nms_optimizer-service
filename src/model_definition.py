@@ -1,10 +1,39 @@
 # training/model_definition.py
+"""
+This module defines the PyTorch neural network architecture used for predicting
+module placements.
+
+The `ModulePlacementCNN` class implements a Convolutional Neural Network (CNN)
+designed to take a grid's supercharge layout as input and produce a probability
+distribution for the placement of each possible module in each cell.
+"""
 import torch
 import torch.nn as nn
 
 
 class ModulePlacementCNN(nn.Module):
+    """A Convolutional Neural Network for module placement prediction.
+
+    This network uses a series of convolutional layers, batch normalization,
+    and a residual block to learn the spatial relationships in the grid.
+    The final output is a set of logits for each possible module class in each
+    cell of the grid.
+
+    Attributes:
+        grid_height (int): The height of the input grid.
+        grid_width (int): The width of the input grid.
+        num_output_classes (int): The number of possible output classes,
+            including the "empty" class.
+    """
     def __init__(self, grid_height, grid_width, num_output_classes):
+        """Initializes the ModulePlacementCNN model.
+
+        Args:
+            grid_height (int): The height of the input grid.
+            grid_width (int): The width of the input grid.
+            num_output_classes (int): The number of possible module classes
+                to predict, including the background/empty class.
+        """
         super().__init__()
         self.grid_height = grid_height
         self.grid_width = grid_width
@@ -37,6 +66,16 @@ class ModulePlacementCNN(nn.Module):
         self.output_conv = nn.Conv2d(128, num_output_classes, kernel_size=1)
 
     def forward(self, x):
+        """Defines the forward pass of the model.
+
+        Args:
+            x (torch.Tensor): The input tensor, representing the supercharged
+                layout of the grid. Shape: (N, 1, H, W).
+
+        Returns:
+            torch.Tensor: The output logits for each class at each grid cell.
+                Shape: (N, num_output_classes, H, W).
+        """
         # --- Input Check ---
         if torch.isnan(x).any():
             print("!!! NaN DETECTED AT MODEL INPUT !!!")

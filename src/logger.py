@@ -1,3 +1,10 @@
+"""
+This module provides a centralized logging setup for the application.
+
+It ensures that a logger is configured for the application, but it avoids
+overwriting any existing logging configuration, making it compatible with
+environments like Gunicorn that set up their own log handlers.
+"""
 import logging
 import sys
 import os

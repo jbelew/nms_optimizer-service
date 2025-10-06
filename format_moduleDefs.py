@@ -1,9 +1,25 @@
+"""
+This script provides utility functions to process and reformat module definition
+JSON files. It is designed to be run as a standalone script to perform bulk
+updates on the module data.
+
+The main operations include:
+- Setting a 'checked' status based on the module's original type.
+- Re-categorizing modules based on their labels (e.g., 'Theta' -> 'upgrade').
+- Persisting the changes back to the JSON files with custom formatting.
+"""
 import json
 import os
 
 
 def process_module(module):
-    """Applies the required changes to a single module, in the correct order."""
+    """Applies formatting and type changes to a single module dictionary.
+
+    This function modifies the module dictionary in-place.
+
+    Args:
+        module (dict): The module dictionary to process.
+    """
     # First, determine the 'checked' status based on the original type.
     is_reward = module.get("type") == "reward"
 
@@ -21,7 +37,15 @@ def process_module(module):
 
 
 def find_and_process_modules(data):
-    """Recursively finds and processes 'modules' lists in the JSON data."""
+    """Recursively finds and processes 'modules' lists within a JSON structure.
+
+    This function traverses the data (which can be a dict or a list) and
+    applies the `process_module` function to each item in any list found
+    under the key "modules".
+
+    Args:
+        data (dict or list): The JSON data to traverse.
+    """
     if isinstance(data, dict):
         for key, value in data.items():
             if key == "modules" and isinstance(value, list):
@@ -35,8 +59,16 @@ def find_and_process_modules(data):
 
 
 def custom_json_dump(data, f, level=0):
-    """
-    Writes the given data to the file object `f` with custom formatting.
+    """Writes a dictionary to a file with custom JSON formatting.
+
+    This function formats the JSON to have one module object per line for
+    better readability and easier diffing in version control.
+
+    Args:
+        data (dict): The dictionary to write.
+        f (file object): The file to write to.
+        level (int, optional): The current indentation level for recursion.
+            Defaults to 0.
     """
     indent = "    "
     f.write("{\n")
@@ -81,8 +113,11 @@ def custom_json_dump(data, f, level=0):
 
 
 def update_module_files():
-    """
-    Main function to update all module_data JSON files.
+    """Main function to read, process, and rewrite all module JSON files.
+
+    This function iterates through all `.json` files in the
+    `src/data_definitions/modules_data/` directory, applies the processing
+    logic, and saves the files with the new formatting.
     """
     directory = "src/data_definitions/modules_data/"
     files = os.listdir(directory)
