@@ -159,8 +159,8 @@
                 "image": "starship/bobble.webp",
                 "color": "gray",
                 "modules": [
-                    {"id": "AP", "type": "core", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/apollo.webp", "checked": true},
-                    {"id": "AT", "type": "core", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/atlas.webp", "checked": true},
+                    {"id": "AP", "type": "bonus", "label": "Apollo Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/apollo.webp", "checked": true},
+                    {"id": "AT", "type": "bonus", "label": "Atlas Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/atlas.webp", "checked": true},
                     {"id": "NA", "type": "bonus", "label": "Nada Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/nada.webp", "checked": true},
                     {"id": "NB", "type": "bonus", "label": "-null- Figurine", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/null.webp", "checked": true}
                 ]
