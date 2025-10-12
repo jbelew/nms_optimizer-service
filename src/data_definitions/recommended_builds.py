@@ -756,12 +756,12 @@ recommended_builds = {
                     },
                     {"tech": "forbidden", "module": "Xb", "adjacency_bonus": 1},
                     {"tech": "thermic", "module": "Xa", "adjacency_bonus": 1},
-                    {"tech": "pressure", "module": "PM", "adjacency_bonus": 1},
-                    {"tech": "hazard", "module": "HP", "adjacency_bonus": 1},
-                    {"tech": "anomaly", "module": "AS", "adjacency_bonus": 1},
+                    {"tech": "pressure", "module": "PM", "adjacency_bonus": 0},
+                    {"tech": "hazard", "module": "HP", "adjacency_bonus": 0},
+                    {"tech": "anomaly", "module": "AS", "adjacency_bonus": 0},
                 ],
                 [
-                    {"tech": "exocraft", "module": "ES", "adjacency_bonus": 1},
+                    {"tech": "exocraft", "module": "ES", "adjacency_bonus": 0},
                     {"tech": "jetpack", "module": "NS", "adjacency_bonus": 1},
                     {"tech": "jetpack", "module": "Xc", "adjacency_bonus": 1},
                     {"tech": "defense", "module": "Xb", "adjacency_bonus": 1},
@@ -795,7 +795,7 @@ recommended_builds = {
                     {"tech": "protection", "module": "SL", "adjacency_bonus": 1},
                 ],
                 [
-                    {"tech": "hazmat", "module": "HG", "adjacency_bonus": 1},
+                    {"tech": "hazmat", "module": "HG", "adjacency_bonus": 0},
                     {"tech": "jetpack", "module": "JP", "adjacency_bonus": 1},
                     {"tech": "jetpack", "module": "WJ", "adjacency_bonus": 1},
                     {"tech": "life", "module": "Xa", "adjacency_bonus": 1},
@@ -807,7 +807,7 @@ recommended_builds = {
                     {"tech": "coolant", "module": "Xc", "adjacency_bonus": 1},
                 ],
                 [
-                    {"tech": "refiner", "module": "PR", "adjacency_bonus": 1},
+                    {"tech": "refiner", "module": "PR", "adjacency_bonus": 0},
                     {"tech": "translators", "module": "Ta", "adjacency_bonus": 1},
                     {"tech": "translators", "module": "Tb", "adjacency_bonus": 1},
                     {"tech": "life", "module": "LS", "adjacency_bonus": 1},
@@ -819,7 +819,7 @@ recommended_builds = {
                     {"tech": "coolant", "module": "CN", "adjacency_bonus": 1},
                 ],
                 [
-                    {"tech": "nutrient", "module": "NI", "adjacency_bonus": 1},
+                    {"tech": "nutrient", "module": "NI", "adjacency_bonus": 0},
                     {"tech": "translators", "module": "Tc", "adjacency_bonus": 1},
                     {"tech": "translators", "module": "Td", "adjacency_bonus": 1},
                     {"tech": "life", "module": "OR", "adjacency_bonus": 1},
