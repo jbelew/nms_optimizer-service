@@ -61,7 +61,7 @@ jobs:
           # Use --retry 2 to handle potential race conditions with git push
           # The [skip ci] in the message prevents an infinite workflow loop
           set +e # Allow cz bump to fail without exiting the script immediately
-          NEXT_VERSION_OUTPUT=$(cz bump --changelog --yes --no-verify --commit --tag --push --message "chore(release): {{version}} [skip ci]" --retry 2>&1)
+          NEXT_VERSION_OUTPUT=$(cz bump --changelog --yes --no-verify --commit --tag --tag-format "v{{version}}" --push --message "chore(release): {{version}} [skip ci]" --retry 2>&1)
           CZ_BUMP_EXIT_CODE=$?
           set -e # Re-enable exit on error
 
