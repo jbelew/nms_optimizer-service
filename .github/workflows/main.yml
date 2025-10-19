@@ -60,14 +60,28 @@ jobs:
           # Determine the next version, create commit, tag, and push
           # Use --retry 2 to handle potential race conditions with git push
           # The [skip ci] in the message prevents an infinite workflow loop
+          set +e # Allow cz bump to fail without exiting the script immediately
           NEXT_VERSION_OUTPUT=$(cz bump --changelog --increment --yes --no-verify --commit --tag --push --message "chore(release): {{version}} [skip ci]" --retry 2>&1)
+          CZ_BUMP_EXIT_CODE=$?
+          set -e # Re-enable exit on error
+
+          echo "Full cz bump output:"
           echo "$NEXT_VERSION_OUTPUT"
+          echo "cz bump exit code: $CZ_BUMP_EXIT_CODE"
+
+          if [ $CZ_BUMP_EXIT_CODE -ne 0 ]; then
+            echo "cz bump command failed with exit code $CZ_BUMP_EXIT_CODE. This might mean no conventional commits were found since the last tag, or there's a configuration issue."
+            echo "new_version_created=false" >> $GITHUB_OUTPUT
+            echo "new_version=" >> $GITHUB_OUTPUT
+            echo "previous_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+            exit 0 # Exit gracefully from this step, allowing subsequent steps to be skipped
+          fi
 
           # Extract the new version from the output
           NEW_VERSION=$(echo "$NEXT_VERSION_OUTPUT" | grep -oP '(?<=^New version: )v?\d+\.\d+\.\d+' | head -n 1)
 
           if [ -z "$NEW_VERSION" ]; then
-            echo "No new version detected by commitizen. This might mean no conventional commits were found since the last tag."
+            echo "No new version detected by commitizen from its output. This might mean no conventional commits were found since the last tag."
             echo "new_version_created=false" >> $GITHUB_OUTPUT
             echo "new_version=" >> $GITHUB_OUTPUT
             echo "previous_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
