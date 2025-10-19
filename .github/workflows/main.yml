@@ -30,6 +30,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: test
+    permissions:
+      contents: write # Add this line to grant write permissions for creating releases
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -44,7 +46,10 @@ jobs:
         id: changelog
         run: |
           pip install commitizen
-          echo "changelog=$(cz changelog --dry-run --start-rev $(git describe --tags --abbrev=0 HEAD~1) HEAD)" >> $GITHUB_OUTPUT
+          CURRENT_TAG=${{ steps.get_version.outputs.version }}
+          # Get the previous tag, or the first commit if no previous tag exists
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${CURRENT_TAG}^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          echo "changelog=$(cz changelog --dry-run --start-rev $PREVIOUS_TAG --end-rev $CURRENT_TAG)" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: actions/create-release@v1
