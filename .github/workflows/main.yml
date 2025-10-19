@@ -51,7 +51,7 @@ jobs:
         run: |
           # Get the latest tag, or default to 0.0.0 if no tags exist
           LATEST_TAG_RAW=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.0.0")
-          if [[ "$LATEST_TAG_RAW" =~ ^[0-9] ]]; then # If it starts with a digit, it's not v-prefixed
+          if [[ "$LATEST_TAG_RAW" != "0.0.0" && ! "$LATEST_TAG_RAW" =~ ^v ]]; then
             LATEST_TAG="v$LATEST_TAG_RAW"
           else
             LATEST_TAG="$LATEST_TAG_RAW"
