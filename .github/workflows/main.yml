@@ -57,11 +57,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Determine the next version, create commit, tag, and push
-          # Use --retry 2 to handle potential race conditions with git push
+          # Determine the next version, create commit, and tag
           # The [skip ci] in the message prevents an infinite workflow loop
           set +e # Allow cz bump to fail without exiting the script immediately
-          NEXT_VERSION_OUTPUT=$(cz bump --changelog --yes --no-verify --commit --tag --tag-format "v{{version}}" --push --message "chore(release): {{version}} [skip ci]" --retry 2>&1)
+          NEXT_VERSION_OUTPUT=$(python -m commitizen bump --yes --no-verify --bump-message "chore(release): {{version}} [skip ci]" --retry 2>&1)
           CZ_BUMP_EXIT_CODE=$?
           set -e # Re-enable exit on error
 
@@ -90,6 +89,10 @@ jobs:
             echo "new_version_created=true" >> $GITHUB_OUTPUT
             echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
             echo "previous_tag=$LATEST_TAG" >> $GITHUB_OUTPUT # Store the old tag for changelog generation
+
+            # Explicitly push the new commit and tag created by cz bump
+            git push origin main
+            git push origin $NEW_VERSION
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
