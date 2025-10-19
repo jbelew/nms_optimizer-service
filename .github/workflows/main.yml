@@ -49,7 +49,7 @@ jobs:
           CURRENT_TAG=${{ steps.get_version.outputs.version }}
           # Get the previous tag, or the first commit if no previous tag exists
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 ${CURRENT_TAG}^ 2>/dev/null || git rev-list --max-parents=0 HEAD)
-          echo "changelog=$(cz changelog --dry-run --start-rev $PREVIOUS_TAG --end-rev $CURRENT_TAG)" >> $GITHUB_OUTPUT
+          echo "changelog=$(cz changelog --dry-run --start-rev $PREVIOUS_TAG --end-rev $CURRENT_TAG --)" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: actions/create-release@v1
