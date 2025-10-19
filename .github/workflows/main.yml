@@ -77,7 +77,7 @@ jobs:
           fi
 
           # Extract the new version from the output
-          NEW_VERSION=$(echo "$NEXT_VERSION_OUTPUT" | grep -oP '(?<=^New version: )v?\d+\.\d+\.\d+' | head -n 1)
+          NEW_VERSION=$(echo "$NEXT_VERSION_OUTPUT" | grep -oP '(?<=^tag to create: )v?\d+\.\d+\.\d+' | head -n 1)
 
           if [ -z "$NEW_VERSION" ]; then
             echo "No new version detected by commitizen from its output. This might mean no conventional commits were found since the last tag."
