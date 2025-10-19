@@ -50,4 +50,4 @@
     *   Corrected custom dimension names to lowercase (`customEvent:platform`, `customEvent:tech`, `customEvent:supercharged`).
 
 *   **Refine & Reflect:**
-    *   **Key Learning:** Reconfirmed the importance of case-sensitivity for GA4 custom dimension names in API requests. Always double-check the exact naming in the GA4 UI and use lowercase in the API call if that's how it's stored.
+    *   **Key Learning:** Reconfirmed the importance of case-sensitivity for GA4 custom dimension names in API requests. Always double-check the exact naming in the GA4 UI and use lowercase in the API call if that's how it's stored. touched.
