@@ -114,7 +114,7 @@ jobs:
           fi
 
           echo "Generating changelog from $START_REV to $CURRENT_TAG"
-          CHANGELOG_BODY=$(cz changelog --dry-run --start-rev $START_REV --end-rev $CURRENT_TAG --)
+          CHANGELOG_BODY=$(cz changelog --dry-run --start-rev $START_REV $CURRENT_TAG --)
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$CHANGELOG_BODY" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
