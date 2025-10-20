@@ -46,11 +46,7 @@ def filter_solves(
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]
 
-        if (
-            tech == "pulse"
-            and available_modules is not None
-            and "PC" in available_modules
-        ):
+        if tech == "pulse" and available_modules is not None and "PC" in available_modules:
             solve_data = solves[ship]["photonix"]
             print("INFO -- Forcing tech to 'photonix' for PC")
 
@@ -58,9 +54,7 @@ def filter_solves(
             return {}
 
         filtered_solves[ship] = {tech: {}}
-        tech_modules = get_tech_modules(
-            modules, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
         if tech_modules is None:
             print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
             return {}  # Return empty dict if no modules are found
@@ -70,9 +64,7 @@ def filter_solves(
         filtered_solves[ship][tech]["map"] = {}
         filtered_solves[ship][tech]["score"] = solve_data.get("score", 0)
 
-        for position, module_id in solve_data.get(
-            "map", {}
-        ).items():  # Access the nested 'map'
+        for position, module_id in solve_data.get("map", {}).items():  # Access the nested 'map'
             if module_id is None or module_id == "None" or module_id in owned_module_ids:
                 filtered_solves[ship][tech]["map"][position] = module_id
     return filtered_solves

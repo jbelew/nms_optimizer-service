@@ -146,7 +146,9 @@ class TestOptimization(unittest.TestCase):
         sc_grid_test.set_module(1, 0, "OTHER")
         sc_grid_test.set_tech(1, 0, "other_tech")
 
-        result = find_supercharged_opportunities(sc_grid_test, self.modules, self.ship, self.tech, self.player_owned_rewards)
+        result = find_supercharged_opportunities(
+            sc_grid_test, self.modules, self.ship, self.tech, self.player_owned_rewards
+        )
         # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
         self.assertIsNotNone(result)
         self.assertEqual(result, (0, 1, 4, 2))
@@ -350,8 +352,8 @@ class TestOptimization(unittest.TestCase):
             # Otherwise, it's a grid from the pattern step, return its score
             else:
                 return 10.0
-        mock_calculate_score.side_effect = score_side_effect
 
+        mock_calculate_score.side_effect = score_side_effect
 
         # --- Run Optimization ---
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
@@ -370,7 +372,6 @@ class TestOptimization(unittest.TestCase):
         self.assertIsNotNone(result_grid)
         # Check if the final grid is the one from SA
         self.assertEqual(result_grid.get_cell(1, 1)["module"], "PE")
-
 
     def test_get_tech_modules_no_solve_type_returns_untyped_modules(self):
         # Mock ship_modules data
@@ -401,14 +402,14 @@ class TestOptimization(unittest.TestCase):
 
         # Call get_tech_modules with solve_type=None
         from src.modules_utils import get_tech_modules
-        result_modules = get_tech_modules(
-            mock_ship_modules, "test_ship", "test_tech", []
-        )
+
+        result_modules = get_tech_modules(mock_ship_modules, "test_ship", "test_tech", [])
 
         # Assert that it returns modules from the untyped definition
         self.assertIsNotNone(result_modules)
         self.assertEqual(len(result_modules), 1)
         self.assertEqual(result_modules[0]["id"], "MOD_B")
+
 
 # --- Run Tests ---
 if __name__ == "__main__":

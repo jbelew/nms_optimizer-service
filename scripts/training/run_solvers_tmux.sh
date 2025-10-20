@@ -17,5 +17,3 @@ done
 echo "Tmux session '$SESSION_NAME' created with $NUM_SOLVERS windows."
 echo "Attach with: tmux attach -t $SESSION_NAME"
 echo "Switch between windows using Ctrl+b <window-number> or Ctrl+b n/p."
-
-

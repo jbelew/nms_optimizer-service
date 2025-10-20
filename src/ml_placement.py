@@ -142,9 +142,7 @@ def ml_placement(
 
     # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) ---
     # Use the new data loader to get the exact list of module IDs the model was trained on.
-    training_module_ids = get_training_module_ids(
-        module_def_ship_key, module_def_tech_key, solve_type=solve_type
-    )
+    training_module_ids = get_training_module_ids(module_def_ship_key, module_def_tech_key, solve_type=solve_type)
 
     if not training_module_ids:
         # Important failure condition
@@ -166,9 +164,7 @@ def ml_placement(
     # Use the USER-FACING modules_data passed into the function
     modules_data = get_module_data(ship)
     if tech_modules is None:
-        modules_to_place_list = get_tech_modules(
-            modules_data, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        modules_to_place_list = get_tech_modules(modules_data, ship, tech, player_owned_rewards, solve_type=solve_type)
     else:
         modules_to_place_list = tech_modules
 

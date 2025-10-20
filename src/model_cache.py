@@ -6,6 +6,7 @@ models, avoiding the overhead of reading from disk every time a model is
 needed. This is particularly useful in a server environment where the same
 models may be requested frequently.
 """
+
 import torch
 import logging
 import os
@@ -15,6 +16,7 @@ from .model_definition import ModulePlacementCNN
 # A conservative cache size, suitable for memory-constrained environments.
 # This can be overridden by an environment variable if needed.
 CACHE_SIZE = int(os.environ.get("MODEL_CACHE_SIZE", 5))
+
 
 @lru_cache(maxsize=CACHE_SIZE)
 def _load_model_from_disk(model_path, model_grid_width, model_grid_height, num_output_classes):
@@ -33,10 +35,11 @@ def _load_model_from_disk(model_path, model_grid_width, model_grid_height, num_o
     )
 
     # Always load to CPU first to ensure the cached object is stored in main memory.
-    state_dict = torch.load(model_path, map_location='cpu')
+    state_dict = torch.load(model_path, map_location="cpu")
     model.load_state_dict(state_dict)
     model.eval()
     return model
+
 
 def get_model(model_path, model_grid_width, model_grid_height, num_output_classes):
     """
@@ -46,12 +49,7 @@ def get_model(model_path, model_grid_width, model_grid_height, num_output_classe
 
     try:
         # Call the cached loader function
-        model = _load_model_from_disk(
-            absolute_model_path,
-            model_grid_width,
-            model_grid_height,
-            num_output_classes
-        )
+        model = _load_model_from_disk(absolute_model_path, model_grid_width, model_grid_height, num_output_classes)
 
         # Determine the target device and move the model if necessary.
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

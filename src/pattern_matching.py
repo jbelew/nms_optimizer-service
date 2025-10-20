@@ -6,9 +6,11 @@ grid, generating all unique variations of a pattern, and calculating a
 heuristic score for a pattern's placement. This is used to find optimal
 layouts based on pre-defined "solve maps".
 """
+
 from .module_placement import place_module, clear_all_modules_of_tech
 from .modules_utils import get_tech_modules
 import logging
+
 
 def rotate_pattern(pattern):
     """Rotates a pattern 90 degrees clockwise.
@@ -114,14 +116,10 @@ def apply_pattern_to_grid(
     new_grid = grid.copy()
 
     if tech_modules is None:
-        tech_modules_available = get_tech_modules(
-            modules, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        tech_modules_available = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
     else:
         tech_modules_available = tech_modules
-    if (
-        tech_modules_available is None
-    ):  # Should not happen if filter_solves worked correctly
+    if tech_modules_available is None:  # Should not happen if filter_solves worked correctly
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}'.")
         return None, 0
     # Create a mapping from module id to module data
@@ -130,19 +128,12 @@ def apply_pattern_to_grid(
     # --- Pre-check 1: Determine if the pattern is even placeable by the player and fits basic constraints ---
     # Count how many modules the pattern *intends* to place that the player actually owns.
     expected_module_placements_in_pattern = 0
-    for (
-        module_id_in_pattern_val
-    ) in pattern.values():  # Iterate through values (module IDs)
-        if (
-            module_id_in_pattern_val is not None
-            and module_id_in_pattern_val in available_module_ids_map
-        ):
+    for module_id_in_pattern_val in pattern.values():  # Iterate through values (module IDs)
+        if module_id_in_pattern_val is not None and module_id_in_pattern_val in available_module_ids_map:
             expected_module_placements_in_pattern += 1
 
     # If the pattern has defined module IDs, but none are owned by the player, this pattern is not applicable.
-    if expected_module_placements_in_pattern == 0 and any(
-        pid is not None for pid in pattern.values()
-    ):
+    if expected_module_placements_in_pattern == 0 and any(pid is not None for pid in pattern.values()):
         return None, 0
 
     # --- Pre-check 2: Check for overlaps, off-grid, or inactive cells for REQUIRED modules ---
@@ -152,10 +143,7 @@ def apply_pattern_to_grid(
         grid_y = start_y + pattern_y
 
         # Is this part of the pattern trying to place an owned module?
-        if (
-            module_id_in_pattern is not None
-            and module_id_in_pattern in available_module_ids_map
-        ):
+        if module_id_in_pattern is not None and module_id_in_pattern in available_module_ids_map:
             if not (0 <= grid_x < new_grid.width and 0 <= grid_y < new_grid.height):
                 # A required module (owned, non-None) would be off-grid. This pattern variation doesn't fit.
                 return None, 0
@@ -165,19 +153,14 @@ def apply_pattern_to_grid(
                 # Cannot place a required module on an inactive cell.
                 return None, 0
 
-            if (
-                current_cell_on_new_grid["module"] is not None
-                and current_cell_on_new_grid["tech"] != tech
-            ):
+            if current_cell_on_new_grid["module"] is not None and current_cell_on_new_grid["tech"] != tech:
                 # Overlap with a module of a *different* technology.
                 return None, 0
         # If module_id_in_pattern is None, or not in available_module_ids_map, we don't check its target cell strictly here,
         # as it won't be placed anyway or it's an intentionally empty slot.
 
     # If all pre-checks pass, proceed with actual placement attempt
-    clear_all_modules_of_tech(
-        new_grid, tech
-    )  # Clear target tech modules for a clean placement
+    clear_all_modules_of_tech(new_grid, tech)  # Clear target tech modules for a clean placement
 
     successfully_placed_this_variation = 0
     for (pattern_x, pattern_y), module_id_in_pattern in pattern.items():
@@ -247,10 +230,7 @@ def get_all_unique_pattern_variations(original_pattern):
             patterns_to_try.append(rotated_pattern_90)
             rotated_patterns.add(tuple(rotated_pattern_90.items()))
             rotated_pattern_180 = rotate_pattern(rotated_pattern_90)
-            if (
-                rotated_pattern_180 != original_pattern
-                and tuple(rotated_pattern_180.items()) not in rotated_patterns
-            ):
+            if rotated_pattern_180 != original_pattern and tuple(rotated_pattern_180.items()) not in rotated_patterns:
                 patterns_to_try.append(rotated_pattern_180)
                 rotated_patterns.add(tuple(rotated_pattern_180.items()))
                 rotated_pattern_270 = rotate_pattern(rotated_pattern_180)
@@ -325,10 +305,7 @@ def calculate_pattern_adjacency_score(grid, tech):
                                 total_adjacency_score += module_edge_weight
 
                             # Count for group adjacency bonus if adjacency rules match
-                            if (
-                                adjacency_rule
-                                and adjacent_cell.get("adjacency") == adjacency_rule
-                            ):
+                            if adjacency_rule and adjacent_cell.get("adjacency") == adjacency_rule:
                                 num_adjacent_same_group += 1
 
                 # Check for group adjacency bonus from "greater_n" or "lesser_n" rules
@@ -339,19 +316,9 @@ def calculate_pattern_adjacency_score(grid, tech):
                         rule_value = int(parts[1])
 
                         # Apply bonus based on the rule
-                        if (
-                            rule_type == "greater"
-                            and num_adjacent_same_group > rule_value
-                        ):
-                            total_adjacency_score += (
-                                group_adjacency_weight * num_adjacent_same_group
-                            )
-                        elif (
-                            rule_type == "lesser"
-                            and num_adjacent_same_group < rule_value
-                        ):
-                            total_adjacency_score += group_adjacency_weight * (
-                                rule_value - num_adjacent_same_group
-                            )
+                        if rule_type == "greater" and num_adjacent_same_group > rule_value:
+                            total_adjacency_score += group_adjacency_weight * num_adjacent_same_group
+                        elif rule_type == "lesser" and num_adjacent_same_group < rule_value:
+                            total_adjacency_score += group_adjacency_weight * (rule_value - num_adjacent_same_group)
 
     return total_adjacency_score

@@ -1,11 +1,10 @@
 import json
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-def get_tech_modules(
-    modules, ship, tech_key, player_owned_rewards=None, solve_type=None, available_modules=None
-):
+def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, solve_type=None, available_modules=None):
     """Retrieves and filters module definitions for a specific technology.
 
     This function performs several levels of filtering:
@@ -150,9 +149,7 @@ def get_tech_tree_json(ship, module_data):
         if "error" in tech_tree:
             return json.dumps({"error": tech_tree["error"]})  # Return error as JSON
         else:
-            return json.dumps(
-                tech_tree, indent=2
-            )  # Return tree as JSON with indentation for readability
+            return json.dumps(tech_tree, indent=2)  # Return tree as JSON with indentation for readability
     except Exception as e:
         return json.dumps({"error": str(e)})  # Catch any errors during tree generation
 
@@ -190,9 +187,7 @@ def get_tech_tree(ship, module_data):
                 "modules": tech["modules"],
                 "image": tech.get("image"),
                 "color": tech.get("color"),
-                "module_count": len(
-                    [m for m in tech["modules"] if not m.get("reward")]
-                ),
+                "module_count": len([m for m in tech["modules"] if not m.get("reward")]),
             }
             if "type" in tech:
                 tech_info["type"] = tech["type"]

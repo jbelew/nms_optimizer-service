@@ -1,17 +1,17 @@
+# Add the project root to the Python path
 import sys
 import os
-import numpy as np
-from collections import Counter
-import time
 
-# Add the project root to the Python path
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, project_root)
 
-from src.grid_utils import Grid
-from src.data_loader import get_all_module_data
-from src.optimization.refinement import simulated_annealing
-from src.modules_utils import get_tech_modules
+import numpy as np
+import time
+from src.grid_utils import Grid  # noqa: E402
+from src.data_loader import get_all_module_data  # noqa: E402
+from src.optimization.refinement import simulated_annealing  # noqa: E402
+from src.modules_utils import get_tech_modules  # noqa: E402
+
 
 def run_benchmark(num_runs=10):
     """
@@ -45,7 +45,7 @@ def run_benchmark(num_runs=10):
         start_time = time.time()
         print(f"--- Running iteration {i+1}/{num_runs} ---")
         full_grid = grid.copy()
-        
+
         best_grid, best_score = simulated_annealing(
             grid.copy(),
             ship,
@@ -70,6 +70,7 @@ def run_benchmark(num_runs=10):
     print(f"Best Score: {np.max(scores):.4f}")
     print(f"Standard Deviation: {np.std(scores):.4f}")
     print(f"Average Run Time: {np.mean(run_times):.2f}s")
+
 
 if __name__ == "__main__":
     run_benchmark()

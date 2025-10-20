@@ -66,13 +66,9 @@ def generate_solve_map(
                 "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
-            tech_modules = get_tech_modules(
-                ship_modules, ship_type, tech, player_owned_rewards, solve_type=solve_type
-            )
+            tech_modules = get_tech_modules(ship_modules, ship_type, tech, player_owned_rewards, solve_type=solve_type)
             if not tech_modules:
-                print(
-                    f"Error: No modules found for {ship_type}/{tech} with solve_type {solve_type}"
-                )
+                print(f"Error: No modules found for {ship_type}/{tech} with solve_type {solve_type}")
                 return None, None
             optimized_grid, optimized_score = simulated_annealing(
                 grid=grid,

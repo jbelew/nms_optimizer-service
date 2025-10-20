@@ -77,9 +77,7 @@ def initialize_ga4_client():
             )
         else:
             # Fallback to file-based credentials (local development)
-            GA_KEY_FILE_PATH = os.path.join(
-                os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json"
-            )
+            GA_KEY_FILE_PATH = os.path.join(os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json")
             credentials = service_account.Credentials.from_service_account_file(
                 GA_KEY_FILE_PATH,
                 scopes=["https://www.googleapis.com/auth/analytics.readonly"],
@@ -94,9 +92,7 @@ def initialize_ga4_client():
 # Initialize the client globally or on first request
 ga4_client = initialize_ga4_client()
 if not ga4_client:
-    app.logger.error(
-        "Failed to initialize Google Analytics Data API client. Analytics endpoints may not function."
-    )
+    app.logger.error("Failed to initialize Google Analytics Data API client. Analytics endpoints may not function.")
 
 # --- End GA4 Configuration ---
 
@@ -268,9 +264,7 @@ def get_technology_tree(ship_name):
         # --- Load module data on-demand ---
         module_data = get_module_data(ship_name)
         if not module_data:
-            return jsonify(
-                {"error": f"Invalid or unsupported ship type: {ship_name}"}
-            ), 404
+            return jsonify({"error": f"Invalid or unsupported ship type: {ship_name}"}), 404
         # ---
         tree_data = get_tech_tree_json(ship_name, module_data)
 
@@ -345,9 +339,7 @@ def get_popular_analytics_data():
               technology, supercharged status, and the total event count.
     """
     if not ga4_client:
-        return jsonify(
-            {"error": "Google Analytics Data API client not initialized."}
-        ), 500
+        return jsonify({"error": "Google Analytics Data API client not initialized."}), 500
 
     try:
         # Define the date range for the report
@@ -362,15 +354,9 @@ def get_popular_analytics_data():
             date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
             dimensions=[
                 Dimension(name="eventName"),
-                Dimension(
-                    name="customEvent:platform"
-                ),  # Your actual custom dimension name for Platform
-                Dimension(
-                    name="customEvent:tech"
-                ),  # Your actual custom dimension name for Tech
-                Dimension(
-                    name="customEvent:supercharged"
-                ),  # New custom dimension for supercharged
+                Dimension(name="customEvent:platform"),  # Your actual custom dimension name for Platform
+                Dimension(name="customEvent:tech"),  # Your actual custom dimension name for Tech
+                Dimension(name="customEvent:supercharged"),  # New custom dimension for supercharged
             ],
             dimension_filter=FilterExpression(
                 filter=Filter(
@@ -379,11 +365,7 @@ def get_popular_analytics_data():
                 )
             ),
             metrics=[Metric(name="eventCount")],
-            order_bys=[
-                OrderBy(
-                    metric=OrderBy.MetricOrderBy(metric_name="eventCount"), desc=True
-                )
-            ],
+            order_bys=[OrderBy(metric=OrderBy.MetricOrderBy(metric_name="eventCount"), desc=True)],
         )
 
         response = ga4_client.run_report(request_body)

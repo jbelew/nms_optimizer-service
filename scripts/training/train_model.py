@@ -45,7 +45,7 @@ def random_augmentations(x_sc, y):
 
     # Rotation (only if the grid is square)
     if x_sc.shape[0] == x_sc.shape[1] and np.random.rand() > 0.5:
-        k = np.random.randint(1, 4) # rotate 90, 180, or 270 degrees
+        k = np.random.randint(1, 4)  # rotate 90, 180, or 270 degrees
         x_sc = np.rot90(x_sc, k)
         y = np.rot90(y, k)
 
@@ -77,7 +77,7 @@ class PlacementDataset(data.Dataset):
             x_sc, target = self.augmentations(x_sc, target)
 
         # Ensure tensors are created correctly
-        input_tensor = torch.tensor(x_sc.copy(), dtype=torch.float32).unsqueeze(0) # Add channel dimension
+        input_tensor = torch.tensor(x_sc.copy(), dtype=torch.float32).unsqueeze(0)  # Add channel dimension
         target_tensor = torch.tensor(target.copy(), dtype=torch.long)
 
         return input_tensor, target_tensor
@@ -364,9 +364,7 @@ def train_model(
             # <<< Convert best_metric_value to CPU float BEFORE checking/printing >>>
             best_metric_value_float = best_metric_value
             if isinstance(best_metric_value, torch.Tensor):
-                best_metric_value_float = (
-                    best_metric_value.cpu().item()  # Get Python float from tensor
-                )
+                best_metric_value_float = best_metric_value.cpu().item()  # Get Python float from tensor
 
             # Now use the float version for checks and printing
             is_best_invalid = np.isinf(best_metric_value_float) or np.isnan(best_metric_value_float)
@@ -535,9 +533,9 @@ def run_training_from_files(
                         print(f"Warning: Unexpected array dimensions in {filepath}. Skipping file.")
                         valid_file = False
                     # <<< Use dynamic dimensions for shape check >>>
-                    elif (
-                        x_sc_batch.shape[1:] != (grid_height, grid_width)
-                        or y_batch.shape[1:] != (grid_height, grid_width)
+                    elif x_sc_batch.shape[1:] != (grid_height, grid_width) or y_batch.shape[1:] != (
+                        grid_height,
+                        grid_width,
                     ):
                         print(
                             f"Warning: Shape mismatch in {filepath} (Expected {grid_height}x{grid_width}). Skipping file."

@@ -1,6 +1,7 @@
 import unittest
 from src.grid_utils import Grid
 
+
 class TestGridUtils(unittest.TestCase):
     """
     Test suite for the Grid class and related utility functions in grid_utils.py.
@@ -23,7 +24,7 @@ class TestGridUtils(unittest.TestCase):
         self.assertEqual(len(self.grid.cells), self.height)
         self.assertEqual(len(self.grid.cells[0]), self.width)
         # Check that a cell has the default 'module' value of None
-        self.assertIsNone(self.grid.get_cell(0, 0)['module'])
+        self.assertIsNone(self.grid.get_cell(0, 0)["module"])
 
     def test_to_dict_and_from_dict(self):
         """
@@ -39,7 +40,7 @@ class TestGridUtils(unittest.TestCase):
         self.assertIn("width", grid_dict)
         self.assertIn("height", grid_dict)
         self.assertIn("cells", grid_dict)
-        self.assertEqual(grid_dict['width'], self.width)
+        self.assertEqual(grid_dict["width"], self.width)
 
         # Create a new grid from the dictionary
         new_grid = Grid.from_dict(grid_dict)
@@ -47,9 +48,9 @@ class TestGridUtils(unittest.TestCase):
         # Check that the new grid has the same properties
         self.assertEqual(new_grid.width, self.grid.width)
         self.assertEqual(new_grid.height, self.grid.height)
-        self.assertEqual(new_grid.get_cell(1, 1)['module'], "TEST_MOD")
-        self.assertTrue(new_grid.get_cell(1, 1)['supercharged'])
-        self.assertIsNone(new_grid.get_cell(0, 0)['module'])
+        self.assertEqual(new_grid.get_cell(1, 1)["module"], "TEST_MOD")
+        self.assertTrue(new_grid.get_cell(1, 1)["supercharged"])
+        self.assertIsNone(new_grid.get_cell(0, 0)["module"])
 
     def test_grid_copy(self):
         """
@@ -62,15 +63,15 @@ class TestGridUtils(unittest.TestCase):
         copied_grid = self.grid.copy()
 
         # Verify the copy has the module
-        self.assertEqual(copied_grid.get_cell(0, 0)['module'], "ORIGINAL")
+        self.assertEqual(copied_grid.get_cell(0, 0)["module"], "ORIGINAL")
 
         # Modify the copied grid
         copied_grid.set_module(0, 0, "COPIED")
 
         # Verify the original grid is unchanged
-        self.assertEqual(self.grid.get_cell(0, 0)['module'], "ORIGINAL")
-        self.assertEqual(copied_grid.get_cell(0, 0)['module'], "COPIED")
+        self.assertEqual(self.grid.get_cell(0, 0)["module"], "ORIGINAL")
+        self.assertEqual(copied_grid.get_cell(0, 0)["module"], "COPIED")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -57,23 +57,15 @@ def generate_solve_map(
                 "start_from_current_grid": False,
                 "max_processing_time": 600.0,
             }
-            print(
-                f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}"
-            )
+            print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
             optimized_grid, optimized_score = simulated_annealing(
                 grid, ship_type, modules, tech, player_owned_rewards, **sa_params
             )
         elif solver_choice == "refine":
-            print(
-                f"INFO -- Using refine_placement (brute-force) for {ship_type}/{tech}"
-            )
-            optimized_grid, optimized_score = refine_placement_for_training(
-                grid, ship_type, modules, tech
-            )
+            print(f"INFO -- Using refine_placement (brute-force) for {ship_type}/{tech}")
+            optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, modules, tech)
         else:
-            print(
-                f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine'."
-            )
+            print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine'.")
             return None, None
         return optimized_grid, optimized_score
     except Exception as e:
@@ -92,9 +84,7 @@ def generate_solve_map_template(grid):
     return template
 
 
-def generate_all_solves(
-    modules, solver_choice="refine", tech_to_generate=None, weapon_to_generate=None
-):
+def generate_all_solves(modules, solver_choice="refine", tech_to_generate=None, weapon_to_generate=None):
     """Generates the solves object for all technologies and types."""
     all_solves = {}
     techs_to_process = [tech_to_generate] if tech_to_generate else modules.keys()
@@ -117,9 +107,7 @@ def generate_all_solves(
 
                 # <<< Add check to skip if only 1 module >>>
                 if module_count <= 1:
-                    print(
-                        f"Skipping {tech_key} - {weapon_key} because it has {module_count} module(s)."
-                    )
+                    print(f"Skipping {tech_key} - {weapon_key} because it has {module_count} module(s).")
                     continue
                 # <<< End check >>>
 
@@ -183,25 +171,17 @@ def load_trails_stub(filepath):
             data = json.load(f)
             return data[0]["trails"]  # Extract the "trails" data
     except FileNotFoundError:
-        print(
-            f"Warning: Trails stub file not found at {filepath}. Skipping trails insertion."
-        )
+        print(f"Warning: Trails stub file not found at {filepath}. Skipping trails insertion.")
         return None
     except json.JSONDecodeError:
-        print(
-            f"Warning: Invalid JSON format in trails stub file at {filepath}. Skipping trails insertion."
-        )
+        print(f"Warning: Invalid JSON format in trails stub file at {filepath}. Skipping trails insertion.")
         return None
     except (KeyError, IndexError):
-        print(
-            f"Warning: Invalid format in trails stub file at {filepath}. Skipping trails insertion."
-        )
+        print(f"Warning: Invalid format in trails stub file at {filepath}. Skipping trails insertion.")
         return None
 
 
-def save_solves_to_file(
-    solves_data, filename="new_solves.json", trails_stub_filepath=None
-):
+def save_solves_to_file(solves_data, filename="new_solves.json", trails_stub_filepath=None):
     """Saves the solves data to a JSON file."""
     output = "solves = " + json.dumps(solves_data, indent=4, sort_keys=False)
 
@@ -214,9 +194,7 @@ def save_solves_to_file(
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Generate solve maps for all technologies and types."
-    )
+    parser = argparse.ArgumentParser(description="Generate solve maps for all technologies and types.")
     parser.add_argument(
         "--generate-all",
         action="store_true",
@@ -259,9 +237,7 @@ if __name__ == "__main__":
         )
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     elif args.tech:
-        all_solves = generate_all_solves(
-            modules, solver_choice=args.solver, tech_to_generate=args.tech
-        )
+        all_solves = generate_all_solves(modules, solver_choice=args.solver, tech_to_generate=args.tech)
         save_solves_to_file(all_solves, trails_stub_filepath=args.trails_stub)
     else:
         print(

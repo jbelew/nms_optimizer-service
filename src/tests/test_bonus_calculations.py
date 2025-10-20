@@ -2,6 +2,7 @@ import unittest
 from src.grid_utils import Grid
 from src.bonus_calculations import calculate_grid_score, AdjacencyType, ModuleType
 
+
 class TestBonusCalculations(unittest.TestCase):
     """
     Test suite for the bonus calculation logic in bonus_calculations.py.
@@ -55,5 +56,6 @@ class TestBonusCalculations(unittest.TestCase):
         # The score should be the base bonus * supercharge multiplier
         self.assertAlmostEqual(score, 10.0 * 1.25)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

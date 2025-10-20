@@ -5,6 +5,7 @@ It handles the loading of module definitions, pre-computed solve maps, and
 other data required by the application. Functions in this module use caching
 to minimize disk I/O and improve performance.
 """
+
 import json
 import logging
 import os
@@ -74,7 +75,7 @@ def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
         return {}
 
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             data = json.load(f)
 
         processed_data = {}
@@ -91,10 +92,10 @@ def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
             elif solve_type in tech_info:
                 solve_data_to_use = tech_info[solve_type]
 
-            if solve_data_to_use and 'map' in solve_data_to_use:
+            if solve_data_to_use and "map" in solve_data_to_use:
                 processed_data[tech_name] = {
-                    'map': _convert_map_keys_to_tuple(solve_data_to_use['map']),
-                    'score': solve_data_to_use.get('score', 0)
+                    "map": _convert_map_keys_to_tuple(solve_data_to_use["map"]),
+                    "score": solve_data_to_use.get("score", 0),
                 }
 
         return processed_data
@@ -125,7 +126,7 @@ def get_module_data(ship_type: str):
         return {}
 
     try:
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             return json.load(f)
     except (IOError, json.JSONDecodeError) as e:
         logging.error(f"Error loading or parsing module data for {ship_type}: {e}")
@@ -153,13 +154,13 @@ def get_all_solve_data():
             ship_type = filename.replace(".json", "")
             file_path = os.path.join(solves_dir, filename)
             try:
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     data = json.load(f)
                     # We need to process the loaded data to convert map keys back to tuples
                     processed_data = {}
                     for tech_name, tech_info in data.items():
-                        if 'map' in tech_info:
-                            tech_info['map'] = _convert_map_keys_to_tuple(tech_info['map'])
+                        if "map" in tech_info:
+                            tech_info["map"] = _convert_map_keys_to_tuple(tech_info["map"])
                         processed_data[tech_name] = tech_info
                     all_solves[ship_type] = processed_data
             except (IOError, json.JSONDecodeError) as e:
@@ -190,7 +191,7 @@ def get_all_module_data():
             ship_type = filename.replace(".json", "")
             file_path = os.path.join(modules_dir, filename)
             try:
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     all_modules[ship_type] = json.load(f)
             except (IOError, json.JSONDecodeError) as e:
                 logging.error(f"Error loading or parsing module data from {filename}: {e}")
@@ -220,7 +221,9 @@ def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[s
     # 1. Check for a specific override in modules_for_training.py
     if ship_key in MODULES_FOR_TRAINING and tech_key in MODULES_FOR_TRAINING[ship_key]:
         override_modules = MODULES_FOR_TRAINING[ship_key][tech_key]
-        logging.debug(f"get_training_module_ids: Found override for {ship_key}/{tech_key}, returning {len(override_modules)} modules.")
+        logging.debug(
+            f"get_training_module_ids: Found override for {ship_key}/{tech_key}, returning {len(override_modules)} modules."
+        )
         return override_modules
 
     # 2. If no override, load from the main JSON data
@@ -258,9 +261,13 @@ def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[s
     # 5. Extract module IDs from the selected technology data
     if selected_tech_data:
         modules = selected_tech_data.get("modules", [])
-        module_ids = [m['id'] for m in modules]
-        logging.debug(f"get_training_module_ids: Returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key} (solve_type: {solve_type})")
+        module_ids = [m["id"] for m in modules]
+        logging.debug(
+            f"get_training_module_ids: Returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key} (solve_type: {solve_type})"
+        )
         return module_ids
 
-    logging.warning(f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key} with solve_type '{solve_type}'.")
+    logging.warning(
+        f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key} with solve_type '{solve_type}'."
+    )
     return []

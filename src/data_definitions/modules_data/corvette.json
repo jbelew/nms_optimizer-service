@@ -258,7 +258,7 @@
                     {"id": "Ha", "type": "core", "label": "Habitation Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true},
                     {"id": "Hb", "type": "bonus", "label": "Habitation Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true},
                     {"id": "Hc", "type": "bonus", "label": "Habitation Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true}
-           
+
                 ]
             },
             {

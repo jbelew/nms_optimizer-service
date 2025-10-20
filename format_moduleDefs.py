@@ -8,6 +8,7 @@ The main operations include:
 - Re-categorizing modules based on their labels (e.g., 'Theta' -> 'upgrade').
 - Persisting the changes back to the JSON files with custom formatting.
 """
+
 import json
 import os
 

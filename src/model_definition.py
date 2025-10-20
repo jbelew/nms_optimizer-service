@@ -25,6 +25,7 @@ class ModulePlacementCNN(nn.Module):
         num_output_classes (int): The number of possible output classes,
             including the "empty" class.
     """
+
     def __init__(self, grid_height, grid_width, num_output_classes):
         """Initializes the ModulePlacementCNN model.
 
@@ -60,7 +61,7 @@ class ModulePlacementCNN(nn.Module):
         # --- End Block 3 ---
 
         # --- Dropout ---
-        self.dropout = nn.Dropout(0.5) # Increased dropout slightly for the deeper model
+        self.dropout = nn.Dropout(0.5)  # Increased dropout slightly for the deeper model
 
         # --- Final Output Layer ---
         self.output_conv = nn.Conv2d(128, num_output_classes, kernel_size=1)
@@ -124,9 +125,7 @@ class ModulePlacementCNN(nn.Module):
                 self.grid_width,
             )
             # Ensure NaN tensor is on the same device and dtype as expected output
-            return torch.full(
-                nan_output_shape, float("nan"), device=x.device, dtype=x.dtype
-            )
+            return torch.full(nan_output_shape, float("nan"), device=x.device, dtype=x.dtype)
 
         return x_placement
 

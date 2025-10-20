@@ -16,6 +16,7 @@ from enum import Enum
 # Adjacency Types using Enum
 class AdjacencyType(Enum):
     """Enumeration for module adjacency types."""
+
     GREATER = "greater"
     LESSER = "lesser"
 
@@ -23,6 +24,7 @@ class AdjacencyType(Enum):
 # Module Types using Enum
 class ModuleType(Enum):
     """Enumeration for module types."""
+
     CORE = "core"
     BONUS = "bonus"
     UPGRADE = "upgrade"
@@ -67,10 +69,7 @@ def _get_orthogonal_neighbors(grid: Grid, x: int, y: int) -> list[dict]:
         nx, ny = x + dx, y + dy
         if 0 <= nx < grid.width and 0 <= ny < grid.height:
             neighbor_cell = grid.get_cell(nx, ny)
-            if (
-                neighbor_cell.get("module") is not None
-                and neighbor_cell.get("tech") == center_cell_tech
-            ):
+            if neighbor_cell.get("module") is not None and neighbor_cell.get("tech") == center_cell_tech:
                 neighbor_data = neighbor_cell.copy()
                 neighbor_data["x"] = nx
                 neighbor_data["y"] = ny
@@ -118,10 +117,7 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
 
         # Check if both giver and receiver have defined adjacency types AND NEITHER IS "none"
         if (
-            adj_cell_adj_type
-            and cell_adj_type
-            and adj_cell_adj_type != "none"
-            and cell_adj_type != "none"
+            adj_cell_adj_type and cell_adj_type and adj_cell_adj_type != "none" and cell_adj_type != "none"
         ):  # <<< MODIFIED CHECK
             # --- Translate group adjacency to base adjacency for scoring ---
             temp_cell_adj_type = cell_adj_type
@@ -179,9 +175,7 @@ def _calculate_adjacency_factor(grid: Grid, x: int, y: int, tech: str) -> float:
     return total_adjacency_boost_factor
 
 
-def populate_all_module_bonuses(
-    grid: Grid, tech: str, apply_supercharge_first: bool = False
-) -> None:
+def populate_all_module_bonuses(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> None:
     """
     Calculates and populates the total bonuses for all modules of a given tech.
 
@@ -223,9 +217,7 @@ def populate_all_module_bonuses(
         base_bonus = cell.get("bonus", 0.0)
         is_supercharged = cell.get("supercharged", False)
         is_sc_eligible = cell.get("sc_eligible", False)
-        adj_factor = module_adj_factors[
-            (x, y)
-        ]  # This is the raw factor (sum of weights)
+        adj_factor = module_adj_factors[(x, y)]  # This is the raw factor (sum of weights)
         module_type = cell.get("type")  # Get module type
 
         total_bonus = 0.0
@@ -293,9 +285,7 @@ def clear_scores(grid: Grid, tech: str) -> None:
                 cell["adjacency_bonus"] = 0.0
 
 
-def calculate_grid_score(
-    grid: Grid, tech: str, apply_supercharge_first: bool = False
-) -> float:
+def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> float:
     """
     Calculates the total grid score for a given technology.
 
@@ -355,20 +345,20 @@ def calculate_score_delta(grid: Grid, changed_cells_info: list, tech: str) -> fl
     for (x, y), _ in changed_cells_info:
         affected_coords.add((x, y))
         for neighbor in _get_orthogonal_neighbors(grid, x, y):
-            affected_coords.add((neighbor['x'], neighbor['y']))
+            affected_coords.add((neighbor["x"], neighbor["y"]))
         for neighbor in _get_orthogonal_neighbors(old_grid, x, y):
-            affected_coords.add((neighbor['x'], neighbor['y']))
+            affected_coords.add((neighbor["x"], neighbor["y"]))
 
     old_score_contribution = 0
     populate_all_module_bonuses(old_grid, tech)
     for x, y in affected_coords:
-        if old_grid.get_cell(x, y)['tech'] == tech:
+        if old_grid.get_cell(x, y)["tech"] == tech:
             old_score_contribution += old_grid.get_cell(x, y).get("total", 0.0)
 
     new_score_contribution = 0
     populate_all_module_bonuses(grid, tech)
     for x, y in affected_coords:
-        if grid.get_cell(x, y)['tech'] == tech:
+        if grid.get_cell(x, y)["tech"] == tech:
             new_score_contribution += grid.get_cell(x, y).get("total", 0.0)
 
     return new_score_contribution - old_score_contribution

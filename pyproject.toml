@@ -7,6 +7,7 @@ line-length = 120
 [tool.ruff.lint.per-file-ignores]
 "scripts/debugging_utils/solve_map_generator.py" = ["E402"]
 "scripts/training/train_model.py" = ["E402"]
+"scripts/training/benchmark.py" = ["E402"]
 "src/app.py" = ["E402"]
 
 [project]

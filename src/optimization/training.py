@@ -157,9 +157,7 @@ def refine_placement_for_training(grid, tech_modules, tech, num_workers=None, so
     if num_permutations != float("inf"):
         # Aim for a moderate number of chunks per worker to balance overhead and load balancing
         chunks_per_worker_target = 500  # Tune this value
-        calculated_chunksize = int(
-            num_permutations // (num_workers * chunks_per_worker_target)  # Ensure integer
-        )
+        calculated_chunksize = int(num_permutations // (num_workers * chunks_per_worker_target))  # Ensure integer
         chunksize = max(chunksize, calculated_chunksize)
         # Add an upper limit to prevent huge chunks consuming too much memory at once
         max_chunksize = 50000  # Tune this based on memory observations

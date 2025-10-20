@@ -49,25 +49,17 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
                         # Copy relevant data to the window grid cell
                         window_grid.cells[y][x]["active"] = cell["active"]
                         window_grid.cells[y][x]["supercharged"] = cell["supercharged"]
-                        window_grid.cells[y][x]["module"] = cell[
-                            "module"
-                        ]  # Keep module info for checks
+                        window_grid.cells[y][x]["module"] = cell["module"]  # Keep module info for checks
                         window_grid.cells[y][x]["tech"] = cell["tech"]
                     else:
-                        window_grid.cells[y][x]["active"] = (
-                            False  # Mark as inactive if out of bounds
-                        )
+                        window_grid.cells[y][x]["active"] = False  # Mark as inactive if out of bounds
 
             # Check if the window has at least one available supercharged slot
             has_available_supercharged = False
             for y in range(window_height):
                 for x in range(window_width):
                     cell = window_grid.get_cell(x, y)
-                    if (
-                        cell["supercharged"]
-                        and cell["module"] is None
-                        and cell["active"]
-                    ):
+                    if cell["supercharged"] and cell["module"] is None and cell["active"]:
                         has_available_supercharged = True
                         break
                 if has_available_supercharged:
@@ -141,41 +133,27 @@ def find_supercharged_opportunities(
 
     # Determine Dynamic Window Size (no change needed)
     if tech_modules is None:
-        tech_modules = get_tech_modules(
-            modules, ship, tech, player_owned_rewards, solve_type=solve_type
-        )
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
     if tech_modules is None:
-        logging.error(
-            f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities."
-        )
+        logging.error(f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
         return None
     module_count = len(tech_modules)
-    window_width, window_height = determine_window_dimensions(
-        module_count, tech, ship, solve_type=solve_type
-    )
-    logging.info(
-        f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules)."
-    )
+    window_width, window_height = determine_window_dimensions(module_count, tech, ship, solve_type=solve_type)
+    logging.info(f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
 
     # --- Scan with Original Dimensions ---
-    best_score1, best_pos1 = _scan_grid_with_window(
-        grid_copy, window_width, window_height, module_count, tech
-    )
+    best_score1, best_pos1 = _scan_grid_with_window(grid_copy, window_width, window_height, module_count, tech)
 
     # --- Scan with Rotated Dimensions (if needed) ---
     best_score2 = -1
     best_pos2 = None
-    rotated_needed = (
-        window_width != window_height
-    )  # Check if width and height are different
+    rotated_needed = window_width != window_height  # Check if width and height are different
     rotated_width, rotated_height = 0, 0  # Initialize for print statement clarity
 
     if rotated_needed:
         rotated_width, rotated_height = window_height, window_width  # Swap dimensions
         # print(f"INFO -- Also checking rotated window size {rotated_width}x{rotated_height}.")
-        best_score2, best_pos2 = _scan_grid_with_window(
-            grid_copy, rotated_width, rotated_height, module_count, tech
-        )
+        best_score2, best_pos2 = _scan_grid_with_window(grid_copy, rotated_width, rotated_height, module_count, tech)
 
     # --- Compare Results and Determine Best Dimensions ---
     overall_best_score = -1
@@ -199,16 +177,12 @@ def find_supercharged_opportunities(
         logging.info(
             f"Rotated window ({rotated_width}x{rotated_height}) provided a better score ({overall_best_score:.2f})."
         )
-    elif (
-        best_score1 > -1 and rotated_needed
-    ):  # Only print if original scan found something and rotation was checked
+    elif best_score1 > -1 and rotated_needed:  # Only print if original scan found something and rotation was checked
         logging.info(
             f"Original window ({window_width}x{window_height}) provided the best score ({overall_best_score:.2f})."
         )
     elif best_score1 > -1 and not rotated_needed:  # Square window case
-        logging.info(
-            f"Best score found with square window ({window_width}x{window_height}): {overall_best_score:.2f}."
-        )
+        logging.info(f"Best score found with square window ({window_width}x{window_height}): {overall_best_score:.2f}.")
 
     # --- Return the Overall Best Result ---
     if overall_best_pos is not None:
@@ -217,9 +191,7 @@ def find_supercharged_opportunities(
         # <<< Return position AND dimensions >>>
         return best_x, best_y, overall_best_width, overall_best_height
     else:
-        logging.info(
-            f"No suitable opportunity window found for {tech} after scanning (original and rotated)."
-        )
+        logging.info(f"No suitable opportunity window found for {tech} after scanning (original and rotated).")
         return None
 
 
@@ -251,9 +223,7 @@ def calculate_window_score(window_grid, tech):
         return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 
 
-def create_localized_grid(
-    grid, opportunity_x, opportunity_y, tech, localized_width, localized_height
-):
+def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
     """
     Creates a localized grid around a given opportunity, ensuring it stays within
     the bounds of the main grid and preserves modules of other tech types.
@@ -303,38 +273,26 @@ def create_localized_grid(
             localized_y = y - start_y
             cell = grid.get_cell(x, y)
             localized_grid.cells[localized_y][localized_x]["active"] = cell["active"]
-            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell[
-                "supercharged"
-            ]
+            localized_grid.cells[localized_y][localized_x]["supercharged"] = cell["supercharged"]
 
             # Copy module data if a module exists
             if cell["module"] is not None:
-                localized_grid.cells[localized_y][localized_x]["module"] = cell[
-                    "module"
-                ]
+                localized_grid.cells[localized_y][localized_x]["module"] = cell["module"]
                 localized_grid.cells[localized_y][localized_x]["label"] = cell["label"]
                 localized_grid.cells[localized_y][localized_x]["tech"] = cell["tech"]
                 localized_grid.cells[localized_y][localized_x]["type"] = cell["type"]
                 localized_grid.cells[localized_y][localized_x]["bonus"] = cell["bonus"]
-                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell[
-                    "adjacency"
-                ]
-                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell[
-                    "sc_eligible"
-                ]
+                localized_grid.cells[localized_y][localized_x]["adjacency"] = cell["adjacency"]
+                localized_grid.cells[localized_y][localized_x]["sc_eligible"] = cell["sc_eligible"]
                 localized_grid.cells[localized_y][localized_x]["image"] = cell["image"]
                 if "module_position" in cell:
-                    localized_grid.cells[localized_y][localized_x][
-                        "module_position"
-                    ] = cell["module_position"]
+                    localized_grid.cells[localized_y][localized_x]["module_position"] = cell["module_position"]
 
     return localized_grid, start_x, start_y
 
 
 # --- NEW ML-Specific Function ---
-def create_localized_grid_ml(
-    grid, opportunity_x, opportunity_y, tech, localized_width, localized_height
-):
+def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
     """
     Creates a localized grid around a given opportunity for ML processing,
     using the provided dimensions.

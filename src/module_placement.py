@@ -5,6 +5,8 @@ This module provides utility functions for placing and clearing modules on the g
 These functions directly manipulate the grid's cell data, serving as helpers
 for higher-level optimization and placement logic.
 """
+
+
 def place_module(
     grid,
     x,

@@ -7,11 +7,10 @@ from src.bonus_calculations import calculate_grid_score
 from src.data_loader import get_all_module_data
 from src.grid_display import print_grid_compact
 from src.module_placement import place_module
-from src.data_definitions.model_mapping import get_model_keys
-from src.optimization.helpers import determine_window_dimensions
 
 modules = get_all_module_data()
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+
 
 def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
     """
@@ -46,7 +45,7 @@ def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
             if candidate.get("type") is None:
                 selected_tech_info = candidate
                 break
-    
+
     if not selected_tech_info:
         print(f"Error: No tech modules found for ship='{ship}', tech='{tech}'.")
         return
@@ -57,7 +56,7 @@ def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
     module_id_mapping = {i + 1: module["id"] for i, module in enumerate(tech_modules)}
     module_defs_map = {m["id"]: m for m in tech_modules}
 
-    filepaths = glob.glob(os.path.join(directory, '*.npz'))
+    filepaths = glob.glob(os.path.join(directory, "*.npz"))
     if not filepaths:
         print(f"No .npz files found in directory: {directory}")
         return
@@ -65,8 +64,8 @@ def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
     for filepath in filepaths:
         try:
             data = np.load(filepath)
-            X_supercharge = data['X_supercharge']
-            y = data['y']
+            X_supercharge = data["X_supercharge"]
+            y = data["y"]
 
             for i in range(len(X_supercharge)):
                 if np.sum(X_supercharge[i]) == num_supercharged:
@@ -114,30 +113,31 @@ def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
         print(f"Best score: {best_score}")
         print_grid_compact(best_grid)
         print('            "map": {')
-        
+
         map_items = []
         for r in range(best_grid.height):
             for c in range(best_grid.width):
                 key = f"{c},{r}"
                 cell = best_grid.cells[r][c]
-                module_id = cell.get('module')
+                module_id = cell.get("module")
                 if module_id:
                     map_items.append(f'                "{key}": "{module_id}"')
                 else:
                     map_items.append(f'                "{key}": "None"')
 
         print(",\n".join(map_items))
-        print('            },')
+        print("            },")
         print(f'            "score": {best_score:.4f}')
     else:
         print(f"No layout found with {num_supercharged} supercharged slots.")
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Find the best layout from generated data.")
     parser.add_argument("num_supercharged", type=int, help="Number of supercharged slots.")
     parser.add_argument("--ship", type=str, required=True, help="Ship type (e.g., sentinel, standard).")
     parser.add_argument("--tech", type=str, required=True, help="Tech type (e.g., infra).")
-    parser.add_argument("--rewards", nargs='*', help="List of player-owned reward module IDs.")
+    parser.add_argument("--rewards", nargs="*", help="List of player-owned reward module IDs.")
     parser.add_argument("--solve_type", type=str, default=None, help="Specific solve type to use (optional).")
     args = parser.parse_args()
 

@@ -3,6 +3,7 @@ import logging
 from copy import deepcopy
 from src.module_placement import place_module, clear_all_modules_of_tech
 
+
 class Grid:
     """Represents the technology grid for a ship or exosuit.
 
@@ -15,6 +16,7 @@ class Grid:
         cells (list[list[dict]]): A 2D list representing the grid cells.
             Each cell is a dictionary containing module properties.
     """
+
     def __init__(self, width, height):
         """Initializes a new Grid instance.
 
@@ -82,7 +84,7 @@ class Grid:
             self.cells[y][x]["value"] = value
         else:
             raise IndexError("Cell out of bounds")
-        
+
     def copy(self):
         """Creates a deep copy of the grid.
 
@@ -92,7 +94,7 @@ class Grid:
         new_grid = Grid(self.width, self.height)  # Pass width and height
         new_grid.cells = [deepcopy(row) for row in self.cells]  # Use deepcopy for nested lists
         return new_grid
-        
+
     def set_label(self, x, y, label):
         """Sets the label for a module in a specific cell.
 
@@ -349,14 +351,9 @@ class Grid:
                  of each cell, or '.' for empty cells.
         """
         return "\n".join(
-            " ".join(
-                "."
-                if cell["value"] == 0
-                else str(cell["total"])
-                for cell in row
-            )
-            for row in self.cells
+            " ".join("." if cell["value"] == 0 else str(cell["total"]) for cell in row) for row in self.cells
         )
+
 
 def restore_original_state(grid, original_state_map):
     """
@@ -377,9 +374,8 @@ def restore_original_state(grid, original_state_map):
         if 0 <= x < grid.width and 0 <= y < grid.height:
             grid.cells[y][x].update(deepcopy(original_cell_data))
         else:
-            logging.warning(
-                f"Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid."
-            )
+            logging.warning(f"Coordinate ({x},{y}) from original_state_map is out of bounds for the main grid.")
+
 
 def apply_localized_grid_changes(main_grid, localized_grid, tech, start_x, start_y):
     """
@@ -391,30 +387,31 @@ def apply_localized_grid_changes(main_grid, localized_grid, tech, start_x, start
     for y_local in range(localized_grid.height):
         for x_local in range(localized_grid.width):
             local_cell = localized_grid.get_cell(x_local, y_local)
-            if local_cell['module'] is not None and local_cell['tech'] == tech:
+            if local_cell["module"] is not None and local_cell["tech"] == tech:
                 main_x = start_x + x_local
                 main_y = start_y + y_local
                 if (
                     0 <= main_x < main_grid.width
                     and 0 <= main_y < main_grid.height
-                    and main_grid.get_cell(main_x, main_y)['active']
+                    and main_grid.get_cell(main_x, main_y)["active"]
                 ):
                     place_module(
                         main_grid,
                         main_x,
                         main_y,
-                        local_cell['module'],
-                        local_cell['label'],
-                        local_cell['tech'],
-                        local_cell['type'],
-                        local_cell['bonus'],
-                        local_cell['adjacency'],
-                        local_cell['sc_eligible'],
-                        local_cell['image'],
+                        local_cell["module"],
+                        local_cell["label"],
+                        local_cell["tech"],
+                        local_cell["type"],
+                        local_cell["bonus"],
+                        local_cell["adjacency"],
+                        local_cell["sc_eligible"],
+                        local_cell["image"],
                     )
                 else:
                     logging.warning(
                         f"Attempted to place module {local_cell['label']} from localized grid at ({main_x},{main_y}) on main grid, but cell is inactive or out of bounds."
                     )
+
 
 __all__ = ["Grid", "restore_original_state", "apply_localized_grid_changes"]

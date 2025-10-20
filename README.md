@@ -10,7 +10,7 @@ This repository contains the code for the `nms_optimizer-service`, a service des
 
 - **Module Placement Optimization:** Optimizes the placement of modules within a grid to maximize adjacency bonuses and supercharged slot utilization.
 - **Pattern Matching:** Utilizes pre-defined patterns (solves) for known optimal configurations and adapts them to the user's grid.
-- **TensorFlow Models:** Attempts to solve placement using a collection of TensorFlow models.  
+- **TensorFlow Models:** Attempts to solve placement using a collection of TensorFlow models.
 - **Simulated Annealing:** Employs a simulated annealing algorithm to polish and refine module placement and explore alternative configurations for improved scores.
 - **Technology Tree Generation:** Generates a technology tree for a given ship, providing a structured view of available technologies and their relationships.
 - **REST API:** Provides REST API endpoints for grid optimization and technology tree retrieval.
@@ -58,7 +58,7 @@ python app.py
 ```
 
 ### Training Installation
-The model generation and training portion of the code requires significantly more imports and libraries and has been seperated from the main service venv to prevent issues with cloud deployments. To run any of the training code -- 
+The model generation and training portion of the code requires significantly more imports and libraries and has been seperated from the main service venv to prevent issues with cloud deployments. To run any of the training code --
 
 1.  Navigate to the project directory:
     ```bash
@@ -74,4 +74,4 @@ The model generation and training portion of the code requires significantly mor
     pip install -r requirements.txt
     ```
 
-There are a number of shell scripts in the training directory that I use to generate data for various platforms and technology types. Be sure and set them to executable (chmod 755) to run them. 
+There are a number of shell scripts in the training directory that I use to generate data for various platforms and technology types. Be sure and set them to executable (chmod 755) to run them.

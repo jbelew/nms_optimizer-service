@@ -5,9 +5,11 @@ It ensures that a logger is configured for the application, but it avoids
 overwriting any existing logging configuration, making it compatible with
 environments like Gunicorn that set up their own log handlers.
 """
+
 import logging
 import sys
 import os
+
 
 def setup_logger():
     """
@@ -28,14 +30,13 @@ def setup_logger():
         handler = logging.StreamHandler(sys.stdout)
 
         # Create a formatter and set it for the handler
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-        )
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
 
         # Add the handler to the logger
         logger.addHandler(handler)
         logger.info(f"Logger configured by application with level {log_level}")
+
 
 # Set up the logger when this module is first imported
 setup_logger()
