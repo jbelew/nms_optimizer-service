@@ -134,10 +134,7 @@ PLATFORM_TECH_TO_MODEL_KEYS = {
     "living": {},
     # --- Standard Multi-Tool (No mapping needed) ---
     "standard-mt": {},
-    "corvette": {
-        "infra": ("standard", "infra"),
-        "rocket": ("standard", "rocket"),
-    },
+    "corvette": {},
 }
 
 # <<< Remove _find_reward_module_id and suffix logic >>>
