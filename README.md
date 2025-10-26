@@ -24,7 +24,7 @@ Detailed documentation for this project can be found in the `/docs` directory.
 
 ### Prerequisites
 
-- Python 3.x
+- Python 3.14+
 - `pip` (Python package installer)
 - `virtualenv` (recommended for creating virtual environments)
 
@@ -32,7 +32,7 @@ Detailed documentation for this project can be found in the `/docs` directory.
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/your-username/nms_optimizer-service.git
+    git clone https://github.com/jbelew/nms_optimizer-service.git
     ```
 2.  Navigate to the project directory:
     ```bash
@@ -50,11 +50,19 @@ Detailed documentation for this project can be found in the `/docs` directory.
 
 ### Running the Service
 
+#### Development
 1. **Ensure your virtual environment is activated.**
 2. To start the service locally, run:
 
 ```bash
-python app.py
+python3 -m src.app
+```
+This will start the Flask development server.
+
+#### Production
+The service is designed to be run with Gunicorn. The `Procfile` included in the repository is set up for this purpose:
+```
+gunicorn --preload --timeout 120 src.app:app --keep-alive 60 --worker-class gevent
 ```
 
 ### Training Installation
@@ -62,7 +70,7 @@ The model generation and training portion of the code requires significantly mor
 
 1.  Navigate to the project directory:
     ```bash
-    cd nms_optimizer-service/training
+    cd nms_optimizer-service/scripts/training
     ```
 2.  **Create and activate a virtual environment (recommended):**
     ```bash
@@ -73,5 +81,23 @@ The model generation and training portion of the code requires significantly mor
     ```bash
     pip install -r requirements.txt
     ```
-
 There are a number of shell scripts in the training directory that I use to generate data for various platforms and technology types. Be sure and set them to executable (chmod 755) to run them.
+
+#### Training data generation
+
+```
+python -m scripts.training.generate_data --ship standard-mt --category \"Weaponry\" --tech bolt-caster"
+````
+
+#### Solve map generation
+
+```
+python -m scripts.debugging_utils.solve_map_generator --ship corvette --tech infra
+```
+
+## Data Definitions
+
+The `src/data_definitions` directory contains key data used by the application:
+
+* **`solves/`**: Contains pre-computed solutions (solves) for various technology and ship combinations. These are used by the pattern matching algorithm.
+* **`modules_data/`**: Contains JSON files with the definitions of all the technology modules for each platform.
