@@ -89,6 +89,13 @@ There are a number of shell scripts in the training directory that I use to gene
 python -m scripts.training.generate_data --ship standard-mt --category \"Weaponry\" --tech bolt-caster"
 ````
 
+#### Best layout finder
+Iterates through the generated sample data to find the best layout for various different supercharged counts
+
+```
+python -m scripts.training.find_best_layout --ship standard --tech infra 3
+````
+
 #### Solve map generation
 
 ```
@@ -99,5 +106,6 @@ python -m scripts.debugging_utils.solve_map_generator --ship corvette --tech inf
 
 The `src/data_definitions` directory contains key data used by the application:
 
+* **`recommended_builds.py`**: Contains JSON configuration data for recommended builds for applicable platforms.
 * **`solves/`**: Contains pre-computed solutions (solves) for various technology and ship combinations. These are used by the pattern matching algorithm.
 * **`modules_data/`**: Contains JSON files with the definitions of all the technology modules for each platform.
