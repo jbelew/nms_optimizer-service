@@ -292,7 +292,7 @@ def calculate_pattern_adjacency_score(grid, tech):
                     total_adjacency_score += grid_edge_weight  # Bottom edge
 
                 # --- Adjacency Checks ---
-                num_adjacent_same_group = 0
+                num_adjacent_same_group_other_tech = 0
                 adjacency_rule = cell.get("adjacency")
                 adjacent_positions = [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
 
@@ -304,9 +304,9 @@ def calculate_pattern_adjacency_score(grid, tech):
                             if adjacent_cell["tech"] != tech:
                                 total_adjacency_score += module_edge_weight
 
-                            # Count for group adjacency bonus if adjacency rules match
-                            if adjacency_rule and adjacent_cell.get("adjacency") == adjacency_rule:
-                                num_adjacent_same_group += 1
+                                # Count for group adjacency bonus if adjacency rules match
+                                if adjacency_rule and adjacent_cell.get("adjacency") == adjacency_rule:
+                                    num_adjacent_same_group_other_tech += 1
 
                 # Check for group adjacency bonus from "greater_n" or "lesser_n" rules
                 if isinstance(adjacency_rule, str) and "_" in adjacency_rule:
@@ -316,9 +316,11 @@ def calculate_pattern_adjacency_score(grid, tech):
                         rule_value = int(parts[1])
 
                         # Apply bonus based on the rule
-                        if rule_type == "greater" and num_adjacent_same_group > rule_value:
-                            total_adjacency_score += group_adjacency_weight * num_adjacent_same_group
-                        elif rule_type == "lesser" and num_adjacent_same_group < rule_value:
-                            total_adjacency_score += group_adjacency_weight * (rule_value - num_adjacent_same_group)
+                        if rule_type == "greater" and num_adjacent_same_group_other_tech > rule_value:
+                            total_adjacency_score += group_adjacency_weight * num_adjacent_same_group_other_tech
+                        elif rule_type == "lesser" and num_adjacent_same_group_other_tech < rule_value:
+                            total_adjacency_score += group_adjacency_weight * (
+                                rule_value - num_adjacent_same_group_other_tech
+                            )
 
     return total_adjacency_score
