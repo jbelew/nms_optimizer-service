@@ -4,7 +4,9 @@
 
 ![Tests](https://github.com/jbelew/nms_optimizer-service/actions/workflows/main.yml/badge.svg?branch=main) ![Deployment](https://img.shields.io/badge/Deployment-Heroku-blue?logo=heroku)
 
-This repository contains the code for the `nms_optimizer-service`, a service designed to optimize the placement of technology modules within the technology grid of No Man's Sky starships and multi-tools. It leverages various algorithms, including pattern matching, ML (AI), and simulated annealing, to maximize adjacency bonuses and overall effectiveness of the installed technologies.
+This repository contains the code for the **`nms_optimizer-service`**, a backend service designed to optimize the placement of modules within the technology grid of No Man's Sky starships and multi-tools. It leverages multiple optimization strategies, including pattern matching with edge detection, machine learning (AI), and simulated annealing, to maximize adjacency bonuses and the overall effectiveness of installed technologies.
+
+This service powers the UI available at [https://nms-optimizer.app](https://nms-optimizer.app).
 
 ## Key Features
 
