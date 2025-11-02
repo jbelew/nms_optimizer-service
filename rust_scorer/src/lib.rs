@@ -274,9 +274,7 @@ impl Grid {
             let is_sc_eligible = cell.sc_eligible;
             let module_type = cell.module_type.as_ref().unwrap();
 
-            let mut total_bonus = 0.0;
-
-            if apply_supercharge_first {
+            let total_bonus = if apply_supercharge_first {
                 let mut calculation_base = base_bonus;
                 if is_supercharged && is_sc_eligible {
                     calculation_base *= SUPERCHARGE_MULTIPLIER;
@@ -286,19 +284,20 @@ impl Grid {
                     ModuleType::Core => adj_factor,
                     _ => calculation_base * adj_factor,
                 };
-                total_bonus = base_bonus + adjacency_boost_amount;
+                base_bonus + adjacency_boost_amount
             } else {
                 let adjacency_boost_amount_on_base = match module_type {
                     ModuleType::Core => adj_factor,
                     _ => base_bonus * adj_factor,
                 };
 
-                total_bonus = base_bonus + adjacency_boost_amount_on_base;
+                let mut total_bonus = base_bonus + adjacency_boost_amount_on_base;
 
                 if is_supercharged && is_sc_eligible {
                     total_bonus *= SUPERCHARGE_MULTIPLIER;
                 }
-            }
+                total_bonus
+            };
             self.cells[y as usize][x as usize].total = total_bonus;
             self.cells[y as usize][x as usize].adjacency_bonus = adj_factor;
         }
@@ -319,7 +318,7 @@ fn calculate_grid_score(mut grid: Grid, tech: &str, apply_supercharge_first: boo
 }
 
 #[pymodule]
-fn rust_scorer(_py: Python, m: &PyModule) -> PyResult<()> {
+fn rust_scorer(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(calculate_grid_score, m)?)?;
     m.add_class::<Grid>()?;
     m.add_class::<Cell>()?;
