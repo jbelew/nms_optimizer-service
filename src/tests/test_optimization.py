@@ -262,7 +262,7 @@ class TestOptimization(unittest.TestCase):
         self.assertEqual(percentage, 100.0)
 
     @patch("src.optimization.core.get_solve_map")
-    @patch("src.pattern_matching.apply_pattern_to_grid")
+    @patch("src.optimization.core.apply_pattern_to_grid")
     @patch("src.optimization.core.simulated_annealing")
     def test_optimize_solve_map_no_pattern_fits_returns_indicator_when_not_forced(
         self, mock_simulated_annealing, mock_apply_pattern_to_grid, mock_get_solve_map
@@ -284,7 +284,7 @@ class TestOptimization(unittest.TestCase):
 
     @patch("src.optimization.core.get_solve_map")
     @patch("src.optimization.refinement.simulated_annealing")
-    @patch("src.bonus_calculations.calculate_grid_score")
+    @patch("src.optimization.core.calculate_grid_score")
     def test_optimize_solve_map_no_pattern_fits_falls_back_to_sa_when_forced(
         self, mock_calculate_grid_score, mock_simulated_annealing, mock_apply_pattern_to_grid, mock_get_solve_map
     ):

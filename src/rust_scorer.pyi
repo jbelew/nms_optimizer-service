@@ -23,17 +23,24 @@ class _ModuleType:
 
 ModuleType: _ModuleType
 
-
-
-
 class Module:
-    def __init__(self, *, id: str, label: str, tech: str, module_type: '_ModuleType', bonus: float, adjacency: '_AdjacencyType', sc_eligible: bool, image: Optional[str]) -> None: ...
+    def __init__(
+        self,
+        *,
+        id: str,
+        label: str,
+        tech: str,
+        module_type: "_ModuleType",
+        bonus: float,
+        adjacency: "_AdjacencyType",
+        sc_eligible: bool,
+        image: Optional[str],
+    ) -> None: ...
 
 class Cell: ...
 class Grid: ...
 
 def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> float: ...
-
 def simulated_annealing(
     grid_json: str,
     tech_modules: List[Module],

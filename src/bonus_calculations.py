@@ -130,7 +130,9 @@ def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = 
             elif py_cell["adjacency"] == "no_adjacency":
                 adjacency = getattr(RustAdjacencyType, "NoAdjacency")  # Use getattr for string "no_adjacency"
             else:  # Handle cases where py_cell["adjacency"] is False or None (Python None)
-                adjacency = getattr(RustAdjacencyType, "NoAdjacency")  # Map Python None to RustAdjacencyType.NoAdjacency
+                adjacency = getattr(
+                    RustAdjacencyType, "NoAdjacency"
+                )  # Map Python None to RustAdjacencyType.NoAdjacency
 
             module_type = None
             if py_cell["type"] == "bonus":
