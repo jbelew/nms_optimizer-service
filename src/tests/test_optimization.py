@@ -282,11 +282,12 @@ class TestOptimization(unittest.TestCase):
         self.assertEqual(solved_bonus, 0.0)
         self.assertEqual(solve_method, "Pattern No Fit")
 
-    @patch("src.optimization.core.get_solve_map")
-    @patch("src.optimization.refinement.simulated_annealing")
     @patch("src.optimization.core.calculate_grid_score")
+    @patch("src.optimization.core.simulated_annealing")
+    @patch("src.optimization.core.apply_pattern_to_grid")
+    @patch("src.optimization.core.get_solve_map")
     def test_optimize_solve_map_no_pattern_fits_falls_back_to_sa_when_forced(
-        self, mock_calculate_grid_score, mock_simulated_annealing, mock_apply_pattern_to_grid, mock_get_solve_map
+        self, mock_get_solve_map, mock_apply_pattern_to_grid, mock_simulated_annealing, mock_calculate_grid_score
     ):
         """Test fallback to initial SA when solve map exists, no pattern fits, and forced=True."""
         mock_get_solve_map.return_value = sample_solves[self.ship]
@@ -306,15 +307,16 @@ class TestOptimization(unittest.TestCase):
         mock_simulated_annealing.assert_called_once()
         self.assertEqual(solve_method, "Forced Initial SA (No Pattern Fit)")
         self.assertEqual(solved_bonus, 10.0)
-        mock_calculate_grid_score.assert_called_once_with(initial_sa_grid, self.tech, apply_supercharge_first=False)
+        # The score may be calculated multiple times, so we check the last call.
+        mock_calculate_grid_score.assert_called_with(initial_sa_grid, self.tech, apply_supercharge_first=False)
 
-    @patch("src.bonus_calculations.calculate_grid_score")
-    @patch("src.optimization.core.check_all_modules_placed", return_value=True)
-    @patch("src.optimization.core._handle_ml_opportunity")
-    @patch("src.optimization.core._handle_sa_refine_opportunity")
-    @patch("src.optimization.core.find_supercharged_opportunities")
-    @patch("src.pattern_matching.apply_pattern_to_grid")
     @patch("src.optimization.core.get_solve_map")
+    @patch("src.pattern_matching.apply_pattern_to_grid")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core._handle_sa_refine_opportunity")
+    @patch("src.optimization.core._handle_ml_opportunity")
+    @patch("src.optimization.core.check_all_modules_placed", return_value=True)
+    @patch("src.optimization.core.calculate_grid_score")
     def test_optimize_ml_fallback_to_sa(
         self,
         mock_calculate_grid_score,
@@ -326,6 +328,8 @@ class TestOptimization(unittest.TestCase):
         mock_get_solve_map,
     ):
         # --- Setup Mocks ---
+        # 0. A solve map is found
+        mock_get_solve_map.return_value = sample_solves[self.ship]
         # 1. Pattern matching succeeds and gives a base score
         pattern_grid = self.sc_grid.copy()
         pattern_grid.set_module(0, 0, "PE")
@@ -345,10 +349,7 @@ class TestOptimization(unittest.TestCase):
         mock_handle_sa.return_value = (sa_grid, 25.0)
 
         # 5. Mock score calculations to prevent final check from overriding bonus
-        def score_side_effect(grid, tech, apply_supercharge_first=False):
-            return 25.0
-
-        mock_calculate_grid_score.side_effect = score_side_effect
+        mock_calculate_grid_score.return_value = 25.0
 
         # --- Run Optimization ---
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
