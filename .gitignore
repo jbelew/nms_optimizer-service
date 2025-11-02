@@ -5,8 +5,12 @@ __pycache__/
 
 # Ignore virtual environments
 venv/
+.venv/
 .env/
 new_solves.json
 runs_placement_only/
 runs_early_stopping/
 cosmic-inkwell-467922-v5-85707f3bcc80.json
+
+# Rust build artifacts
+rust_scorer/target/
