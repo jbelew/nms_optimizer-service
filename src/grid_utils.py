@@ -308,7 +308,25 @@ class Grid:
 
     def to_dict(self):
         """Convert the grid into a JSON-serializable dictionary."""
-        return {"width": self.width, "height": self.height, "cells": self.cells}
+        cells = deepcopy(self.cells)
+        for y in range(self.height):
+            for x in range(self.width):
+                if cells[y][x]["type"] == "":
+                    cells[y][x]["type"] = None
+                if cells[y][x]["adjacency"] == "" or cells[y][x]["adjacency"] is False:
+                    cells[y][x]["adjacency"] = "no_adjacency"
+        return {"width": self.width, "height": self.height, "cells": cells}
+
+    def to_json(self):
+        import json
+
+        return json.dumps(self.to_dict())
+
+    @classmethod
+    def from_json(cls, json_str):
+        import json
+
+        return cls.from_dict(json.loads(json_str))
 
     @classmethod
     def from_dict(cls, data: dict) -> "Grid":

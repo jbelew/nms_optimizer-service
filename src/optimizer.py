@@ -9,18 +9,11 @@ circular dependency issues.
 """
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules, get_tech_modules_for_training, get_tech_tree, get_tech_tree_json
-from src.bonus_calculations import calculate_grid_score
-from src.grid_display import print_grid, print_grid_compact
+from rust_scorer import calculate_grid_score as rust_calculate_grid_score
 
+# ... (rest of the file)
 
-# Re-export the functions that other parts of your project use
-__all__ = [
-    "Grid",
-    "get_tech_modules",
-    "get_tech_modules_for_training",
-    "get_tech_tree",
-    "get_tech_tree_json",
-    "calculate_grid_score",
+    "rust_calculate_grid_score",
     "print_grid",
     "print_grid_compact",
 ]

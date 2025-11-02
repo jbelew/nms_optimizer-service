@@ -35,7 +35,7 @@ class TestBonusCalculations(unittest.TestCase):
         cell["module"] = self.pulse_module["id"]  # Set the module ID to indicate placement
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # The score should be just the base bonus of the module
         self.assertEqual(score, 10.0)
@@ -51,7 +51,7 @@ class TestBonusCalculations(unittest.TestCase):
         cell["supercharged"] = True
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # The score should be the base bonus * supercharge multiplier
         self.assertAlmostEqual(score, 10.0 * 1.25)
@@ -70,7 +70,7 @@ class TestBonusCalculations(unittest.TestCase):
         cell2["module"] = self.pulse_module["id"]
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # Each module gets a 6% bonus from its neighbor
         expected_score = (10.0 + 10.0 * 0.06) + (10.0 + 10.0 * 0.06)
@@ -93,7 +93,7 @@ class TestBonusCalculations(unittest.TestCase):
         cell2["module"] = lesser_module["id"]
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # Each module gets a 3% bonus from its neighbor
         expected_score = (10.0 + 10.0 * 0.03) + (10.0 + 10.0 * 0.03)
@@ -116,7 +116,7 @@ class TestBonusCalculations(unittest.TestCase):
         cell2["module"] = lesser_module["id"]
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # The 'greater' module gets a 3% bonus from the 'lesser' module (10.0 * 0.03)
         greater_bonus = 10.0 + 0.3
@@ -154,7 +154,7 @@ class TestBonusCalculations(unittest.TestCase):
         cell3["module"] = self.pulse_module["id"]
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # Core module gets 0.06 bonus from each BONUS neighbor
         core_bonus = 0.06 + 0.06
@@ -180,7 +180,7 @@ class TestBonusCalculations(unittest.TestCase):
             cell["module"] = self.pulse_module["id"]
 
         # Calculate the score
-        score = calculate_grid_score(self.grid, "pulse")
+        score = calculate_grid_score(self.grid, "pulse", apply_supercharge_first=False)
 
         # Center module gets 4x bonus
         center_bonus = 10.0 + 4 * (10.0 * 0.06)

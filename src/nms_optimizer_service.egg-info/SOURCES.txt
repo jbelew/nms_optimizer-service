@@ -13,7 +13,6 @@ src/model_cache.py
 src/model_definition.py
 src/module_placement.py
 src/modules_utils.py
-src/optimization_context.py
 src/optimizer.py
 src/pattern_matching.py
 src/solve_map_utils.py
@@ -33,4 +32,7 @@ src/optimization/helpers.py
 src/optimization/refinement.py
 src/optimization/training.py
 src/optimization/windowing.py
+src/tests/test_bonus_calculations.py
+src/tests/test_grid_utils.py
 src/tests/test_optimization.py
+src/tests/test_rust_integration.py

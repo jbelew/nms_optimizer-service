@@ -38,8 +38,9 @@ try:
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
     from src.module_placement import place_module, clear_all_modules_of_tech
-    from src.bonus_calculations import calculate_grid_score
+    from rust_scorer import calculate_grid_score as rust_calculate_grid_score
     from src.grid_utils import Grid, apply_localized_grid_changes, restore_original_state
+    from src.bonus_calculations import calculate_grid_score
     from src.data_definitions.model_mapping import (
         get_model_keys,
     )  # Import the modified get_model_keys
@@ -278,8 +279,8 @@ def ml_placement(
             try:
                 is_active = active_cell_mask[y, x]
                 is_supercharged = input_supercharge_np[y, x] == 1.0
-                predicted_grid.set_active(x, y, is_active)
-                predicted_grid.set_supercharged(x, y, is_supercharged and is_active)
+                predicted_grid.set_active(x, y, is_active.item())
+                predicted_grid.set_supercharged(x, y, is_supercharged and is_active.item())
                 predicted_grid.set_module(x, y, None)
                 predicted_grid.set_tech(x, y, None)
             except IndexError:

@@ -12,7 +12,6 @@ model_definition
 module_placement
 modules_utils
 optimization
-optimization_context
 optimizer
 pattern_matching
 solve_map_utils

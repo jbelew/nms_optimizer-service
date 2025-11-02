@@ -5,6 +5,7 @@ from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules
 from src.grid_display import print_grid_compact
 from src.bonus_calculations import calculate_grid_score
+
 from src.module_placement import clear_all_modules_of_tech
 from .refinement import simulated_annealing, _handle_ml_opportunity, _handle_sa_refine_opportunity
 from src.data_loader import get_solve_map
@@ -159,7 +160,7 @@ def optimize_placement(
             solve_type=solve_type,
             tech_modules=tech_modules,
         )
-        solved_bonus = calculate_grid_score(solved_grid, tech)
+        solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
         solve_score = 0
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
         # <<< KEEP: Final result for this path >>>
@@ -336,7 +337,11 @@ def optimize_placement(
                         raise ValueError(
                             f"Fallback simulated_annealing failed for partial set with no window on {ship}/{tech}."
                         )
-                    solve_method = "Initial SA (No Window)"
+                    logging.info(
+                        f"Forced fallback SA score (no pattern fit): {solved_bonus:.4f}"
+                    )  # <<< KEEP: Result of fallback >>>
+                    solve_method = "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
+                    sa_was_initial_placement = True
 
             if solved_grid is None:
                 logging.error(f"Partial module set SA failed for {ship}/{tech}.")
@@ -390,7 +395,9 @@ def optimize_placement(
                         tech_modules=tech_modules,
                     )
                     if temp_result_grid is not None:
-                        current_pattern_bonus = calculate_grid_score(temp_result_grid, tech)
+                        current_pattern_bonus = calculate_grid_score(
+                            temp_result_grid, tech, apply_supercharge_first=False
+                        )
                         if current_pattern_bonus > highest_pattern_bonus:
                             highest_pattern_bonus = current_pattern_bonus
                             best_pattern_grid = temp_result_grid.copy()
@@ -419,7 +426,7 @@ def optimize_placement(
             logging.info(
                 f"Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) found at ({best_pattern_start_x},{best_pattern_start_y}) with size {best_pattern_width}x{best_pattern_height} for ship: '{ship}' -- tech: '{tech}' that fits."
             )
-            # print_grid_compact(solved_grid)
+            # print_grid_compact(solved_grid) # Optional: Can be noisy for many calls
             sa_was_initial_placement = False
         else:
             # --- Case 2b: No Pattern Fits ---
@@ -449,14 +456,14 @@ def optimize_placement(
                     max_processing_time=20.0,
                     progress_callback=progress_callback,
                     run_id=run_id,
-                    stage="initial_placement",
+                    stage="initial_sa_no_window",
                     send_grid_updates=send_grid_updates,
                     solve_type=solve_type if solve_type is not None else "",
                     tech_modules=tech_modules,
                 )
                 if solved_grid is None:
                     raise ValueError(
-                        f"Forced fallback simulated_annealing failed for {ship}/{tech} when no pattern fit."
+                        f"Fallback simulated_annealing failed for partial set with no window on {ship}/{tech}."
                     )
                 logging.info(
                     f"Forced fallback SA score (no pattern fit): {solved_bonus:.4f}"
@@ -473,7 +480,7 @@ def optimize_placement(
             "optimize_placement: solved_grid is None before opportunity refinement, indicating an unexpected state."
         )
     grid_after_initial_placement = solved_grid.copy()  # Grid state before refinement starts
-    current_best_score = calculate_grid_score(grid_after_initial_placement, tech)
+    current_best_score = calculate_grid_score(grid_after_initial_placement, tech, apply_supercharge_first=False)
 
     # Prepare grid for opportunity scanning (clear target tech)
     grid_for_opportunity_scan = grid_after_initial_placement.copy()
@@ -772,7 +779,7 @@ def optimize_placement(
                     elif sa_fallback_grid is not None:
                         # <<< KEEP: Score did not improve >>>
                         logging.info(
-                            f"Final fallback SA did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best."
+                            f"Final fallback SA (due to unplaced modules) did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best."
                         )
                     else:
                         logging.error("Final fallback Simulated Annealing failed. Keeping previous best.")
@@ -830,7 +837,7 @@ def optimize_placement(
             tech_modules=tech_modules,
         )
         if temp_solved_grid is not None:
-            final_sa_score = calculate_grid_score(temp_solved_grid, tech)
+            final_sa_score = calculate_grid_score(temp_solved_grid, tech, apply_supercharge_first=False)
             # Use solved_bonus which holds the score *after* potential refinement
             if final_sa_score > solved_bonus:
                 # <<< KEEP: Score improvement >>>
@@ -859,7 +866,7 @@ def optimize_placement(
     best_bonus = solved_bonus  # This holds the score after refinement/fallbacks
 
     # Recalculate just in case, but should match solved_bonus
-    final_check_score = calculate_grid_score(solved_grid, tech)
+    final_check_score = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
     if abs(final_check_score - best_bonus) > 1e-6:
         logging.warning(
             f"Final check score {final_check_score:.4f} differs from tracked best_bonus {best_bonus:.4f}. Using check score."
