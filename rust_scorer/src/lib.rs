@@ -272,7 +272,10 @@ impl Grid {
             let base_bonus = cell.bonus;
             let is_supercharged = cell.supercharged;
             let is_sc_eligible = cell.sc_eligible;
-            let module_type = cell.module_type.as_ref().unwrap();
+            let module_type = match cell.module_type.as_ref() {
+                Some(mt) => mt,
+                None => continue,
+            };
 
             let total_bonus = if apply_supercharge_first {
                 let mut calculation_base = base_bonus;
