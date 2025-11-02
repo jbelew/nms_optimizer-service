@@ -1,7 +1,24 @@
 use pyo3::prelude::*;
 use pyo3_log::init;
 use rand::prelude::*;
-use serde::{Deserialize, Serialize};
+use serde::{self, Deserialize, Deserializer, Serialize};
+
+fn module_type_from_string_or_null<'de, D>(deserializer: D) -> Result<Option<ModuleType>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: Option<String> = Option::deserialize(deserializer)?;
+    match s.as_deref() {
+        Some("core") => Ok(Some(ModuleType::Core)),
+        Some("bonus") => Ok(Some(ModuleType::Bonus)),
+        Some("upgrade") => Ok(Some(ModuleType::Upgrade)),
+        Some("cosmetic") => Ok(Some(ModuleType::Cosmetic)),
+        Some("reactor") => Ok(Some(ModuleType::Reactor)),
+        Some("atlantid") => Ok(Some(ModuleType::Atlantid)),
+        Some("") | None => Ok(None),
+        _ => Err(serde::de::Error::custom(format!("Expected valid ModuleType string or null, got {:?}", s))),
+    }
+}
 
 #[pyclass]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -41,7 +58,7 @@ pub struct Cell {
     #[pyo3(get, set)]
     pub value: i32,
     #[pyo3(get, set)]
-    #[serde(rename = "type")]
+    #[serde(rename = "type", deserialize_with = "module_type_from_string_or_null")]
     pub module_type: Option<ModuleType>,
     #[pyo3(get, set)]
     pub total: f64,
