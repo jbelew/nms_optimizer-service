@@ -27,6 +27,10 @@ jobs:
       - name: Install Maturin
         run: pip install maturin
 
+      - name: Activate Virtual Environment
+        run: echo "VIRTUAL_ENV=$(python -c 'import sys; print(sys.prefix)')" >> $GITHUB_ENV
+        shell: bash
+
       - name: Build Rust Module
         run: maturin develop --release --manifest-path rust_scorer/Cargo.toml
 
