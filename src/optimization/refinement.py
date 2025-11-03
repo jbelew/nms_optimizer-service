@@ -314,10 +314,10 @@ def simulated_annealing(
     tech,
     full_grid,
     player_owned_rewards=None,
-    initial_temperature=1500,
-    cooling_rate=0.98,
+    initial_temperature=9000,
+    cooling_rate=0.99,
     stopping_temperature=0.1,
-    iterations_per_temp=80,
+    iterations_per_temp=75,
     initial_swap_probability=0.5,
     final_swap_probability=0.1,
     start_from_current_grid: bool = False,
@@ -332,10 +332,10 @@ def simulated_annealing(
     start_y: int = 0,
     solve_type: Optional[str] = None,
     tech_modules: Optional[list] = None,
-    max_steps_without_improvement=100,
-    reheat_factor=0.65,
+    max_steps_without_improvement=250,
+    reheat_factor=0.6,
     max_reheats=10,
-    num_sa_runs: int = 5,
+    num_sa_runs: int = 6,
 ):
     # --- Define max_reheats early ---
     if start_from_current_grid:  # Polishing
@@ -351,21 +351,21 @@ def simulated_annealing(
 
     # Convert tech_modules to Module objects
     module_type_map = {
-        "core": rust_scorer.ModuleType.Core,
-        "bonus": rust_scorer.ModuleType.Bonus,
-        "upgrade": rust_scorer.ModuleType.Upgrade,
-        "cosmetic": rust_scorer.ModuleType.Cosmetic,
-        "reactor": rust_scorer.ModuleType.Reactor,
-        "atlantid": rust_scorer.ModuleType.Atlantid,
+        "core": rust_scorer.ModuleType.Core,  # type: ignore
+        "bonus": rust_scorer.ModuleType.Bonus,  # type: ignore
+        "upgrade": rust_scorer.ModuleType.Upgrade,  # type: ignore
+        "cosmetic": rust_scorer.ModuleType.Cosmetic,  # type: ignore
+        "reactor": rust_scorer.ModuleType.Reactor,  # type: ignore
+        "atlantid": rust_scorer.ModuleType.Atlantid,  # type: ignore
     }
     adjacency_map = {
-        "greater": rust_scorer.AdjacencyType.Greater,
-        "lesser": rust_scorer.AdjacencyType.Lesser,
-        "none": getattr(rust_scorer.AdjacencyType, "NoAdjacency"),
+        "greater": rust_scorer.AdjacencyType.Greater,  # type: ignore
+        "lesser": rust_scorer.AdjacencyType.Lesser,  # type: ignore
+        "none": rust_scorer.AdjacencyType.NoAdjacency,  # type: ignore
     }
 
     tech_modules_rs = [
-        rust_scorer.Module(
+        rust_scorer.Module(  # type: ignore
             id=m["id"],
             label=m["label"],
             tech=tech,
@@ -412,7 +412,7 @@ def simulated_annealing(
 
             wrapped_progress_callback = _wrapped_callback
 
-        current_run_best_grid_json, current_run_best_score = rust_scorer.simulated_annealing(
+        current_run_best_grid_json, current_run_best_score = rust_scorer.simulated_annealing(  # type: ignore
             grid_json,
             tech_modules_rs,
             tech,
