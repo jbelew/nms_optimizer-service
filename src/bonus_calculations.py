@@ -9,6 +9,13 @@ weights applied to modules based on their neighbors.
 import logging
 from .grid_utils import Grid
 from enum import Enum
+from rust_scorer import (
+    populate_all_module_bonuses,
+    Grid as RustGrid,
+    Cell as RustCell,
+    AdjacencyType as RustAdjacencyType,
+    ModuleType as RustModuleType,
+)
 
 # --- Constants ---
 
@@ -97,15 +104,6 @@ def clear_scores(grid: Grid, tech: str) -> None:
             if cell.get("tech") == tech:
                 grid.set_total(x, y, 0.0)
                 cell["adjacency_bonus"] = 0.0
-
-
-from rust_scorer import (
-    populate_all_module_bonuses,
-    Grid as RustGrid,
-    Cell as RustCell,
-    AdjacencyType as RustAdjacencyType,
-    ModuleType as RustModuleType,
-)
 
 
 def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> float:

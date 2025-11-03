@@ -204,7 +204,7 @@ def refine_placement_for_training(
             highest_bonus = final_score
 
     # --- Handle No Valid Placement Found ---
-    elif num_modules_to_place > 0:  # Check if modules existed but no solution found
+    elif len(tech_modules) > 0:  # Check if modules existed but no solution found
         logging.warning(f"No optimal grid found for {tech}. Returning cleared grid.")
         optimal_grid = grid.copy()
         clear_all_modules_of_tech(optimal_grid, tech)

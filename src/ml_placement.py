@@ -38,7 +38,6 @@ try:
     # from modules import modules as user_facing_modules # Keep if needed elsewhere, or pass in
     # <<< End import changes >>>
     from src.module_placement import place_module, clear_all_modules_of_tech
-    from rust_scorer import calculate_grid_score as rust_calculate_grid_score
     from src.grid_display import print_grid_compact
     from src.grid_utils import Grid, apply_localized_grid_changes, restore_original_state
     from src.bonus_calculations import calculate_grid_score

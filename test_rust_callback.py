@@ -3,12 +3,12 @@ import sys
 import json
 import logging
 
+from rust_scorer import simulated_annealing, Module, ModuleType, AdjacencyType
+
 # Add project root to sys.path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
-
-from rust_scorer import simulated_annealing, Grid, Module, ModuleType, AdjacencyType, Cell
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -50,34 +50,6 @@ def run_test():
     # Make one cell supercharged
     grid_data["cells"][2][2]["supercharged"] = True
     grid_data["cells"][2][2]["active"] = True
-
-    grid = Grid(
-        width=grid_data["width"],
-        height=grid_data["height"],
-        cells=[
-            [
-                Cell(
-                    value=c["value"],
-                    total=c["total"],
-                    adjacency_bonus=c["adjacency_bonus"],
-                    bonus=c["bonus"],
-                    active=c["active"],
-                    supercharged=c["supercharged"],
-                    sc_eligible=c["sc_eligible"],
-                    module=c["module"],
-                    label=c["label"],
-                    tech=c["tech"],
-                    image=c["image"],
-                    module_type=ModuleType.Bonus if c["module_type"] == "bonus" else None,  # Use direct enum variant
-                    adjacency=(
-                        AdjacencyType.NoAdjacency if c["adjacency"] == "no_adjacency" else None
-                    ),  # Use direct enum variant
-                )
-                for c in row
-            ]
-            for row in grid_data["cells"]
-        ],
-    )
 
     # Create dummy tech modules
     tech_modules = [
