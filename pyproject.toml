@@ -5,6 +5,9 @@ line-length = 120
 requires = ["maturin>=1.0,<2.0"]
 build-backend = "maturin"
 
+[tool.maturin]
+manifest-path = "rust_scorer/Cargo.toml"
+
 [tool.ruff]
 line-length = 120
 
