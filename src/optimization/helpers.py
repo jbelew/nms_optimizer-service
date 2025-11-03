@@ -70,8 +70,10 @@ def determine_window_dimensions(
         window_width, window_height = 3, 2
     elif module_count < 9:
         window_width, window_height = 4, 2
-    else:  # module_count >= 9
+    elif module_count == 9:
         window_width, window_height = 3, 3
+    else:  # module_count >= 10
+        window_width, window_height = 4, 3
 
     return window_width, window_height
 

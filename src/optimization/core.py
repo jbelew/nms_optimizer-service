@@ -321,11 +321,6 @@ def optimize_placement(
                         tech,
                         grid,  # full_grid
                         player_owned_rewards,
-                        cooling_rate=0.98,
-                        initial_temperature=1500,
-                        iterations_per_temp=35,
-                        initial_swap_probability=0.60,
-                        max_processing_time=20.0,
                         progress_callback=progress_callback,
                         run_id=run_id,
                         stage="initial_sa_no_window",
@@ -348,6 +343,14 @@ def optimize_placement(
                 cleared_grid_on_fail = grid.copy()
                 clear_all_modules_of_tech(cleared_grid_on_fail, tech)
                 return cleared_grid_on_fail, 0.0, 0.0, "Partial SA Failed"
+
+            # Recalculate score just in case to ensure accuracy
+            final_check_score = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
+            if abs(final_check_score - solved_bonus) > 1e-6:
+                logging.warning(
+                    f"Final check score {final_check_score:.4f} differs from tracked solved_bonus {solved_bonus:.4f}. Using check score."
+                )
+                solved_bonus = final_check_score
 
             if solve_score > 1e-9:
                 percentage = (solved_bonus / solve_score) * 100
@@ -449,11 +452,6 @@ def optimize_placement(
                     tech,
                     grid,  # full_grid
                     player_owned_rewards,
-                    cooling_rate=0.98,
-                    initial_temperature=1500,
-                    iterations_per_temp=35,
-                    initial_swap_probability=0.60,
-                    max_processing_time=20.0,
                     progress_callback=progress_callback,
                     run_id=run_id,
                     stage="initial_sa_no_window",

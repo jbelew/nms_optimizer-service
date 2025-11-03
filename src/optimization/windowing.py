@@ -9,7 +9,9 @@ from src.module_placement import clear_all_modules_of_tech
 from .helpers import determine_window_dimensions
 
 
-def _scan_grid_with_window(grid_copy, window_width, window_height, module_count, tech):
+def _scan_grid_with_window(
+    grid_copy, window_width, window_height, module_count, tech, require_supercharge: bool = True
+):
     """
     Helper function to scan the grid with a specific window size and find the best opportunity.
 
@@ -54,18 +56,19 @@ def _scan_grid_with_window(grid_copy, window_width, window_height, module_count,
                     else:
                         window_grid.cells[y][x]["active"] = False  # Mark as inactive if out of bounds
 
-            # Check if the window has at least one available supercharged slot
-            has_available_supercharged = False
-            for y in range(window_height):
-                for x in range(window_width):
-                    cell = window_grid.get_cell(x, y)
-                    if cell["supercharged"] and cell["module"] is None and cell["active"]:
-                        has_available_supercharged = True
+            if require_supercharge:
+                # Check if the window has at least one available supercharged slot
+                has_available_supercharged = False
+                for y in range(window_height):
+                    for x in range(window_width):
+                        cell = window_grid.get_cell(x, y)
+                        if cell["supercharged"] and cell["module"] is None and cell["active"]:
+                            has_available_supercharged = True
+                            break
+                    if has_available_supercharged:
                         break
-                if has_available_supercharged:
-                    break
-            if not has_available_supercharged:
-                continue  # Skip this window
+                if not has_available_supercharged:
+                    continue  # Skip this window
 
             # Check if the number of available cells in the current window is sufficient
             available_cells_in_window = 0
@@ -183,6 +186,32 @@ def find_supercharged_opportunities(
         )
     elif best_score1 > -1 and not rotated_needed:  # Square window case
         logging.info(f"Best score found with square window ({window_width}x{window_height}): {overall_best_score:.2f}.")
+
+    # --- Fallback: If no supercharged window found, try again without requiring supercharge ---
+    # This block attempts to find a suitable window even if it doesn't contain a supercharged slot.
+    # To disable this fallback, comment out or remove the entire 'if overall_best_pos is None:' block below.
+    if overall_best_pos is None:
+        logging.info("No supercharged window found. Retrying without supercharge requirement.")
+        best_score1, best_pos1 = _scan_grid_with_window(
+            grid_copy, window_width, window_height, module_count, tech, require_supercharge=False
+        )
+        if rotated_needed:
+            best_score2, best_pos2 = _scan_grid_with_window(
+                grid_copy, rotated_width, rotated_height, module_count, tech, require_supercharge=False
+            )
+
+        # Re-compare scores
+        if best_score1 > overall_best_score:
+            overall_best_score = best_score1
+            overall_best_pos = best_pos1
+            overall_best_width = window_width
+            overall_best_height = window_height
+
+        if best_score2 > overall_best_score:
+            overall_best_score = best_score2
+            overall_best_pos = best_pos2
+            overall_best_width = rotated_width
+            overall_best_height = rotated_height
 
     # --- Return the Overall Best Result ---
     if overall_best_pos is not None:

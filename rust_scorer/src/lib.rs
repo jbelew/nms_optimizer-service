@@ -562,6 +562,8 @@ fn simulated_annealing(
     max_reheats: i32,
     initial_swap_probability: f64,
     final_swap_probability: f64,
+    run_idx: i32,
+    num_sa_runs: i32,
 ) -> PyResult<(String, f64)> {
     let mut current_grid: Grid = serde_json::from_str(&grid_json).unwrap();
     let tech_modules_vec: Vec<Module> = tech_modules.iter().map(|m| (**m).clone()).collect();
@@ -590,7 +592,9 @@ fn simulated_annealing(
             progress_data.set_item("mode", "Full Run").unwrap(); // Assuming Full Run for now
             progress_data.set_item("best_score", best_score).unwrap();
             progress_data.set_item("temperature", temperature).unwrap();
-            log::info!("SA: Starting for {}: Best: {:.4}, Temp: {:.2}",
+            log::info!("SA: Starting run {}/{} for {}: Best: {:.4}, Temp: {:.2}",
+                run_idx + 1,
+                num_sa_runs,
                 tech,
                 best_score,
                 temperature
@@ -639,12 +643,12 @@ fn simulated_annealing(
                                 progress_data.set_item("current_score", current_score).unwrap();
                                 progress_data.set_item("temperature", temperature).unwrap();
                                 progress_data.set_item("time", start_time.elapsed().as_secs_f64()).unwrap();
-                                log::info!("SA: New best score for {}: {:.4} (Temp: {:.2}, Time: {:.2}s)",
-                                    tech,
-                                    best_score,
-                                    temperature,
-                                    start_time.elapsed().as_secs_f64()
-                                );
+                                // log::info!("SA: New best score for {}: {:.4} (Temp: {:.2}, Time: {:.2}s)",
+                                //     tech,
+                                //     best_score,
+                                //     temperature,
+                                //     start_time.elapsed().as_secs_f64()
+                                // );
                                 progress_callback.call1(py, (progress_data,)).unwrap();
                             }
                         });
@@ -661,7 +665,7 @@ fn simulated_annealing(
             temperature *= 1.0 + reheat_factor;
             steps_without_improvement = 0;
             reheat_count += 1;
-            log::info!("SA: Reheating temperature to {:.2} (Reheat Count: {})", temperature, reheat_count);
+            // log::info!("SA: Reheating temperature to {:.2} (Reheat Count: {})", temperature, reheat_count);
         }
 
         // --- Progress Reporting (periodic) ---
@@ -692,7 +696,9 @@ fn simulated_annealing(
             progress_data.set_item("best_score", best_score).unwrap();
             progress_data.set_item("time", start_time.elapsed().as_secs_f64()).unwrap();
             progress_data.set_item("time_to_best_score", time_to_best_score.unwrap_or(0.0)).unwrap();
-            log::info!("SA: Finished for {}: Best: {:.4}, Time: {:.2}s, Time to best: {:.2}s",
+            log::info!("SA: Finished run {}/{} for {}: Best: {:.4}, Time: {:.2}s, Time to best: {:.2}s",
+                run_idx + 1,
+                num_sa_runs,
                 tech,
                 best_score,
                 start_time.elapsed().as_secs_f64(),

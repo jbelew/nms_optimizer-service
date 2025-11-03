@@ -296,7 +296,7 @@ def refine_placement(
                 "stage": stage,
                 "progress_percent": progress_percent,
                 "best_score": highest_bonus,
-                "status": "in_progress",
+                "status": "Optimized with Rust. Obviously.",
             }
             progress_callback(progress_data)
             gevent.sleep(0)
@@ -426,6 +426,8 @@ def simulated_annealing(
             max_reheats,
             initial_swap_probability,
             final_swap_probability,
+            run_idx,
+            num_sa_runs,
         )
 
         if current_run_best_score > overall_best_score:
