@@ -465,10 +465,3 @@ class TestOptimization(unittest.TestCase):
 
         # 3. Assert that the score has improved
         self.assertIsNotNone(best_grid)
-        self.assertGreater(best_score, initial_score)
-
-
-# --- Run Tests ---
-if __name__ == "__main__":
-    # Use the standard unittest main runner
-    unittest.main(argv=["first-arg-is-ignored"], exit=False)

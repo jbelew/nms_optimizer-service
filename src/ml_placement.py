@@ -39,6 +39,7 @@ try:
     # <<< End import changes >>>
     from src.module_placement import place_module, clear_all_modules_of_tech
     from rust_scorer import calculate_grid_score as rust_calculate_grid_score
+    from src.grid_display import print_grid_compact
     from src.grid_utils import Grid, apply_localized_grid_changes, restore_original_state
     from src.bonus_calculations import calculate_grid_score
     from src.data_definitions.model_mapping import (
@@ -280,7 +281,7 @@ def ml_placement(
                 is_active = active_cell_mask[y, x]
                 is_supercharged = input_supercharge_np[y, x] == 1.0
                 predicted_grid.set_active(x, y, is_active.item())
-                predicted_grid.set_supercharged(x, y, is_supercharged and is_active.item())
+                predicted_grid.set_supercharged(x, y, bool(is_supercharged) and is_active.item())
                 predicted_grid.set_module(x, y, None)
                 predicted_grid.set_tech(x, y, None)
             except IndexError:
@@ -397,6 +398,7 @@ def ml_placement(
         # Indicates polishing is starting
         logging.info("ML Placement: Attempting SA polish on ML result...")
         grid_to_polish = predicted_grid.copy()
+        print_grid_compact(grid_to_polish)  # Optional: print grid before polish
 
         polish_params = {
             "initial_temperature": 1500,  # Keep starting temp
@@ -432,6 +434,8 @@ def ml_placement(
                 tech_modules=tech_modules,
                 **polish_params,
             )
+
+            print_grid_compact(polished_grid)
 
             if polished_grid is not None and polished_bonus > predicted_score:
                 # Important score improvement

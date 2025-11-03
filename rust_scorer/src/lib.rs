@@ -232,6 +232,20 @@ impl Grid {
         }
     }
 
+    fn clear_all_modules_of_tech(&mut self, tech_to_clear: &str) {
+        for y in 0..self.height {
+            for x in 0..self.width {
+                if let Some(cell) = self.cells.get_mut(y as usize).and_then(|row| row.get_mut(x as usize)) {
+                    if let Some(cell_tech) = &cell.tech {
+                        if cell_tech == tech_to_clear {
+                            self.clear_cell(x, y);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     fn place_modules_with_supercharged_priority(&mut self, tech_modules: &Vec<Module>, _tech: &str) {
         let mut supercharged_slots: Vec<(i32, i32)> = Vec::new();
         let mut active_slots: Vec<(i32, i32)> = Vec::new();
@@ -546,6 +560,7 @@ fn simulated_annealing(
 ) -> PyResult<(String, f64)> {
     let mut current_grid: Grid = serde_json::from_str(&grid_json).unwrap();
     let tech_modules_vec: Vec<Module> = tech_modules.iter().map(|m| (**m).clone()).collect();
+    current_grid.clear_all_modules_of_tech(tech);
     current_grid.place_modules_with_supercharged_priority(&tech_modules_vec, tech);
 
     let mut current_score = calculate_grid_score(current_grid.clone(), tech, false).unwrap();
