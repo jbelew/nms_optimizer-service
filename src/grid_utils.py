@@ -313,8 +313,13 @@ class Grid:
             for x in range(self.width):
                 if cells[y][x]["type"] == "":
                     cells[y][x]["type"] = None
-                if cells[y][x]["adjacency"] == "" or cells[y][x]["adjacency"] is False:
+
+                adjacency_val = cells[y][x]["adjacency"]
+                if isinstance(adjacency_val, str) and "greater" in adjacency_val:
+                    cells[y][x]["adjacency"] = "greater"
+                elif adjacency_val == "" or adjacency_val is False or adjacency_val == "none":
                     cells[y][x]["adjacency"] = "no_adjacency"
+
         return {"width": self.width, "height": self.height, "cells": cells}
 
     def to_json(self):

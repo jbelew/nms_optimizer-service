@@ -121,16 +121,12 @@ def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = 
         for x in range(grid.width):
             py_cell = grid.get_cell(x, y)
             adjacency = None
-            if py_cell["adjacency"] == "greater":
+            if py_cell["adjacency"] and "greater" in py_cell["adjacency"]:
                 adjacency = RustAdjacencyType.Greater
             elif py_cell["adjacency"] == "lesser":
                 adjacency = RustAdjacencyType.Lesser
-            elif py_cell["adjacency"] == "no_adjacency":
-                adjacency = getattr(RustAdjacencyType, "NoAdjacency")  # Use getattr for string "no_adjacency"
-            else:  # Handle cases where py_cell["adjacency"] is False or None (Python None)
-                adjacency = getattr(
-                    RustAdjacencyType, "NoAdjacency"
-                )  # Map Python None to RustAdjacencyType.NoAdjacency
+            else:  # Handles "no_adjacency", "none", False, or None
+                adjacency = getattr(RustAdjacencyType, "NoAdjacency")
 
             module_type = None
             if py_cell["type"] == "bonus":

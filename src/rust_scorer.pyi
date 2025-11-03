@@ -6,22 +6,18 @@ which cannot introspect the compiled Rust code.
 """
 from typing import Any, Callable, List, Optional, Dict
 
-class _AdjacencyType:
+class AdjacencyType:
     Greater: Any
     Lesser: Any
     NoAdjacency: Any
 
-AdjacencyType: _AdjacencyType
-
-class _ModuleType:
+class ModuleType:
     Core: Any
     Bonus: Any
     Upgrade: Any
     Cosmetic: Any
     Reactor: Any
     Atlantid: Any
-
-ModuleType: _ModuleType
 
 class Module:
     def __init__(
@@ -30,9 +26,9 @@ class Module:
         id: str,
         label: str,
         tech: str,
-        module_type: "_ModuleType",
+        module_type: "ModuleType",
         bonus: float,
-        adjacency: "_AdjacencyType",
+        adjacency: "AdjacencyType",
         sc_eligible: bool,
         image: Optional[str],
     ) -> None: ...
