@@ -220,7 +220,7 @@ def handle_optimize_socket(data):
     sid = req.sid
     run_id = str(uuid.uuid4())
     last_emit_time = 0
-    THROTTLE_INTERVAL = 0.01  # seconds
+    THROTTLE_INTERVAL = 0.10  # seconds
 
     def progress_callback(progress_data):
         """Callback to emit progress over the socket, with throttling."""
