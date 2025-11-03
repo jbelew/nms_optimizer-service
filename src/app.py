@@ -10,6 +10,8 @@ import time
 import uuid
 from typing import cast
 
+import gevent
+
 from flask import Flask, jsonify, request
 from flask_compress import Compress
 from flask_cors import CORS
@@ -218,7 +220,7 @@ def handle_optimize_socket(data):
     sid = req.sid
     run_id = str(uuid.uuid4())
     last_emit_time = 0
-    THROTTLE_INTERVAL = 0.1  # seconds
+    THROTTLE_INTERVAL = 0.01  # seconds
 
     def progress_callback(progress_data):
         """Callback to emit progress over the socket, with throttling."""
@@ -234,9 +236,11 @@ def handle_optimize_socket(data):
         if is_important_event:
             emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
             last_emit_time = current_time  # Reset throttle for subsequent messages
+            gevent.sleep(0)  # Yield to allow other greenlets to run
         elif current_time - last_emit_time > THROTTLE_INTERVAL:
             emit("progress", {**progress_data, "run_id": run_id}, room=sid)  # type: ignore
             last_emit_time = current_time
+            gevent.sleep(0)  # Yield to allow other greenlets to run
 
     solve_type = data.get("solve_type")  # Extract solve_type from the incoming data
     result, status_code = run_optimization(

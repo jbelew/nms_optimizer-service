@@ -548,7 +548,7 @@ fn calculate_grid_score(mut grid: Grid, tech: &str, apply_supercharge_first: boo
 
 #[pyfunction]
 fn simulated_annealing(
-    py: Python<'_>,
+    // py: Python<'_>,
     grid_json: String,
     tech_modules: Vec<PyRef<Module>>,
     tech: &str,
@@ -557,6 +557,11 @@ fn simulated_annealing(
     stopping_temperature: f64,
     iterations_per_temp: i32,
     progress_callback: Py<PyAny>,
+    max_steps_without_improvement: i32,
+    reheat_factor: f64,
+    max_reheats: i32,
+    initial_swap_probability: f64,
+    final_swap_probability: f64,
 ) -> PyResult<(String, f64)> {
     let mut current_grid: Grid = serde_json::from_str(&grid_json).unwrap();
     let tech_modules_vec: Vec<Module> = tech_modules.iter().map(|m| (**m).clone()).collect();
@@ -574,9 +579,11 @@ fn simulated_annealing(
 
     let start_time = std::time::Instant::now();
     let mut time_to_best_score: Option<f64> = None;
+    let mut steps_without_improvement = 0;
+    let mut reheat_count = 0;
 
     // Send initial 'start' message
-    Python::with_gil(|py| {
+    Python::attach(|py| {
         if !progress_callback.is_none(py) {
             let progress_data = pyo3::types::PyDict::new(py);
             progress_data.set_item("status", "start").unwrap();
@@ -596,11 +603,14 @@ fn simulated_annealing(
         for _ in 0..iterations_per_temp {
             iteration_count += 1;
             let mut temp_grid = current_grid.clone();
-            let move_type: f64 = rng.r#gen::<f64>();
+            let normalized_temperature = (temperature - stopping_temperature) / (initial_temperature - stopping_temperature);
+            let current_swap_probability = initial_swap_probability + (final_swap_probability - initial_swap_probability) * (1.0 - normalized_temperature);
 
-            let original_cells = if move_type < 0.33 {
+            let move_type_rand: f64 = rng.r#gen::<f64>();
+
+            let original_cells = if move_type_rand < current_swap_probability {
                 swap_modules(&mut temp_grid, tech, &tech_modules_vec)
-            } else if move_type < 0.66 {
+            } else if move_type_rand < current_swap_probability + (1.0 - current_swap_probability) / 2.0 { // Distribute remaining probability
                 move_module(&mut temp_grid, tech, &tech_modules_vec)
             } else {
                 swap_adjacent_modules(&mut temp_grid, tech, &tech_modules_vec)
@@ -618,9 +628,10 @@ fn simulated_annealing(
                         best_grid = current_grid.clone();
                         best_score = current_score;
                         time_to_best_score = Some(start_time.elapsed().as_secs_f64());
+                        steps_without_improvement = 0; // Reset counter on improvement
 
                         // Report new best score immediately
-                        Python::with_gil(|py| {
+                        Python::attach(|py| {
                             if !progress_callback.is_none(py) {
                                 let progress_data = pyo3::types::PyDict::new(py);
                                 progress_data.set_item("status", "in_progress").unwrap();
@@ -638,13 +649,23 @@ fn simulated_annealing(
                             }
                         });
                     }
+                } else {
+                    steps_without_improvement += 1; // Increment counter if no improvement
                 }
             }
         }
         temperature *= cooling_rate;
 
+        // Reheat logic
+        if steps_without_improvement >= max_steps_without_improvement && reheat_count < max_reheats {
+            temperature *= 1.0 + reheat_factor;
+            steps_without_improvement = 0;
+            reheat_count += 1;
+            log::info!("SA: Reheating temperature to {:.2} (Reheat Count: {})", temperature, reheat_count);
+        }
+
         // --- Progress Reporting (periodic) ---
-        Python::with_gil(|py| {
+        Python::attach(|py| {
             if !progress_callback.is_none(py) {
                 let progress_percent = (iteration_count as f64 / total_iterations_estimate) * 100.0;
                 let progress_data = pyo3::types::PyDict::new(py);
@@ -652,6 +673,7 @@ fn simulated_annealing(
                 progress_data.set_item("current_score", current_score).unwrap();
                 progress_data.set_item("best_score", best_score).unwrap();
                 progress_data.set_item("temperature", temperature).unwrap();
+                progress_data.set_item("reheat_count", reheat_count).unwrap();
                 progress_data.set_item("status", "in_progress").unwrap();
                 progress_data.set_item("time", start_time.elapsed().as_secs_f64()).unwrap();
             progress_callback.call1(py, (progress_data,)).unwrap();
@@ -662,10 +684,11 @@ fn simulated_annealing(
     let best_grid_json = serde_json::to_string(&best_grid).unwrap();
 
     // Send final 'finish' message
-    Python::with_gil(|py| {
+    Python::attach(|py| {
         if !progress_callback.is_none(py) {
             let progress_data = pyo3::types::PyDict::new(py);
             progress_data.set_item("status", "finish").unwrap();
+            progress_data.set_item("progress_percent", 100.0).unwrap();
             progress_data.set_item("best_score", best_score).unwrap();
             progress_data.set_item("time", start_time.elapsed().as_secs_f64()).unwrap();
             progress_data.set_item("time_to_best_score", time_to_best_score.unwrap_or(0.0)).unwrap();

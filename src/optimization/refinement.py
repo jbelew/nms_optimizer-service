@@ -49,7 +49,7 @@ def _handle_ml_opportunity(
                 "tech": tech,
                 "run_id": run_id,
                 "stage": stage,
-                "status": "Loading AI Model",
+                "status": "Optimized with Rust. Obviously.",
                 "progress_percent": 0,
             }
         )
@@ -314,14 +314,14 @@ def simulated_annealing(
     tech,
     full_grid,
     player_owned_rewards=None,
-    initial_temperature=1500,
-    cooling_rate=0.98,
-    stopping_temperature=1.5,
+    initial_temperature=3000,
+    cooling_rate=0.999,
+    stopping_temperature=0.1,
     iterations_per_temp=35,
-    initial_swap_probability=0.60,
+    initial_swap_probability=0.55,
     final_swap_probability=0.25,
     start_from_current_grid: bool = False,
-    max_processing_time: float = 360.0,
+    max_processing_time: float = 600.0,
     progress_callback=None,
     run_id=None,
     stage=None,
@@ -334,7 +334,14 @@ def simulated_annealing(
     tech_modules: Optional[list] = None,
     max_steps_without_improvement=150,
     reheat_factor=0.6,
+    max_reheats=10,
+    num_sa_runs: int = 2,
 ):
+    # --- Define max_reheats early ---
+    if start_from_current_grid:  # Polishing
+        max_reheats = 4
+    else:
+        max_reheats = 10
     if tech_modules is None:
         tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
 
@@ -373,17 +380,58 @@ def simulated_annealing(
 
     grid_json = grid.to_json()
 
-    best_grid_json, best_score = rust_scorer.simulated_annealing(
-        grid_json,
-        tech_modules_rs,
-        tech,
-        initial_temperature,
-        cooling_rate,
-        stopping_temperature,
-        iterations_per_temp,
-        progress_callback,
-    )
+    overall_best_grid_json = ""
+    overall_best_score = -float("inf")
 
-    best_grid = Grid.from_json(best_grid_json)
+    for run_idx in range(num_sa_runs):
+        # Adjust progress_offset for each run
+        current_progress_offset = progress_offset + (run_idx / num_sa_runs) * progress_scale
 
-    return best_grid, best_score
+        # Pass a wrapper progress_callback that adjusts progress_percent
+        # Ensure progress_callback is not None before wrapping
+        wrapped_progress_callback = None
+        if progress_callback:
+
+            def _wrapped_callback(pd):
+                # Create a copy to avoid modifying the original dict if it's reused
+                pd_copy = pd.copy()
+                # Only adjust progress_percent for 'in_progress' status
+                if pd_copy.get("status") == "in_progress" and "progress_percent" in pd_copy:
+                    adjusted_progress_percent = current_progress_offset + (pd_copy["progress_percent"] / 100) * (
+                        progress_scale / num_sa_runs
+                    )
+                    pd_copy["progress_percent"] = adjusted_progress_percent
+                # For 'start' and 'finish' messages, set progress_percent explicitly
+                elif pd_copy.get("status") == "start":
+                    pd_copy["progress_percent"] = current_progress_offset
+                elif pd_copy.get("status") == "finish":
+                    pd_copy["progress_percent"] = current_progress_offset + (
+                        progress_scale / num_sa_runs
+                    )  # This represents 100% of this run
+                progress_callback(pd_copy)  # Pass the modified copy
+
+            wrapped_progress_callback = _wrapped_callback
+
+        current_run_best_grid_json, current_run_best_score = rust_scorer.simulated_annealing(
+            grid_json,
+            tech_modules_rs,
+            tech,
+            initial_temperature,
+            cooling_rate,
+            stopping_temperature,
+            iterations_per_temp,
+            wrapped_progress_callback,
+            max_steps_without_improvement,
+            reheat_factor,
+            max_reheats,
+            initial_swap_probability,
+            final_swap_probability,
+        )
+
+        if current_run_best_score > overall_best_score:
+            overall_best_score = current_run_best_score
+            overall_best_grid_json = current_run_best_grid_json
+
+    best_grid = Grid.from_json(overall_best_grid_json)
+
+    return best_grid, overall_best_score

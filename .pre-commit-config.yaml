@@ -17,6 +17,12 @@ repos:
         args: [--fix]
 -   repo: local
     hooks:
+    -   id: build-rust-module
+        name: Build Rust Module
+        entry: bash -c "source venv/bin/activate && maturin develop --release --manifest-path rust_scorer/Cargo.toml"
+        language: system
+        pass_filenames: false
+        always_run: true # Always run this hook
     -   id: unittest
         name: Run tests
         entry: python -m unittest discover -s src/tests
@@ -74,4 +80,3 @@ repos:
         - wsproto==1.2.0
         - zope.event==6.0
         - zope.interface==8.0.1
-        - pre-commit==3.7.1
