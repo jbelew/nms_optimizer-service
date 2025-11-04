@@ -5,10 +5,6 @@ import logging
 
 from rust_scorer import simulated_annealing, Module, ModuleType, AdjacencyType
 
-# Add project root to sys.path
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
 
 # Configure basic logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
