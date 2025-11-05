@@ -498,7 +498,7 @@ def generate_training_batch(
 
             try:
                 # module_count is len(tech_modules), tech_modules is already fetched
-                if module_count < 8:
+                if module_count < 4:
                     print(
                         f"INFO -- DataGen ({tech}): {module_count} modules < 9. Using refine_placement_for_training (brute-force)."
                     )

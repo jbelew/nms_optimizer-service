@@ -384,15 +384,15 @@ def simulated_annealing(
     overall_best_grid_json = ""
     overall_best_score = -float("inf")
 
-    # Initialize Python's random module for deterministic seed generation
-    random.seed(seed)
+    # Create a local random generator for deterministic seed generation
+    rng = random.Random(seed)
 
     for run_idx in range(num_sa_runs):
         # Adjust progress_offset for each run
         current_progress_offset = progress_offset + (run_idx / num_sa_runs) * progress_scale
 
         # Generate a deterministic seed for the current Rust SA run
-        current_run_seed = random.randint(0, 2**64 - 1)  # Generate a new seed for each run
+        current_run_seed = rng.randint(0, 2**64 - 1)  # Generate a new seed for each run
 
         # Pass a wrapper progress_callback that adjusts progress_percent
         # Ensure progress_callback is not None before wrapping
