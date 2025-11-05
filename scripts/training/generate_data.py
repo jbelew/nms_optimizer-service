@@ -515,14 +515,16 @@ def generate_training_batch(
                     # Use robust SA parameters, similar to those in refine_placement_for_training's internal SA call
                     # when it handles >=10 modules.
                     sa_params_for_ground_truth = {
-                        "initial_temperature": 5000,
-                        "cooling_rate": 0.999,
+                        "initial_temperature": 9000,
+                        "cooling_rate": 0.99,
                         "stopping_temperature": 0.1,
-                        "iterations_per_temp": 35,
-                        "initial_swap_probability": 0.55,
-                        "final_swap_probability": 0.25,
+                        "iterations_per_temp": 75,
+                        "initial_swap_probability": 0.6,
+                        "final_swap_probability": 0.1,
                         "start_from_current_grid": False,
                         "max_processing_time": 600.0,
+                        "max_reheats": 20,
+                        "num_sa_runs": 6,
                     }
                     # Ensure 'modules' (modules_for_training.modules) is passed as modules_data_dict
                     # and tech_modules (the list of module dicts) is passed as tech_modules_list_override

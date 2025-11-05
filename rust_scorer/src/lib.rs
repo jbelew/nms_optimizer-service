@@ -1,6 +1,8 @@
 use pyo3::prelude::*;
 use pyo3_log::init;
 use rand::prelude::*;
+use rand::rngs::StdRng;
+use rand::SeedableRng;
 use serde::{self, Deserialize, Deserializer, Serialize};
 
 fn module_type_from_string_or_null<'de, D>(deserializer: D) -> Result<Option<ModuleType>, D::Error>
@@ -564,6 +566,7 @@ fn simulated_annealing(
     final_swap_probability: f64,
     run_idx: i32,
     num_sa_runs: i32,
+    seed: Option<u64>, // Added seed parameter
 ) -> PyResult<(String, f64)> {
     let mut current_grid: Grid = serde_json::from_str(&grid_json).unwrap();
     let tech_modules_vec: Vec<Module> = tech_modules.iter().map(|m| (**m).clone()).collect();
@@ -575,7 +578,10 @@ fn simulated_annealing(
     let mut best_score = current_score;
 
     let mut temperature = initial_temperature;
-    let mut rng = rand::thread_rng();
+    let mut rng: StdRng = match seed { // Initialized StdRng
+        Some(s) => StdRng::seed_from_u64(s),
+        None => StdRng::from_entropy(),
+    };
     let mut iteration_count = 0;
     let total_iterations_estimate = (initial_temperature.log(cooling_rate) - stopping_temperature.log(cooling_rate)).abs() * iterations_per_temp as f64;
 
@@ -613,11 +619,11 @@ fn simulated_annealing(
             let move_type_rand: f64 = rng.r#gen::<f64>();
 
             let original_cells = if move_type_rand < current_swap_probability {
-                swap_modules(&mut temp_grid, tech, &tech_modules_vec)
+                swap_modules(&mut temp_grid, tech, &tech_modules_vec, &mut rng)
             } else if move_type_rand < current_swap_probability + (1.0 - current_swap_probability) / 2.0 { // Distribute remaining probability
-                move_module(&mut temp_grid, tech, &tech_modules_vec)
+                move_module(&mut temp_grid, tech, &tech_modules_vec, &mut rng)
             } else {
-                swap_adjacent_modules(&mut temp_grid, tech, &tech_modules_vec)
+                swap_adjacent_modules(&mut temp_grid, tech, &tech_modules_vec, &mut rng)
             };
 
             if let Some(((_x1, _y1), (_x2, _y2))) = original_cells {
@@ -711,7 +717,7 @@ fn simulated_annealing(
     Ok((best_grid_json, best_score))
 }
 
-fn swap_modules(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>) -> Option<((i32, i32), (i32, i32))> {
+fn swap_modules(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>, rng: &mut StdRng) -> Option<((i32, i32), (i32, i32))> {
     let mut module_positions: Vec<(i32, i32)> = Vec::new();
     for y in 0..grid.height {
         for x in 0..grid.width {
@@ -731,8 +737,7 @@ fn swap_modules(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>)
         return None;
     }
 
-    let mut rng = rand::thread_rng();
-    let sample: Vec<_> = module_positions.choose_multiple(&mut rng, 2).collect();
+    let sample: Vec<_> = module_positions.choose_multiple(rng, 2).collect();
     let pos1 = *sample[0];
     let pos2 = *sample[1];
 
@@ -751,7 +756,7 @@ fn swap_modules(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>)
     Some((pos1, pos2))
 }
 
-fn move_module(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>) -> Option<((i32, i32), (i32, i32))> {
+fn move_module(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>, rng: &mut StdRng) -> Option<((i32, i32), (i32, i32))> {
     let mut module_positions: Vec<(i32, i32)> = Vec::new();
     for y in 0..grid.height {
         for x in 0..grid.width {
@@ -771,8 +776,7 @@ fn move_module(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>) 
         return None;
     }
 
-    let mut rng = rand::thread_rng();
-    let (x_from, y_from) = *module_positions.choose(&mut rng).unwrap();
+    let (x_from, y_from) = *module_positions.choose(rng).unwrap();
 
     let cell_from_clone = grid.get_cell(x_from, y_from).unwrap().clone();
     let module_to_move = tech_modules_on_grid.iter().find(|m| Some(m.id.clone()) == cell_from_clone.module).unwrap();
@@ -813,7 +817,7 @@ fn move_module(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>) 
         return None;
     }
 
-    let (x_to, y_to) = *empty_active_positions.choose_weighted(&mut rng, |item| *weights.get(empty_active_positions.iter().position(|i| i == item).unwrap()).unwrap()).unwrap();
+    let (x_to, y_to) = *empty_active_positions.choose_weighted(rng, |item| *weights.get(empty_active_positions.iter().position(|i| i == item).unwrap()).unwrap()).unwrap();
 
     grid.place_module(x_to, y_to, module_to_move);
     grid.clear_cell(x_from, y_from);
@@ -821,7 +825,7 @@ fn move_module(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>) 
     Some(((x_from, y_from), (x_to, y_to)))
 }
 
-fn swap_adjacent_modules(grid: &mut Grid, tech: &str, _tech_modules_on_grid: &Vec<Module>) -> Option<((i32, i32), (i32, i32))> {
+fn swap_adjacent_modules(grid: &mut Grid, tech: &str, _tech_modules_on_grid: &Vec<Module>, rng: &mut StdRng) -> Option<((i32, i32), (i32, i32))> {
     let mut adjacent_pairs: Vec<((i32, i32), (i32, i32))> = Vec::new();
     for y in 0..grid.height {
         for x in 0..grid.width {
@@ -852,8 +856,7 @@ fn swap_adjacent_modules(grid: &mut Grid, tech: &str, _tech_modules_on_grid: &Ve
         return None;
     }
 
-    let mut rng = rand::thread_rng();
-    let (pos1, pos2) = *adjacent_pairs.choose(&mut rng).unwrap();
+    let (pos1, pos2) = *adjacent_pairs.choose(rng).unwrap();
 
     let (x1, y1) = pos1;
     let (x2, y2) = pos2;

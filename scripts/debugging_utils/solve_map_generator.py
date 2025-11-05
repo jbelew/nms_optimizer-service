@@ -56,13 +56,12 @@ def generate_solve_map(
     try:
         if solver_choice == "sa":
             sa_params = {
-                "initial_temperature": 5000,
-                "cooling_rate": 0.999,
+                "initial_temperature": 9000,
+                "cooling_rate": 0.995,
                 "stopping_temperature": 0.1,
-                "iterations_per_temp": 35,
+                "iterations_per_temp": 75,
                 "initial_swap_probability": 0.55,
                 "final_swap_probability": 0.25,
-                "start_from_current_grid": False,
                 "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
@@ -70,6 +69,23 @@ def generate_solve_map(
             if not tech_modules:
                 print(f"Error: No modules found for {ship_type}/{tech} with solve_type {solve_type}")
                 return None, None
+            # starting_grid, starting_score = simulated_annealing(
+            #     grid=grid,
+            #     ship=ship_type,
+            #     modules=ship_modules,
+            #     tech=tech,
+            #     full_grid=grid,
+            #     player_owned_rewards=player_owned_rewards,
+            #     tech_modules=tech_modules,
+            #     solve_type=solve_type,
+            #     start_from_current_grid=False,
+            #     num_sa_runs=20,
+            #     **sa_params,
+            # )
+
+            # print(f"\Starting grid for {ship_type}/{tech} (solve_type: {args.solve_type}): {starting_score:.2f}")
+            # print_grid(starting_grid)
+
             optimized_grid, optimized_score = simulated_annealing(
                 grid=grid,
                 ship=ship_type,
@@ -79,6 +95,8 @@ def generate_solve_map(
                 player_owned_rewards=player_owned_rewards,
                 tech_modules=tech_modules,
                 solve_type=solve_type,
+                start_from_current_grid=False,
+                num_sa_runs=30,
                 **sa_params,
             )
         elif solver_choice == "refine_training":

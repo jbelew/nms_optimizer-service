@@ -136,6 +136,7 @@ You will ensure these are addressed in all projects.
 
 ## Gemini Added Memories
 - The user tends to perform the 'git push origin main --follow-tags' command manually.
+- Resolved a `TypeError: argument 'bonus': must be real number, not NoneType` in `scripts/training/filter_generated_data.py` by ensuring that when no module is present in a grid cell, the `bonus` value is explicitly set to `0.0` (instead of `None`) and `sc_eligible` is set to `False`.
 
 ## Python Documentation Guidelines
 

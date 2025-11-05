@@ -318,8 +318,8 @@ def simulated_annealing(
     cooling_rate=0.99,
     stopping_temperature=0.1,
     iterations_per_temp=75,
-    initial_swap_probability=0.5,
-    final_swap_probability=0.1,
+    initial_swap_probability=0.55,
+    final_swap_probability=0.25,
     start_from_current_grid: bool = False,
     max_processing_time: float = 600.0,
     progress_callback=None,
@@ -332,10 +332,11 @@ def simulated_annealing(
     start_y: int = 0,
     solve_type: Optional[str] = None,
     tech_modules: Optional[list] = None,
-    max_steps_without_improvement=250,
+    max_steps_without_improvement=200,
     reheat_factor=0.6,
-    max_reheats=10,
+    max_reheats: int = 10,
     num_sa_runs: int = 6,
+    seed: int = 161616,  # Default seed set to 42
 ):
     # --- Define max_reheats early ---
     if start_from_current_grid:  # Polishing
@@ -383,9 +384,15 @@ def simulated_annealing(
     overall_best_grid_json = ""
     overall_best_score = -float("inf")
 
+    # Initialize Python's random module for deterministic seed generation
+    random.seed(seed)
+
     for run_idx in range(num_sa_runs):
         # Adjust progress_offset for each run
         current_progress_offset = progress_offset + (run_idx / num_sa_runs) * progress_scale
+
+        # Generate a deterministic seed for the current Rust SA run
+        current_run_seed = random.randint(0, 2**64 - 1)  # Generate a new seed for each run
 
         # Pass a wrapper progress_callback that adjusts progress_percent
         # Ensure progress_callback is not None before wrapping
@@ -428,6 +435,7 @@ def simulated_annealing(
             final_swap_probability,
             run_idx,
             num_sa_runs,
+            current_run_seed,  # Pass the seed to the Rust function
         )
 
         if current_run_best_score > overall_best_score:
