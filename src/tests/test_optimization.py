@@ -310,6 +310,127 @@ class TestOptimization(unittest.TestCase):
         # The score may be calculated multiple times, so we check the last call.
         mock_calculate_grid_score.assert_called_with(initial_sa_grid, self.tech, apply_supercharge_first=False)
 
+    @patch("src.optimization.core.get_tech_modules")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core.determine_window_dimensions")
+    def test_optimize_partial_set_no_window_no_forced_returns_indicator(
+        self, mock_determine_window_dimensions, mock_find_opportunities, mock_get_tech_modules
+    ):
+        """Test returns 'Pattern No Fit' when a partial set has no window and is not forced."""
+        # Simulate a partial module set
+        full_module_list = [
+            {
+                "id": "A",
+                "label": "Module A",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "B",
+                "label": "Module B",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "C",
+                "label": "Module C",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "D",
+                "label": "Module D",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "E",
+                "label": "Module E",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "F",
+                "label": "Module F",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+        ]
+        partial_module_list = [
+            {
+                "id": "A",
+                "label": "Module A",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "B",
+                "label": "Module B",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "C",
+                "label": "Module C",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+        ]
+        mock_get_tech_modules.side_effect = [
+            full_module_list,
+            partial_module_list,
+        ]
+        # Simulate no suitable window found
+        mock_find_opportunities.return_value = None
+        # Mock determine_window_dimensions to return a size that won't fit in an empty grid
+        # This will force the 'Could not find any suitable window' path
+        mock_determine_window_dimensions.return_value = (100, 100)  # A window larger than the grid
+
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            self.player_owned_rewards,
+            forced=False,
+            available_modules=["A", "B", "C"],
+        )
+
+        mock_get_tech_modules.assert_called()
+        mock_find_opportunities.assert_called_once()
+        mock_determine_window_dimensions.assert_called_once()
+        self.assertIsNone(result_grid)
+        self.assertEqual(percentage, 0.0)
+        self.assertEqual(solved_bonus, 0.0)
+        self.assertEqual(solve_method, "Pattern No Fit")
+
     @patch("src.optimization.core.get_solve_map")
     @patch("src.pattern_matching.apply_pattern_to_grid")
     @patch("src.optimization.core.find_supercharged_opportunities")

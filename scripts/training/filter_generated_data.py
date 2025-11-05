@@ -374,13 +374,14 @@ if __name__ == "__main__":
                                                 c, r, module_data.get("sc_eligible")
                                             )
 
-                        score = calculate_grid_score(current_grid_reconstructed, current_tech_from_path)
+                        if current_tech_from_path:
+                            score = calculate_grid_score(current_grid_reconstructed, current_tech_from_path)
 
-                        if score > best_overall_score:
-                            best_overall_score = score
-                            best_overall_y = current_y_np
-                            best_overall_filepath = filepath
-                            best_overall_sample_index = i
+                            if score > best_overall_score:
+                                best_overall_score = score
+                                best_overall_y = current_y_np
+                                best_overall_filepath = filepath
+                                best_overall_sample_index = i
 
             except Exception as e:
                 print(f"Error processing file {filepath}: {e}")

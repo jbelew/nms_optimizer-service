@@ -310,8 +310,14 @@ def optimize_placement(
                     )
                     solve_method = "Partial Set SA (First Fit)"
                 else:
+                    if not forced:
+                        logging.info(
+                            f"Partial module set for {ship}/{tech}, but no suitable window found. Returning 'Pattern No Fit'. UI can prompt to force SA."
+                        )
+                        return None, 0.0, 0.0, "Pattern No Fit"
+
                     logging.warning(
-                        "Could not find any suitable window for partial module set. Running full Simulated Annealing."
+                        "Could not find any suitable window for partial module set. FORCING full Simulated Annealing."
                     )
                     # We already have grid_for_sa which is a copy with the tech cleared.
                     solved_grid, solved_bonus = simulated_annealing(

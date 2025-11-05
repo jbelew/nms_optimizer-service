@@ -503,11 +503,18 @@ def generate_training_batch(
                         f"INFO -- DataGen ({tech}): {module_count} modules < 9. Using refine_placement_for_training (brute-force)."
                     )
                     # refine_placement_for_training will use brute-force for <10 modules
-                    optimized_grid, best_bonus = refine_placement_for_training(
-                        original_grid_layout,
-                        tech_modules,
-                        tech,
-                    )
+                    if isinstance(module_data, dict) and module_data:
+                        optimized_grid, best_bonus = refine_placement_for_training(
+                            grid=original_grid_layout,
+                            ship=ship,
+                            modules=module_data,
+                            tech=tech,
+                            solve_type=solve_type,
+                            available_modules=tech_modules,
+                        )
+                    else:
+                        print(f"Warning: module_data is not a valid dict for tech '{tech}', skipping refinement.")
+                        sample_valid = False
                 else:  # module_count >= 10
                     print(
                         f"INFO -- DataGen ({tech}): {module_count} modules >= 9. Using direct Simulated Annealing for ground truth."
