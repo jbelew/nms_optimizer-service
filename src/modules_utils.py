@@ -68,6 +68,9 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards, available_mo
     else:
         tech_modules = selected_tech_data.get("modules", [])
 
+    if player_owned_rewards is None:
+        player_owned_rewards = []
+
     # Filter the found modules by ownership
     filtered_modules = []
     for module in tech_modules:
