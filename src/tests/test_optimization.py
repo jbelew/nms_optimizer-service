@@ -842,3 +842,61 @@ class TestOptimization(unittest.TestCase):
 
         # 3. Assert that the score has improved
         self.assertIsNotNone(best_grid)
+
+    @patch("src.optimization.core._handle_sa_refine_opportunity")
+    @patch("src.optimization.core.get_tech_modules")
+    def test_partial_set_chooses_best_rotated_window(
+        self,
+        mock_get_tech_modules,
+        mock_handle_sa_refine_opportunity,
+    ):
+        """
+        Tests that for a partial set, the code scans with
+        a rotated window and chooses the orientation with the best score.
+        """
+        # 1. Setup: Grid where a 2x3 rotated window is better than 3x2.
+        grid = Grid(5, 5)
+        # A 3x2 window has 6 slots, max score 6.
+        # A 2x3 window at (3,0) with 3 SC slots will have a score of 9.
+        grid.set_supercharged(3, 0, True)
+        grid.set_supercharged(3, 1, True)
+        grid.set_supercharged(3, 2, True)
+
+        # This will result in determine_window_dimensions returning (3,2)
+        num_modules = 6
+        full_module_list = [
+            {
+                "id": f"M{i}",
+                "label": f"Module {i}",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
+            for i in range(num_modules)
+        ]
+        partial_module_list = full_module_list[:]
+        mock_get_tech_modules.side_effect = [full_module_list, partial_module_list, partial_module_list]
+
+        mock_handle_sa_refine_opportunity.return_value = (grid, 100.0)
+
+        # 2. Run optimization
+        optimize_placement(
+            grid,
+            "standard",
+            self.modules,
+            "pulse",
+            forced=True,
+            available_modules=[m["id"] for m in partial_module_list],
+        )
+
+        # 3. Assertions
+        mock_handle_sa_refine_opportunity.assert_called_once()
+        args, kwargs = mock_handle_sa_refine_opportunity.call_args
+
+        window_width = args[6]
+        window_height = args[7]
+
+        self.assertEqual(window_width, 2)
+        self.assertEqual(window_height, 3)

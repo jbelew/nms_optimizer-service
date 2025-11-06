@@ -268,19 +268,35 @@ def optimize_placement(
                 solved_bonus_sa = -float("inf")
                 sa_method_for_pattern_gen = "Unknown"
 
-                best_score_scan, best_pos_scan = _scan_grid_with_window(
-                    grid_for_sa.copy(),
-                    w,
-                    h,
-                    num_modules,
-                    tech,
-                    require_supercharge=False,
+                # --- Scan with original and rotated window dimensions ---
+                best_score_scan = -float("inf")
+                best_pos_scan = None
+                best_w, best_h = w, h
+
+                # Scan 1: Original dimensions
+                score1, pos1 = _scan_grid_with_window(
+                    grid_for_sa.copy(), w, h, num_modules, tech, require_supercharge=False
                 )
+                if score1 > best_score_scan:
+                    best_score_scan = score1
+                    best_pos_scan = pos1
+                    best_w, best_h = w, h
+
+                # Scan 2: Rotated dimensions (if different)
+                if w != h:
+                    score2, pos2 = _scan_grid_with_window(
+                        grid_for_sa.copy(), h, w, num_modules, tech, require_supercharge=False
+                    )
+                    if score2 > best_score_scan:
+                        best_score_scan = score2
+                        best_pos_scan = pos2
+                        best_w, best_h = h, w
+                # --- End Scan ---
 
                 if best_pos_scan:
                     opp_x_scan, opp_y_scan = best_pos_scan
                     logging.info(
-                        f"Found best available window via scan: {w}x{h} at ({opp_x_scan}, {opp_y_scan}) with score {best_score_scan:.4f} for initial SA."
+                        f"Found best available window via scan: {best_w}x{best_h} at ({opp_x_scan}, {opp_y_scan}) with score {best_score_scan:.4f} for initial SA."
                     )
                     solved_grid_sa, solved_bonus_sa = _handle_sa_refine_opportunity(
                         grid_for_sa,
@@ -289,8 +305,8 @@ def optimize_placement(
                         tech,
                         opp_x_scan,
                         opp_y_scan,
-                        w,
-                        h,
+                        best_w,
+                        best_h,
                         progress_callback=progress_callback,
                         run_id=run_id,
                         stage="partial_set_sa_pattern_gen_scanned",
