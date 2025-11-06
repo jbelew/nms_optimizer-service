@@ -61,10 +61,8 @@ def run_benchmark(
         print(f"Could not find module data for ship: {ship}")
         return
     tech = "hyper"
-    player_owned_rewards = []
-    solve_type = None
 
-    tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type)
+    tech_modules = get_tech_modules(modules, ship, tech)
 
     scores = []
     run_times = []
@@ -79,8 +77,6 @@ def run_benchmark(
             modules,
             tech,
             full_grid,
-            player_owned_rewards,
-            solve_type=solve_type,
             tech_modules=tech_modules,
             initial_temperature=initial_temperature,
             cooling_rate=cooling_rate,

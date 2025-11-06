@@ -74,7 +74,7 @@ def generate_training_batch(
         print(f"Error: No module data found for ship '{ship}'. Cannot generate data.")
         return 0, 0, None
 
-    training_module_ids = get_training_module_ids(ship, tech, solve_type=solve_type)
+    training_module_ids = get_training_module_ids(ship, tech)
     if not training_module_ids:
         print(f"Error: No training modules found for {ship}/{tech}. Cannot generate data.")
         return 0, 0, None
@@ -121,9 +121,7 @@ def generate_training_batch(
 
     # --- Initial default grid dimensions (might be overridden by experimental logic) ---
     # This call uses the *production* logic of determine_window_dimensions
-    default_grid_width, default_grid_height = determine_window_dimensions(
-        module_count, tech, ship, solve_type=solve_type
-    )
+    default_grid_width, default_grid_height = determine_window_dimensions(module_count, tech, ship)
 
     # --- End Determine Dynamic Grid Dimensions ---
 
@@ -543,7 +541,6 @@ def generate_training_batch(
                         full_grid=original_grid_layout,
                         player_owned_rewards=None,  # Not needed when overriding modules
                         tech_modules=tech_modules,
-                        solve_type=solve_type,
                         **sa_params_for_ground_truth,
                     )
                     best_bonus = sa_score  # Assign the score from SA

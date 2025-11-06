@@ -119,7 +119,6 @@ def run_optimization(data, progress_callback=None, run_id=None):
     """
     ship = data.get("ship")
     tech = data.get("tech")
-    player_owned_rewards = data.get("player_owned_rewards")
     available_modules = data.get("available_modules")
     forced_solve = data.get("forced", False)
     send_grid_updates = data.get("send_grid_updates", False)
@@ -145,7 +144,6 @@ def run_optimization(data, progress_callback=None, run_id=None):
             ship,
             module_data,
             tech,
-            player_owned_rewards,
             forced=forced_solve,
             progress_callback=progress_callback,
             run_id=run_id,
@@ -185,7 +183,6 @@ def optimize_grid():
         ship (str): The ship type (e.g., "hauler").
         tech (str): The technology to optimize (e.g., "pulse").
         grid (dict): The grid object from the client.
-        player_owned_rewards (list, optional): A list of owned reward modules.
         ... and other parameters for `run_optimization`.
 
     Returns:
@@ -238,9 +235,7 @@ def handle_optimize_socket(data):
             last_emit_time = current_time
             gevent.sleep(0)  # Yield to allow other greenlets to run
 
-    result, status_code = run_optimization(
-        data, progress_callback=progress_callback, run_id=run_id
-    )
+    result, status_code = run_optimization(data, progress_callback=progress_callback, run_id=run_id)
     emit("optimization_result", {**result, "run_id": run_id}, room=sid)  # type: ignore
 
 

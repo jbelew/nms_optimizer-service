@@ -10,7 +10,7 @@ import json
 import logging
 import os
 from functools import lru_cache
-from typing import List, Optional
+from typing import List
 
 from .data_definitions.modules_for_training import MODULES_FOR_TRAINING
 
@@ -225,7 +225,7 @@ def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
         logging.warning(f"get_training_module_ids: No technology found with key '{tech_key}' for ship '{ship_key}'.")
         return []
 
-    # 4. Select the correct candidate based on solve_type
+    # Select the correct candidate (implicitly selecting the default where 'type' is None)
     selected_tech_data = None
     for candidate in candidates_for_tech:
         if candidate.get("type") is None:
@@ -241,7 +241,5 @@ def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
         )
         return module_ids
 
-    logging.warning(
-        f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key}."
-    )
+    logging.warning(f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key}.")
     return []

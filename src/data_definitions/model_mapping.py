@@ -145,26 +145,19 @@ def get_model_keys(
     ui_tech_key: str,
     grid_width: int,
     grid_height: int,
-    player_owned_rewards: Optional[List[str]] = None,
     available_modules: Optional[List[str]] = None,
 ) -> Dict[str, str]:
     """
     Determines keys for model filename and module definitions.
     1. Establishes initial base keys from UI keys and PLATFORM_TECH_TO_MODEL_KEYS.
        These serve as the primary keys for module definitions.
-    2. Applies reward-based overrides (e.g., "pulse" + "PC" -> "photonix"),
-       updating both module definition tech key and filename tech key.
-    3. Appends the `solve_type` to the `filename_tech_key` if it is provided
-       (e.g., "pulse" -> "pulse_max").
-    4. If `solve_type` is not provided, appends the grid dimensions to the
-       `filename_tech_key` (e.g., "pulse" -> "pulse_4x3").
+    2. Appends the grid dimensions to the `filename_tech_key` (e.g., "pulse" -> "pulse_4x3").
 
     Args:
         ui_ship_key: The ship key provided by the user/UI.
         ui_tech_key: The tech key provided by the user/UI.
         grid_width: The expected grid width for this tech (from determine_window_dimensions).
         grid_height: The expected grid height for this tech (from determine_window_dimensions).
-        player_owned_rewards: List of reward module IDs owned by the player.
         available_modules (list, optional): A list of available module IDs. Defaults to None.
 
     Returns:
@@ -174,8 +167,6 @@ def get_model_keys(
             "module_def_ship_key": Key for ship lookup in module definitions.
             "module_def_tech_key": Key for tech lookup in module definitions.
     """
-    # player_rewards_set = set(player_owned_rewards) if player_owned_rewards else set()
-
     # --- Step 1: Determine initial base keys (for module definitions and filenames) ---
     if ui_ship_key in PLATFORM_TECH_TO_MODEL_KEYS:
         initial_model_ship_key, initial_model_tech_key = PLATFORM_TECH_TO_MODEL_KEYS[ui_ship_key].get(

@@ -19,7 +19,6 @@ def generate_solve_map(
     tech,
     grid_width=3,
     grid_height=3,
-    player_owned_rewards=None,
     supercharged_positions=None,
     solver_choice="sa",
     solve_type=None,
@@ -32,14 +31,9 @@ def generate_solve_map(
         tech (str): The technology key.
         grid_width (int, optional): The width of the grid. Defaults to 3.
         grid_height (int, optional): The height of the grid. Defaults to 3.
-        player_owned_rewards (list, optional): List of player-owned reward module IDs. Defaults to ["PC", "SB", "SP", "TT"].
         supercharged_positions (list, optional): List of (x, y) tuples for supercharged cells. Defaults to None.
         solver_choice (str, optional): The solver to use ('sa' or 'refine_training'). Defaults to 'sa'.
     """
-    if player_owned_rewards is None:
-        # <<< Simplified default rewards list >>>
-        player_owned_rewards = ["SB", "SP", "TT"]
-
     ship_modules = modules.get(ship_type)
     if not ship_modules:
         print(f"Error: no modules for ship {ship_type}")
@@ -65,26 +59,10 @@ def generate_solve_map(
                 "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
-            tech_modules = get_tech_modules(ship_modules, ship_type, tech, player_owned_rewards, solve_type=solve_type)
+            tech_modules = get_tech_modules(ship_modules, ship_type, tech)
             if not tech_modules:
                 print(f"Error: No modules found for {ship_type}/{tech} with solve_type {solve_type}")
                 return None, None
-            # starting_grid, starting_score = simulated_annealing(
-            #     grid=grid,
-            #     ship=ship_type,
-            #     modules=ship_modules,
-            #     tech=tech,
-            #     full_grid=grid,
-            #     player_owned_rewards=player_owned_rewards,
-            #     tech_modules=tech_modules,
-            #     solve_type=solve_type,
-            #     start_from_current_grid=False,
-            #     num_sa_runs=20,
-            #     **sa_params,
-            # )
-
-            # print(f"\Starting grid for {ship_type}/{tech} (solve_type: {args.solve_type}): {starting_score:.2f}")
-            # print_grid(starting_grid)
 
             optimized_grid, optimized_score = simulated_annealing(
                 grid=grid,
@@ -92,9 +70,7 @@ def generate_solve_map(
                 modules=ship_modules,
                 tech=tech,
                 full_grid=grid,
-                player_owned_rewards=player_owned_rewards,
                 tech_modules=tech_modules,
-                solve_type=solve_type,
                 start_from_current_grid=False,
                 num_sa_runs=30,
                 **sa_params,
@@ -133,14 +109,6 @@ if __name__ == "__main__":
     parser.add_argument("--width", type=int, default=3, help="Grid width")
     parser.add_argument("--height", type=int, default=3, help="Grid height")
     parser.add_argument(
-        "--rewards",
-        type=str,
-        nargs="*",
-        # <<< Updated default rewards list >>>
-        default=["SB", "SP", "TT"],
-        help="List of player-owned reward module IDs",
-    )
-    parser.add_argument(
         "--supercharged",
         type=int,
         nargs="*",
@@ -161,7 +129,6 @@ if __name__ == "__main__":
     tech = args.tech
     grid_width = args.width
     grid_height = args.height
-    player_owned_rewards = args.rewards
     solver = args.solver
 
     # Parse supercharged positions from command line arguments
@@ -179,7 +146,6 @@ if __name__ == "__main__":
         tech,
         grid_width,
         grid_height,
-        player_owned_rewards,
         supercharged_positions=supercharged_positions,
         solver_choice=solver,
         solve_type=args.solve_type,

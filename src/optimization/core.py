@@ -32,7 +32,6 @@ def optimize_placement(
     ship,
     modules,
     tech,
-    player_owned_rewards=None,
     forced=False,
     progress_callback=None,
     run_id=None,
@@ -51,7 +50,6 @@ def optimize_placement(
         ship (str): The ship type key.
         modules (dict): The main modules dictionary.
         tech (str): The technology key.
-        player_owned_rewards (list, optional): List of reward module IDs owned. Defaults to None.
         forced (bool): If True and no pattern fits a solve map, forces SA.
                        If False, returns "Pattern No Fit" to allow UI intervention.
 
@@ -67,9 +65,6 @@ def optimize_placement(
     logging.info(f"Attempting solve for ship: '{ship}' -- tech: '{tech}'")
     logging.debug(f"send_grid_updates: {send_grid_updates}")
 
-    if player_owned_rewards is None:
-        player_owned_rewards = []
-
     # --- Get modules for the current tech ---
     # This list is used to determine module_count for experimental window sizing
     # and for the check_all_modules_placed function.
@@ -77,14 +72,12 @@ def optimize_placement(
         modules,
         ship,
         tech,
-        player_owned_rewards,
         available_modules=None,
     )
     tech_modules = get_tech_modules(
         modules,
         ship,
         tech,
-        player_owned_rewards,
         available_modules=available_modules,
     )
     if not tech_modules:
@@ -130,7 +123,6 @@ def optimize_placement(
         ship,
         modules,
         tech,
-        player_owned_rewards,
         available_modules=available_modules,
     )
     # --- End On-Demand Loading ---
@@ -148,11 +140,9 @@ def optimize_placement(
             modules,
             ship,
             tech,
-            player_owned_rewards,
             tech_modules=tech_modules,
         )
         solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
-        solve_score = 0
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
         # <<< KEEP: Final result for this path >>>
         logging.info(
@@ -208,7 +198,6 @@ def optimize_placement(
                     ship,
                     modules,
                     tech,
-                    player_owned_rewards,
                 )
                 if ship in temp_filtered_solves and tech in temp_filtered_solves[ship]:
                     solve_score = temp_filtered_solves[ship][tech].get("score", 0)
@@ -222,7 +211,6 @@ def optimize_placement(
                 modules,
                 ship,
                 tech,
-                player_owned_rewards,
                 tech_modules=tech_modules,
             )
 
@@ -240,7 +228,6 @@ def optimize_placement(
                     modules,
                     ship,
                     tech,
-                    player_owned_rewards,
                     opp_x,
                     opp_y,
                     opp_w,
@@ -300,7 +287,6 @@ def optimize_placement(
                         modules,
                         ship,
                         tech,
-                        player_owned_rewards,
                         opp_x_scan,
                         opp_y_scan,
                         w,
@@ -329,7 +315,6 @@ def optimize_placement(
                             modules,
                             tech,
                             grid,  # full_grid
-                            player_owned_rewards,
                             progress_callback=progress_callback,
                             run_id=run_id,
                             stage="partial_set_sa_pattern_gen_full",
@@ -391,7 +376,6 @@ def optimize_placement(
                                 start_x_pattern,
                                 start_y_pattern,
                                 ship,
-                                player_owned_rewards,
                                 tech_modules=tech_modules,
                             )
                             if temp_result_grid is not None:
@@ -442,7 +426,6 @@ def optimize_placement(
                             modules,
                             tech,
                             grid,  # full_grid
-                            player_owned_rewards,
                             progress_callback=progress_callback,
                             run_id=run_id,
                             stage="final_fallback_sa_no_pattern_fit",
@@ -456,10 +439,22 @@ def optimize_placement(
                         logging.info(f"Forced fallback SA score (no SA-generated pattern fit): {solved_bonus:.4f}")
                         solve_method = "Forced Initial SA (No SA-generated Pattern Fit)"
 
+            if solve_score > 1e-9:
+                percentage = (solved_bonus / solve_score) * 100
+            else:
+                percentage = 100.0 if solved_bonus > 1e-9 else 0.0
+
+            logging.info(
+                f"SUCCESS -- Final Score (Partial Set): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
+            )
+            if solved_grid:
+                print_grid_compact(solved_grid)
+            return solved_grid, round(percentage, 2), solved_bonus, solve_method
+
         # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
         original_pattern = solve_data.get("map")
-        solve_score = solve_data.get("score")
+        solve_score = solve_data.get("score", 0.0)
 
         # print(f"INFO -- Found solve map for {ship}/{tech}. Score: {solve_score:.4f}. Attempting pattern matching.") # <<< KEEP: Important outcome >>>
         # Assuming get_all_unique_pattern_variations is defined elsewhere
@@ -486,7 +481,6 @@ def optimize_placement(
                         start_x,
                         start_y,
                         ship,
-                        player_owned_rewards,
                         tech_modules=tech_modules,
                     )
                     if temp_result_grid is not None:
@@ -542,7 +536,6 @@ def optimize_placement(
                     modules,
                     tech,
                     grid,  # full_grid
-                    player_owned_rewards,
                     progress_callback=progress_callback,
                     run_id=run_id,
                     stage="initial_sa_no_window",
@@ -607,7 +600,6 @@ def optimize_placement(
         modules,
         ship,
         tech,
-        player_owned_rewards,
         tech_modules=tech_modules,
     )
 
@@ -763,7 +755,6 @@ def optimize_placement(
                 modules,
                 ship,
                 tech,
-                player_owned_rewards,
                 opportunity_x,
                 opportunity_y,
                 window_width,
@@ -787,7 +778,6 @@ def optimize_placement(
                     modules,
                     ship,
                     tech,
-                    player_owned_rewards,
                     opportunity_x,
                     opportunity_y,
                     window_width,
@@ -836,7 +826,6 @@ def optimize_placement(
                         modules,
                         ship,
                         tech,
-                        player_owned_rewards,
                         opportunity_x,
                         opportunity_y,
                         window_width,

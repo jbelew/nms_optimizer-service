@@ -14,7 +14,6 @@ def filter_solves(
     ship,
     modules,
     tech,
-    player_owned_rewards=None,
     available_modules=None,
 ):
     """Filters a solve map to only include modules the player owns.
@@ -28,8 +27,6 @@ def filter_solves(
         ship (str): The ship type key.
         modules (dict): The complete module data for the ship.
         tech (str): The technology key.
-        player_owned_rewards (list, optional): A list of reward module IDs
-            owned by the player. Defaults to None.
         available_modules (list, optional): A specific list of available
             module IDs to use. Defaults to None.
 
@@ -43,15 +40,11 @@ def filter_solves(
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]
 
-        if tech == "pulse" and available_modules is not None and "PC" in available_modules:
-            solve_data = solves[ship]["photonix"]
-            print("INFO -- Forcing tech to 'photonix' for PC")
-
         if not solve_data:
             return {}
 
         filtered_solves[ship] = {tech: {}}
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
         if tech_modules is None:
             print(f"Error: No modules found for ship '{ship}' and tech '{tech}'.")
             return {}  # Return empty dict if no modules are found

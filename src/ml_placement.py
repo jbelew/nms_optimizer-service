@@ -14,7 +14,7 @@ import numpy as np
 import os
 import time
 import logging
-from typing import Optional, List, Tuple
+from typing import Optional, Tuple
 from collections import Counter
 
 # --- Add project root to sys.path if needed ---
@@ -66,7 +66,6 @@ def ml_placement(
     start_x_original: int,  # The x-offset of this localized grid within the original full grid
     start_y_original: int,  # The y-offset of this localized grid within the original full grid
     original_state_map: dict,  # The map to restore original state of other tech modules
-    player_owned_rewards: Optional[List[str]] = None,
     model_dir: str = DEFAULT_MODEL_DIR,
     model_grid_width: int = DEFAULT_MODEL_GRID_WIDTH,
     model_grid_height: int = DEFAULT_MODEL_GRID_HEIGHT,
@@ -90,7 +89,6 @@ def ml_placement(
         grid (Grid): The input grid state (active/inactive, supercharged).
         ship (str): The UI ship key.
         tech (str): The UI tech key.
-        player_owned_rewards (Optional[List[str]]): List of reward module IDs owned.
         model_dir (str): Directory containing trained models.
         model_grid_width (int): Width the model expects.
         model_grid_height (int): Height the model expects.
@@ -101,11 +99,6 @@ def ml_placement(
                                        and its calculated score, or (None, 0.0) on failure.
     """
     start_time = time.time()
-    # logging.info(f"INFO -- Attempting ML placement for UI keys: ship='{ship}', tech='{tech}' (Polish: {polish_result})") # Redundant with optimize_placement start
-
-    if player_owned_rewards is None:
-        player_owned_rewards = []
-    set(player_owned_rewards)  # Use set for faster lookups
 
     # --- 1. Determine Model Keys using Mapping ---
     model_keys_info = get_model_keys(
@@ -113,7 +106,6 @@ def ml_placement(
         tech,
         model_grid_width,
         model_grid_height,
-        player_owned_rewards,  # pyright: ignore
         available_modules=available_modules,
     )
     filename_ship_key = model_keys_info["filename_ship_key"]
@@ -162,15 +154,13 @@ def ml_placement(
     # Use the USER-FACING modules_data passed into the function
     modules_data = get_module_data(ship)
     if tech_modules is None:
-        modules_to_place_list = get_tech_modules(modules_data, ship, tech, player_owned_rewards)
+        modules_to_place_list = get_tech_modules(modules_data, ship, tech)
     else:
         modules_to_place_list = tech_modules
 
     if not modules_to_place_list:
         # Important warning
-        logging.warning(
-            f"ML Placement: No placeable modules found for UI keys '{ship}/{tech}' with rewards {player_owned_rewards}. Returning empty grid."
-        )
+        logging.warning(f"ML Placement: No placeable modules found for UI keys '{ship}/{tech}'. Returning empty grid.")
         cleared_grid = grid.copy()
         clear_all_modules_of_tech(cleared_grid, tech)  # Clear the target tech
         return cleared_grid, 0.0
@@ -416,7 +406,6 @@ def ml_placement(
                 ship,  # Use original UI ship key
                 get_module_data(ship),
                 tech,  # Use original UI tech key
-                player_owned_rewards=player_owned_rewards,
                 progress_callback=progress_callback,
                 run_id=run_id,
                 stage=stage,

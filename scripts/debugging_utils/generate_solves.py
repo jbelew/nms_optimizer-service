@@ -17,25 +17,20 @@ def generate_solve_map(
     tech,
     grid_width=4,
     grid_height=3,
-    player_owned_rewards=None,
     supercharged_positions=None,
     solver_choice="sa",
 ):
     """
-    Generates a single solve map for a given technology.
+    Generates a single solve map for a given technology and ship type.
 
     Args:
-        ship_type (str): The ship type key.
+        ship_type (str): The ship type key (e.g., 'standard', 'sentinel').
         tech (str): The technology key.
         grid_width (int, optional): The width of the grid. Defaults to 3.
         grid_height (int, optional): The height of the grid. Defaults to 2.
-        player_owned_rewards (list, optional): List of player-owned reward module IDs. Defaults to ["PC", "SB", "SP", "TT"].
         supercharged_positions (list, optional): List of (x, y) tuples for supercharged cells. Defaults to None.
         solver_choice (str, optional): The solver to use ('sa' or 'refine'). Defaults to 'sa'.
     """
-    if player_owned_rewards is None:
-        player_owned_rewards = ["SB", "SP", "TT"]
-
     grid = Grid(width=grid_width, height=grid_height)
 
     # Set the specified positions as supercharged
@@ -58,9 +53,7 @@ def generate_solve_map(
                 "max_processing_time": 600.0,
             }
             print(f"INFO -- Using Simulated Annealing for {ship_type}/{tech} with params: {sa_params}")
-            optimized_grid, optimized_score = simulated_annealing(
-                grid, ship_type, modules, tech, player_owned_rewards, **sa_params
-            )
+            optimized_grid, optimized_score = simulated_annealing(grid, ship_type, modules, tech, **sa_params)
         elif solver_choice == "refine":
             print(f"INFO -- Using refine_placement (brute-force) for {ship_type}/{tech}")
             optimized_grid, optimized_score = refine_placement_for_training(grid, ship_type, modules, tech)

@@ -40,12 +40,12 @@ def generate_all_input_grids(ship, tech, solve_type, max_supercharged, max_inact
     if not module_data_for_ship:
         raise ValueError(f"No module data found for ship '{ship}'.")
 
-    training_module_ids = get_training_module_ids(ship, tech, solve_type=solve_type)
+    training_module_ids = get_training_module_ids(ship, tech)
     if not training_module_ids:
         raise ValueError(f"No training modules found for {ship}/{tech}/{solve_type}.")
 
     module_count = len(training_module_ids)
-    grid_w, grid_h = determine_window_dimensions(module_count, tech, ship, solve_type=solve_type)
+    grid_w, grid_h = determine_window_dimensions(module_count, tech, ship)
 
     all_positions = [(x, y) for y in range(grid_h) for x in range(grid_w)]
 
@@ -89,12 +89,12 @@ def _generate_random_input_grid(ship, tech, solve_type, max_supercharged, max_in
     if not module_data_for_ship:
         raise ValueError(f"No module data found for ship '{ship}'.")
 
-    training_module_ids = get_training_module_ids(ship, tech, solve_type=solve_type)
+    training_module_ids = get_training_module_ids(ship, tech)
     if not training_module_ids:
         raise ValueError(f"No training modules found for {ship}/{tech}/{solve_type}.")
 
     module_count = len(training_module_ids)
-    grid_w, grid_h = determine_window_dimensions(module_count, tech, ship, solve_type=solve_type)
+    grid_w, grid_h = determine_window_dimensions(module_count, tech, ship)
 
     original_grid_layout = Grid(grid_w, grid_h)
     inactive_positions_set = set()
@@ -256,16 +256,14 @@ if __name__ == "__main__":
     if not module_data_for_ship_for_dims:
         print(f"Error: No module data found for ship '{args.ship}' for dimension calculation.")
         exit(1)
-    training_module_ids_for_dims = get_training_module_ids(args.ship, args.tech, solve_type=args.solve_type)
+    training_module_ids_for_dims = get_training_module_ids(args.ship, args.tech)
     if not training_module_ids_for_dims:
         print(
             f"Error: No training modules found for {args.ship}/{args.tech}/{args.solve_type} for dimension calculation."
         )
         exit(1)
     module_count_for_dims = len(training_module_ids_for_dims)
-    grid_w, grid_h = determine_window_dimensions(
-        module_count_for_dims, args.tech, args.ship, solve_type=args.solve_type
-    )
+    grid_w, grid_h = determine_window_dimensions(module_count_for_dims, args.tech, args.ship)
 
     total_input_grids = _calculate_total_grids(grid_w, grid_h, args.max_sc, args.max_inactive)
     print(f"Total unique input grid permutations to process: {total_input_grids}")

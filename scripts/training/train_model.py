@@ -479,15 +479,13 @@ def run_training_from_files(
         print(f"\n--- Processing Tech: {tech} ---")
 
         # <<< Determine num_output_classes AND grid dimensions >>>
-        tech_modules_for_class_count = get_training_module_ids(ship, tech, solve_type=solve_type)
+        tech_modules_for_class_count = get_training_module_ids(ship, tech)
         if not tech_modules_for_class_count:
             print(f"Warning: Could not get modules for tech '{tech}' to determine class count/size. Skipping.")
             continue
 
         module_count = len(tech_modules_for_class_count)
-        grid_width, grid_height = determine_window_dimensions(
-            module_count, tech, ship, solve_type=solve_type
-        )  # <<< Dynamic dimensions
+        grid_width, grid_height = determine_window_dimensions(module_count, tech, ship)  # <<< Dynamic dimensions
         print(f"  Determined dynamic grid size: {grid_width}x{grid_height}")
 
         num_output_classes = module_count + 1

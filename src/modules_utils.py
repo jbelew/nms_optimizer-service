@@ -4,21 +4,19 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-def get_tech_modules(modules, ship, tech_key, player_owned_rewards, available_modules=None):
+def get_tech_modules(modules, ship, tech_key, available_modules=None):
     """Retrieves and filters module definitions for a specific technology.
 
     This function performs several levels of filtering:
     1.  Finds the technology definition that matches the `tech_key`.
-    2.  Selects the standard module variant, ignoring special types like "max".
-    3.  Filters out reward modules not owned by the player.
-    4.  Filters the final list against a specific list of `available_modules`
+    2.  Selects the standard module variant.
+    3.  Filters the final list against a specific list of `available_modules`
         if provided.
 
     Args:
         modules (dict): The complete module data for the ship.
         ship (str): The ship/platform key (e.g., "hauler").
         tech_key (str): The technology key (e.g., "pulse").
-        player_owned_rewards (list): A list of reward module IDs owned by the player.
         available_modules (list, optional): A specific list of module IDs to
             filter the final results against. Defaults to None.
 
@@ -43,44 +41,26 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards, available_mo
             if technology_info.get("key") == tech_key:
                 candidates_for_tech.append(technology_info)
 
-    # Select the correct technology data based on solve_type
+    # Select the correct technology data (implicitly selecting the default where 'type' is None)
     selected_tech_data = None
     for candidate in candidates_for_tech:
-        # The type in the data must match the requested solve_type.
-        # This works for both a specific type like "max" and for None.
         if candidate.get("type") is None:
             selected_tech_data = candidate
             break
 
     if selected_tech_data is None:
-        logging.warning(
-            f"Technology '{tech_key}' not found for ship '{ship}'. Trying fallback."
-        )
+        logging.warning(f"Technology '{tech_key}' not found for ship '{ship}'. Trying fallback.")
         # Fallback for old data structure (if tech_key is a direct key in the modules dict)
         # This part of the logic assumes the old structure doesn't have solve_type variants.
         if tech_key in modules:
             tech_modules = modules[tech_key].get("modules", [])
         else:
-            logging.error(
-                f"Technology '{tech_key}' not found or has no modules for ship '{ship}'."
-            )
+            logging.error(f"Technology '{tech_key}' not found or has no modules for ship '{ship}'.")
             return None
     else:
         tech_modules = selected_tech_data.get("modules", [])
 
-    if player_owned_rewards is None:
-        player_owned_rewards = []
-
-    # Filter the found modules by ownership
-    filtered_modules = []
-    for module in tech_modules:
-        if module.get("type") == "reward":
-            if module.get("id") in player_owned_rewards:
-                # To prevent this from being filtered again, change its type
-                module["type"] = "bonus"
-                filtered_modules.append(module)
-        else:
-            filtered_modules.append(module)
+    filtered_modules = tech_modules
 
     # If a list of available modules is provided, filter the list against it
     if available_modules is not None:

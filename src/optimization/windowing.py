@@ -1,7 +1,6 @@
 # optimization/windowing.py
 import logging
 from copy import deepcopy
-from typing import Optional
 
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules
@@ -94,7 +93,6 @@ def find_supercharged_opportunities(
     modules,
     ship,
     tech,
-    player_owned_rewards=None,
     tech_modules=None,
 ):
     """
@@ -107,7 +105,6 @@ def find_supercharged_opportunities(
         modules (dict): The module data.
         ship (str): The ship type.
         tech (str): The technology type.
-        player_owned_rewards (list, optional): List of reward module IDs owned. Defaults to None.
 
     Returns:
         tuple or None: A tuple (opportunity_x, opportunity_y, best_width, best_height)
@@ -135,7 +132,7 @@ def find_supercharged_opportunities(
 
     # Determine Dynamic Window Size (no change needed)
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
     if tech_modules is None:
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
         return None

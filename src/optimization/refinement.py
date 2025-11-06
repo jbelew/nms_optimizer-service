@@ -21,7 +21,6 @@ def _handle_ml_opportunity(
     modules,
     ship,
     tech,
-    player_owned_rewards,
     opportunity_x,
     opportunity_y,
     window_width,
@@ -35,9 +34,6 @@ def _handle_ml_opportunity(
 ):
     """Handles the ML-based refinement within an opportunity window."""
     from src.ml_placement import ml_placement  # Keep import local if possible
-
-    if player_owned_rewards is None:
-        player_owned_rewards = []
 
     logging.info(
         f"Using ML for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}"
@@ -74,7 +70,6 @@ def _handle_ml_opportunity(
         full_grid_original=grid,  # Pass the original full grid
         start_x_original=opportunity_x,  # Pass the original start_x
         start_y_original=opportunity_y,  # Pass the original start_y
-        player_owned_rewards=player_owned_rewards,
         model_grid_width=localized_grid_ml.width,  # <<< Use actual localized width
         model_grid_height=localized_grid_ml.height,  # <<< Use actual localized height
         polish_result=True,  # Usually don't polish within the main polish step
@@ -86,7 +81,6 @@ def _handle_ml_opportunity(
         tech_modules=tech_modules,  # type: ignore
         available_modules=available_modules,
     )
-
     # 3. Process ML result (logic remains the same)
     if ml_refined_grid is not None:
         # logging.info(f"ML refinement produced a grid. Applying changes...")
@@ -112,7 +106,6 @@ def _handle_sa_refine_opportunity(
     modules,
     ship,
     tech,
-    player_owned_rewards,
     opportunity_x,
     opportunity_y,
     window_width,
@@ -151,7 +144,7 @@ def _handle_sa_refine_opportunity(
 
     # Get the number of modules for the given tech (no change)
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
     num_modules = len(tech_modules) if tech_modules else 0
 
     # Refine the localized grid (no change in logic here)
@@ -162,7 +155,6 @@ def _handle_sa_refine_opportunity(
             ship,
             modules,
             tech,
-            player_owned_rewards,
             tech_modules=tech_modules,
             progress_callback=progress_callback,
             run_id=run_id,
@@ -176,14 +168,12 @@ def _handle_sa_refine_opportunity(
             modules,
             tech,
             grid,  # full_grid
-            player_owned_rewards,
             start_x=start_x,
             start_y=start_y,
             progress_callback=progress_callback,
             run_id=run_id,
             stage=stage,
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type,
             tech_modules=tech_modules or [],
         )
 
@@ -207,7 +197,6 @@ def refine_placement(
     ship,
     modules,
     tech,
-    player_owned_rewards=None,
     tech_modules=None,
     progress_callback=None,
     run_id=None,
@@ -216,7 +205,7 @@ def refine_placement(
     optimal_grid = None
     highest_bonus = 0.0
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
 
     if tech_modules is None:
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}'.")
@@ -308,7 +297,6 @@ def simulated_annealing(
     modules,
     tech,
     full_grid,
-    player_owned_rewards=None,
     initial_temperature=9000,
     cooling_rate=0.99,
     stopping_temperature=0.1,
@@ -338,7 +326,7 @@ def simulated_annealing(
     else:
         max_reheats = 10
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
 
     if tech_modules is None:
         logging.error(f"SA: No modules found for ship '{ship}' and tech '{tech}'.")

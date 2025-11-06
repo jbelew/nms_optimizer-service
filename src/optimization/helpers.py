@@ -1,13 +1,10 @@
 # optimization/helpers.py
 import logging
-from typing import Optional
 from src.modules_utils import get_tech_modules
 from src.module_placement import place_module
 
 
-def determine_window_dimensions(
-    module_count: int, tech: str, ship: str
-) -> tuple[int, int]:
+def determine_window_dimensions(module_count: int, tech: str, ship: str) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules and technology type.
 
@@ -85,12 +82,11 @@ def place_all_modules_in_empty_slots(
     modules,
     ship,
     tech,
-    player_owned_rewards=None,
     tech_modules=None,
 ):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
     if tech_modules is None:
         logging.error(f"No modules found for ship: '{ship}' -- tech: '{tech}'")
         return grid
@@ -141,7 +137,6 @@ def check_all_modules_placed(
     modules,
     ship,
     tech,
-    player_owned_rewards=None,
     tech_modules=None,
 ):
     """
@@ -152,7 +147,6 @@ def check_all_modules_placed(
         modules (dict): The module data.
         ship (str): The ship type.
         tech (str): The technology type.
-        player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
         tech_modules (list, optional): A pre-fetched list of modules to check against.
                                        If provided, this list is used directly.
 
@@ -161,10 +155,7 @@ def check_all_modules_placed(
     """
     # If a specific list of modules to check against isn't provided, fetch it.
     if tech_modules is None:
-        if player_owned_rewards is None:
-            player_owned_rewards = []  # Ensure it's an empty list if None
-
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
+        tech_modules = get_tech_modules(modules, ship, tech)
 
     if tech_modules is None:
         logging.warning(

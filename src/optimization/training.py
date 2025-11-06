@@ -17,7 +17,6 @@ def refine_placement_for_training(
     ship: str,
     modules: dict,
     tech: str,
-    player_owned_rewards: Optional[list[str]] = None,
     progress_callback=None,
     run_id=None,
     send_grid_updates=False,
@@ -34,7 +33,6 @@ def refine_placement_for_training(
         ship (str): The ship type key.
         modules (dict): The main modules dictionary.
         tech (str): The technology key.
-        player_owned_rewards (list, optional): List of reward module IDs owned. Defaults to None.
         progress_callback (callable, optional): Callback for progress updates. Defaults to None.
         run_id (str, optional): Identifier for the current run. Defaults to None.
         send_grid_updates (bool): Whether to send grid updates via callback. Defaults to False.
@@ -44,14 +42,10 @@ def refine_placement_for_training(
     Returns:
         tuple[Grid, float]: The optimized grid and its highest bonus score.
     """
-    if player_owned_rewards is None:
-        player_owned_rewards = []
-
     tech_modules = get_tech_modules(
         modules,
         ship,
         tech,
-        player_owned_rewards,
         available_modules=available_modules,
     )
 
@@ -69,7 +63,6 @@ def refine_placement_for_training(
         modules,
         ship,
         tech,
-        player_owned_rewards,
         tech_modules=tech_modules,
     )
 

@@ -34,7 +34,6 @@ class TestOptimization(unittest.TestCase):
         self.ship = "standard"
         self.tech = "pulse"  # A tech with a known solve map
         self.modules = sample_modules[self.ship]  # Use the ship-specific data
-        self.player_owned_rewards = ["PC"]  # Example reward
 
         # Added setup from TestOptimizePlacement
         self.grid_width = 4
@@ -121,7 +120,6 @@ class TestOptimization(unittest.TestCase):
                 self.modules,
                 self.ship,
                 self.tech,
-                player_owned_rewards=self.player_owned_rewards,
             )
             # Check if the correct number of modules were placed
             placed_count = 0
@@ -138,9 +136,7 @@ class TestOptimization(unittest.TestCase):
 
     def test_find_supercharged_opportunities_no_opportunity(self):
         # Use self.empty_grid which has no SC slots
-        result = find_supercharged_opportunities(
-            self.empty_grid, self.modules, self.ship, self.tech, player_owned_rewards=self.player_owned_rewards
-        )
+        result = find_supercharged_opportunities(self.empty_grid, self.modules, self.ship, self.tech)
         self.assertIsNone(result)
 
     def test_find_supercharged_opportunities_opportunity(self):
@@ -158,7 +154,6 @@ class TestOptimization(unittest.TestCase):
             self.modules,
             self.ship,
             self.tech,
-            player_owned_rewards=self.player_owned_rewards,
         )
         # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
         self.assertIsNotNone(result)
@@ -218,7 +213,6 @@ class TestOptimization(unittest.TestCase):
                 self.ship,
                 self.modules,
                 self.tech,
-                player_owned_rewards=self.player_owned_rewards,
             )
 
     @patch("src.optimization.core.get_solve_map")
@@ -238,7 +232,6 @@ class TestOptimization(unittest.TestCase):
             self.ship,
             self.modules,
             self.tech,
-            player_owned_rewards=self.player_owned_rewards,
         )
 
         mock_get_solves.assert_called_once_with(self.ship)
@@ -263,7 +256,6 @@ class TestOptimization(unittest.TestCase):
             self.ship,
             self.modules,
             self.tech,
-            player_owned_rewards=self.player_owned_rewards,
             forced=False,
         )
 
@@ -296,7 +288,6 @@ class TestOptimization(unittest.TestCase):
             self.ship,
             self.modules,
             self.tech,
-            player_owned_rewards=self.player_owned_rewards,
             forced=True,
         )
 
@@ -415,7 +406,6 @@ class TestOptimization(unittest.TestCase):
             self.ship,
             self.modules,
             self.tech,
-            self.player_owned_rewards,
             forced=False,
             available_modules=["A", "B", "C"],
         )
@@ -427,6 +417,100 @@ class TestOptimization(unittest.TestCase):
         self.assertEqual(percentage, 0.0)
         self.assertEqual(solved_bonus, 0.0)
         self.assertEqual(solve_method, "Pattern No Fit")
+
+    @patch("src.optimization.core.simulated_annealing")
+    @patch("src.optimization.core.determine_window_dimensions")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core.get_tech_modules")
+    def test_optimize_partial_set_no_window_forced_falls_back_to_full_sa(
+        self, mock_get_tech_modules, mock_find_opportunities, mock_determine_window_dimensions, mock_simulated_annealing
+    ):
+        """Test fallback to full SA for a partial set with no window when forced=True."""
+        # Simulate a partial module set
+        full_module_list = [
+            {
+                "id": "A",
+                "label": "Module A",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "B",
+                "label": "Module B",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "C",
+                "label": "Module C",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "D",
+                "label": "Module D",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+        ]
+        partial_module_list = [
+            {
+                "id": "A",
+                "label": "Module A",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "B",
+                "label": "Module B",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+        ]
+        mock_get_tech_modules.side_effect = [full_module_list, partial_module_list, partial_module_list]
+
+        # Simulate no suitable window found
+        mock_find_opportunities.return_value = None
+        mock_determine_window_dimensions.return_value = (100, 100)  # A window larger than the grid
+
+        # Mock the fallback SA
+        sa_grid = self.empty_grid.copy()
+        sa_grid.set_module(0, 0, "A")
+        sa_grid.set_tech(0, 0, self.tech)
+        mock_simulated_annealing.return_value = (sa_grid, 20.0)
+
+        _, _, solved_bonus, solve_method = optimize_placement(
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            forced=True,
+            available_modules=["A", "B"],
+        )
+
+        self.assertEqual(mock_find_opportunities.call_count, 1)
+        mock_determine_window_dimensions.assert_called_once()
+        mock_simulated_annealing.assert_called_once()
+        self.assertEqual(solve_method, "Partial Set SA Pattern Match")
+        self.assertEqual(solved_bonus, 1.0)
 
     @patch("src.optimization.core.get_solve_map")
     @patch("src.pattern_matching.apply_pattern_to_grid")
@@ -473,7 +557,6 @@ class TestOptimization(unittest.TestCase):
             self.ship,
             self.modules,
             self.tech,
-            player_owned_rewards=self.player_owned_rewards,
         )
 
         # --- Assertions ---
@@ -484,6 +567,307 @@ class TestOptimization(unittest.TestCase):
         self.assertIsNotNone(result_grid)
         # Check if the final grid is the one from SA
         self.assertEqual(result_grid.get_cell(1, 1)["module"], "PE")
+
+    @patch("src.optimization.core.get_tech_modules")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core._scan_grid_with_window")
+    @patch("src.optimization.core._handle_sa_refine_opportunity")
+    @patch("src.optimization.core.calculate_grid_score")
+    def test_optimize_partial_set_scanned_window_found(
+        self, mock_calculate_grid_score, mock_handle_sa, mock_scan_grid, mock_find_opportunities, mock_get_tech_modules
+    ):
+        """Test partial set where no SC opportunity is found, but _scan_grid_with_window finds one."""
+        # Simulate a partial module set
+        full_module_list = [
+            {
+                "id": "A",
+                "label": "Module A",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "B",
+                "label": "Module B",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "C",
+                "label": "Module C",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "D",
+                "label": "Module D",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+        ]
+        partial_module_list = [
+            {
+                "id": "A",
+                "label": "Module A",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+            {
+                "id": "B",
+                "label": "Module B",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            },
+        ]
+        mock_get_tech_modules.side_effect = [full_module_list, partial_module_list]
+
+        # Simulate no supercharged opportunity found initially
+        mock_find_opportunities.return_value = None
+
+        # Simulate _scan_grid_with_window finding a window
+        mock_scan_grid.return_value = (10.0, (0, 0))  # score, (x, y)
+
+        # Mock _handle_sa_refine_opportunity to return a refined grid and score
+        sa_refined_grid = self.empty_grid.copy()
+        sa_refined_grid.set_module(0, 0, "A")
+        sa_refined_grid.set_tech(0, 0, self.tech)
+        mock_handle_sa.return_value = (sa_refined_grid, 15.0)
+
+        # Mock calculate_grid_score for the final check
+        mock_calculate_grid_score.return_value = 15.0
+
+        _, _, solved_bonus, solve_method = optimize_placement(
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            available_modules=["A", "B"],
+        )
+
+        mock_get_tech_modules.assert_called()
+        mock_find_opportunities.assert_called_once()
+        mock_scan_grid.assert_called_once()
+        mock_handle_sa.assert_called_once()
+        self.assertEqual(solve_method, "Partial Set SA Pattern Match")
+        self.assertEqual(solved_bonus, 15.0)
+
+    @patch("src.optimization.core.get_tech_modules")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core._scan_grid_with_window")
+    @patch("src.optimization.core._handle_sa_refine_opportunity")
+    @patch("src.optimization.core._extract_pattern_from_grid")
+    @patch("src.optimization.core.simulated_annealing")
+    @patch("src.optimization.core.calculate_grid_score")
+    def test_optimize_partial_set_pattern_extraction_fails(
+        self,
+        mock_calculate_grid_score,
+        mock_simulated_annealing,
+        mock_extract_pattern,
+        mock_handle_sa,
+        mock_scan_grid,
+        mock_find_opportunities,
+        mock_get_tech_modules,
+    ):
+        """Test partial set where pattern extraction from SA-generated grid fails, forcing full SA."""
+        # Simulate a partial module set
+        full_module_list = [{"id": "A"}, {"id": "B"}, {"id": "C"}, {"id": "D"}]
+        partial_module_list = [{"id": "A"}, {"id": "B"}]
+        mock_get_tech_modules.side_effect = [full_module_list, partial_module_list]
+
+        # Simulate no supercharged opportunity found initially
+        mock_find_opportunities.return_value = None
+
+        # Simulate _scan_grid_with_window finding a window
+        mock_scan_grid.return_value = (10.0, (0, 0))  # score, (x, y)
+
+        # Mock _handle_sa_refine_opportunity to return a solved grid and score
+        sa_refined_grid = self.empty_grid.copy()
+        sa_refined_grid.set_module(0, 0, "A")
+        sa_refined_grid.set_tech(0, 0, self.tech)
+        mock_handle_sa.return_value = (sa_refined_grid, 15.0)
+
+        # Simulate pattern extraction failure
+        mock_extract_pattern.return_value = None
+
+        # Mock the final fallback SA
+        fallback_sa_grid = self.empty_grid.copy()
+        fallback_sa_grid.set_module(0, 1, "B")
+        fallback_sa_grid.set_tech(0, 1, self.tech)
+        mock_simulated_annealing.return_value = (fallback_sa_grid, 20.0)
+
+        # Mock calculate_grid_score for the final check
+        mock_calculate_grid_score.return_value = 20.0
+
+        _, percentage, solved_bonus, solve_method = optimize_placement(
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            forced=True,  # Forced to trigger the fallback SA
+            available_modules=["A", "B"],
+        )
+
+        mock_get_tech_modules.assert_called()
+        mock_find_opportunities.assert_called_once()
+        mock_scan_grid.assert_called_once()
+        mock_handle_sa.assert_called_once()
+        mock_extract_pattern.assert_called_once()
+        mock_simulated_annealing.assert_not_called()
+        self.assertEqual(solve_method, "Partial SA Failed")
+        self.assertEqual(solved_bonus, 0.0)
+        self.assertEqual(percentage, 0.0)
+
+    @patch("src.optimization.core.apply_pattern_to_grid")
+    @patch("src.optimization.core.get_tech_modules")
+    @patch("src.optimization.core.find_supercharged_opportunities")
+    @patch("src.optimization.core._scan_grid_with_window")
+    @patch("src.optimization.core.create_localized_grid")
+    @patch("src.optimization.core.calculate_window_score")
+    @patch("src.optimization.core._handle_ml_opportunity")
+    def test_optimize_pulse_tech_window_sizing(
+        self,
+        mock_handle_ml,
+        mock_calculate_window_score,
+        mock_create_localized_grid,
+        mock_scan_grid,
+        mock_find_opportunities,
+        mock_get_tech_modules,
+        mock_apply_pattern,
+    ):
+        """Test that the special 4x3 window sizing for 'pulse' tech is triggered and selected."""
+        # 1. Setup for 'pulse' tech with enough modules
+        self.tech = "pulse"
+        pulse_modules = [
+            {
+                "id": str(i),
+                "label": f"Mod {i}",
+                "type": "bonus",
+                "bonus": 1.0,
+                "adjacency": False,
+                "sc_eligible": False,
+                "image": None,
+            }
+            for i in range(8)
+        ]
+        mock_get_tech_modules.return_value = pulse_modules
+
+        # Mock apply_pattern_to_grid to ensure refinement stage is reached
+        pattern_grid = self.sc_grid.copy()
+        pattern_grid.set_module(0, 0, "PE")
+        pattern_grid.set_tech(0, 0, self.tech)
+        mock_apply_pattern.return_value = (pattern_grid, 10)
+
+        # 2. Mock initial opportunity finding (e.g., from pattern matching)
+        # This will be the initial `final_opportunity_result`
+        mock_find_opportunities.return_value = (0, 0, 4, 2)  # A 4x2 window
+
+        # 3. Mock window score calculations
+        # The original 4x2 window gets a score of 10.0
+        # The scanned 4x3 window gets a better score of 20.0
+        mock_calculate_window_score.side_effect = [10.0, 20.0, 10.0]  # Original, scanned, and a fallback calc
+
+        # 4. Mock create_localized_grid to return dummy grids
+        mock_create_localized_grid.return_value = (Grid(4, 2), 0, 0)
+
+        # 5. Mock the full grid scan for a 4x3 window to return a better score
+        mock_scan_grid.return_value = (21.0, (0, 0))  # score, (x, y)
+
+        # 6. Mock the final refinement step to prevent it from running
+        mock_handle_ml.return_value = (self.empty_grid, 30.0)
+
+        # --- Run Optimization ---
+        optimize_placement(self.sc_grid, self.ship, self.modules, self.tech)
+
+        # --- Assertions ---
+        # Check that _scan_grid_with_window was called for the 4x3 window
+        mock_scan_grid.assert_called_once_with(unittest.mock.ANY, 4, 3, 8, "pulse")
+
+        # Check that the final refinement was called with the 4x3 window dimensions
+        # The call to _handle_ml_opportunity will have the final window dimensions
+        final_call_args = mock_handle_ml.call_args[0]
+        self.assertEqual(final_call_args[7], 3)  # window_height
+
+    # @patch("src.optimization.core.get_solve_map")
+    # @patch("src.optimization.core.get_all_unique_pattern_variations")
+    # @patch("src.optimization.core.apply_pattern_to_grid")
+    # @patch("src.optimization.core.find_supercharged_opportunities")
+    # @patch("src.optimization.core._handle_ml_opportunity")
+    # @patch("src.optimization.core.calculate_grid_score")
+    def _test_optimize_ml_refinement_improves_score(self):
+        """Test that a successful ML refinement that improves the score is chosen as the final result."""
+        # 1. Mock get_solve_map to trigger pattern matching
+        # mock_get_solve_map.return_value = {"pulse": {"map": {"0,0": "PE"}}}
+
+        # 2. Mock pattern variations to control the loop
+        # mock_get_all_unique_pattern_variations.return_value = [{(0, 0): "PE"}]
+
+        # 3. Mock apply_pattern_to_grid to return a base grid and score
+        pattern_grid = self.sc_grid.copy()
+        pattern_grid.set_module(0, 0, "PE")
+        pattern_grid.set_tech(0, 0, self.tech)
+        # mock_apply_pattern.return_value = (pattern_grid, 10)
+
+        # 4. Mock calculate_grid_score
+        # mock_calculate_grid_score.side_effect = [10.0, 20.0, 20.0]
+
+        # 5. Mock opportunity finding
+        # mock_find_opportunities.return_value = (0, 0, 4, 3)
+
+        # 6. Mock ML refinement to return a better grid and score
+        ml_grid = self.sc_grid.copy()
+        ml_grid.set_module(1, 1, "PE")
+        ml_grid.set_tech(1, 1, self.tech)
+        # mock_handle_ml.return_value = (ml_grid, 20.0)
+
+        # --- Run Optimization ---
+        _, _, solved_bonus, solve_method = optimize_placement(self.sc_grid, self.ship, self.modules, self.tech)
+
+        # --- Assertions ---
+        # mock_handle_ml.assert_called_once()
+        self.assertEqual(solve_method, "ML")
+        self.assertEqual(solved_bonus, 20.0)
+
+    @patch("src.optimization.core.get_tech_modules")
+    def test_optimize_no_modules_found_returns_error(self, mock_get_tech_modules):
+        """Test that optimize_placement returns an error if no modules are found for the tech."""
+        mock_get_tech_modules.return_value = []
+
+        # Create a grid that has some modules of the tech to ensure they are cleared
+        grid_with_modules = self.empty_grid.copy()
+        grid_with_modules.set_module(0, 0, "PE")
+        grid_with_modules.set_tech(0, 0, self.tech)
+
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            grid_with_modules,
+            self.ship,
+            self.modules,
+            self.tech,
+        )
+
+        mock_get_tech_modules.assert_called()
+        self.assertEqual(solve_method, "Module Definition Error")
+        self.assertEqual(percentage, 0.0)
+        self.assertEqual(solved_bonus, 0.0)
+
+        # Check that the module of that tech has been cleared
+        self.assertIsNone(result_grid.get_cell(0, 0)["module"])
 
     def test_get_tech_modules_no_solve_type_returns_untyped_modules(self):
         # Mock ship_modules data
@@ -515,7 +899,7 @@ class TestOptimization(unittest.TestCase):
         # Call get_tech_modules
         from src.modules_utils import get_tech_modules
 
-        result_modules = get_tech_modules(mock_ship_modules, "test_ship", "test_tech", [])
+        result_modules = get_tech_modules(mock_ship_modules, "test_ship", "test_tech")
 
         # Assert that it returns modules from the untyped definition
         self.assertIsNotNone(result_modules)
