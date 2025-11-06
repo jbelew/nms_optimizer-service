@@ -91,8 +91,8 @@ class Grid:
         Returns:
             Grid: A new Grid instance with a deep copy of the cells.
         """
-        new_grid = Grid(self.width, self.height)  # Pass width and height
-        new_grid.cells = [deepcopy(row) for row in self.cells]  # Use deepcopy for nested lists
+        new_grid = Grid(self.width, self.height)
+        new_grid.cells = deepcopy(self.cells)
         return new_grid
 
     def set_label(self, x, y, label):

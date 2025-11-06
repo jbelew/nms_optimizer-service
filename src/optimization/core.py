@@ -27,6 +27,37 @@ from .windowing import (
 )
 
 
+def _prepare_optimization_run(grid, modules, ship, tech, available_modules):
+    """
+    Handles the initial setup for the optimization process, including fetching
+    modules and performing pre-checks on the grid.
+
+    Returns:
+        tuple: (full_tech_modules_list, tech_modules)
+    Raises:
+        ValueError: If no empty, active slots are available.
+    """
+    full_tech_modules_list = get_tech_modules(modules, ship, tech, available_modules=None)
+    tech_modules = get_tech_modules(modules, ship, tech, available_modules=available_modules)
+
+    if not tech_modules:
+        logging.warning(f"No modules retrieved for ship '{ship}', tech '{tech}'. Cannot proceed with optimization.")
+        cleared_grid_on_fail = grid.copy()
+        clear_all_modules_of_tech(cleared_grid_on_fail, tech)
+        return cleared_grid_on_fail, 0.0, 0.0, "Module Definition Error"
+
+    has_empty_active_slots = any(
+        grid.get_cell(x, y)["active"] and grid.get_cell(x, y)["module"] is None
+        for y in range(grid.height)
+        for x in range(grid.width)
+    )
+
+    if not has_empty_active_slots:
+        raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
+
+    return full_tech_modules_list, tech_modules
+
+
 def optimize_placement(
     grid,
     ship,
@@ -65,41 +96,10 @@ def optimize_placement(
     logging.info(f"Attempting solve for ship: '{ship}' -- tech: '{tech}'")
     logging.debug(f"send_grid_updates: {send_grid_updates}")
 
-    # --- Get modules for the current tech ---
-    # This list is used to determine module_count for experimental window sizing
-    # and for the check_all_modules_placed function.
-    full_tech_modules_list = get_tech_modules(
-        modules,
-        ship,
-        tech,
-        available_modules=None,
-    )
-    tech_modules = get_tech_modules(
-        modules,
-        ship,
-        tech,
-        available_modules=available_modules,
-    )
-    if not tech_modules:
-        # This case should ideally be caught by has_empty_active_slots or other checks,
-        # but as a safeguard if get_tech_modules returns None or empty for a valid tech key.
-        logging.warning(f"No modules retrieved for ship '{ship}', tech '{tech}'. Cannot proceed with optimization.")
-        # Return a grid that's essentially empty for this tech, with 0 score.
-        cleared_grid_on_fail = grid.copy()
-        clear_all_modules_of_tech(cleared_grid_on_fail, tech)
-        return cleared_grid_on_fail, 0.0, 0.0, "Module Definition Error"
-
-    # --- Early Check: Any Empty, Active Slots? ---
-    has_empty_active_slots = False
-    for y in range(grid.height):
-        for x in range(grid.width):
-            if grid.get_cell(x, y)["active"] and grid.get_cell(x, y)["module"] is None:
-                has_empty_active_slots = True
-                break
-        if has_empty_active_slots:
-            break
-    if not has_empty_active_slots:
-        raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
+    prep_result = _prepare_optimization_run(grid, modules, ship, tech, available_modules)
+    if len(prep_result) == 4:
+        return prep_result
+    full_tech_modules_list, tech_modules = prep_result
 
     # Initialize variables for tracking best results
     solved_grid = grid.copy()  # Grid state after initial pattern/SA fallback
