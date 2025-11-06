@@ -19,7 +19,7 @@ repos:
     hooks:
     -   id: build-rust-module
         name: Build Rust Module and Install Ruff
-        entry: bash -c "source venv/bin/activate && maturin develop --release --manifest-path rust_scorer/Cargo.toml && pip install ruff"
+        entry: bash -c "source venv/bin/activate && maturin develop --release --manifest-path rust_scorer/Cargo.toml"
         language: system
         pass_filenames: false
         always_run: true # Always run this hook

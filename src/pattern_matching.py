@@ -324,3 +324,38 @@ def calculate_pattern_adjacency_score(grid, tech):
                             )
 
     return total_adjacency_score
+
+
+def _extract_pattern_from_grid(grid, tech):
+    """
+    Extracts a normalized pattern (relative coordinates) from a grid for a specific technology.
+
+    Args:
+        grid (Grid): The grid from which to extract the pattern.
+        tech (str): The technology key to filter modules.
+
+    Returns:
+        dict: A dictionary where keys are (x, y) tuples representing relative
+              coordinates and values are module IDs, or an empty dict if no modules found.
+    """
+    modules_in_pattern = {}
+    min_x, min_y = float("inf"), float("inf")
+
+    # Find all modules of the specified tech and determine min_x, min_y
+    for y in range(grid.height):
+        for x in range(grid.width):
+            cell = grid.get_cell(x, y)
+            if cell["module"] is not None and cell["tech"] == tech:
+                modules_in_pattern[(x, y)] = cell["module"]
+                min_x = min(min_x, x)
+                min_y = min(min_y, y)
+
+    if not modules_in_pattern:
+        return {}  # No modules of this tech found
+
+    # Normalize coordinates to be relative to (min_x, min_y)
+    normalized_pattern = {}
+    for (x, y), module_id in modules_in_pattern.items():
+        normalized_pattern[(x - min_x, y - min_y)] = module_id
+
+    return normalized_pattern

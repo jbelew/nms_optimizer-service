@@ -7,7 +7,6 @@ from src.grid_utils import Grid, apply_localized_grid_changes
 from src.module_placement import clear_all_modules_of_tech
 from src.optimization import optimize_placement
 from src.optimization.helpers import (
-    check_all_modules_placed,
     place_all_modules_in_empty_slots,
 )
 from src.optimization.windowing import find_supercharged_opportunities
@@ -179,38 +178,6 @@ class TestOptimization(unittest.TestCase):
         # Check that other cells were not affected
         self.assertEqual(main_grid.get_cell(0, 0)["module"], "OTHER")  # Original module untouched
         self.assertIsNone(main_grid.get_cell(0, 1)["module"])  # Outside area untouched
-
-    def test_check_all_modules_placed_all_placed(self):
-        # Use a specific tech with a known small number of modules, e.g., rocket
-        rocket_tech = "rocket"
-        rocket_modules = [
-            m for t in sample_modules["standard"]["types"].values() for m in t if m["key"] == rocket_tech
-        ][0]["modules"]
-
-        with patch("src.optimization.helpers.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = rocket_modules
-            grid_all_placed = Grid(2, 2)
-            grid_all_placed.set_module(0, 0, "RL")
-            grid_all_placed.set_tech(0, 0, rocket_tech)
-            grid_all_placed.set_module(0, 1, "LR")
-            grid_all_placed.set_tech(0, 1, rocket_tech)
-            result = check_all_modules_placed(grid_all_placed, self.modules, self.ship, rocket_tech)
-            self.assertTrue(result)
-
-    def test_check_all_modules_placed_not_all_placed(self):
-        rocket_tech = "rocket"
-        rocket_modules = [
-            m for t in sample_modules["standard"]["types"].values() for m in t if m["key"] == rocket_tech
-        ][0]["modules"]
-
-        with patch("src.optimization.helpers.get_tech_modules") as mock_get_tech_modules:
-            mock_get_tech_modules.return_value = rocket_modules
-            grid_not_all_placed = Grid(2, 2)
-            grid_not_all_placed.set_module(0, 0, "RL")
-            grid_not_all_placed.set_tech(0, 0, rocket_tech)
-            # Missing "LR"
-            result = check_all_modules_placed(grid_not_all_placed, self.modules, self.ship, rocket_tech)
-            self.assertFalse(result)
 
     def test_clear_all_modules_of_tech(self):
         self.grid.set_module(0, 0, "IK")
@@ -436,12 +403,10 @@ class TestOptimization(unittest.TestCase):
     @patch("src.optimization.core.find_supercharged_opportunities")
     @patch("src.optimization.core._handle_sa_refine_opportunity")
     @patch("src.optimization.core._handle_ml_opportunity")
-    @patch("src.optimization.core.check_all_modules_placed", return_value=True)
     @patch("src.optimization.core.calculate_grid_score")
     def test_optimize_ml_fallback_to_sa(
         self,
         mock_calculate_grid_score,
-        mock_check_placed,
         mock_handle_ml,
         mock_handle_sa,
         mock_find_opportunities,

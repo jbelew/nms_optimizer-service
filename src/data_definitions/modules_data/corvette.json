@@ -121,7 +121,7 @@
                 "image": "corvette/ceto.webp",
                 "color": "cyan",
                 "modules": [
-                    {"id": "Ca", "type": "core", "label": "Ceto-Class Reactor Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
+                    {"id": "Ca", "type": "reactor", "label": "Ceto-Class Reactor Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
                     {"id": "Cb", "type": "reactor", "label": "Ceto-Class Reactor Tau", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
                     {"id": "Cc", "type": "reactor", "label": "Ceto-Class Reactor Sigma", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true}
                 ]

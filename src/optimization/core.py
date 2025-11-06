@@ -13,9 +13,9 @@ from src.solve_map_utils import filter_solves
 from src.pattern_matching import (
     apply_pattern_to_grid,
     get_all_unique_pattern_variations,
+    _extract_pattern_from_grid,
 )
 from .helpers import (
-    check_all_modules_placed,
     determine_window_dimensions,
     place_all_modules_in_empty_slots,
 )
@@ -125,7 +125,6 @@ def optimize_placement(
     best_pattern_width = -1
     best_pattern_height = -1
     solve_score = 0
-    sa_was_initial_placement = False
     solve_method = "Unknown"  # <<< Initialize solve_method >>>
 
     # --- Load Solves On-Demand ---
@@ -264,110 +263,213 @@ def optimize_placement(
                     tech_modules=tech_modules,
                 )
                 solve_method = "Partial Set SA"
-            else:
-                logging.warning("No supercharged opportunity window found. Finding first available window for SA.")
+
+                # Recalculate score just in case to ensure accuracy
+                final_check_score = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
+                if abs(final_check_score - solved_bonus) > 1e-6:
+                    logging.warning(
+                        f"Final check score {final_check_score:.4f} differs from tracked solved_bonus {solved_bonus:.4f}. Using check score."
+                    )
+                    solved_bonus = final_check_score
+
+                if solve_score > 1e-9:
+                    percentage = (solved_bonus / solve_score) * 100
+                else:
+                    percentage = 100.0 if solved_bonus > 1e-9 else 0.0
+
+                logging.info(
+                    f"SUCCESS -- Final Score (Partial Set): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
+                )
+                print_grid_compact(solved_grid)
+                return solved_grid, round(percentage, 2), solved_bonus, solve_method
+            else:  # No supercharged opportunity window found.
+                logging.warning("No supercharged opportunity window found. Generating pattern from SA solve.")
                 num_modules = len(tech_modules)
                 w, h = determine_window_dimensions(num_modules, tech, ship)
 
-                best_pos = None
-                # Find the first top-left position that can fit the window and is composed of active, empty slots
-                for y in range(grid_for_sa.height - h + 1):
-                    for x in range(grid_for_sa.width - w + 1):
-                        is_valid = True
-                        for j in range(h):
-                            for i in range(w):
-                                cell = grid_for_sa.get_cell(x + i, y + j)
-                                if not cell["active"] or cell["module"] is not None:
-                                    is_valid = False
-                                    break
-                            if not is_valid:
-                                break
-                        if is_valid:
-                            best_pos = (x, y)
-                            break
-                    if best_pos:
-                        break
+                # First, perform an initial SA to get a base arrangement
+                solved_grid_sa = None
+                solved_bonus_sa = -float("inf")
+                sa_method_for_pattern_gen = "Unknown"
 
-                if best_pos:
-                    opp_x, opp_y = best_pos
-                    logging.info(f"Found first available window: {w}x{h} at ({opp_x}, {opp_y})")
-                    solved_grid, solved_bonus = _handle_sa_refine_opportunity(
+                best_score_scan, best_pos_scan = _scan_grid_with_window(
+                    grid_for_sa.copy(),
+                    w,
+                    h,
+                    num_modules,
+                    tech,
+                    require_supercharge=False,
+                )
+
+                if best_pos_scan:
+                    opp_x_scan, opp_y_scan = best_pos_scan
+                    logging.info(
+                        f"Found best available window via scan: {w}x{h} at ({opp_x_scan}, {opp_y_scan}) with score {best_score_scan:.4f} for initial SA."
+                    )
+                    solved_grid_sa, solved_bonus_sa = _handle_sa_refine_opportunity(
                         grid_for_sa,
                         modules,
                         ship,
                         tech,
                         player_owned_rewards,
-                        opp_x,
-                        opp_y,
+                        opp_x_scan,
+                        opp_y_scan,
                         w,
                         h,
                         progress_callback=progress_callback,
                         run_id=run_id,
-                        stage="partial_set_sa_scanned",
+                        stage="partial_set_sa_pattern_gen_scanned",
                         send_grid_updates=send_grid_updates,
                         solve_type=solve_type,
                         tech_modules=tech_modules,
                     )
-                    solve_method = "Partial Set SA (First Fit)"
+                    sa_method_for_pattern_gen = "Windowed SA (Scanned Fit)"
+
                 else:
                     if not forced:
                         logging.info(
                             f"Partial module set for {ship}/{tech}, but no suitable window found. Returning 'Pattern No Fit'. UI can prompt to force SA."
                         )
                         return None, 0.0, 0.0, "Pattern No Fit"
-
-                    logging.warning(
-                        "Could not find any suitable window for partial module set. FORCING full Simulated Annealing."
-                    )
-                    # We already have grid_for_sa which is a copy with the tech cleared.
-                    solved_grid, solved_bonus = simulated_annealing(
-                        grid_for_sa,  # Use the grid that's already been prepared
-                        ship,
-                        modules,
-                        tech,
-                        grid,  # full_grid
-                        player_owned_rewards,
-                        progress_callback=progress_callback,
-                        run_id=run_id,
-                        stage="initial_sa_no_window",
-                        send_grid_updates=send_grid_updates,
-                        solve_type=solve_type if solve_type is not None else "",
-                        tech_modules=tech_modules,
-                    )
-                    if solved_grid is None:
-                        raise ValueError(
-                            f"Fallback simulated_annealing failed for partial set with no window on {ship}/{tech}."
+                    else:
+                        logging.warning(
+                            "Could not find any suitable window for partial module set. FORCING full Simulated Annealing for pattern generation."
                         )
-                    logging.info(
-                        f"Forced fallback SA score (no pattern fit): {solved_bonus:.4f}"
-                    )  # <<< KEEP: Result of fallback >>>
-                    solve_method = "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
-                    sa_was_initial_placement = True
+                        solved_grid_sa, solved_bonus_sa = simulated_annealing(
+                            grid_for_sa,
+                            ship,
+                            modules,
+                            tech,
+                            grid,  # full_grid
+                            player_owned_rewards,
+                            progress_callback=progress_callback,
+                            run_id=run_id,
+                            stage="partial_set_sa_pattern_gen_full",
+                            send_grid_updates=send_grid_updates,
+                            solve_type=solve_type if solve_type is not None else "",
+                            tech_modules=tech_modules,
+                        )
+                        sa_method_for_pattern_gen = "Full SA"
 
-            if solved_grid is None:
-                logging.error(f"Partial module set SA failed for {ship}/{tech}.")
-                cleared_grid_on_fail = grid.copy()
-                clear_all_modules_of_tech(cleared_grid_on_fail, tech)
-                return cleared_grid_on_fail, 0.0, 0.0, "Partial SA Failed"
+                if solved_grid_sa is None:
+                    logging.error(
+                        f"Initial SA for pattern generation failed for {ship}/{tech}. Returning 'Partial SA Failed'."
+                    )
+                    cleared_grid_on_fail = grid.copy()
+                    clear_all_modules_of_tech(cleared_grid_on_fail, tech)
+                    return cleared_grid_on_fail, 0.0, 0.0, "Partial SA Failed"
 
-            # Recalculate score just in case to ensure accuracy
-            final_check_score = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
-            if abs(final_check_score - solved_bonus) > 1e-6:
-                logging.warning(
-                    f"Final check score {final_check_score:.4f} differs from tracked solved_bonus {solved_bonus:.4f}. Using check score."
+                logging.info(
+                    f"Initial SA for pattern generation ({sa_method_for_pattern_gen}) completed with score: {solved_bonus_sa:.4f}"
                 )
-                solved_bonus = final_check_score
 
-            if solve_score > 1e-9:
-                percentage = (solved_bonus / solve_score) * 100
-            else:
-                percentage = 100.0 if solved_bonus > 1e-9 else 0.0
+                # Extract pattern from the SA-generated grid
+                original_pattern_from_sa = _extract_pattern_from_grid(solved_grid_sa, tech)
+                if not original_pattern_from_sa:
+                    logging.error(
+                        f"Could not extract pattern from SA-generated grid for {ship}/{tech}. Returning 'Partial SA Failed'."
+                    )
+                    cleared_grid_on_fail = grid.copy()
+                    clear_all_modules_of_tech(cleared_grid_on_fail, tech)
+                    return cleared_grid_on_fail, 0.0, 0.0, "Partial SA Failed"
 
-            logging.info(
-                f"SUCCESS -- Final Score (Partial Set): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
-            )
-            print_grid_compact(solved_grid)
-            return solved_grid, round(percentage, 2), solved_bonus, solve_method
+                # Apply pattern matching with rotations
+                patterns_to_try_from_sa = get_all_unique_pattern_variations(original_pattern_from_sa)
+                grid_dict = grid.to_dict()  # Use the original grid for placement attempts
+
+                highest_pattern_bonus = -float("inf")
+                best_pattern_grid = None
+                best_pattern_adjacency_score = 0
+                best_pattern_start_x = -1
+                best_pattern_start_y = -1
+                best_pattern_width = -1
+                best_pattern_height = -1
+
+                for pattern_from_sa in patterns_to_try_from_sa:
+                    x_coords = [coord[0] for coord in pattern_from_sa.keys()]
+                    y_coords = [coord[1] for coord in pattern_from_sa.keys()]
+                    if not x_coords or not y_coords:
+                        continue
+                    pattern_width_current = max(x_coords) + 1
+                    pattern_height_current = max(y_coords) + 1
+
+                    for start_x_pattern in range(grid.width - pattern_width_current + 1):
+                        for start_y_pattern in range(grid.height - pattern_height_current + 1):
+                            temp_grid_pattern = Grid.from_dict(grid_dict)
+                            temp_result_grid, adjacency_score = apply_pattern_to_grid(
+                                temp_grid_pattern,
+                                pattern_from_sa,
+                                modules,
+                                tech,
+                                start_x_pattern,
+                                start_y_pattern,
+                                ship,
+                                player_owned_rewards,
+                                solve_type=solve_type,
+                                tech_modules=tech_modules,
+                            )
+                            if temp_result_grid is not None:
+                                current_pattern_bonus = calculate_grid_score(
+                                    temp_result_grid, tech, apply_supercharge_first=False
+                                )
+                                if current_pattern_bonus > highest_pattern_bonus:
+                                    highest_pattern_bonus = current_pattern_bonus
+                                    best_pattern_grid = temp_result_grid.copy()
+                                    best_pattern_adjacency_score = adjacency_score
+                                    best_pattern_start_x = start_x_pattern
+                                    best_pattern_start_y = start_y_pattern
+                                    best_pattern_width = pattern_width_current
+                                    best_pattern_height = pattern_height_current
+                                elif (
+                                    current_pattern_bonus == highest_pattern_bonus
+                                    and adjacency_score > best_pattern_adjacency_score
+                                ):
+                                    best_pattern_grid = temp_result_grid.copy()
+                                    best_pattern_adjacency_score = adjacency_score
+                                    best_pattern_start_x = start_x_pattern
+                                    best_pattern_start_y = start_y_pattern
+                                    best_pattern_width = pattern_width_current
+                                    best_pattern_height = pattern_height_current
+
+                if best_pattern_grid is not None:
+                    solved_grid = best_pattern_grid
+                    solved_bonus = highest_pattern_bonus
+                    solve_method = "Partial Set SA Pattern Match"
+                    logging.info(
+                        f"Best SA-generated pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) found at ({best_pattern_start_x},{best_pattern_start_y}) with size {best_pattern_width}x{best_pattern_height} for ship: '{ship}' -- tech: '{tech}'."
+                    )
+                else:
+                    if not forced:
+                        logging.info(
+                            f"SA-generated pattern matching failed for {ship}/{tech}. Returning 'Pattern No Fit'. UI can prompt to force SA."
+                        )
+                        return None, 0.0, 0.0, "Pattern No Fit"
+                    else:
+                        logging.warning(
+                            f"SA-generated pattern matching failed for {ship}/{tech}. FORCING full Simulated Annealing."
+                        )
+                        # Fallback to full SA if pattern matching fails even with forced=True
+                        # This is similar to the original "no pattern fits, force SA" logic
+                        solved_grid, solved_bonus = simulated_annealing(
+                            grid_for_sa,
+                            ship,
+                            modules,
+                            tech,
+                            grid,  # full_grid
+                            player_owned_rewards,
+                            progress_callback=progress_callback,
+                            run_id=run_id,
+                            stage="final_fallback_sa_no_pattern_fit",
+                            send_grid_updates=send_grid_updates,
+                            solve_type=solve_type if solve_type is not None else "",
+                            tech_modules=tech_modules,
+                        )
+                        if solved_grid is None:
+                            raise ValueError(
+                                f"Fallback simulated_annealing failed after SA-generated pattern matching failed on {ship}/{tech}."
+                            )
+                        logging.info(f"Forced fallback SA score (no SA-generated pattern fit): {solved_bonus:.4f}")
+                        solve_method = "Forced Initial SA (No SA-generated Pattern Fit)"
 
         # --- Case 2: Solve Map Exists ---
         solve_data = filtered_solves[ship][tech]
@@ -436,7 +538,6 @@ def optimize_placement(
                 f"Best pattern score: {solved_bonus:.4f} (Adjacency: {best_pattern_adjacency_score:.2f}) found at ({best_pattern_start_x},{best_pattern_start_y}) with size {best_pattern_width}x{best_pattern_height} for ship: '{ship}' -- tech: '{tech}' that fits."
             )
             # print_grid_compact(solved_grid) # Optional: Can be noisy for many calls
-            sa_was_initial_placement = False
         else:
             # --- Case 2b: No Pattern Fits ---
             if not forced:
@@ -473,7 +574,6 @@ def optimize_placement(
                     f"Forced fallback SA score (no pattern fit): {solved_bonus:.4f}"
                 )  # <<< KEEP: Result of fallback >>>
                 solve_method = "Forced Initial SA (No Pattern Fit)"  # <<< Set method >>>
-                sa_was_initial_placement = True
 
     # --- Opportunity Refinement Stage ---
     # Ensure solved_grid is not None before proceeding (it could be if "Pattern No Fit" was returned and this logic is ever reached without a prior assignment)
@@ -730,7 +830,6 @@ def optimize_placement(
                 solved_grid = refined_grid_candidate
                 solved_bonus = refined_score_global
                 solve_method = refinement_method  # <<< Update method based on successful refinement >>>
-                sa_was_initial_placement = False
             else:  # Refinement didn't improve or failed, keep grid_after_initial_placement
                 if refined_grid_candidate is not None:
                     # <<< KEEP: Score did not improve >>>
@@ -779,7 +878,7 @@ def optimize_placement(
                         solved_grid = sa_fallback_grid
                         solved_bonus = sa_fallback_bonus
                         solve_method = "Final Fallback SA"  # <<< Update method >>>
-                        sa_was_initial_placement = False
+
                     elif sa_fallback_grid is not None:
                         # <<< KEEP: Score did not improve >>>
                         logging.info(
@@ -805,64 +904,6 @@ def optimize_placement(
         # solved_grid remains grid_after_initial_placement
         solved_bonus = current_best_score
         # solve_method remains what it was before refinement
-
-    # --- Final Checks and Fallbacks (Simulated Annealing if modules not placed) ---
-    # Assuming check_all_modules_placed is defined elsewhere (or imported)
-    all_modules_placed = check_all_modules_placed(
-        solved_grid,
-        modules,
-        ship,
-        tech,
-        player_owned_rewards,
-        tech_modules=tech_modules,
-        solve_type=solve_type,
-    )
-    if not all_modules_placed and not sa_was_initial_placement:
-        # <<< KEEP: Important fallback >>>
-        logging.warning("Not all modules placed AND initial placement wasn't SA. Running final SA.")
-        grid_for_final_sa = solved_grid.copy()
-        clear_all_modules_of_tech(grid_for_final_sa, tech)
-        temp_solved_grid, temp_solved_bonus_sa = simulated_annealing(
-            grid_for_final_sa,
-            ship,
-            modules,
-            tech,
-            grid,  # full_grid
-            player_owned_rewards,
-            iterations_per_temp=25,
-            initial_swap_probability=0.70,
-            final_swap_probability=0.25,
-            max_processing_time=20.0,
-            progress_callback=progress_callback,
-            run_id=run_id,
-            stage="final_sa_unplaced_modules",
-            send_grid_updates=send_grid_updates,
-            solve_type=solve_type if solve_type is not None else "",
-            tech_modules=tech_modules,
-        )
-        if temp_solved_grid is not None:
-            final_sa_score = calculate_grid_score(temp_solved_grid, tech, apply_supercharge_first=False)
-            # Use solved_bonus which holds the score *after* potential refinement
-            if final_sa_score > solved_bonus:
-                # <<< KEEP: Score improvement >>>
-                logging.info(
-                    f"Final SA (due to unplaced modules) improved score from {solved_bonus:.4f} to {final_sa_score:.4f}"
-                )
-                solved_grid = temp_solved_grid
-                solved_bonus = final_sa_score
-                solve_method = "Final SA (Unplaced Modules)"  # <<< Update method >>>
-            else:
-                # <<< KEEP: Score did not improve >>>
-                logging.info(
-                    f"Final SA (due to unplaced modules) did not improve score ({final_sa_score:.4f} vs {solved_bonus:.4f}). Keeping previous best."
-                )
-        else:
-            logging.error(
-                f"Final simulated_annealing solver (due to unplaced modules) failed for ship: '{ship}' -- tech: '{tech}'. Returning previous best grid."
-            )
-    elif not all_modules_placed and sa_was_initial_placement:
-        # <<< KEEP: Important warning >>>
-        logging.warning("Not all modules placed, but initial placement WAS SA. Skipping final SA check.")
 
     # --- Final Result Calculation ---
     best_grid = solved_grid
