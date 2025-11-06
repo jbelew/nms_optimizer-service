@@ -27,8 +27,8 @@ def determine_window_dimensions(
     if ship == "sentinel" and tech == "photonix":
         return 4, 3
 
-    if ship == "corvette" and tech == "hyper":  # Override for existing generated data
-        return 4, 4
+    # if ship == "corvette" and tech == "hyper":  # Override for existing generated data
+    #     return 4, 4
 
     if ship == "corvette" and tech == "pulse" and module_count == 7:
         return 4, 2
