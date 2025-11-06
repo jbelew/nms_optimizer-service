@@ -34,7 +34,6 @@ def optimize_placement(
     tech,
     player_owned_rewards=None,
     forced=False,
-    experimental_window_sizing=False,
     progress_callback=None,
     run_id=None,
     send_grid_updates=False,
@@ -55,8 +54,6 @@ def optimize_placement(
         player_owned_rewards (list, optional): List of reward module IDs owned. Defaults to None.
         forced (bool): If True and no pattern fits a solve map, forces SA.
                        If False, returns "Pattern No Fit" to allow UI intervention.
-        experimental_window_sizing (bool): If True and tech is 'pulse', dynamically chooses
-                                           between a 4x3 and 4x2 window for refinement.
 
     Returns:
         tuple: (best_grid, percentage, best_bonus, solve_method)
@@ -67,7 +64,7 @@ def optimize_placement(
     Raises:
         ValueError: If no empty, active slots are available or if critical steps fail.
     """
-    logging.info(f"Attempting solve for ship: '{ship}' -- tech: '{tech}' -- Exp. Window: {experimental_window_sizing}")
+    logging.info(f"Attempting solve for ship: '{ship}' -- tech: '{tech}'")
     logging.debug(f"send_grid_updates: {send_grid_updates}")
 
     if player_owned_rewards is None:
@@ -660,76 +657,6 @@ def optimize_placement(
         logging.info("No suitable opportunity window found from pattern or scanning.")
 
     # --- Perform Refinement using the Selected Opportunity ---
-    # --- Experimental Window Sizing for 'pulse' tech ---
-    if experimental_window_sizing and tech == "pulse" and final_opportunity_result and len(tech_modules) >= 8:
-        logging.info("Experimental window sizing active for 'pulse' tech.")
-        opp_x_anchor, opp_y_anchor, current_opp_w, current_opp_h = final_opportunity_result
-
-        # Determine the score of the current best opportunity (before considering 4x3 override)
-        score_of_current_best_opportunity = -1.0
-        if opportunity_source in ["Pattern", "Pattern (Fallback)"]:
-            score_of_current_best_opportunity = pattern_window_score
-        elif opportunity_source == "Scan":
-            score_of_current_best_opportunity = scanned_window_score
-        else:
-            # Fallback: if opportunity_source is unknown but final_opportunity_result exists,
-            # calculate its score based on its current dimensions.
-            # This ensures we have a baseline for comparison.
-            logging.warning(
-                f"Unknown opportunity_source '{opportunity_source}' for experimental sizing. Recalculating score for current best."
-            )
-            temp_loc_grid, _, _ = create_localized_grid(
-                grid_for_opportunity_scan.copy(),
-                opp_x_anchor,
-                opp_y_anchor,
-                tech,
-                current_opp_w,
-                current_opp_h,
-            )
-            score_of_current_best_opportunity = calculate_window_score(temp_loc_grid, tech)
-
-        logging.info(
-            f"Experimental: Current best opportunity ({current_opp_w}x{current_opp_h} from {opportunity_source}) score: {score_of_current_best_opportunity:.4f}"
-        )
-
-        # Scan the entire grid for the best 4x3 window using _scan_grid_with_window
-        # grid_for_opportunity_scan is the grid with the target tech cleared
-        # tech_modules is available from the top of optimize_placement
-        best_4x3_score_from_scan, best_4x3_pos_from_scan = _scan_grid_with_window(
-            grid_for_opportunity_scan.copy(),  # Scan on the grid with tech cleared
-            4,
-            3,
-            len(tech_modules),
-            tech,  # Pass fixed dimensions, module count, tech
-        )
-
-        if best_4x3_pos_from_scan:
-            # The score returned by _scan_grid_with_window is already the window score
-            logging.info(
-                f"Experimental: Best 4x3 window found by scan: score {best_4x3_score_from_scan:.4f} at ({best_4x3_pos_from_scan[0]},{best_4x3_pos_from_scan[1]})."
-            )
-
-            # Compare the best 4x3 score (from scan) with the score of the current best opportunity
-            if best_4x3_score_from_scan > score_of_current_best_opportunity:
-                logging.info(
-                    f"Experimental: Scanned 4x3 window (score {best_4x3_score_from_scan:.4f}) is better than current best ({score_of_current_best_opportunity:.4f}). Selecting 4x3."
-                )
-                # Override final_opportunity_result with the 4x3 window's location and dimensions
-                final_opportunity_result = (
-                    best_4x3_pos_from_scan[0],
-                    best_4x3_pos_from_scan[1],
-                    4,
-                    3,
-                )
-            else:
-                logging.info(
-                    f"Experimental: Current best opportunity (score {score_of_current_best_opportunity:.4f}) is better or equal to scanned 4x3 ({best_4x3_score_from_scan:.4f}). Keeping original dimensions ({current_opp_w}x{current_opp_h})."
-                )
-                # final_opportunity_result remains unchanged
-        else:
-            logging.info("Experimental: No suitable 4x3 window found by full scan. Keeping original dimensions.")
-            # final_opportunity_result remains unchanged
-    # --- End Experimental Window Sizing ---
     if final_opportunity_result:
         opportunity_x, opportunity_y, window_width, window_height = final_opportunity_result
         # <<< KEEP: Selected window info >>>
