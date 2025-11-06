@@ -657,6 +657,75 @@ def optimize_placement(
         logging.info("No suitable opportunity window found from pattern or scanning.")
 
     # --- Perform Refinement using the Selected Opportunity ---
+    # --- Window Sizing for 'pulse' tech ---
+    if tech == "pulse" and final_opportunity_result and len(tech_modules) >= 8:
+        logging.info("Window sizing active for 'pulse' tech.")
+        opp_x_anchor, opp_y_anchor, current_opp_w, current_opp_h = final_opportunity_result
+        # Determine the score of the current best opportunity (before considering 4x3 override)
+        score_of_current_best_opportunity = -1.0
+        if opportunity_source in ["Pattern", "Pattern (Fallback)"]:
+            score_of_current_best_opportunity = pattern_window_score
+        elif opportunity_source == "Scan":
+            score_of_current_best_opportunity = scanned_window_score
+        else:
+            # Fallback: if opportunity_source is unknown but final_opportunity_result exists,
+            # calculate its score based on its current dimensions.
+            # This ensures we have a baseline for comparison.
+            logging.warning(
+                f"Unknown opportunity_source '{opportunity_source}' for experimental sizing. Recalculating score for current best."
+            )
+            temp_loc_grid, _, _ = create_localized_grid(
+                grid_for_opportunity_scan.copy(),
+                opp_x_anchor,
+                opp_y_anchor,
+                tech,
+                current_opp_w,
+                current_opp_h,
+            )
+            score_of_current_best_opportunity = calculate_window_score(temp_loc_grid, tech)
+
+        logging.info(
+            f"Pulse Sizing: Current best opportunity ({current_opp_w}x{current_opp_h} from {opportunity_source}) score: {score_of_current_best_opportunity:.4f}"
+        )
+
+        # Scan the entire grid for the best 4x3 window using _scan_grid_with_window
+        # grid_for_opportunity_scan is the grid with the target tech cleared
+        # tech_modules is available from the top of optimize_placement
+        best_4x3_score_from_scan, best_4x3_pos_from_scan = _scan_grid_with_window(
+            grid_for_opportunity_scan.copy(),  # Scan on the grid with tech cleared
+            4,
+            3,
+            len(tech_modules),
+            tech,  # Pass fixed dimensions, module count, tech
+        )
+
+        if best_4x3_pos_from_scan:
+            # The score returned by _scan_grid_with_window is already the window score
+            logging.info(
+                f"Pulse Sizing: Best 4x3 window found by scan: score {best_4x3_score_from_scan:.4f} at ({best_4x3_pos_from_scan[0]},{best_4x3_pos_from_scan[1]})."
+            )
+
+            # Compare the best 4x3 score (from scan) with the score of the current best opportunity
+            if best_4x3_score_from_scan > score_of_current_best_opportunity:
+                logging.info(
+                    f"Pulse Sizing: Scanned 4x3 window (score {best_4x3_score_from_scan:.4f}) is better than current best ({score_of_current_best_opportunity:.4f}). Selecting 4x3."
+                )
+                # Override final_opportunity_result with the 4x3 window's location and dimensions
+                final_opportunity_result = (
+                    best_4x3_pos_from_scan[0],
+                    best_4x3_pos_from_scan[1],
+                    4,
+                    3,
+                )
+            else:
+                logging.info(
+                    f"Pulse Sizing: Current best opportunity (score {score_of_current_best_opportunity:.4f}) is better or equal to scanned 4x3 ({best_4x3_score_from_scan:.4f}). Keeping original dimensions ({current_opp_w}x{current_opp_h})."
+                )
+                # final_opportunity_result remains unchanged
+        else:
+            logging.info("Pulse Sizing: No suitable 4x3 window found by full scan. Keeping original dimensions.")
+            # final_opportunity_result remains unchanged
+    # --- End Window Sizing ---
     if final_opportunity_result:
         opportunity_x, opportunity_y, window_width, window_height = final_opportunity_result
         # <<< KEEP: Selected window info >>>
@@ -686,8 +755,7 @@ def optimize_placement(
             sa_was_ml_fallback = False
             refinement_method = ""  # For logging
 
-            # --- Branch based on experimental flag ---
-            # Default path: Try ML refinement first
+            # --- Try ML refinement first ---
             refinement_method = "ML"
             # Assuming _handle_ml_opportunity is defined elsewhere
             refined_grid_candidate, refined_score_global = _handle_ml_opportunity(

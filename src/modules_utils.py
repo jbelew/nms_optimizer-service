@@ -4,14 +4,13 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, available_modules=None):
+def get_tech_modules(modules, ship, tech_key, player_owned_rewards, available_modules=None):
     """Retrieves and filters module definitions for a specific technology.
 
     This function performs several levels of filtering:
     1.  Finds the technology definition that matches the `tech_key`.
     2.  Selects the standard module variant, ignoring special types like "max".
-    3.  Filters out reward modules that the player does not own, based on
-        `player_owned_rewards`.
+    3.  Filters out reward modules not owned by the player.
     4.  Filters the final list against a specific list of `available_modules`
         if provided.
 
@@ -19,8 +18,7 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, availab
         modules (dict): The complete module data for the ship.
         ship (str): The ship/platform key (e.g., "hauler").
         tech_key (str): The technology key (e.g., "pulse").
-        player_owned_rewards (list, optional): A list of reward module IDs
-            that the player has unlocked. Defaults to [].
+        player_owned_rewards (list): A list of reward module IDs owned by the player.
         available_modules (list, optional): A specific list of module IDs to
             filter the final results against. Defaults to None.
 
@@ -28,9 +26,6 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, availab
         list: A filtered list of module dictionaries for the optimizer to use,
               or None if the technology is not found.
     """
-    if player_owned_rewards is None:
-        player_owned_rewards = []
-
     ship_data = modules
     if ship_data is None:
         logging.error(f"Ship '{ship}' not found in modules data.")
@@ -78,10 +73,9 @@ def get_tech_modules(modules, ship, tech_key, player_owned_rewards=None, availab
     for module in tech_modules:
         if module.get("type") == "reward":
             if module.get("id") in player_owned_rewards:
-                modified_module = module.copy()
-                # We change the type to bonus so that it's not filtered again.
-                modified_module["type"] = "bonus"
-                filtered_modules.append(modified_module)
+                # To prevent this from being filtered again, change its type
+                module["type"] = "bonus"
+                filtered_modules.append(module)
         else:
             filtered_modules.append(module)
 

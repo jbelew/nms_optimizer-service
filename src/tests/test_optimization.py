@@ -117,7 +117,11 @@ class TestOptimization(unittest.TestCase):
             mock_get_tech_modules.return_value = infra_modules
             # Use self.empty_grid which is guaranteed empty
             result_grid = place_all_modules_in_empty_slots(
-                self.empty_grid.copy(), self.modules, self.ship, self.tech, self.player_owned_rewards
+                self.empty_grid.copy(),
+                self.modules,
+                self.ship,
+                self.tech,
+                player_owned_rewards=self.player_owned_rewards,
             )
             # Check if the correct number of modules were placed
             placed_count = 0
@@ -134,7 +138,9 @@ class TestOptimization(unittest.TestCase):
 
     def test_find_supercharged_opportunities_no_opportunity(self):
         # Use self.empty_grid which has no SC slots
-        result = find_supercharged_opportunities(self.empty_grid, self.modules, self.ship, self.tech)
+        result = find_supercharged_opportunities(
+            self.empty_grid, self.modules, self.ship, self.tech, player_owned_rewards=self.player_owned_rewards
+        )
         self.assertIsNone(result)
 
     def test_find_supercharged_opportunities_opportunity(self):
@@ -148,7 +154,11 @@ class TestOptimization(unittest.TestCase):
         sc_grid_test.set_tech(1, 0, "other_tech")
 
         result = find_supercharged_opportunities(
-            sc_grid_test, self.modules, self.ship, self.tech, self.player_owned_rewards
+            sc_grid_test,
+            self.modules,
+            self.ship,
+            self.tech,
+            player_owned_rewards=self.player_owned_rewards,
         )
         # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
         self.assertIsNotNone(result)
@@ -203,7 +213,13 @@ class TestOptimization(unittest.TestCase):
                 full_grid.set_active(x, y, False)  # Make all inactive
 
         with self.assertRaisesRegex(ValueError, "No empty, active slots available"):
-            optimize_placement(full_grid, self.ship, self.modules, self.tech, self.player_owned_rewards)
+            optimize_placement(
+                full_grid,
+                self.ship,
+                self.modules,
+                self.tech,
+                player_owned_rewards=self.player_owned_rewards,
+            )
 
     @patch("src.optimization.core.get_solve_map")
     @patch("src.optimization.core.place_all_modules_in_empty_slots")
@@ -218,7 +234,11 @@ class TestOptimization(unittest.TestCase):
         mock_calculate_score.return_value = 5.0
 
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            player_owned_rewards=self.player_owned_rewards,
         )
 
         mock_get_solves.assert_called_once_with(self.ship)
@@ -239,7 +259,12 @@ class TestOptimization(unittest.TestCase):
         mock_apply_pattern_to_grid.return_value = (None, 0)
 
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards, forced=False
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            player_owned_rewards=self.player_owned_rewards,
+            forced=False,
         )
 
         mock_apply_pattern_to_grid.assert_called()
@@ -267,7 +292,12 @@ class TestOptimization(unittest.TestCase):
         mock_calculate_grid_score.return_value = 10.0
 
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
-            self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards, forced=True
+            self.empty_grid,
+            self.ship,
+            self.modules,
+            self.tech,
+            player_owned_rewards=self.player_owned_rewards,
+            forced=True,
         )
 
         mock_apply_pattern_to_grid.assert_called()
@@ -443,7 +473,7 @@ class TestOptimization(unittest.TestCase):
             self.ship,
             self.modules,
             self.tech,
-            self.player_owned_rewards,
+            player_owned_rewards=self.player_owned_rewards,
         )
 
         # --- Assertions ---

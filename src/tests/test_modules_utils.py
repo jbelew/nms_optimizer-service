@@ -21,9 +21,12 @@ class TestGetTechModules(unittest.TestCase):
                 }
             }
         }
+        self.player_owned_rewards = []
 
     def test_get_tech_modules_returns_normal_modules(self):
-        tech_modules = get_tech_modules(self.modules["hauler"], "hauler", "test_tech")
+        tech_modules = get_tech_modules(
+            self.modules["hauler"], "hauler", "test_tech", self.player_owned_rewards
+        )
         self.assertEqual(len(tech_modules), 1)
         self.assertEqual(tech_modules[0]["id"], "normal_module")
 
