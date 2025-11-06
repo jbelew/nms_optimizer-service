@@ -21,7 +21,6 @@ def refine_placement_for_training(
     progress_callback=None,
     run_id=None,
     send_grid_updates=False,
-    solve_type: Optional[str] = None,
     available_modules: Optional[list[dict]] = None,
 ) -> tuple[Grid, float]:
     """
@@ -39,7 +38,6 @@ def refine_placement_for_training(
         progress_callback (callable, optional): Callback for progress updates. Defaults to None.
         run_id (str, optional): Identifier for the current run. Defaults to None.
         send_grid_updates (bool): Whether to send grid updates via callback. Defaults to False.
-        solve_type (str, optional): Specific solve type to consider. Defaults to None.
         available_modules (list[dict], optional): List of modules available for placement.
                                                   If None, all modules for the tech are considered.
 
@@ -54,7 +52,6 @@ def refine_placement_for_training(
         ship,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
         available_modules=available_modules,
     )
 
@@ -73,7 +70,6 @@ def refine_placement_for_training(
         ship,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
         tech_modules=tech_modules,
     )
 

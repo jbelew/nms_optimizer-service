@@ -77,7 +77,6 @@ def ml_placement(
     progress_offset=0,
     progress_scale=100,
     send_grid_updates=False,
-    solve_type: Optional[str] = None,
     tech_modules: Optional[list] = None,
     available_modules: Optional[list] = None,
 ) -> Tuple[Optional[Grid], float]:
@@ -96,7 +95,6 @@ def ml_placement(
         model_grid_width (int): Width the model expects.
         model_grid_height (int): Height the model expects.
         polish_result (bool): If True, run a quick SA polish on the ML output.
-        solve_type (Optional[str]): The solve type, e.g., "max" or "normal".
 
     Returns:
         Tuple[Optional[Grid], float]: The predicted (and potentially polished) grid
@@ -116,7 +114,6 @@ def ml_placement(
         model_grid_width,
         model_grid_height,
         player_owned_rewards,  # pyright: ignore
-        solve_type=solve_type,
         available_modules=available_modules,
     )
     filename_ship_key = model_keys_info["filename_ship_key"]
@@ -143,7 +140,7 @@ def ml_placement(
 
     # --- 3. Get Module Mapping & Num Classes (using MODEL keys for model loading) ---
     # Use the new data loader to get the exact list of module IDs the model was trained on.
-    training_module_ids = get_training_module_ids(module_def_ship_key, module_def_tech_key, solve_type=solve_type)
+    training_module_ids = get_training_module_ids(module_def_ship_key, module_def_tech_key)
 
     if not training_module_ids:
         # Important failure condition
@@ -165,7 +162,7 @@ def ml_placement(
     # Use the USER-FACING modules_data passed into the function
     modules_data = get_module_data(ship)
     if tech_modules is None:
-        modules_to_place_list = get_tech_modules(modules_data, ship, tech, player_owned_rewards, solve_type=solve_type)
+        modules_to_place_list = get_tech_modules(modules_data, ship, tech, player_owned_rewards)
     else:
         modules_to_place_list = tech_modules
 
@@ -429,7 +426,6 @@ def ml_placement(
                 send_grid_updates=send_grid_updates,
                 start_x=start_x_original,
                 start_y=start_y_original,
-                solve_type=solve_type,
                 tech_modules=tech_modules,
                 **polish_params,
             )

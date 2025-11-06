@@ -146,7 +146,6 @@ def get_model_keys(
     grid_width: int,
     grid_height: int,
     player_owned_rewards: Optional[List[str]] = None,
-    solve_type: Optional[str] = None,
     available_modules: Optional[List[str]] = None,
 ) -> Dict[str, str]:
     """
@@ -166,7 +165,6 @@ def get_model_keys(
         grid_width: The expected grid width for this tech (from determine_window_dimensions).
         grid_height: The expected grid height for this tech (from determine_window_dimensions).
         player_owned_rewards: List of reward module IDs owned by the player.
-        solve_type: The solve type, e.g., "max" or "normal".
         available_modules (list, optional): A list of available module IDs. Defaults to None.
 
     Returns:
@@ -207,13 +205,10 @@ def get_model_keys(
             filename_ship_key = ship_key
 
     # --- Step 3: Append solve_type OR grid dimensions to filename_tech_key ---
-    if solve_type:
-        filename_tech_key = f"{filename_tech_key}_{solve_type}"
-    else:
-        # Canonicalize dimensions to ensure width >= height for consistent filenames
-        if grid_width < grid_height:
-            grid_width, grid_height = grid_height, grid_width
-        filename_tech_key = f"{filename_tech_key}_{grid_width}x{grid_height}"
+    # Canonicalize dimensions to ensure width >= height for consistent filenames
+    if grid_width < grid_height:
+        grid_width, grid_height = grid_height, grid_width
+    filename_tech_key = f"{filename_tech_key}_{grid_width}x{grid_height}"
 
     # --- Step 4: Return the final keys ---
     return {

@@ -53,17 +53,14 @@ def _convert_map_keys_to_tuple(data):
 
 
 @lru_cache(maxsize=64)
-def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
+def get_solve_map(ship_type: str):
     """
     Loads the solve map for a specific ship type from its JSON file.
 
-    This function retrieves pre-calculated optimal layouts. It can select a
-    specific solve variant if a `solve_type` is provided.
+    This function retrieves pre-calculated optimal layouts.
 
     Args:
         ship_type (str): The identifier for the ship (e.g., "hauler").
-        solve_type (str, optional): The specific solve variant to load
-            (e.g., "max"). Defaults to None, which loads the default solve.
 
     Returns:
         dict: A dictionary containing the solve map and score for the given
@@ -80,24 +77,11 @@ def get_solve_map(ship_type: str, solve_type: Optional[str] = None):
 
         processed_data = {}
         for tech_name, tech_info in data.items():
-            solve_data_to_use = None
-
-            # Case 1: The tech_info itself is the solve (flat structure, e.g., "infra" in corvette.json)
-            # This is the default solve when no solve_type is requested.
             if "map" in tech_info and "score" in tech_info:
-                if solve_type is None:
-                    solve_data_to_use = tech_info
-
-            # Case 2: The tech_info contains multiple solves keyed by type (e.g., "cyclotron" in corvette.json)
-            elif solve_type in tech_info:
-                solve_data_to_use = tech_info[solve_type]
-
-            if solve_data_to_use and "map" in solve_data_to_use:
                 processed_data[tech_name] = {
-                    "map": _convert_map_keys_to_tuple(solve_data_to_use["map"]),
-                    "score": solve_data_to_use.get("score", 0),
+                    "map": _convert_map_keys_to_tuple(tech_info["map"]),
+                    "score": tech_info.get("score", 0),
                 }
-
         return processed_data
     except (IOError, json.JSONDecodeError) as e:
         logging.error(f"Error loading or parsing solve map for {ship_type}: {e}")
@@ -200,7 +184,7 @@ def get_all_module_data():
     return all_modules
 
 
-def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[str] = None) -> List[str]:
+def get_training_module_ids(ship_key: str, tech_key: str) -> List[str]:
     """
     Gets the list of module IDs for training a model for a given technology.
 
@@ -212,8 +196,6 @@ def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[s
     Args:
         ship_key (str): The key for the ship/platform (e.g., "standard").
         tech_key (str): The key for the technology (e.g., "pulse").
-        solve_type (str, optional): The specific solve type (e.g., "max") to
-            match the correct module set. Defaults to None.
 
     Returns:
         list[str]: A list of module ID strings to be used for training.
@@ -246,28 +228,20 @@ def get_training_module_ids(ship_key: str, tech_key: str, solve_type: Optional[s
     # 4. Select the correct candidate based on solve_type
     selected_tech_data = None
     for candidate in candidates_for_tech:
-        if candidate.get("type") == solve_type:
+        if candidate.get("type") is None:
             selected_tech_data = candidate
             break
-
-    # If no exact match was found, and solve_type is None, this implies we are looking for the "default"
-    # untyped technology. This maintains the principle that `None` should not arbitrarily match "normal".
-    if selected_tech_data is None and solve_type is None:
-        for candidate in candidates_for_tech:
-            if candidate.get("type") is None:
-                selected_tech_data = candidate
-                break
 
     # 5. Extract module IDs from the selected technology data
     if selected_tech_data:
         modules = selected_tech_data.get("modules", [])
         module_ids = [m["id"] for m in modules]
         logging.debug(
-            f"get_training_module_ids: Returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key} (solve_type: {solve_type})"
+            f"get_training_module_ids: Returning {len(module_ids)} modules from main JSON for {ship_key}/{tech_key}"
         )
         return module_ids
 
     logging.warning(
-        f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key} with solve_type '{solve_type}'."
+        f"get_training_module_ids: No matching module list found for {ship_key}/{tech_key}."
     )
     return []

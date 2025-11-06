@@ -38,7 +38,6 @@ def optimize_placement(
     progress_callback=None,
     run_id=None,
     send_grid_updates=False,
-    solve_type=None,
     available_modules=None,
 ):
     """
@@ -82,7 +81,6 @@ def optimize_placement(
         ship,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
         available_modules=None,
     )
     tech_modules = get_tech_modules(
@@ -90,7 +88,6 @@ def optimize_placement(
         ship,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
         available_modules=available_modules,
     )
     if not tech_modules:
@@ -128,7 +125,7 @@ def optimize_placement(
     solve_method = "Unknown"  # <<< Initialize solve_method >>>
 
     # --- Load Solves On-Demand ---
-    all_solves_for_ship = get_solve_map(ship, solve_type)
+    all_solves_for_ship = get_solve_map(ship)
     # Create the structure that filter_solves expects
     solves_for_filtering = {ship: all_solves_for_ship} if all_solves_for_ship else {}
     filtered_solves = filter_solves(
@@ -137,7 +134,6 @@ def optimize_placement(
         modules,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
         available_modules=available_modules,
     )
     # --- End On-Demand Loading ---
@@ -156,7 +152,6 @@ def optimize_placement(
             ship,
             tech,
             player_owned_rewards,
-            solve_type=solve_type,
             tech_modules=tech_modules,
         )
         solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
@@ -207,7 +202,7 @@ def optimize_placement(
 
             # We need solve_score for percentage calculation. Let's get it now.
             solve_score = 0
-            all_solves_for_ship = get_solve_map(ship, solve_type)
+            all_solves_for_ship = get_solve_map(ship)
             if all_solves_for_ship:
                 solves_for_filtering = {ship: all_solves_for_ship}
                 # Filter with full module list to find the official solve score
@@ -217,7 +212,6 @@ def optimize_placement(
                     modules,
                     tech,
                     player_owned_rewards,
-                    solve_type=solve_type,
                 )
                 if ship in temp_filtered_solves and tech in temp_filtered_solves[ship]:
                     solve_score = temp_filtered_solves[ship][tech].get("score", 0)
@@ -232,7 +226,6 @@ def optimize_placement(
                 ship,
                 tech,
                 player_owned_rewards,
-                solve_type=solve_type,
                 tech_modules=tech_modules,
             )
 
@@ -259,7 +252,6 @@ def optimize_placement(
                     run_id=run_id,
                     stage="partial_set_sa",
                     send_grid_updates=send_grid_updates,
-                    solve_type=solve_type,
                     tech_modules=tech_modules,
                 )
                 solve_method = "Partial Set SA"
@@ -320,7 +312,6 @@ def optimize_placement(
                         run_id=run_id,
                         stage="partial_set_sa_pattern_gen_scanned",
                         send_grid_updates=send_grid_updates,
-                        solve_type=solve_type,
                         tech_modules=tech_modules,
                     )
                     sa_method_for_pattern_gen = "Windowed SA (Scanned Fit)"
@@ -346,7 +337,6 @@ def optimize_placement(
                             run_id=run_id,
                             stage="partial_set_sa_pattern_gen_full",
                             send_grid_updates=send_grid_updates,
-                            solve_type=solve_type if solve_type is not None else "",
                             tech_modules=tech_modules,
                         )
                         sa_method_for_pattern_gen = "Full SA"
@@ -405,7 +395,6 @@ def optimize_placement(
                                 start_y_pattern,
                                 ship,
                                 player_owned_rewards,
-                                solve_type=solve_type,
                                 tech_modules=tech_modules,
                             )
                             if temp_result_grid is not None:
@@ -461,7 +450,6 @@ def optimize_placement(
                             run_id=run_id,
                             stage="final_fallback_sa_no_pattern_fit",
                             send_grid_updates=send_grid_updates,
-                            solve_type=solve_type if solve_type is not None else "",
                             tech_modules=tech_modules,
                         )
                         if solved_grid is None:
@@ -502,7 +490,6 @@ def optimize_placement(
                         start_y,
                         ship,
                         player_owned_rewards,
-                        solve_type=solve_type,
                         tech_modules=tech_modules,
                     )
                     if temp_result_grid is not None:
@@ -563,7 +550,6 @@ def optimize_placement(
                     run_id=run_id,
                     stage="initial_sa_no_window",
                     send_grid_updates=send_grid_updates,
-                    solve_type=solve_type if solve_type is not None else "",
                     tech_modules=tech_modules,
                 )
                 if solved_grid is None:
@@ -625,7 +611,6 @@ def optimize_placement(
         ship,
         tech,
         player_owned_rewards,
-        solve_type=solve_type,
         tech_modules=tech_modules,
     )
 
@@ -792,7 +777,6 @@ def optimize_placement(
                 run_id=run_id,
                 stage="refinement_ml",
                 send_grid_updates=send_grid_updates,
-                solve_type=solve_type,
                 tech_modules=tech_modules,
                 available_modules=available_modules,
             )
@@ -817,7 +801,6 @@ def optimize_placement(
                     run_id=run_id,
                     stage="refinement_sa_fallback",
                     send_grid_updates=send_grid_updates,
-                    solve_type=solve_type,
                     tech_modules=tech_modules,
                 )
 
@@ -867,7 +850,6 @@ def optimize_placement(
                         run_id=run_id,
                         stage="final_fallback_sa",
                         send_grid_updates=send_grid_updates,
-                        solve_type=solve_type,
                         tech_modules=tech_modules,
                     )
                     if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:

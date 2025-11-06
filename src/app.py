@@ -99,7 +99,7 @@ if not ga4_client:
 # --- End GA4 Configuration ---
 
 
-def run_optimization(data, progress_callback=None, run_id=None, solve_type=None):
+def run_optimization(data, progress_callback=None, run_id=None):
     """Executes the core optimization logic based on the provided data.
 
     This function serves as a central dispatcher for both the REST and
@@ -112,7 +112,6 @@ def run_optimization(data, progress_callback=None, run_id=None, solve_type=None)
         progress_callback (callable, optional): A function to call with
             progress updates, used by the WebSocket handler.
         run_id (str, optional): A unique identifier for the optimization run.
-        solve_type (str, optional): The type of solve to perform (e.g., "max").
 
     Returns:
         tuple: A tuple containing a dictionary with the optimization result
@@ -153,7 +152,6 @@ def run_optimization(data, progress_callback=None, run_id=None, solve_type=None)
             progress_callback=progress_callback,
             run_id=run_id,
             send_grid_updates=send_grid_updates,
-            solve_type=solve_type,
             available_modules=available_modules,
         )
 
@@ -242,9 +240,8 @@ def handle_optimize_socket(data):
             last_emit_time = current_time
             gevent.sleep(0)  # Yield to allow other greenlets to run
 
-    solve_type = data.get("solve_type")  # Extract solve_type from the incoming data
     result, status_code = run_optimization(
-        data, progress_callback=progress_callback, run_id=run_id, solve_type=solve_type
+        data, progress_callback=progress_callback, run_id=run_id
     )
     emit("optimization_result", {**result, "run_id": run_id}, room=sid)  # type: ignore
 

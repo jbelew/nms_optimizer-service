@@ -6,7 +6,7 @@ from src.module_placement import place_module
 
 
 def determine_window_dimensions(
-    module_count: int, tech: str, ship: str, solve_type: str | None = None
+    module_count: int, tech: str, ship: str
 ) -> tuple[int, int]:
     """
     Determines the window width and height based on the number of modules and technology type.
@@ -18,7 +18,6 @@ def determine_window_dimensions(
         module_count: The total number of modules for a given technology.
         tech: The technology key.
         ship: The ship type, which can influence the grid size.
-        solve_type: The specific solve type, which may influence the decision.
 
     Returns:
         A tuple containing the calculated window_width and window_height.
@@ -87,12 +86,11 @@ def place_all_modules_in_empty_slots(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """Places all modules of a given tech in any remaining empty slots, going column by column."""
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
         logging.error(f"No modules found for ship: '{ship}' -- tech: '{tech}'")
         return grid
@@ -144,7 +142,6 @@ def check_all_modules_placed(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """
@@ -156,7 +153,6 @@ def check_all_modules_placed(
         ship (str): The ship type.
         tech (str): The technology type.
         player_owned_rewards (list, optional): Rewards owned by the player. Defaults to None.
-        solve_type (str, optional): The type of solve, e.g., "normal" or "max".
         tech_modules (list, optional): A pre-fetched list of modules to check against.
                                        If provided, this list is used directly.
 
@@ -168,7 +164,7 @@ def check_all_modules_placed(
         if player_owned_rewards is None:
             player_owned_rewards = []  # Ensure it's an empty list if None
 
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
 
     if tech_modules is None:
         logging.warning(

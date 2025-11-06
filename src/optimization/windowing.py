@@ -95,7 +95,6 @@ def find_supercharged_opportunities(
     ship,
     tech,
     player_owned_rewards=None,
-    solve_type: Optional[str] = None,
     tech_modules=None,
 ):
     """
@@ -136,12 +135,12 @@ def find_supercharged_opportunities(
 
     # Determine Dynamic Window Size (no change needed)
     if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
+        tech_modules = get_tech_modules(modules, ship, tech, player_owned_rewards)
     if tech_modules is None:
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
         return None
     module_count = len(tech_modules)
-    window_width, window_height = determine_window_dimensions(module_count, tech, ship, solve_type=solve_type)
+    window_width, window_height = determine_window_dimensions(module_count, tech, ship)
     logging.info(f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
 
     # --- Scan with Original Dimensions ---

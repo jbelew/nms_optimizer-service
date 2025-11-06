@@ -221,7 +221,7 @@ class TestOptimization(unittest.TestCase):
             self.empty_grid, self.ship, self.modules, self.tech, self.player_owned_rewards
         )
 
-        mock_get_solves.assert_called_once_with(self.ship, None)
+        mock_get_solves.assert_called_once_with(self.ship)
         mock_place_all.assert_called_once()
         mock_calculate_score.assert_called_once_with(placed_grid, self.tech, apply_supercharge_first=False)
         self.assertEqual(result_grid, placed_grid)
@@ -482,7 +482,7 @@ class TestOptimization(unittest.TestCase):
             }
         }
 
-        # Call get_tech_modules with solve_type=None
+        # Call get_tech_modules
         from src.modules_utils import get_tech_modules
 
         result_modules = get_tech_modules(mock_ship_modules, "test_ship", "test_tech", [])

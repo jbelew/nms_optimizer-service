@@ -86,7 +86,6 @@ def apply_pattern_to_grid(
     start_y,
     ship,
     player_owned_rewards=None,
-    solve_type=None,
     tech_modules=None,
 ):
     """Applies a pattern to a copy of the grid at a given starting position.
@@ -104,7 +103,6 @@ def apply_pattern_to_grid(
         start_y (int): The starting y-coordinate on the grid to apply the pattern.
         ship (str): The ship key.
         player_owned_rewards (list, optional): A list of owned reward modules.
-        solve_type (str, optional): The specific solve type (e.g., "max").
         tech_modules (list, optional): A pre-filtered list of available modules for this tech.
 
     Returns:
@@ -116,7 +114,7 @@ def apply_pattern_to_grid(
     new_grid = grid.copy()
 
     if tech_modules is None:
-        tech_modules_available = get_tech_modules(modules, ship, tech, player_owned_rewards, solve_type=solve_type)
+        tech_modules_available = get_tech_modules(modules, ship, tech, player_owned_rewards)
     else:
         tech_modules_available = tech_modules
     if tech_modules_available is None:  # Should not happen if filter_solves worked correctly
