@@ -40,6 +40,10 @@ def filter_solves(
     if ship in solves and tech in solves[ship]:
         solve_data = solves[ship][tech]
 
+        if tech == "pulse" and available_modules is not None and "PC" in available_modules:
+            solve_data = solves[ship]["photonix"]
+            print("INFO -- Forcing tech to 'photonix' for PC")
+
         if not solve_data:
             return {}
 

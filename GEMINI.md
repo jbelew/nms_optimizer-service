@@ -137,6 +137,7 @@ You will ensure these are addressed in all projects.
 ## Gemini Added Memories
 - The user tends to perform the 'git push origin main --follow-tags' command manually.
 - Resolved a `TypeError: argument 'bonus': must be real number, not NoneType` in `scripts/training/filter_generated_data.py` by ensuring that when no module is present in a grid cell, the `bonus` value is explicitly set to `0.0` (instead of `None`) and `sc_eligible` is set to `False`.
+- Implemented a fix for the `pulse` tech remapping to `photonix` when the `PC` (Photonix Core) module is present. The solution involves reassigning the `solve_data` variable directly within the `filter_solves` function in `src/solve_map_utils.py`, rather than remapping the `tech` parameter. This ensures that `get_tech_modules` correctly retrieves modules for the original `pulse` tech, while the `photonix` solve map is used for filtering and scoring.
 
 ## Python Documentation Guidelines
 
