@@ -560,7 +560,11 @@ def optimize_placement(
             "optimize_placement: solved_grid is None before opportunity refinement, indicating an unexpected state."
         )
     grid_after_initial_placement = solved_grid.copy()  # Grid state before refinement starts
-    current_best_score = calculate_grid_score(grid_after_initial_placement, tech, apply_supercharge_first=False)
+    current_best_score = (
+        solved_bonus
+        if solved_bonus > -float("inf")
+        else calculate_grid_score(grid_after_initial_placement, tech, apply_supercharge_first=False)
+    )
 
     # Prepare grid for opportunity scanning (clear target tech)
     grid_for_opportunity_scan = grid_after_initial_placement.copy()
@@ -744,7 +748,7 @@ def optimize_placement(
 
             refined_grid_candidate = None
             refined_score_global = -1.0
-            sa_was_ml_fallback = False
+
             refinement_method = ""  # For logging
 
             # --- Try ML refinement first ---
@@ -770,7 +774,7 @@ def optimize_placement(
                 logging.info(
                     "ML refinement failed or model not found. Falling back to SA/Refine refinement."
                 )  # <<< KEEP: Important fallback >>>
-                sa_was_ml_fallback = True
+
                 refinement_method = "ML->SA/Refine Fallback"
                 # Assuming _handle_sa_refine_opportunity is defined elsewhere - THIS WAS THE BUG
                 refined_grid_candidate, refined_score_global = _handle_sa_refine_opportunity(
@@ -810,48 +814,45 @@ def optimize_placement(
                         f"Opportunity refinement ({refinement_method}) failed completely. Keeping previous best."
                     )
                 # solved_grid remains grid_after_initial_placement
-                solved_bonus = current_best_score
+                # solved_bonus remains what it was before refinement
                 # solve_method remains what it was before refinement
 
                 # --- Final Fallback SA Logic ---
-                if not sa_was_ml_fallback:  # Only run if the previous SA wasn't already a fallback from ML
-                    # <<< KEEP: Important fallback >>>
+                # <<< KEEP: Important fallback >>>
+                logging.info("Refinement didn't improve/failed. Attempting final fallback Simulated Annealing.")
+                grid_for_sa_fallback = grid_after_initial_placement.copy()
+                # Assuming _handle_sa_refine_opportunity is defined elsewhere
+                sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
+                    grid_for_sa_fallback.copy(),  # Pass a copy
+                    modules,
+                    ship,
+                    tech,
+                    opportunity_x,
+                    opportunity_y,
+                    window_width,
+                    window_height,
+                    progress_callback=progress_callback,
+                    run_id=run_id,
+                    stage="final_fallback_sa",
+                    send_grid_updates=send_grid_updates,
+                    tech_modules=tech_modules,
+                )
+                if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
+                    # <<< KEEP: Score improvement >>>
                     logging.info(
-                        "Refinement didn't improve/failed (and was not ML->SA fallback). Attempting final fallback Simulated Annealing."
+                        f"Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}"
                     )
-                    grid_for_sa_fallback = grid_after_initial_placement.copy()
-                    # Assuming _handle_sa_refine_opportunity is defined elsewhere
-                    sa_fallback_grid, sa_fallback_bonus = _handle_sa_refine_opportunity(
-                        grid_for_sa_fallback.copy(),  # Pass a copy
-                        modules,
-                        ship,
-                        tech,
-                        opportunity_x,
-                        opportunity_y,
-                        window_width,
-                        window_height,
-                        progress_callback=progress_callback,
-                        run_id=run_id,
-                        stage="final_fallback_sa",
-                        send_grid_updates=send_grid_updates,
-                        tech_modules=tech_modules,
-                    )
-                    if sa_fallback_grid is not None and sa_fallback_bonus > current_best_score:
-                        # <<< KEEP: Score improvement >>>
-                        logging.info(
-                            f"Final fallback SA improved score from {current_best_score:.4f} to {sa_fallback_bonus:.4f}"
-                        )
-                        solved_grid = sa_fallback_grid
-                        solved_bonus = sa_fallback_bonus
-                        solve_method = "Final Fallback SA"  # <<< Update method >>>
+                    solved_grid = sa_fallback_grid
+                    solved_bonus = sa_fallback_bonus
+                    solve_method = "Final Fallback SA"  # <<< Update method >>>
 
-                    elif sa_fallback_grid is not None:
-                        # <<< KEEP: Score did not improve >>>
-                        logging.info(
-                            f"Final fallback SA (due to unplaced modules) did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best."
-                        )
-                    else:
-                        logging.error("Final fallback Simulated Annealing failed. Keeping previous best.")
+                elif sa_fallback_grid is not None:
+                    # <<< KEEP: Score did not improve >>>
+                    logging.info(
+                        f"Final fallback SA (due to unplaced modules) did not improve score ({sa_fallback_bonus:.4f} vs {current_best_score:.4f}). Keeping previous best."
+                    )
+                else:
+                    logging.error("Final fallback Simulated Annealing failed. Keeping previous best.")
 
         # <<< --- Else block for the supercharged check --- >>>
         else:

@@ -38,7 +38,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> tupl
     # --- Technology-specific rules ---
     if tech == "hyper":
         if module_count >= 12:
-            window_width, window_height = 4, 3
+            window_width, window_height = 4, 4
         elif module_count >= 10:
             window_width, window_height = 4, 3
         elif module_count >= 9:
