@@ -152,7 +152,7 @@
                 "label": "Cockpit",
                 "key": "cockpit",
                 "image": "corvette/cockpit.webp",
-                "color": "jade",
+                "color": "teal",
                 "modules": [
                     {"id": "CP", "type": "core", "label": "Titan-Class Cockpit", "bonus": 0.08, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cockpit.webp", "checked": true},
                     {"id": "Ca", "type": "reactor", "label": "Medusa-Class Reactor Theta", "bonus": 0.35, "adjacency": "greater", "sc_eligible": false, "image": "corvette/medusa.webp", "checked": true},
