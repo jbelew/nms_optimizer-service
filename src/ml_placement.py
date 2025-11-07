@@ -395,7 +395,7 @@ def ml_placement(
             # "final_swap_probability": 0.25,  # Keep final swap chance
             "start_from_current_grid": True,  # Keep this True for polishing
             # "max_processing_time": 10.0,  # Increase max time slightly (was 5.0)
-            "num_sa_runs": 1,  # Increase runs for polishing (was 4)
+            "num_sa_runs": 3,  # Increase runs for polishing (was 4)
         }
 
         # logging.info(f"ML Placement: Using SA polish params: {polish_params}") # Less critical detail
