@@ -49,6 +49,18 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 Compress(app)  # Initialize Flask-Compress
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+
+@app.after_request
+def add_cache_headers(response):
+    if (
+        request.path.startswith("/tech_tree/")
+        or request.path == "/platforms"
+        or request.path == "/analytics/popular_data"
+    ):
+        response.headers["Cache-Control"] = "public, max-age=3600"
+    return response
+
+
 # --- Google Analytics 4 (GA4) Configuration ---
 # IMPORTANT: For production, store this path securely (e.g., environment variable)
 # and ensure the JSON key file is NOT committed to version control.
