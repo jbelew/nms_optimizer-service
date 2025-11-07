@@ -47,11 +47,11 @@ def run_benchmark(
     print("-" * 20)
 
     # Define a static grid
-    grid = Grid(4, 4)
+    grid = Grid(3, 4)
     grid.set_supercharged(1, 1, True)
-    grid.set_supercharged(1, 2, True)
-    grid.set_supercharged(2, 1, True)
-    grid.set_supercharged(2, 2, True)
+    grid.set_supercharged(2, 3, True)
+    # grid.set_supercharged(2, 1, True)
+    # grid.set_supercharged(2, 2, True)
 
     # Load modules
     all_modules = get_all_module_data()
@@ -60,7 +60,7 @@ def run_benchmark(
     if not modules:
         print(f"Could not find module data for ship: {ship}")
         return
-    tech = "hyper"
+    tech = "pulse"
 
     tech_modules = get_tech_modules(modules, ship, tech)
 

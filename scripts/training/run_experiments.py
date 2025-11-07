@@ -1,6 +1,7 @@
 import subprocess
 import os
 import argparse
+import sys
 
 # Define the parameter combinations to test
 experiments = [
@@ -168,11 +169,147 @@ experiments = [
         "max_steps_without_improvement": 250,
         "num_sa_runs": 6,
     },
+    # Experiment 22: Tweak of exp 13
+    {
+        "initial_temperature": 7000,
+        "cooling_rate": 0.995,
+        "iterations_per_temp": 75,
+        "max_steps_without_improvement": 200,
+        "num_sa_runs": 4,
+    },
+    # Experiment 23: Tweak of exp 13
+    {
+        "initial_temperature": 7000,
+        "cooling_rate": 0.99,
+        "iterations_per_temp": 75,
+        "max_steps_without_improvement": 200,
+        "num_sa_runs": 5,
+    },
+    # Experiment 24: Higher initial swap probability
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 35,
+        "max_steps_without_improvement": 150,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 25: Lower initial swap probability
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 35,
+        "max_steps_without_improvement": 150,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.35,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 26: Higher final swap probability
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 35,
+        "max_steps_without_improvement": 150,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.55,
+        "final_swap_probability": 0.45,
+    },
+    # Experiment 27: Lower final swap probability
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 35,
+        "max_steps_without_improvement": 150,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.55,
+        "final_swap_probability": 0.05,
+    },
+    # Experiment 28: Both higher
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 35,
+        "max_steps_without_improvement": 150,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.45,
+    },
+    # Experiment 29: Both lower
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 35,
+        "max_steps_without_improvement": 150,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.35,
+        "final_swap_probability": 0.05,
+    },
+    # Experiment 30: Try to reduce std dev
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 70,
+        "max_steps_without_improvement": 300,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 31: Speed up exp 30
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 60,
+        "max_steps_without_improvement": 250,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 32: Tune cooling rate of exp 30
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.995,
+        "iterations_per_temp": 70,
+        "max_steps_without_improvement": 300,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 33: Tune cooling rate of exp 30
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.99,
+        "iterations_per_temp": 70,
+        "max_steps_without_improvement": 300,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 34: exp 30 with 1 sa run
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.999,
+        "iterations_per_temp": 70,
+        "max_steps_without_improvement": 300,
+        "num_sa_runs": 1,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
+    # Experiment 35: Try to reduce std dev
+    {
+        "initial_temperature": 3000,
+        "cooling_rate": 0.998,
+        "iterations_per_temp": 70,
+        "max_steps_without_improvement": 300,
+        "num_sa_runs": 2,
+        "initial_swap_probability": 0.75,
+        "final_swap_probability": 0.25,
+    },
 ]
 
 
 def run_experiments(start_index, end_index):
-    output_dir = "benchmark_results"
+    output_dir = "benchmark_results_swap_exp"
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -184,7 +321,7 @@ def run_experiments(start_index, end_index):
         experiment_name = f"experiment_{i+1}"
         output_file = os.path.join(output_dir, f"{experiment_name}.log")
 
-        command = ["python3", "scripts/training/benchmark.py", "--num_runs=20", "--max_processing_time=20.0"]
+        command = [sys.executable, "scripts/training/benchmark.py", "--num_runs=20", "--max_processing_time=60.0"]
 
         for key, value in params.items():
             command.append(f"--{key}={value}")

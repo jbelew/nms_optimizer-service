@@ -297,11 +297,11 @@ def simulated_annealing(
     modules,
     tech,
     full_grid,
-    initial_temperature=9000,
-    cooling_rate=0.99,
+    initial_temperature=3000,
+    cooling_rate=0.999,
     stopping_temperature=0.1,
-    iterations_per_temp=75,
-    initial_swap_probability=0.55,
+    iterations_per_temp=60,
+    initial_swap_probability=0.75,
     final_swap_probability=0.25,
     start_from_current_grid: bool = False,
     max_processing_time: float = 600.0,
@@ -314,10 +314,10 @@ def simulated_annealing(
     start_x: int = 0,
     start_y: int = 0,
     tech_modules: Optional[list] = None,
-    max_steps_without_improvement=200,
+    max_steps_without_improvement=250,
     reheat_factor=0.6,
     max_reheats: int = 10,
-    num_sa_runs: int = 6,
+    num_sa_runs: int = 2,
     seed: int = 161616,  # Default seed set to 42
 ):
     # --- Define max_reheats early ---
