@@ -105,7 +105,7 @@
                 "image": "starship/shield.webp",
                 "color": "yellow",
                 "modules": [
-                    {"id": "DS", "type": "core", "label": "Defensive Shields", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/shield.webp", "checked": true},
+                    {"id": "DS", "type": "core", "label": "Defensive Shields", "bonus": 1.00, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield.webp", "checked": true},
                     {"id": "AA", "type": "bonus", "label": "Ablative Armor", "bonus": 0.07, "adjacency": "greater", "sc_eligible": true, "image": "starship/ablative.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "Shield Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": false},
                     {"id": "Xb", "type": "upgrade", "label": "Shield Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": false},

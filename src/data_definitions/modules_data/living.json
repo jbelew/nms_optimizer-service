@@ -35,7 +35,7 @@
                 "image": "starship/scream.webp",
                 "color": "yellow",
                 "modules": [
-                    {"id": "SS", "type": "core", "label": "Scream Supressor", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/scream.webp", "checked": true},
+                    {"id": "SS", "type": "core", "label": "Scream Supressor", "bonus": 1.00, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "Scream Supressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "Scream Supressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "Scream Supressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true}
