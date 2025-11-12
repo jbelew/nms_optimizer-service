@@ -172,9 +172,9 @@ def optimize_placement(
                 )
                 is_partial_set = False
 
-        if is_partial_set and tech == "trails":
-            logging.info("Trails are always considered a full set. Proceeding with normal optimization.")
-            is_partial_set = False
+        # if is_partial_set and tech == "trails":
+        #     logging.info("Trails are always considered a full set. Proceeding with normal optimization.")
+        #     is_partial_set = False
 
         if is_partial_set:
             if full_tech_modules_list:

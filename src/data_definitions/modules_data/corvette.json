@@ -329,96 +329,18 @@
                 "image": "starship/trails.webp",
                 "color": "white",
                 "modules": [
-                    {
-                        "id": "AB",
-                        "type": "bonus",
-                        "label": "Artemis Figurine",
-                        "bonus": 0.05,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/artemis.webp", "checked": true
-                    },
-                    {
-                        "id": "PB",
-                        "type": "bonus",
-                        "label": "Polo Figurine",
-                        "bonus": 0.06,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/polo.webp", "checked": true
-                    },
-                    {
-                        "id": "SB",
-                        "type": "bonus",
-                        "label": "Tentacled Figurine",
-                        "bonus": 0.05,
-                        "adjacency": "greater",
-                        "sc_eligible": true,
-                        "image": "starship/squid.webp", "checked": false
-                    },
-                    {
-                        "id": "SP",
-                        "type": "bonus",
-                        "label": "Sputtering Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/sputtering-trail.webp", "checked": false
-                    },
-                    {
-                        "id": "CT",
-                        "type": "bonus",
-                        "label": "Cadmium Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/cadmium-trail.webp", "checked": true
-                    },
-                    {
-                        "id": "ET",
-                        "type": "bonus",
-                        "label": "Emeril Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/emeril-trail.webp", "checked": true
-                    },
-                    {
-                        "id": "TT",
-                        "type": "bonus",
-                        "label": "Temporal Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/temporal-trail.webp", "checked": false
-                    },
-                    {
-                        "id": "ST",
-                        "type": "bonus",
-                        "label": "Stealth Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/stealth-trail.webp", "checked": true
-                    },
-                    {
-                        "id": "GT",
-                        "type": "bonus",
-                        "label": "Golden Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/golden-trail.webp", "checked": true
-                    },
-                    {
-                        "id": "RT",
-                        "type": "bonus",
-                        "label": "Chromatic Starship Trail",
-                        "bonus": 0.0,
-                        "adjacency": "greater",
-                        "sc_eligible": false,
-                        "image": "starship/chromatic-trail.webp", "checked": true
-                    }
+                    {"id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "starship/artemis.webp", "checked": true},
+                    {"id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": true, "image": "starship/polo.webp", "checked": true},
+                    {"id": "SB", "type": "bonus", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "starship/squid.webp", "checked": false},
+                    {"id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/chromatic-trail.webp", "checked": true},
+                    {"id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/cadmium-trail.webp", "checked": true},
+                    {"id": "ET", "type": "bonus", "label": "Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/emeril-trail.webp", "checked": true},
+                    {"id": "GT", "type": "bonus", "label": "Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/golden-trail.webp", "checked": true},
+                    {"id": "ST", "type": "bonus", "label": "Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/stealth-trail.webp", "checked": true},
+                    {"id": "SP", "type": "bonus", "label": "Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sputtering-trail.webp", "checked": false},
+                    {"id": "TT", "type": "bonus", "label": "Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/temporal-trail.webp", "checked": false},
+                    {"id": "PT", "type": "bonus", "label": "Plasma Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/plasma-trail.webp", "checked": false},
+                    {"id": "AT", "type": "bonus", "label": "Aeron Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/aeron-trail.webp", "checked": false}
                 ]
             },
             {
