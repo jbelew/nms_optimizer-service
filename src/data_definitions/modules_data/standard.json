@@ -199,7 +199,7 @@
                 "color": "white",
                 "modules": [
                     {"id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "starship/artemis.webp", "checked": true},
-                    {"id": "PB", "type": "core", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": true, "image": "starship/polo.webp", "checked": true},
+                    {"id": "PB", "type": "bonus", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": true, "image": "starship/polo.webp", "checked": true},
                     {"id": "SB", "type": "bonus", "label": "Tentacled Figurine", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "starship/squid.webp", "checked": false},
                     {"id": "RT", "type": "bonus", "label": "Chromatic Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/chromatic-trail.webp", "checked": true},
                     {"id": "CT", "type": "bonus", "label": "Cadmium Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/cadmium-trail.webp", "checked": true},

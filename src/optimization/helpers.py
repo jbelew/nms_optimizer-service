@@ -55,6 +55,12 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> tupl
         else:
             window_width, window_height = 4, 2
 
+    elif tech in ("pulse"):
+        if module_count == 6:
+            window_width, window_height = 3, 2
+        elif module_count < 9:
+            window_width, window_height = 4, 2
+
     # --- Generic fallback rules ---
     elif module_count < 1:
         logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
@@ -68,7 +74,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> tupl
     elif module_count < 7:
         window_width, window_height = 3, 2
     elif module_count < 9:
-        window_width, window_height = 4, 2
+        window_width, window_height = 3, 3
     elif module_count == 9:
         window_width, window_height = 3, 3
     else:  # module_count >= 10
