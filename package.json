@@ -1,0 +1,37 @@
+{
+  "name": "nms_optimizer-service",
+  "version": "1.0.0",
+  "description": "![Tests](https://github.com/jbelew/nms_optimizer-service/actions/workflows/main.yml/badge.svg?branch=main) ![Deployment](https://img.shields.io/badge/Deployment-Heroku-blue?logo=heroku)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jbelew/nms_optimizer-service.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jbelew/nms_optimizer-service/issues"
+  },
+  "homepage": "https://github.com/jbelew/nms_optimizer-service#readme",
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@elsikora/commitizen-plugin-commitlint-ai/index.cjs"
+    }
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
+    "@elsikora/commitizen-plugin-commitlint-ai": "^2.0.1",
+    "commitizen": "^4.3.1",
+    "husky": "^9.1.7"
+  }
+}

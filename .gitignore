@@ -14,3 +14,6 @@ cosmic-inkwell-467922-v5-85707f3bcc80.json
 
 # Rust build artifacts
 rust_scorer/target/
+
+# Ignore Node.js modules
+/node_modules/
