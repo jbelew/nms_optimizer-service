@@ -2,11 +2,14 @@ import numpy as np
 import os
 import argparse
 import glob
+import logging
 from src.grid_utils import Grid
 from src.bonus_calculations import calculate_grid_score
 from src.data_loader import get_all_module_data
 from src.grid_display import print_grid_compact
 from src.module_placement import place_module
+
+logging.basicConfig(level=logging.DEBUG)
 
 modules = get_all_module_data()
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))

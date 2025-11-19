@@ -60,6 +60,8 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> tupl
             window_width, window_height = 3, 2
         elif module_count < 9:
             window_width, window_height = 4, 2
+        else:
+            window_width, window_height = 4, 3
 
     # --- Generic fallback rules ---
     elif module_count < 1:
