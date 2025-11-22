@@ -126,13 +126,18 @@ class TestFilterSolves(unittest.TestCase):
         self.assertEqual(result, {})
 
     def test_filter_solves_no_modules_for_tech(self):
-        """If no modules found for tech, should return empty dict."""
+        """If no modules found for tech, should still return solve with all modules included."""
         # Create modules_data with no pulse modules
         modules_data = {"types": {"Engineering": [{"key": "engineering", "modules": []}]}}
 
         result = filter_solves(self.solves, "corvette", modules_data, "pulse")
 
-        self.assertEqual(result, {})
+        # Should still return the solve data even if modules can't be retrieved
+        # This allows solves to proceed with fallback logic
+        self.assertIn("corvette", result)
+        self.assertIn("pulse", result["corvette"])
+        # All modules from the original solve should be included
+        self.assertEqual(len(result["corvette"]["pulse"]["map"]), 3)
 
     def test_filter_solves_excludes_unowned_modules(self):
         """Filtered solve should exclude modules the player doesn't own."""
