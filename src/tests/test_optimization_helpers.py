@@ -9,7 +9,6 @@ Focus areas:
 """
 
 import unittest
-from unittest.mock import MagicMock, patch
 from src.grid_utils import Grid
 from src.optimization.helpers import (
     determine_window_dimensions,
@@ -24,7 +23,7 @@ class TestDetermineWindowDimensions(unittest.TestCase):
 
     def test_zero_modules_returns_default(self):
         """Zero modules BUG: returns tech-specific defaults instead of 1x1
-        
+
         The function checks tech-specific rules BEFORE checking module_count < 1,
         so with 0 modules and hyper tech, it returns (4, 2) instead of (1, 1).
         This is a logic ordering bug in determine_window_dimensions.
@@ -212,19 +211,25 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
         """All modules should be placed in completely empty grid"""
         grid = self._create_grid(5, 5)
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(5)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # Count placed modules
         placed_count = sum(
-            1 for y in range(result.height)
-            for x in range(result.width)
-            if result.get_cell(x, y)["module"] is not None
+            1 for y in range(result.height) for x in range(result.width) if result.get_cell(x, y)["module"] is not None
         )
         self.assertEqual(placed_count, 5)
 
@@ -236,19 +241,28 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
             y = i // 3
             x = i % 3
             grid.cells[y][x]["module"] = f"existing_m{i}"
-        
+
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(10)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # Count placed modules of target tech
         placed_count = sum(
-            1 for y in range(result.height)
+            1
+            for y in range(result.height)
             for x in range(result.width)
             if result.get_cell(x, y)["module"] is not None and result.get_cell(x, y)["tech"] == "tech"
         )
@@ -261,16 +275,24 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
         for y in range(grid.height):
             for x in range(grid.width):
                 grid.cells[y][x]["active"] = False
-        
+
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(5)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # No modules should be placed
         for y in range(result.height):
             for x in range(result.width):
@@ -282,21 +304,27 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
         # Deactivate right column
         for y in range(grid.height):
             grid.cells[y][2]["active"] = False
-        
+
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(10)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # Should only have placed modules in columns 0 and 1 (6 cells)
         placed_count = sum(
-            1 for y in range(result.height)
-            for x in range(result.width)
-            if result.get_cell(x, y)["module"] is not None
+            1 for y in range(result.height) for x in range(result.width) if result.get_cell(x, y)["module"] is not None
         )
         self.assertEqual(placed_count, 6)
 
@@ -305,16 +333,24 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
         grid = self._create_grid(3, 3)
         grid.cells[0][0]["module"] = "existing_module"
         grid.cells[0][0]["tech"] = "other_tech"
-        
+
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(5)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # Existing module should remain
         self.assertEqual(result.get_cell(0, 0)["module"], "existing_module")
         self.assertEqual(result.get_cell(0, 0)["tech"], "other_tech")
@@ -323,14 +359,22 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
         """Modules should be placed column-by-column (x first, then y)"""
         grid = self._create_grid(2, 2)
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(4)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # Expected order: (0,0), (0,1), (1,0), (1,1)
         self.assertEqual(result.get_cell(0, 0)["module"], "m0")
         self.assertEqual(result.get_cell(0, 1)["module"], "m1")
@@ -341,19 +385,25 @@ class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
         """Should handle gracefully when fewer slots than modules"""
         grid = self._create_grid(2, 2)
         tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}", "tech": "tech", "type": "core",
-             "bonus": 1, "adjacency": "none", "sc_eligible": False, "image": None}
+            {
+                "id": f"m{i}",
+                "label": f"Module {i}",
+                "tech": "tech",
+                "type": "core",
+                "bonus": 1,
+                "adjacency": "none",
+                "sc_eligible": False,
+                "image": None,
+            }
             for i in range(10)
         ]
         modules = {"ship": {"tech": tech_modules}}
-        
+
         result = place_all_modules_in_empty_slots(grid, modules, "ship", "tech", tech_modules=tech_modules)
-        
+
         # Should only place 4 modules in a 2x2 grid
         placed_count = sum(
-            1 for y in range(result.height)
-            for x in range(result.width)
-            if result.get_cell(x, y)["module"] is not None
+            1 for y in range(result.height) for x in range(result.width) if result.get_cell(x, y)["module"] is not None
         )
         self.assertEqual(placed_count, 4)
 
@@ -434,7 +484,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         grid.cells[0][1]["tech"] = "test_tech"
         grid.cells[0][2]["module"] = "m3"
         grid.cells[0][2]["tech"] = "test_tech"
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertTrue(result)
 
@@ -449,7 +499,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         grid.cells[0][0]["module"] = "m1"
         grid.cells[0][0]["tech"] = "test_tech"
         # m2 and m3 are missing
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertFalse(result)
 
@@ -457,7 +507,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         """Empty module list should return True (all 0 modules placed)"""
         grid = Grid(5, 5)
         tech_modules = []
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertTrue(result)
 
@@ -474,7 +524,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         grid.cells[0][1]["tech"] = "test_tech"
         grid.cells[0][2]["module"] = "m3"
         grid.cells[0][2]["tech"] = "other_tech"  # Different tech
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertTrue(result)
 
@@ -489,7 +539,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         grid.cells[0][0]["tech"] = "test_tech"
         grid.cells[0][1]["module"] = "m1"  # Duplicate!
         grid.cells[0][1]["tech"] = "test_tech"
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertFalse(result)
 
@@ -503,7 +553,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         grid.cells[0][0]["tech"] = "test_tech"
         grid.cells[0][1]["module"] = "m2"  # Extra!
         grid.cells[0][1]["tech"] = "test_tech"
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertFalse(result)
 
@@ -517,7 +567,7 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         grid.cells[0][0]["module"] = "m1"
         grid.cells[0][0]["tech"] = "test_tech"
         # m2 is missing (None)
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertFalse(result)
 
@@ -529,22 +579,20 @@ class TestCheckAllModulesPlaced(unittest.TestCase):
         ]
         grid.cells[0][0]["module"] = "m1"  # Lowercase
         grid.cells[0][0]["tech"] = "test_tech"
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertFalse(result)  # Should not match
 
     def test_full_grid_all_placed(self):
         """Large grid with all modules placed"""
         grid = Grid(10, 10)
-        tech_modules = [
-            {"id": f"m{i}", "label": f"Module {i}"} for i in range(100)
-        ]
+        tech_modules = [{"id": f"m{i}", "label": f"Module {i}"} for i in range(100)]
         for i in range(100):
             y = i // 10
             x = i % 10
             grid.cells[y][x]["module"] = f"m{i}"
             grid.cells[y][x]["tech"] = "test_tech"
-        
+
         result = check_all_modules_placed(grid, {}, "ship", "test_tech", tech_modules=tech_modules)
         self.assertTrue(result)
 

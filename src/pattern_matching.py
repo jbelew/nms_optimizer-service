@@ -219,38 +219,38 @@ def get_all_unique_pattern_variations(original_pattern):
     # Use a single set to track all unique patterns across rotations and mirrors
     unique_patterns = set()
     patterns_to_return = []
-    
+
     def add_unique_pattern(pattern):
         """Add a pattern if it hasn't been seen before."""
         pattern_tuple = tuple(sorted(pattern.items()))
         if pattern_tuple not in unique_patterns:
             unique_patterns.add(pattern_tuple)
             patterns_to_return.append(pattern)
-    
+
     # Start with the original pattern
     add_unique_pattern(original_pattern)
-    
+
     # Generate all rotations
     current_rotation = original_pattern
     for _ in range(3):  # 90°, 180°, 270°
         current_rotation = rotate_pattern(current_rotation)
         add_unique_pattern(current_rotation)
-    
+
     # Generate all mirrors for the original and each rotation
     current_rotation = original_pattern
     for _ in range(4):  # Original, 90°, 180°, 270°
         # Try horizontal mirror
         mirrored_h = mirror_pattern_horizontally(current_rotation)
         add_unique_pattern(mirrored_h)
-        
+
         # Try vertical mirror
         mirrored_v = mirror_pattern_vertically(current_rotation)
         add_unique_pattern(mirrored_v)
-        
+
         # Move to next rotation
         if _ < 3:
             current_rotation = rotate_pattern(current_rotation)
-    
+
     return patterns_to_return
 
 

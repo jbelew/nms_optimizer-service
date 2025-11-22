@@ -17,8 +17,11 @@ class TestGetTechModules(unittest.TestCase):
 
     def test_get_tech_modules_returns_normal_modules(self):
         tech_modules = get_tech_modules(self.modules["hauler"], "hauler", "test_tech")
-        self.assertEqual(len(tech_modules), 1)
-        self.assertEqual(tech_modules[0]["id"], "normal_module")
+        # Type guard: ensure tech_modules is not None or empty
+        self.assertIsNotNone(tech_modules)
+        if isinstance(tech_modules, list):
+            self.assertEqual(len(tech_modules), 1)
+            self.assertEqual(tech_modules[0]["id"], "normal_module")
 
 
 if __name__ == "__main__":

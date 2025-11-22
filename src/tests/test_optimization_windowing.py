@@ -10,7 +10,7 @@ Focus areas:
 """
 
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from src.grid_utils import Grid
 from src.optimization.windowing import (
     _scan_grid_with_window,
@@ -75,7 +75,7 @@ class TestScanGridWithWindow(unittest.TestCase):
         for y in range(grid.height):
             for x in range(grid.width):
                 grid.cells[y][x]["module"] = f"m_{x}_{y}"
-        
+
         score, pos = _scan_grid_with_window(grid, 2, 2, 5, "tech", require_supercharge=False)
         # Should return -1 (no valid window)
         self.assertEqual(score, -1)
@@ -89,7 +89,7 @@ class TestScanGridWithWindow(unittest.TestCase):
             for x in range(grid.width):
                 if grid.cells[y][x]["supercharged"]:
                     grid.cells[y][x]["module"] = f"m_{x}_{y}"
-        
+
         score, pos = _scan_grid_with_window(grid, 2, 2, 2, "tech", require_supercharge=True)
         # Should return -1 (no window with available SC)
         self.assertEqual(score, -1)
@@ -103,7 +103,7 @@ class TestScanGridWithWindow(unittest.TestCase):
             for x in range(grid.width):
                 if grid.cells[y][x]["supercharged"]:
                     grid.cells[y][x]["module"] = f"m_{x}_{y}"
-        
+
         score, pos = _scan_grid_with_window(grid, 2, 2, 2, "tech", require_supercharge=False)
         # Should find a window with empty cells
         self.assertGreaterEqual(score, 0)
@@ -116,7 +116,7 @@ class TestScanGridWithWindow(unittest.TestCase):
         grid.cells[2][2]["supercharged"] = True
         grid.cells[2][2]["active"] = True
         grid.cells[2][2]["module"] = None
-        
+
         score, pos = _scan_grid_with_window(grid, 1, 1, 1, "tech", require_supercharge=True)
         # Should find a valid window
         self.assertGreaterEqual(score, 0)
@@ -126,7 +126,7 @@ class TestScanGridWithWindow(unittest.TestCase):
         """Returned position should be (start_x, start_y) of window"""
         grid = self._create_grid(5, 5)
         score, pos = _scan_grid_with_window(grid, 2, 2, 2, "tech", require_supercharge=False)
-        
+
         if pos is not None:
             x, y = pos
             self.assertGreaterEqual(x, 0)
@@ -139,7 +139,7 @@ class TestScanGridWithWindow(unittest.TestCase):
         grid = self._create_grid(3, 3)
         # Make center cell inactive
         grid.cells[1][1]["active"] = False
-        
+
         score, pos = _scan_grid_with_window(grid, 3, 3, 9, "tech", require_supercharge=False)
         # Should not find a window (not enough active empty cells)
         self.assertEqual(score, -1)
@@ -171,7 +171,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         for y in range(window.height):
             for x in range(window.width):
                 window.cells[y][x]["supercharged"] = True
-        
+
         score = calculate_window_score(window, "tech")
         # Should be 4 * 3 = 12
         self.assertEqual(score, 12)
@@ -180,7 +180,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         """Window with empty cells but no supercharged"""
         window = self._create_window(2, 2)
         # No supercharged cells
-        
+
         score = calculate_window_score(window, "tech")
         # Empty count = 4, score = 0*3 + 4*1 + 0*0.25 = 4
         self.assertEqual(score, 4)
@@ -191,7 +191,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         for y in range(window.height):
             for x in range(window.width):
                 window.cells[y][x]["module"] = f"m_{x}_{y}"
-        
+
         score = calculate_window_score(window, "tech")
         self.assertEqual(score, 0)
 
@@ -200,7 +200,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         window = self._create_window(2, 2)
         window.cells[0][0]["module"] = "m1"
         # Remaining 3 empty
-        
+
         score = calculate_window_score(window, "tech")
         # Empty count = 3
         self.assertEqual(score, 3)
@@ -209,7 +209,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         """Inactive cells should not contribute to score"""
         window = self._create_window(2, 2)
         window.cells[0][0]["active"] = False
-        
+
         score = calculate_window_score(window, "tech")
         # Only 3 active cells
         self.assertEqual(score, 3)
@@ -220,7 +220,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         window.cells[0][0]["supercharged"] = True
         window.cells[0][0]["module"] = "m1"
         window.cells[0][0]["tech"] = "tech"
-        
+
         score = calculate_window_score(window, "tech")
         # SC count = 1 (occupied by target tech counts), empty = 3
         # Return is supercharged_count * 3 = 1 * 3 = 3 (when SC > 0, ignores empty)
@@ -228,7 +228,7 @@ class TestCalculateWindowScore(unittest.TestCase):
 
     def test_supercharged_occupied_by_other_tech(self):
         """Supercharged cell occupied by other tech doesn't count as SC but gets edge penalty
-        
+
         BUG: Edge penalty is calculated incorrectly - it's outside the supercharged check
         and adds 0.25 per edge cell (0 or width-1 columns) even if not supercharged.
         Cell at (0,0) is on the edge, so gets edge_penalty += 1, resulting in score 3.25.
@@ -237,7 +237,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         window.cells[0][0]["supercharged"] = True
         window.cells[0][0]["module"] = "m1"
         window.cells[0][0]["tech"] = "other"
-        
+
         score = calculate_window_score(window, "tech")
         # SC count = 0 (other tech doesn't count), empty = 3
         # edge_penalty = 1 (cell at x=0), score = 0*3 + 3*1 + 1*0.25 = 3.25
@@ -249,7 +249,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         # All supercharged
         for x in range(window.width):
             window.cells[0][x]["supercharged"] = True
-        
+
         score = calculate_window_score(window, "tech")
         # 3 supercharged (no empty) = 3*3 = 9
         self.assertEqual(score, 9)
@@ -258,7 +258,7 @@ class TestCalculateWindowScore(unittest.TestCase):
         """1x1 window scoring"""
         window = self._create_window(1, 1)
         window.cells[0][0]["supercharged"] = True
-        
+
         score = calculate_window_score(window, "tech")
         self.assertEqual(score, 3)  # 1 SC, no empty
 
@@ -279,7 +279,7 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Localized grid at (0, 0) should extract top-left corner"""
         grid = self._create_grid(10, 10)
         local, start_x, start_y = create_localized_grid(grid, 0, 0, "tech", 3, 3)
-        
+
         self.assertEqual(local.width, 3)
         self.assertEqual(local.height, 3)
         self.assertEqual(start_x, 0)
@@ -289,7 +289,7 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Localized grid at offset should extract correct region"""
         grid = self._create_grid(10, 10)
         local, start_x, start_y = create_localized_grid(grid, 3, 3, "tech", 3, 3)
-        
+
         self.assertEqual(local.width, 3)
         self.assertEqual(local.height, 3)
         self.assertEqual(start_x, 3)
@@ -299,7 +299,7 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Localized grid extending beyond grid boundary should be clamped"""
         grid = self._create_grid(5, 5)
         local, start_x, start_y = create_localized_grid(grid, 3, 3, "tech", 5, 5)
-        
+
         # Should be clamped to 2x2
         self.assertEqual(local.width, 2)
         self.assertEqual(local.height, 2)
@@ -310,7 +310,7 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Localized grid at bottom-right corner"""
         grid = self._create_grid(5, 5)
         local, start_x, start_y = create_localized_grid(grid, 4, 4, "tech", 3, 3)
-        
+
         # Should be 1x1 (only cell at (4,4))
         self.assertEqual(local.width, 1)
         self.assertEqual(local.height, 1)
@@ -321,9 +321,9 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         grid.cells[1][1]["module"] = "test_module"
         grid.cells[1][1]["label"] = "Test"
         grid.cells[1][1]["tech"] = "tech"
-        
+
         local, start_x, start_y = create_localized_grid(grid, 0, 0, "tech", 3, 3)
-        
+
         # Local cell at (1,1) should have the module data
         self.assertEqual(local.cells[1][1]["module"], "test_module")
         self.assertEqual(local.cells[1][1]["label"], "Test")
@@ -333,9 +333,9 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         grid = self._create_grid(5, 5)
         grid.cells[0][0]["supercharged"] = True
         grid.cells[1][1]["supercharged"] = False
-        
+
         local, start_x, start_y = create_localized_grid(grid, 0, 0, "tech", 2, 2)
-        
+
         self.assertTrue(local.cells[0][0]["supercharged"])
         self.assertFalse(local.cells[1][1]["supercharged"])
 
@@ -343,12 +343,12 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Modifying localized grid should not affect original"""
         grid = self._create_grid(5, 5)
         grid.cells[1][1]["module"] = "original"
-        
+
         local, _, _ = create_localized_grid(grid, 0, 0, "tech", 3, 3)
-        
+
         # Modify localized
         local.cells[1][1]["module"] = "modified"
-        
+
         # Original should be unchanged
         self.assertEqual(grid.cells[1][1]["module"], "original")
 
@@ -356,7 +356,7 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Negative offset should be clamped to 0"""
         grid = self._create_grid(5, 5)
         local, start_x, start_y = create_localized_grid(grid, -5, -5, "tech", 3, 3)
-        
+
         # Should start at (0, 0)
         self.assertEqual(start_x, 0)
         self.assertEqual(start_y, 0)
@@ -365,7 +365,7 @@ class TestCreateLocalizedGrid(unittest.TestCase):
         """Localized grid of 1x1 should work"""
         grid = self._create_grid(5, 5)
         local, start_x, start_y = create_localized_grid(grid, 2, 2, "tech", 1, 1)
-        
+
         self.assertEqual(local.width, 1)
         self.assertEqual(local.height, 1)
 
@@ -387,9 +387,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         grid = self._create_grid(5, 5)
         grid.cells[1][1]["module"] = "target_m"
         grid.cells[1][1]["tech"] = "target"
-        
+
         local, _, _, state_map = create_localized_grid_ml(grid, 0, 0, "target", 3, 3)
-        
+
         # Target tech module should be preserved
         self.assertEqual(local.cells[1][1]["module"], "target_m")
         # Should not be in state map (not modified)
@@ -400,9 +400,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         grid = self._create_grid(5, 5)
         grid.cells[1][1]["module"] = "other_m"
         grid.cells[1][1]["tech"] = "other"
-        
+
         local, _, _, state_map = create_localized_grid_ml(grid, 0, 0, "target", 3, 3)
-        
+
         # Other tech module should be removed
         self.assertIsNone(local.cells[1][1]["module"])
         # Cell should be marked inactive
@@ -416,9 +416,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         grid.cells[2][2]["module"] = "other_m"
         grid.cells[2][2]["tech"] = "other"
         grid.cells[2][2]["label"] = "Label"
-        
+
         local, _, _, state_map = create_localized_grid_ml(grid, 0, 0, "target", 5, 5)
-        
+
         # State map should have the original cell
         self.assertIn((2, 2), state_map)
         self.assertEqual(state_map[(2, 2)]["module"], "other_m")
@@ -428,9 +428,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         """Inactive cells in main grid should be marked inactive in local"""
         grid = self._create_grid(5, 5)
         grid.cells[1][1]["active"] = False
-        
+
         local, _, _, state_map = create_localized_grid_ml(grid, 0, 0, "target", 3, 3)
-        
+
         # Local cell should be inactive
         self.assertFalse(local.cells[1][1]["active"])
 
@@ -439,9 +439,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         grid = self._create_grid(5, 5)
         grid.cells[2][2]["module"] = None
         grid.cells[2][2]["active"] = True
-        
+
         local, _, _, state_map = create_localized_grid_ml(grid, 0, 0, "target", 5, 5)
-        
+
         # Should be active and empty
         self.assertTrue(local.cells[2][2]["active"])
         self.assertIsNone(local.cells[2][2]["module"])
@@ -452,7 +452,7 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         """Localized grid dimensions should match request or be clamped"""
         grid = self._create_grid(10, 10)
         local, _, _, _ = create_localized_grid_ml(grid, 5, 5, "target", 3, 3)
-        
+
         self.assertEqual(local.width, 3)
         self.assertEqual(local.height, 3)
 
@@ -462,9 +462,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         grid.cells[1][1]["supercharged"] = True
         grid.cells[1][1]["module"] = "other_m"
         grid.cells[1][1]["tech"] = "other"
-        
+
         local, _, _, state_map = create_localized_grid_ml(grid, 0, 0, "target", 3, 3)
-        
+
         # Should still be supercharged even though module removed
         self.assertTrue(local.cells[1][1]["supercharged"])
 
@@ -473,11 +473,9 @@ class TestCreateLocalizedGridML(unittest.TestCase):
         grid = self._create_grid(10, 10)
         grid.cells[5][5]["module"] = "other_m"
         grid.cells[5][5]["tech"] = "other"
-        
-        local, start_x, start_y, state_map = create_localized_grid_ml(
-            grid, 3, 3, "target", 5, 5
-        )
-        
+
+        local, start_x, start_y, state_map = create_localized_grid_ml(grid, 3, 3, "target", 5, 5)
+
         # State map should use main grid coordinates
         self.assertIn((5, 5), state_map)
         # Verify it's the right cell
@@ -502,11 +500,11 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
         for y in range(grid.height):
             for x in range(grid.width):
                 grid.cells[y][x]["supercharged"] = False
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             mock_modules.return_value = [{"id": "m1"}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         self.assertIsNone(result)
 
     def test_all_supercharged_occupied_returns_none(self):
@@ -517,32 +515,33 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
             for x in range(grid.width):
                 if grid.cells[y][x]["supercharged"]:
                     grid.cells[y][x]["module"] = f"m_{x}_{y}"
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             mock_modules.return_value = [{"id": "m1"}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         self.assertIsNone(result)
 
     def test_available_supercharged_returns_window(self):
         """Available supercharged slots should return a window"""
         grid = self._create_grid(5, 5)
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             mock_modules.return_value = [{"id": "m1"}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         self.assertIsNotNone(result)
-        self.assertEqual(len(result), 4)  # x, y, width, height
+        if result is not None:
+            self.assertEqual(len(result), 4)  # x, y, width, height
 
     def test_returns_tuple_with_position_and_dimensions(self):
         """Should return (x, y, width, height)"""
         grid = self._create_grid(5, 5)
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             mock_modules.return_value = [{"id": "m1"}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         if result:
             x, y, w, h = result
             self.assertIsInstance(x, int)
@@ -557,34 +556,34 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
     def test_no_modules_returns_none(self):
         """No modules defined should return None"""
         grid = self._create_grid(5, 5)
-        
-        with patch('src.optimization.windowing.get_tech_modules', return_value=None):
+
+        with patch("src.optimization.windowing.get_tech_modules", return_value=None):
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         self.assertIsNone(result)
 
     def test_considers_rotated_dimensions(self):
         """Should check both original and rotated window dimensions"""
         grid = self._create_grid(5, 5)
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
-            with patch('src.optimization.windowing.determine_window_dimensions') as mock_dims:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
+            with patch("src.optimization.windowing.determine_window_dimensions") as mock_dims:
                 mock_modules.return_value = [{"id": "m1"}]
                 mock_dims.return_value = (4, 2)  # Not square
-                
+
                 result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         # Should have been called
         self.assertIsNotNone(result) if result else None
 
     def test_window_fits_within_grid_bounds(self):
         """Returned window should fit within grid"""
         grid = self._create_grid(10, 10)
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             mock_modules.return_value = [{"id": "m1"}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         if result:
             x, y, w, h = result
             # Window should fit
@@ -593,7 +592,7 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
 
     def test_fallback_without_supercharge_requirement(self):
         """Should fallback to non-supercharge search if supercharge fails
-        
+
         However, grid.copy() doesn't copy supercharged status correctly initially in some paths,
         and the fallback may still fail if tech_modules list is empty or module count doesn't fit.
         This test documents edge case behavior.
@@ -604,12 +603,12 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
             for x in range(grid.width):
                 if grid.cells[y][x]["supercharged"]:
                     grid.cells[y][x]["module"] = f"m_{x}_{y}"
-        
-        with patch('src.optimization.windowing.get_tech_modules') as mock_modules:
+
+        with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             # Must have modules that fit in available cells
             mock_modules.return_value = [{"id": "m1"}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
-        
+
         # Fallback may or may not find a window depending on grid state
         # This is acceptable behavior - document what we observe
         if result:

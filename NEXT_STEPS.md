@@ -109,12 +109,12 @@ def get_tech_modules_from_ship_data(ship_data, tech_key):
     """Extract modules for a specific tech from ship data structure."""
     if "types" not in ship_data:
         return None
-    
+
     for category_name, techs_in_category in ship_data["types"].items():
         for tech_obj in techs_in_category:
             if tech_obj.get("key") == tech_key:
                 return tech_obj.get("modules", [])
-    
+
     return None
 ```
 
@@ -267,7 +267,7 @@ def test_optimization_with_empty_grid():
     for y in range(empty_grid.height):
         for x in range(empty_grid.width):
             empty_grid.get_cell(x, y)["active"] = False
-    
+
     result = optimize(empty_grid, "corvette", "pulse")
     assert result is not None or result[0] is None
 ```

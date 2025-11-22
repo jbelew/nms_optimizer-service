@@ -401,7 +401,7 @@ def simulated_annealing(
 
             wrapped_progress_callback = _wrapped_callback
 
-        current_run_best_grid_json, current_run_best_score = rust_scorer.simulated_annealing(  # type: ignore
+        current_run_best_grid_json, current_run_best_score = rust_scorer.simulated_annealing(  # type: ignore[call-arg,misc,arg-type]
             grid_json,
             tech_modules_rs,
             tech,
@@ -410,14 +410,14 @@ def simulated_annealing(
             stopping_temperature,
             iterations_per_temp,
             wrapped_progress_callback,
-            max_steps_without_improvement,
-            reheat_factor,
-            max_reheats,
-            initial_swap_probability,
-            final_swap_probability,
-            run_idx,
-            num_sa_runs,
-            current_run_seed,  # Pass the seed to the Rust function
+            max_steps_without_improvement,  # type: ignore[arg-type]
+            reheat_factor,  # type: ignore[arg-type]
+            max_reheats,  # type: ignore[arg-type]
+            initial_swap_probability,  # type: ignore[arg-type]
+            final_swap_probability,  # type: ignore[arg-type]
+            run_idx,  # type: ignore[arg-type]
+            num_sa_runs,  # type: ignore[arg-type]
+            current_run_seed,  # Pass the seed to the Rust function  # type: ignore[arg-type]
         )
 
         if current_run_best_score > overall_best_score:

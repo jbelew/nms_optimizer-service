@@ -17,6 +17,73 @@ from rust_scorer import (
     ModuleType as RustModuleType,
 )
 
+
+# --- Conversion Functions ---
+def python_grid_to_rust_grid(python_grid: Grid) -> RustGrid:
+    """Convert a Python Grid to a Rust Grid for Rust scoring functions.
+
+    Args:
+        python_grid: The Python grid_utils.Grid object
+
+    Returns:
+        A rust_scorer.Grid object with the same data structure
+    """
+    rust_cells = []
+    for y in range(python_grid.height):
+        row = []
+        for x in range(python_grid.width):
+            py_cell = python_grid.get_cell(x, y)
+
+            # Convert adjacency type
+            adjacency = None
+            if py_cell["adjacency"] and "greater" in py_cell["adjacency"]:
+                adjacency = RustAdjacencyType.Greater
+            elif py_cell["adjacency"] == "lesser":
+                adjacency = RustAdjacencyType.Lesser
+            else:  # Handles "no_adjacency", "none", False, or None
+                adjacency = getattr(RustAdjacencyType, "NoAdjacency")
+
+            # Convert module type
+            module_type = None
+            if py_cell["type"] == "bonus":
+                module_type = RustModuleType.Bonus
+            elif py_cell["type"] == "core":
+                module_type = RustModuleType.Core
+            elif py_cell["type"] == "cosmetic":
+                module_type = RustModuleType.Cosmetic
+            elif py_cell["type"] == "upgrade":
+                module_type = RustModuleType.Upgrade
+            elif py_cell["type"] == "reactor":
+                module_type = RustModuleType.Reactor
+            elif py_cell["type"] == "atlantid":
+                module_type = RustModuleType.Atlantid
+
+            # Create Rust cell
+            rust_cell = RustCell(
+                py_cell["value"],
+                py_cell["total"],
+                py_cell["adjacency_bonus"],
+                py_cell["bonus"],
+                py_cell["active"],
+                py_cell["supercharged"],
+                py_cell["sc_eligible"],
+                module=py_cell["module"],
+                label=py_cell["label"],
+                module_type=module_type,
+                adjacency=adjacency,
+                tech=py_cell["tech"],
+                image=py_cell["image"],
+            )
+            row.append(rust_cell)
+        rust_cells.append(row)
+
+    return RustGrid(
+        width=python_grid.width,
+        height=python_grid.height,
+        cells=rust_cells,
+    )
+
+
 # --- Constants ---
 
 
@@ -109,62 +176,21 @@ def clear_scores(grid: Grid, tech: str) -> None:
 def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> float:
     """
     Calculates the total grid score for a given technology using the Rust implementation.
+
+    Args:
+        grid: The Python grid to score
+        tech: The technology to calculate score for
+        apply_supercharge_first: Whether to apply supercharge first
+
+    Returns:
+        The total score for the given technology
     """
     if grid is None:
         logging.warning("calculate_grid_score called with None grid.")
         return 0.0
 
-    # Convert Python Grid to Rust Grid
-    rust_cells = []
-    for y in range(grid.height):
-        row = []
-        for x in range(grid.width):
-            py_cell = grid.get_cell(x, y)
-            adjacency = None
-            if py_cell["adjacency"] and "greater" in py_cell["adjacency"]:
-                adjacency = RustAdjacencyType.Greater
-            elif py_cell["adjacency"] == "lesser":
-                adjacency = RustAdjacencyType.Lesser
-            else:  # Handles "no_adjacency", "none", False, or None
-                adjacency = getattr(RustAdjacencyType, "NoAdjacency")
-
-            module_type = None
-            if py_cell["type"] == "bonus":
-                module_type = RustModuleType.Bonus
-            elif py_cell["type"] == "core":
-                module_type = RustModuleType.Core
-            elif py_cell["type"] == "cosmetic":
-                module_type = RustModuleType.Cosmetic
-            elif py_cell["type"] == "upgrade":
-                module_type = RustModuleType.Upgrade
-            elif py_cell["type"] == "reactor":
-                module_type = RustModuleType.Reactor
-            elif py_cell["type"] == "atlantid":
-                module_type = RustModuleType.Atlantid
-
-            rust_cell = RustCell(
-                py_cell["value"],
-                py_cell["total"],
-                py_cell["adjacency_bonus"],
-                py_cell["bonus"],
-                py_cell["active"],
-                py_cell["supercharged"],
-                py_cell["sc_eligible"],
-                module=py_cell["module"],
-                label=py_cell["label"],
-                module_type=module_type,
-                adjacency=adjacency,
-                tech=py_cell["tech"],
-                image=py_cell["image"],
-            )
-            row.append(rust_cell)
-        rust_cells.append(row)
-
-    rust_grid = RustGrid(
-        width=grid.width,
-        height=grid.height,
-        cells=rust_cells,
-    )
+    # Convert Python Grid to Rust Grid using converter
+    rust_grid = python_grid_to_rust_grid(grid)
 
     # Call the Rust function to populate bonuses
     populate_all_module_bonuses(rust_grid, tech, apply_supercharge_first)

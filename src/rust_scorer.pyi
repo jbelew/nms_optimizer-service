@@ -33,9 +33,55 @@ class Module:
         image: Optional[str],
     ) -> None: ...
 
-class Cell: ...
-class Grid: ...
+class Cell:
+    def __init__(
+        self,
+        value: int,
+        total: float,
+        adjacency_bonus: float,
+        bonus: float,
+        active: bool,
+        supercharged: bool,
+        sc_eligible: bool,
+        *,
+        module: Optional[str] = None,
+        label: Optional[str] = None,
+        module_type: Optional["ModuleType"] = None,
+        adjacency: Optional["AdjacencyType"] = None,
+        tech: Optional[str] = None,
+        image: Optional[str] = None,
+    ) -> None: ...
+    value: int
+    total: float
+    adjacency_bonus: float
+    bonus: float
+    active: bool
+    supercharged: bool
+    sc_eligible: bool
+    module: Optional[str]
+    label: Optional[str]
+    module_type: Optional["ModuleType"]
+    adjacency: Optional["AdjacencyType"]
+    tech: Optional[str]
+    image: Optional[str]
 
+class Grid:
+    def __init__(
+        self,
+        *,
+        width: int,
+        height: int,
+        cells: List[List["Cell"]],
+    ) -> None: ...
+    width: int
+    height: int
+    cells: List[List["Cell"]]
+
+def populate_all_module_bonuses(
+    grid: "Grid",
+    tech: str,
+    apply_supercharge_first: bool = False,
+) -> None: ...
 def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = False) -> float: ...
 def simulated_annealing(
     grid_json: str,

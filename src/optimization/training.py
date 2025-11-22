@@ -4,8 +4,7 @@ import math
 from itertools import permutations
 from typing import Optional
 
-from rust_scorer import calculate_grid_score as rust_calculate_grid_score
-
+from src.bonus_calculations import calculate_grid_score
 from src.grid_utils import Grid, apply_localized_grid_changes
 from src.module_placement import clear_all_modules_of_tech, place_module
 from src.modules_utils import get_tech_modules
@@ -170,7 +169,7 @@ def refine_placement_for_training(
                         break
                     slot_idx += 1
 
-            current_bonus = rust_calculate_grid_score(temp_localized_grid, tech, apply_supercharge_first=False)
+            current_bonus = calculate_grid_score(temp_localized_grid, tech, apply_supercharge_first=False)
 
             if current_bonus > highest_bonus:
                 highest_bonus = current_bonus
@@ -185,7 +184,7 @@ def refine_placement_for_training(
             window_offset_y,
         )
 
-        final_score = rust_calculate_grid_score(optimal_grid, tech, apply_supercharge_first=False)
+        final_score = calculate_grid_score(optimal_grid, tech, apply_supercharge_first=False)
         if abs(final_score - highest_bonus) > 1e-6:
             logging.warning(
                 f"Final score ({final_score:.4f}) differs from tracked best ({highest_bonus:.4f}). Using final score."

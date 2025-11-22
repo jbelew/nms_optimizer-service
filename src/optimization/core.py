@@ -18,7 +18,6 @@ from src.pattern_matching import (
 )
 from .helpers import (
     determine_window_dimensions,
-    place_all_modules_in_empty_slots,
 )
 from .windowing import (
     create_localized_grid,
@@ -28,13 +27,20 @@ from .windowing import (
 )
 
 
-def _prepare_optimization_run(grid, modules, ship, tech, available_modules):
+def _prepare_optimization_run(
+    grid: Grid,
+    modules: dict,
+    ship: str,
+    tech: str,
+    available_modules,
+) -> tuple[list[dict], list[dict]] | tuple[Grid, float, float, str]:
     """
     Handles the initial setup for the optimization process, including fetching
     modules and performing pre-checks on the grid.
 
     Returns:
-        tuple: (full_tech_modules_list, tech_modules)
+        tuple: Either (full_tech_modules_list, tech_modules) on success,
+               or (cleared_grid, 0.0, 0.0, "Module Definition Error") on failure
     Raises:
         ValueError: If no empty, active slots are available.
     """
@@ -56,20 +62,20 @@ def _prepare_optimization_run(grid, modules, ship, tech, available_modules):
     if not has_empty_active_slots:
         raise ValueError(f"No empty, active slots available on the grid for ship: '{ship}' -- tech: '{tech}'.")
 
-    return full_tech_modules_list, tech_modules
+    return full_tech_modules_list, tech_modules  # type: ignore[return-value]
 
 
 def optimize_placement(
-    grid,
-    ship,
-    modules,
-    tech,
-    forced=False,
+    grid: Grid,
+    ship: str,
+    modules: dict,
+    tech: str,
+    forced: bool = False,
     progress_callback=None,
     run_id=None,
-    send_grid_updates=False,
+    send_grid_updates: bool = False,
     available_modules=None,
-):
+) -> tuple[Grid | None, float, float, str]:
     """
     Optimizes the placement of modules in a grid for a specific ship and technology.
     Uses pre-defined solve maps first, then refines based on supercharged opportunities,
@@ -84,10 +90,14 @@ def optimize_placement(
         tech (str): The technology key.
         forced (bool): If True and no pattern fits a solve map, forces SA.
                        If False, returns "Pattern No Fit" to allow UI intervention.
+        progress_callback: Optional callback for progress updates.
+        run_id: Optional run identifier.
+        send_grid_updates (bool): Whether to send grid updates via callback.
+        available_modules: Optional list of available modules.
 
     Returns:
         tuple: (best_grid, percentage, best_bonus, solve_method)
-               - best_grid (Grid): The optimized grid.
+               - best_grid (Grid | None): The optimized grid, or None if "Pattern No Fit".
                - percentage (float): The percentage of the official solve score achieved.
                - best_bonus (float): The actual score achieved by the best grid.
                - solve_method (str): The name of the method used to generate the final grid.
@@ -99,7 +109,7 @@ def optimize_placement(
 
     prep_result = _prepare_optimization_run(grid, modules, ship, tech, available_modules)
     if len(prep_result) == 4:
-        return prep_result
+        return prep_result  # type: ignore[return-value]
     full_tech_modules_list, tech_modules = prep_result
 
     # Initialize variables for tracking best results
@@ -132,7 +142,7 @@ def optimize_placement(
     if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
         # --- Special Case: No Solve Available ---
         num_modules = len(tech_modules)
-        
+
         # Special handling for single modules: find best location using adjacency scoring
         if num_modules == 1:
             logging.info(
@@ -140,13 +150,13 @@ def optimize_placement(
             )
             grid_for_place = grid.copy()
             clear_all_modules_of_tech(grid_for_place, tech)
-            
+
             # Find all empty cells and evaluate each with adjacency scoring
             best_adjacency_score = -float("inf")
             best_pos = None
             best_grid = None
             module = tech_modules[0]
-            
+
             for y in range(grid_for_place.height):
                 for x in range(grid_for_place.width):
                     cell = grid_for_place.get_cell(x, y)
@@ -166,16 +176,16 @@ def optimize_placement(
                             module.get("sc_eligible", False),
                             module.get("image", None),
                         )
-                        
+
                         # Score this placement using adjacency scoring (same as patterns)
                         adjacency_score = calculate_pattern_adjacency_score(test_grid, tech)
-                        
+
                         if adjacency_score > best_adjacency_score:
                             best_adjacency_score = adjacency_score
                             best_pos = (x, y)
                             best_grid = test_grid
-            
-            if best_pos:
+
+            if best_pos and best_grid is not None:
                 best_x, best_y = best_pos
                 solved_grid = best_grid
                 solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
@@ -194,15 +204,15 @@ def optimize_placement(
             logging.info(
                 f"No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules individually using adjacency scoring."
             )
-            
+
             grid_for_place = grid.copy()
             clear_all_modules_of_tech(grid_for_place, tech)
-            
+
             # Place each module one at a time, choosing the best location for each
             for module in tech_modules:
                 best_adjacency_score = -float("inf")
                 best_pos = None
-                
+
                 for y in range(grid_for_place.height):
                     for x in range(grid_for_place.width):
                         cell = grid_for_place.get_cell(x, y)
@@ -222,14 +232,14 @@ def optimize_placement(
                                 module.get("sc_eligible", False),
                                 module.get("image", None),
                             )
-                            
+
                             # Score this placement using adjacency scoring
                             adjacency_score = calculate_pattern_adjacency_score(test_grid, tech)
-                            
+
                             if adjacency_score > best_adjacency_score:
                                 best_adjacency_score = adjacency_score
                                 best_pos = (x, y)
-                
+
                 if best_pos:
                     best_x, best_y = best_pos
                     place_module(
@@ -248,20 +258,22 @@ def optimize_placement(
                     logging.debug(
                         f"Placed module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
                     )
-            
+
             solved_grid = grid_for_place
             solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
             solve_method = "Initial Placement (No Solve - Multiple Modules)"
-            
+
             # If no modules were placed at all
-            if all(cell["tech"] != tech for y in range(solved_grid.height) for x in range(solved_grid.width) 
-                   if (cell := solved_grid.get_cell(x, y))):
+            if all(
+                cell["tech"] != tech
+                for y in range(solved_grid.height)
+                for x in range(solved_grid.width)
+                if (cell := solved_grid.get_cell(x, y))
+            ):
                 logging.warning("No empty cells available for module placement")
             else:
-                logging.info(
-                    f"Placed {num_modules} modules using individual adjacency scoring"
-                )
-        
+                logging.info(f"Placed {num_modules} modules using individual adjacency scoring")
+
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
         # <<< KEEP: Final result for this path >>>
         logging.info(

@@ -6,9 +6,7 @@ tensor preparation, module placement prediction, and SA polishing.
 """
 
 import unittest
-from unittest.mock import patch, MagicMock, Mock
-import torch
-import numpy as np
+from unittest.mock import patch, MagicMock
 from src.grid_utils import Grid
 from src.ml_placement import ml_placement
 
@@ -25,11 +23,25 @@ class TestMLPlacementModelLoading(unittest.TestCase):
                     {
                         "key": "pulse",
                         "modules": [
-                            {"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                             "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None},
-                            {"id": "pulse_b", "label": "Pulse B", "bonus": 8.0,
-                             "adjacency": "lesser", "type": "bonus", "sc_eligible": False, "image": None},
-                        ]
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            },
+                            {
+                                "id": "pulse_b",
+                                "label": "Pulse B",
+                                "bonus": 8.0,
+                                "adjacency": "lesser",
+                                "type": "bonus",
+                                "sc_eligible": False,
+                                "image": None,
+                            },
+                        ],
                     }
                 ]
             }
@@ -37,43 +49,38 @@ class TestMLPlacementModelLoading(unittest.TestCase):
         self.full_grid = Grid(4, 3)
         self.original_state_map = {}
 
-    @patch('src.ml_placement.get_model_keys')
+    @patch("src.ml_placement.get_model_keys")
     def test_ml_placement_nonexistent_model_returns_none(self, mock_get_model_keys):
         """Nonexistent model file should return None."""
         mock_get_model_keys.return_value = {
             "filename_ship_key": "corvette",
             "filename_tech_key": "pulse",
             "module_def_ship_key": "corvette",
-            "module_def_tech_key": "pulse"
+            "module_def_tech_key": "pulse",
         }
-        
+
         result = ml_placement(
-            self.grid, "corvette", "pulse",
-            self.full_grid, 0, 0, self.original_state_map,
-            model_dir="nonexistent_dir"
+            self.grid, "corvette", "pulse", self.full_grid, 0, 0, self.original_state_map, model_dir="nonexistent_dir"
         )
-        
+
         # Should return None when model doesn't exist
         self.assertIsNone(result[0])
         self.assertEqual(result[1], 0.0)
 
-    @patch('src.ml_placement.get_training_module_ids')
-    @patch('src.ml_placement.get_model_keys')
+    @patch("src.ml_placement.get_training_module_ids")
+    @patch("src.ml_placement.get_model_keys")
     def test_ml_placement_no_training_module_ids_returns_none(self, mock_get_model_keys, mock_get_training_ids):
         """When no training module IDs found, should return None."""
         mock_get_model_keys.return_value = {
             "filename_ship_key": "corvette",
             "filename_tech_key": "pulse",
             "module_def_ship_key": "corvette",
-            "module_def_tech_key": "pulse"
+            "module_def_tech_key": "pulse",
         }
         mock_get_training_ids.return_value = []
-        
-        result = ml_placement(
-            self.grid, "corvette", "pulse",
-            self.full_grid, 0, 0, self.original_state_map
-        )
-        
+
+        result = ml_placement(self.grid, "corvette", "pulse", self.full_grid, 0, 0, self.original_state_map)
+
         self.assertIsNone(result[0])
         self.assertEqual(result[1], 0.0)
 
@@ -87,9 +94,20 @@ class TestMLPlacementTensorPreparation(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
@@ -107,7 +125,7 @@ class TestMLPlacementTensorPreparation(unittest.TestCase):
         # Set some cells as supercharged
         self.grid.get_cell(0, 0)["supercharged"] = True
         self.grid.get_cell(1, 1)["supercharged"] = True
-        
+
         # Would verify these are correctly represented in input tensor
         pass
 
@@ -124,11 +142,25 @@ class TestMLPlacementModuleAssignment(unittest.TestCase):
                     {
                         "key": "pulse",
                         "modules": [
-                            {"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                             "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None},
-                            {"id": "pulse_b", "label": "Pulse B", "bonus": 8.0,
-                             "adjacency": "lesser", "type": "bonus", "sc_eligible": False, "image": None},
-                        ]
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            },
+                            {
+                                "id": "pulse_b",
+                                "label": "Pulse B",
+                                "bonus": 8.0,
+                                "adjacency": "lesser",
+                                "type": "bonus",
+                                "sc_eligible": False,
+                                "image": None,
+                            },
+                        ],
                     }
                 ]
             }
@@ -140,7 +172,7 @@ class TestMLPlacementModuleAssignment(unittest.TestCase):
         """Modules should only be placed on active cells."""
         # Mark some cells as inactive
         self.grid.get_cell(0, 0)["active"] = False
-        
+
         # Would verify that modules aren't placed on inactive cells
         pass
 
@@ -163,43 +195,51 @@ class TestMLPlacementEmptyResults(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
         self.full_grid = Grid(4, 3)
         self.original_state_map = {}
 
-    @patch('src.ml_placement.get_model')
-    @patch('src.ml_placement.get_training_module_ids')
-    @patch('src.ml_placement.get_module_data')
-    @patch('src.ml_placement.get_tech_modules')
-    @patch('src.ml_placement.get_model_keys')
-    def test_ml_placement_no_placeable_modules_returns_empty_grid(self, mock_get_model_keys, 
-                                                                   mock_get_tech_modules, mock_get_module_data,
-                                                                   mock_get_training_ids, mock_get_model):
+    @patch("src.ml_placement.get_model")
+    @patch("src.ml_placement.get_training_module_ids")
+    @patch("src.ml_placement.get_module_data")
+    @patch("src.ml_placement.get_tech_modules")
+    @patch("src.ml_placement.get_model_keys")
+    def test_ml_placement_no_placeable_modules_returns_empty_grid(
+        self, mock_get_model_keys, mock_get_tech_modules, mock_get_module_data, mock_get_training_ids, mock_get_model
+    ):
         """When no placeable modules found, should return cleared grid."""
         mock_get_model_keys.return_value = {
             "filename_ship_key": "corvette",
             "filename_tech_key": "pulse",
             "module_def_ship_key": "corvette",
-            "module_def_tech_key": "pulse"
+            "module_def_tech_key": "pulse",
         }
         mock_get_module_data.return_value = self.modules_data
         mock_get_tech_modules.return_value = None  # No modules available
         mock_get_training_ids.return_value = ["pulse_a", "pulse_b"]
-        
+
         # Mock model to avoid loading real files
         mock_model = MagicMock()
         mock_get_model.return_value = mock_model
-        
-        result = ml_placement(
-            self.grid, "corvette", "pulse",
-            self.full_grid, 0, 0, self.original_state_map
-        )
-        
+
+        result = ml_placement(self.grid, "corvette", "pulse", self.full_grid, 0, 0, self.original_state_map)
+
         # Should return None when no modules available
         self.assertIsNone(result[0])
 
@@ -213,9 +253,20 @@ class TestMLPlacementPolishing(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
@@ -247,9 +298,20 @@ class TestMLPlacementGridHandling(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
@@ -258,9 +320,6 @@ class TestMLPlacementGridHandling(unittest.TestCase):
 
     def test_ml_placement_does_not_modify_original_grid(self):
         """ML placement should not modify the input grid."""
-        # Save original state
-        original_cell = self.grid.get_cell(0, 0).copy()
-        
         # Would call ml_placement
         # Then verify original grid unchanged
         pass
@@ -273,7 +332,7 @@ class TestMLPlacementGridHandling(unittest.TestCase):
     def test_ml_placement_preserves_supercharge_flags(self):
         """Output grid should preserve supercharge state from input."""
         self.grid.get_cell(1, 1)["supercharged"] = True
-        
+
         # Would verify this is preserved in output
         pass
 
@@ -287,9 +346,20 @@ class TestMLPlacementErrorHandling(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
@@ -302,7 +372,7 @@ class TestMLPlacementErrorHandling(unittest.TestCase):
         for y in range(empty_grid.height):
             for x in range(empty_grid.width):
                 empty_grid.get_cell(x, y)["active"] = False
-        
+
         # Would verify this is handled gracefully
         pass
 
@@ -311,7 +381,7 @@ class TestMLPlacementErrorHandling(unittest.TestCase):
         for y in range(self.grid.height):
             for x in range(self.grid.width):
                 self.grid.get_cell(x, y)["supercharged"] = True
-        
+
         # Would verify this is handled correctly
         pass
 
@@ -331,9 +401,20 @@ class TestMLPlacementProgressCallback(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
@@ -342,8 +423,6 @@ class TestMLPlacementProgressCallback(unittest.TestCase):
 
     def test_ml_placement_calls_progress_callback(self):
         """Should call progress callback when provided and send_grid_updates=True."""
-        callback = Mock()
-        
         # Would call ml_placement with progress_callback
         # Verify callback is called with progress_data
         pass
@@ -351,12 +430,17 @@ class TestMLPlacementProgressCallback(unittest.TestCase):
     def test_ml_placement_no_callback_when_not_provided(self):
         """Should not crash when progress_callback is None."""
         result = ml_placement(
-            self.grid, "corvette", "pulse",
-            self.full_grid, 0, 0, self.original_state_map,
+            self.grid,
+            "corvette",
+            "pulse",
+            self.full_grid,
+            0,
+            0,
+            self.original_state_map,
             progress_callback=None,
-            send_grid_updates=False
+            send_grid_updates=False,
         )
-        
+
         # Should return valid result (or None, but not crash)
         self.assertIsInstance(result, tuple)
 
@@ -370,10 +454,24 @@ class TestMLPlacementOutputValidation(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                     "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None},
-                    {"id": "pulse_b", "label": "Pulse B", "bonus": 8.0,
-                     "adjacency": "lesser", "type": "bonus", "sc_eligible": False, "image": None},
+                    {
+                        "id": "pulse_a",
+                        "label": "Pulse A",
+                        "bonus": 10.0,
+                        "adjacency": "greater",
+                        "type": "bonus",
+                        "sc_eligible": True,
+                        "image": None,
+                    },
+                    {
+                        "id": "pulse_b",
+                        "label": "Pulse B",
+                        "bonus": 8.0,
+                        "adjacency": "lesser",
+                        "type": "bonus",
+                        "sc_eligible": False,
+                        "image": None,
+                    },
                 ]
             }
         }
@@ -410,9 +508,20 @@ class TestMLPlacementIntegration(unittest.TestCase):
         self.modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }

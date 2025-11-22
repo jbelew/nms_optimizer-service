@@ -1,16 +1,12 @@
 """
 Comprehensive test suite for data_loader.py
 
-This test suite focuses on finding bugs in JSON parsing, caching, 
+This test suite focuses on finding bugs in JSON parsing, caching,
 tuple key conversion, and error handling.
 """
 
 import unittest
 import json
-import os
-import tempfile
-from pathlib import Path
-from unittest.mock import patch, MagicMock
 
 from src.data_loader import (
     get_module_data,
@@ -46,22 +42,14 @@ class TestConvertMapKeysToTuple(unittest.TestCase):
 
     def test_convert_nested_dicts(self):
         """Convert tuple keys in nested dictionaries."""
-        data = {
-            "outer": {
-                "0,0": "inner_value",
-                "1,1": "another_value"
-            }
-        }
+        data = {"outer": {"0,0": "inner_value", "1,1": "another_value"}}
         result = _convert_map_keys_to_tuple(data)
         self.assertEqual(result["outer"][(0, 0)], "inner_value")
         self.assertEqual(result["outer"][(1, 1)], "another_value")
 
     def test_convert_list_with_dicts(self):
         """Convert tuple keys in dictionaries within lists."""
-        data = [
-            {"0,0": "a"},
-            {"1,1": "b"}
-        ]
+        data = [{"0,0": "a"}, {"1,1": "b"}]
         result = _convert_map_keys_to_tuple(data)
         self.assertEqual(result[0][(0, 0)], "a")
         self.assertEqual(result[1][(1, 1)], "b")
@@ -103,10 +91,10 @@ class TestConvertMapKeysToTuple(unittest.TestCase):
         """Scalar values should pass through unchanged."""
         result = _convert_map_keys_to_tuple("string")
         self.assertEqual(result, "string")
-        
+
         result = _convert_map_keys_to_tuple(42)
         self.assertEqual(result, 42)
-        
+
         result = _convert_map_keys_to_tuple(None)
         self.assertEqual(result, None)
 
@@ -129,7 +117,7 @@ class TestGetModuleData(unittest.TestCase):
         # Get data twice
         data1 = get_module_data("corvette")
         data2 = get_module_data("corvette")
-        
+
         # Should be the same object (cached)
         self.assertIs(data1, data2)
 
@@ -145,7 +133,7 @@ class TestGetModuleData(unittest.TestCase):
         # Try to get data for different ship types
         corvette = get_module_data("corvette")
         hauler = get_module_data("hauler")
-        
+
         # If both exist, they should have different content or both be empty
         # But they shouldn't crash the system
         self.assertIsInstance(corvette, dict)
@@ -169,7 +157,7 @@ class TestGetSolveMap(unittest.TestCase):
         """Repeated calls should return cached data."""
         data1 = get_solve_map("corvette")
         data2 = get_solve_map("corvette")
-        
+
         # Should be the same object (cached)
         self.assertIs(data1, data2)
 
@@ -179,11 +167,10 @@ class TestGetSolveMap(unittest.TestCase):
         for tech_name, tech_data in data.items():
             self.assertIn("map", tech_data)
             self.assertIn("score", tech_data)
-            
+
             # Map keys should be tuples (after conversion)
             for key in tech_data["map"].keys():
-                self.assertIsInstance(key, tuple, 
-                    f"Map key {key} should be a tuple, not {type(key)}")
+                self.assertIsInstance(key, tuple, f"Map key {key} should be a tuple, not {type(key)}")
 
     def test_solve_map_converts_tuple_keys(self):
         """Solve map should convert string keys to tuples."""
@@ -267,8 +254,7 @@ class TestGetTrainingModuleIds(unittest.TestCase):
     def test_training_module_ids_unique(self):
         """Module IDs should be unique (no duplicates)."""
         result = get_training_module_ids("corvette", "pulse")
-        self.assertEqual(len(result), len(set(result)),
-                        "Module IDs should be unique")
+        self.assertEqual(len(result), len(set(result)), "Module IDs should be unique")
 
     def test_training_module_ids_not_empty_if_data_exists(self):
         """If ship/tech combo exists, should have modules."""
@@ -302,7 +288,7 @@ class TestDataLoaderErrorHandling(unittest.TestCase):
         # Get module data from many different (non-existent) ships
         for i in range(50):
             get_module_data(f"ship_{i}")
-        
+
         # System should still work (cache doesn't overflow)
         result = get_module_data("corvette")
         self.assertIsInstance(result, dict)
@@ -315,17 +301,17 @@ class TestDataIntegrity(unittest.TestCase):
         """Getting module data shouldn't modify it."""
         data1 = get_module_data("corvette")
         original_state = json.dumps(data1, sort_keys=True, default=str)
-        
+
         data2 = get_module_data("corvette")
         final_state = json.dumps(data2, sort_keys=True, default=str)
-        
+
         self.assertEqual(original_state, final_state)
 
     def test_solve_map_tuple_conversion_consistent(self):
         """Tuple conversion should be consistent."""
         data1 = get_solve_map("corvette")
         data2 = get_solve_map("corvette")
-        
+
         # Should be identical (same cached object)
         self.assertIs(data1, data2)
 

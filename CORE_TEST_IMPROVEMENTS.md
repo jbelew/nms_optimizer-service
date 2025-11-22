@@ -4,9 +4,9 @@
 
 Enhanced `test_optimization_core.py` with 23 new adversarial tests covering critical edge cases and error paths in the main optimization orchestration logic.
 
-**New Test Count**: 23 additional tests  
-**Total Tests in File**: 42 (19 existing + 23 new)  
-**Pass Rate**: 100% (42/42)  
+**New Test Count**: 23 additional tests
+**Total Tests in File**: 42 (19 existing + 23 new)
+**Pass Rate**: 100% (42/42)
 **Execution Time**: 0.16 seconds
 
 ---
@@ -193,7 +193,7 @@ Tests are designed to **uncover bugs**, not validate current behavior:
 5. **PC exception for pulse tech** (special case)
 6. **Negative window scores** (invalid state)
 7. **Scores within 1e-9 threshold** (floating-point edge)
-8. **Score equality (tie conditions)** 
+8. **Score equality (tie conditions)**
 9. **No opportunities in refinement** (both None)
 10. **Fallback to pattern when scanned fails**
 11. **Refinement success at equality**

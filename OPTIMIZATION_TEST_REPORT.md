@@ -23,18 +23,18 @@ Tests for utility functions used throughout optimization pipeline.
   - Edge cases: zero modules, negative counts, very large counts
   - Tech-specific overrides (sentinel/photonix, corvette/pulse)
   - Generic fallback rules
-  
+
 - `TestPlaceAllModulesInEmptySlots` (8 tests)
   - Module placement in empty grid slots
   - Handling of pre-filled slots
   - Inactive cell exclusion
   - Column-by-column placement order validation
-  
+
 - `TestCountEmptyInLocalized` (7 tests)
   - Empty cell counting in grids
   - Full grid, partial grid, single-cell edge cases
   - Large grid scaling
-  
+
 - `TestCheckAllModulesPlaced` (10 tests)
   - Validation that all expected modules are placed
   - Duplicate detection
@@ -42,8 +42,8 @@ Tests for utility functions used throughout optimization pipeline.
   - Case-sensitive ID matching
   - Tech-specific filtering
 
-**Bug Found**: 
-- **Logic Ordering Bug in `determine_window_dimensions`**: 
+**Bug Found**:
+- **Logic Ordering Bug in `determine_window_dimensions`**:
   - With 0 modules and tech-specific rules (e.g., hyper), function returns tech defaults (4,2) instead of checking `module_count < 1` first and returning (1,1)
   - Root cause: Tech-specific rules checked before generic fallback rules
   - Severity: LOW-MEDIUM (affects edge case of zero modules)

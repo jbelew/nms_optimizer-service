@@ -37,7 +37,7 @@ if num_modules == 1:
                 is_edge = (x==0 or x==width-1 or y==0 or y==height-1)
                 if best_cell is None or (is_edge and not best_cell[2]):
                     best_cell = (x, y, is_edge)
-    
+
     # Place module at selected location
     grid.set_module(best_x, best_y, module_id)
     return grid
@@ -85,7 +85,7 @@ For multiple modules:
    )
    solve_method = "No Solve (Windowed SA)"
    ```
-   
+
    Note: Uses full SA for initial placement (not refinement), since we're placing modules for the first time in a no-solve scenario.
 
 5. **Fallback to simple placement** if no suitable window found
@@ -97,15 +97,15 @@ For multiple modules:
 
 ### Code Changes
 
-**File**: `src/optimization/core.py`  
-**Lines**: 130-197  
+**File**: `src/optimization/core.py`
+**Lines**: 130-197
 **Changes**:
 - Replaced simple linear placement with intelligent window scanning
 - Added dimension rotation support
 - Integrated SA refinement for optimal scoring
 - Preserved fallback for edge cases
 
-**File**: `src/tests/test_optimization.py`  
+**File**: `src/tests/test_optimization.py`
 **Changes**:
 - Updated `test_optimize_no_solve_map_available` to mock new window scanning
 - Test now validates window scoring attempt and fallback behavior

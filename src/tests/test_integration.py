@@ -18,7 +18,7 @@ sample_solves = get_all_solve_data()
 
 def get_tech_modules_from_ship_data(ship_data, tech_key):
     """Extract modules for a specific tech from ship data structure.
-    
+
     Ship data structure:
     {
         "label": "...",
@@ -32,14 +32,14 @@ def get_tech_modules_from_ship_data(ship_data, tech_key):
     """
     if "types" not in ship_data:
         return None
-    
+
     for category_name, techs_in_category in ship_data["types"].items():
         if not isinstance(techs_in_category, list):
             continue
         for tech_obj in techs_in_category:
             if tech_obj.get("key") == tech_key:
                 return tech_obj.get("modules", [])
-    
+
     return None
 
 
@@ -56,7 +56,7 @@ class TestOptimizationPipeline(unittest.TestCase):
 
     def test_pattern_matching_to_refinement(self):
         """Test pipeline from pattern matching to refinement.
-        
+
         This test verifies:
         1. Pattern matching finds a suitable solve
         2. Pattern is applied to grid
@@ -77,24 +77,25 @@ class TestOptimizationPipeline(unittest.TestCase):
         )
 
         # Verify we got a result
-        self.assertIsNotNone(result_grid)
+        self.assertIsNotNone(result_grid)  # type: ignore[union-attr]
         self.assertGreaterEqual(solved_bonus, 0)
         self.assertGreaterEqual(percentage, 0)
         self.assertIsNotNone(solve_method)
 
         # Verify result has modules placed
-        module_count = 0
-        for y in range(result_grid.height):
-            for x in range(result_grid.width):
-                cell = result_grid.get_cell(x, y)
-                if cell["module"] is not None and cell["tech"] == self.tech_key:
-                    module_count += 1
+        if result_grid is not None:
+            module_count = 0
+            for y in range(result_grid.height):
+                for x in range(result_grid.width):
+                    cell = result_grid.get_cell(x, y)
+                    if cell["module"] is not None and cell["tech"] == self.tech_key:
+                        module_count += 1
 
-        self.assertGreater(module_count, 0, "Expected at least one module placed")
+            self.assertGreater(module_count, 0, "Expected at least one module placed")
 
     def test_fallback_to_simulated_annealing(self):
         """Test that optimization falls back to simulated annealing when needed.
-        
+
         This test verifies:
         1. When no solve matches, SA runs
         2. Result is valid
@@ -122,13 +123,13 @@ class TestOptimizationPipeline(unittest.TestCase):
         )
 
         # Should have a valid result
-        self.assertIsNotNone(result_grid)
+        self.assertIsNotNone(result_grid)  # type: ignore[union-attr]
         # Score should be reasonable (>= 0)
         self.assertGreaterEqual(solved_bonus, 0)
 
     def test_supercharge_optimization(self):
         """Test that optimization considers supercharged slots.
-        
+
         This test verifies:
         1. Grid with supercharged slots is optimized
         2. Supercharged status is preserved
@@ -154,15 +155,15 @@ class TestOptimizationPipeline(unittest.TestCase):
         )
 
         # Verify supercharged status preserved
-        self.assertTrue(result_grid.get_cell(1, 1)["supercharged"])
-        self.assertTrue(result_grid.get_cell(2, 1)["supercharged"])
+        self.assertTrue(result_grid.get_cell(1, 1)["supercharged"])  # type: ignore[union-attr]
+        self.assertTrue(result_grid.get_cell(2, 1)["supercharged"])  # type: ignore[union-attr]
 
         # Verify we have a score
         self.assertGreaterEqual(solved_bonus, 0)
 
     def test_optimization_with_partial_grid(self):
         """Test optimization on grid with some inactive cells.
-        
+
         This test verifies:
         1. Inactive cells are respected
         2. Modules only placed in active cells
@@ -188,16 +189,16 @@ class TestOptimizationPipeline(unittest.TestCase):
         )
 
         # Verify inactive cells remain inactive
-        self.assertFalse(result_grid.get_cell(0, 0)["active"])
-        self.assertFalse(result_grid.get_cell(0, 1)["active"])
+        self.assertFalse(result_grid.get_cell(0, 0)["active"])  # type: ignore[union-attr]
+        self.assertFalse(result_grid.get_cell(0, 1)["active"])  # type: ignore[union-attr]
 
         # Verify no modules in inactive cells
-        self.assertIsNone(result_grid.get_cell(0, 0)["module"])
-        self.assertIsNone(result_grid.get_cell(0, 1)["module"])
+        self.assertIsNone(result_grid.get_cell(0, 0)["module"])  # type: ignore[union-attr]
+        self.assertIsNone(result_grid.get_cell(0, 1)["module"])  # type: ignore[union-attr]
 
     def test_end_to_end_score_calculation(self):
         """Test that final score matches grid calculation.
-        
+
         This test verifies:
         1. optimize_placement score matches calculate_grid_score
         2. No discrepancies in scoring
@@ -217,9 +218,10 @@ class TestOptimizationPipeline(unittest.TestCase):
         )
 
         # Calculate score independently
-        independent_score = calculate_grid_score(
-            result_grid, self.tech_key, apply_supercharge_first=False
-        )
+        if result_grid is not None:
+            independent_score = calculate_grid_score(result_grid, self.tech_key, apply_supercharge_first=False)
+        else:
+            independent_score = 0.0
 
         # Scores should be close (allowing for floating point variance)
         # Note: Some variance is acceptable due to refinement algorithms
@@ -249,7 +251,7 @@ class TestMultipleTechOptimization(unittest.TestCase):
 
     def test_sequential_tech_optimization(self):
         """Test optimizing multiple technologies sequentially.
-        
+
         This test verifies:
         1. Each tech can be optimized independently
         2. Grid state is preserved between optimizations
@@ -274,6 +276,8 @@ class TestMultipleTechOptimization(unittest.TestCase):
                 self.ship_data,
                 tech_key,
             )
+            if result_grid is None:
+                self.fail(f"Optimization failed for {tech_key}")
 
             # Store result
             tech_placements[tech_key] = {
@@ -293,7 +297,7 @@ class TestMultipleTechOptimization(unittest.TestCase):
 
     def test_independence_between_techs(self):
         """Test that optimizing one tech doesn't affect another's modules.
-        
+
         This test verifies:
         1. Tech A modules remain unchanged when optimizing Tech B
         2. Grid properly separates tech data
@@ -316,12 +320,14 @@ class TestMultipleTechOptimization(unittest.TestCase):
             self.ship_data,
             tech_a,
         )
+        if grid_after_a is None:
+            self.fail(f"Optimization failed for {tech_a}")
 
         # Count tech A modules
         count_a_before = 0
-        for y in range(grid_after_a.height):
-            for x in range(grid_after_a.width):
-                if grid_after_a.get_cell(x, y)["tech"] == tech_a:
+        for y in range(grid_after_a.height):  # type: ignore[union-attr]
+            for x in range(grid_after_a.width):  # type: ignore[union-attr]
+                if grid_after_a.get_cell(x, y)["tech"] == tech_a:  # type: ignore[union-attr]
                     count_a_before += 1
 
         # Optimize tech B on the same grid
@@ -331,24 +337,26 @@ class TestMultipleTechOptimization(unittest.TestCase):
             self.ship_data,
             tech_b,
         )
+        if grid_after_b is None:
+            self.fail(f"Optimization failed for {tech_b}")
 
         # Count tech A modules again
         count_a_after = 0
-        for y in range(grid_after_b.height):
-            for x in range(grid_after_b.width):
-                if grid_after_b.get_cell(x, y)["tech"] == tech_a:
+        for y in range(grid_after_b.height):  # type: ignore[union-attr]
+            for x in range(grid_after_b.width):  # type: ignore[union-attr]
+                if grid_after_b.get_cell(x, y)["tech"] == tech_a:  # type: ignore[union-attr]
                     count_a_after += 1
 
         # Tech A modules should still be there
         self.assertEqual(
             count_a_before,
             count_a_after,
-            f"Tech A module count changed after optimizing Tech B",
+            "Tech A module count changed after optimizing Tech B",
         )
 
     def test_cross_tech_adjacency_considerations(self):
         """Test that adjacency scoring considers cross-tech relationships.
-        
+
         This test verifies:
         1. Grid with multiple techs can be scored
         2. Adjacency calculations account for mixed tech grids
@@ -367,9 +375,12 @@ class TestMultipleTechOptimization(unittest.TestCase):
 
         # Optimize both techs
         grid_a, _, score_a, _ = optimize_placement(grid, self.ship, self.ship_data, tech_a)
-        grid_ab, _, score_b, _ = optimize_placement(
-            grid_a, self.ship, self.ship_data, tech_b
-        )
+        if grid_a is None:
+            self.fail("Optimization failed for tech A")
+
+        grid_ab, _, score_b, _ = optimize_placement(grid_a, self.ship, self.ship_data, tech_b)
+        if grid_ab is None:
+            self.fail("Optimization failed for tech B")
 
         # Both scores should be valid
         self.assertGreaterEqual(score_a, 0)
@@ -379,9 +390,9 @@ class TestMultipleTechOptimization(unittest.TestCase):
         has_tech_a = False
         has_tech_b = False
 
-        for y in range(grid_ab.height):
-            for x in range(grid_ab.width):
-                cell = grid_ab.get_cell(x, y)
+        for y in range(grid_ab.height):  # type: ignore[union-attr]
+            for x in range(grid_ab.width):  # type: ignore[union-attr]
+                cell = grid_ab.get_cell(x, y)  # type: ignore[union-attr]
                 if cell["tech"] == tech_a:
                     has_tech_a = True
                 if cell["tech"] == tech_b:
@@ -414,7 +425,7 @@ class TestOptimizationErrorHandling(unittest.TestCase):
         )
 
         # Should return something (error handling varies by implementation)
-        self.assertIsNotNone(result_grid)
+        self.assertIsNotNone(result_grid)  # type: ignore[union-attr]
 
     def test_optimization_preserves_grid_dimensions(self):
         """Test that optimization doesn't change grid dimensions."""
@@ -440,8 +451,8 @@ class TestOptimizationErrorHandling(unittest.TestCase):
 
         tech = techs[0]
         grid = Grid(4, 3)
-        original_width = grid.width
-        original_height = grid.height
+        original_width = grid.width  # type: ignore[union-attr]
+        original_height = grid.height  # type: ignore[union-attr]
 
         result_grid, _, _, _ = optimize_placement(
             grid,
@@ -449,6 +460,8 @@ class TestOptimizationErrorHandling(unittest.TestCase):
             ship_data,
             tech,
         )
+        if result_grid is None:
+            self.fail("Optimization failed")
 
         # Grid dimensions should not change
         self.assertEqual(result_grid.width, original_width)
@@ -490,9 +503,9 @@ class TestOptimizationErrorHandling(unittest.TestCase):
                 )
 
                 # Should produce valid result for each size
-                self.assertIsNotNone(result_grid)
-                self.assertEqual(result_grid.width, width)
-                self.assertEqual(result_grid.height, height)
+                self.assertIsNotNone(result_grid)  # type: ignore[union-attr]
+                self.assertEqual(result_grid.width, width)  # type: ignore[union-attr]
+                self.assertEqual(result_grid.height, height)  # type: ignore[union-attr]
 
 
 if __name__ == "__main__":

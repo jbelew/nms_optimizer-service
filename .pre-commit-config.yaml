@@ -1,31 +1,24 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
-    hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
-#    -   id: check-added-large-files
--   repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-    -   id: black
--   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.4
-    hooks:
-    -   id: ruff
-        args: [--fix]
--   repo: local
-    hooks:
-    -   id: build-rust-module
-        name: Build Rust Module and Install Ruff
-        entry: bash -c "source venv/bin/activate && maturin develop --release --manifest-path rust_scorer/Cargo.toml"
-        language: system
-        pass_filenames: false
-        always_run: true # Always run this hook
-    -   id: unittest
-        name: Run tests
-        entry: bash -c "source venv/bin/activate && python -m unittest discover -s src/tests"
-        language: system
-        types: [python]
-        pass_filenames: false
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.6.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-yaml
+- repo: https://github.com/psf/black
+  rev: 24.4.2
+  hooks:
+  - id: black
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.4.4
+  hooks:
+  - id: ruff
+    args: [--fix]
+- repo: local
+  hooks:
+  - id: unittest
+    name: Run unit tests
+    entry: bash -c "source venv/bin/activate && python -m unittest discover -s src/tests"
+    language: system
+    pass_filenames: false
+    stages: [commit]

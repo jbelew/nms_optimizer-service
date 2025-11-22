@@ -171,7 +171,7 @@ def test_supercharged_occupied_by_other_tech(self):
     window.cells[0][0]["supercharged"] = True  # Edge cell
     window.cells[0][0]["module"] = "m1"        # Occupied (doesn't count as SC)
     window.cells[0][0]["tech"] = "other"
-    
+
     score = calculate_window_score(window, "tech")
     # Score: 0*3 (no counting SC) + 3*1 (3 empty) + 1*0.25 (edge penalty) = 3.25
     # Should be just 3 (no edge penalty for non-SC cell)

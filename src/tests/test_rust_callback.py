@@ -1,6 +1,5 @@
 import json
 import logging
-import pytest
 
 from rust_scorer import simulated_annealing, Module, ModuleType, AdjacencyType
 

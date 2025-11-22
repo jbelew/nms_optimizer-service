@@ -221,58 +221,63 @@ def find_supercharged_opportunities(
 
 
 def calculate_window_score(window_grid, tech, full_grid=None, window_start_x=0, window_start_y=0):
-     """
-     Calculates a score for a given window based on supercharged and empty slots,
-     excluding inactive cells. Prioritizes supercharged slots away from the horizontal edges of the window.
-     For single-cell windows, also considers adjacency to existing modules in the full grid.
-     
-     Args:
-         window_grid (Grid): The window being evaluated
-         tech (str): The technology type
-         full_grid (Grid): Optional full grid for adjacency scoring in single-module placement
-         window_start_x (int): Starting x coordinate of window in full grid
-         window_start_y (int): Starting y coordinate of window in full grid
-     """
-     supercharged_count = 0
-     empty_count = 0
-     edge_penalty = 0
-     adjacency_score = 0
-     
-     for y in range(window_grid.height):
-         for x in range(window_grid.width):
-             cell = window_grid.get_cell(x, y)
-             if cell["active"]:  # Only consider active cells
-                 if cell["supercharged"]:
-                     # Check if the supercharged cell is empty or occupied by the current tech
-                     if cell["module"] is None or cell["tech"] == tech:
-                         supercharged_count += 1
-                         # Check if the supercharged slot is on the horizontal edge of the window
-                     if window_grid.width > 1 and (x == 0 or x == window_grid.width - 1):
-                         edge_penalty += 1
-                 if cell["module"] is None:
-                     empty_count += 1
-                     
-                     # For single-module placement (1x1 window), score based on adjacency to existing modules
-                     if window_grid.width == 1 and window_grid.height == 1 and full_grid is not None:
-                         # Get actual grid coordinates
-                         grid_x = window_start_x + x
-                         grid_y = window_start_y + y
-                         
-                         # Check neighbors in full grid
-                         adjacent_positions = [(grid_x - 1, grid_y), (grid_x + 1, grid_y), (grid_x, grid_y - 1), (grid_x, grid_y + 1)]
-                         for adj_x, adj_y in adjacent_positions:
-                             if 0 <= adj_x < full_grid.width and 0 <= adj_y < full_grid.height:
-                                 adj_cell = full_grid.get_cell(adj_x, adj_y)
-                                 if adj_cell["module"] is not None:
-                                     adjacency_score += 3.0  # Weight for adjacency to other modules
+    """
+    Calculates a score for a given window based on supercharged and empty slots,
+    excluding inactive cells. Prioritizes supercharged slots away from the horizontal edges of the window.
+    For single-cell windows, also considers adjacency to existing modules in the full grid.
 
-     if supercharged_count > 0:
-         return supercharged_count * 3  # + (empty_count * 1)
-     else:
-         # For single cells with no supercharge, prioritize adjacency
-         if window_grid.width == 1 and window_grid.height == 1:
-             return empty_count * 1 + adjacency_score  # Adjacency bonus dominates for single modules
-         return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
+    Args:
+        window_grid (Grid): The window being evaluated
+        tech (str): The technology type
+        full_grid (Grid): Optional full grid for adjacency scoring in single-module placement
+        window_start_x (int): Starting x coordinate of window in full grid
+        window_start_y (int): Starting y coordinate of window in full grid
+    """
+    supercharged_count = 0
+    empty_count = 0
+    edge_penalty = 0
+    adjacency_score = 0
+
+    for y in range(window_grid.height):
+        for x in range(window_grid.width):
+            cell = window_grid.get_cell(x, y)
+            if cell["active"]:  # Only consider active cells
+                if cell["supercharged"]:
+                    # Check if the supercharged cell is empty or occupied by the current tech
+                    if cell["module"] is None or cell["tech"] == tech:
+                        supercharged_count += 1
+                        # Check if the supercharged slot is on the horizontal edge of the window
+                    if window_grid.width > 1 and (x == 0 or x == window_grid.width - 1):
+                        edge_penalty += 1
+                if cell["module"] is None:
+                    empty_count += 1
+
+                    # For single-module placement (1x1 window), score based on adjacency to existing modules
+                    if window_grid.width == 1 and window_grid.height == 1 and full_grid is not None:
+                        # Get actual grid coordinates
+                        grid_x = window_start_x + x
+                        grid_y = window_start_y + y
+
+                        # Check neighbors in full grid
+                        adjacent_positions = [
+                            (grid_x - 1, grid_y),
+                            (grid_x + 1, grid_y),
+                            (grid_x, grid_y - 1),
+                            (grid_x, grid_y + 1),
+                        ]
+                        for adj_x, adj_y in adjacent_positions:
+                            if 0 <= adj_x < full_grid.width and 0 <= adj_y < full_grid.height:
+                                adj_cell = full_grid.get_cell(adj_x, adj_y)
+                                if adj_cell["module"] is not None:
+                                    adjacency_score += 3.0  # Weight for adjacency to other modules
+
+    if supercharged_count > 0:
+        return supercharged_count * 3  # + (empty_count * 1)
+    else:
+        # For single cells with no supercharge, prioritize adjacency
+        if window_grid.width == 1 and window_grid.height == 1:
+            return empty_count * 1 + adjacency_score  # Adjacency bonus dominates for single modules
+        return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 
 
 def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):

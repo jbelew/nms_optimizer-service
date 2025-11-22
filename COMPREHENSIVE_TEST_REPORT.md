@@ -39,33 +39,33 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
   - 90/180/270 degree rotations
   - 4-rotation invariant testing
   - Symmetry handling
-  
+
 - `TestPatternMirroring` (8 tests)
   - Horizontal/vertical mirroring
   - Double-mirror idempotency
   - Module ID preservation
-  
+
 - `TestPatternVariationGeneration` (6 tests)
   - Unique variation detection
   - **FOUND BUG**: Duplicate patterns for symmetric cases
   - Fixed with unified deduplication
-  
+
 - `TestPatternApplicationToGrid` (9 tests)
   - Off-grid boundary handling
   - Owned vs unowned module filtering
   - Inactive cell validation
   - Grid independence
-  
+
 - `TestPatternAdjacencyScoring` (6 tests)
   - Edge bonus calculation
   - Adjacency scoring rules
   - Tech-specific filtering
-  
+
 - `TestPatternExtraction` (4 tests)
   - Coordinate normalization
   - Multi-module patterns
   - Tech filtering
-  
+
 - `TestPatternEdgeCases` (3 tests)
   - Large patterns (10x10)
   - None values in patterns
@@ -85,34 +85,34 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
   - Nested dictionary handling
   - Invalid coordinate handling
   - Negative and large coordinates
-  
+
 - `TestGetModuleData` (5 tests)
   - Data retrieval
   - Caching behavior
   - Data structure validation
-  
+
 - `TestGetSolveMap` (5 tests)
   - Solve map loading
   - Tuple key conversion
   - Caching
-  
+
 - `TestGetAllModuleData` (3 tests)
   - Bulk data retrieval
   - Data structure validation
-  
+
 - `TestGetAllSolveData` (2 tests)
   - All solve data retrieval
-  
+
 - `TestGetTrainingModuleIds` (6 tests)
   - Training data retrieval
   - Uniqueness validation
   - Error handling
-  
+
 - `TestDataLoaderErrorHandling` (3 tests)
   - Corrupt JSON handling
   - Missing fields
   - Cache limits
-  
+
 - `TestDataIntegrity` (2 tests)
   - Data immutability
   - Conversion consistency
@@ -131,18 +131,18 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
   - Overwrite behavior
   - Various bonus values
   - Grid corners and edges
-  
+
 - `TestClearAllModulesOfTech` (9 tests)
   - Tech-specific clearing
   - Property reset validation
   - Grid structure preservation
   - Idempotency (clear twice = clear once)
   - State preservation (active/supercharge)
-  
+
 - `TestClearAndReplaceWorkflow` (2 tests)
   - Clear-then-place workflow
   - Tech switching in same cell
-  
+
 - `TestEdgeCases` (5 tests)
   - Full grid placement
   - Full grid clearing
@@ -169,12 +169,12 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
   - Map key preservation
   - Default score handling
   - Large patterns
-  
+
 - `TestFilterSolvesPhotonixOverride` (3 tests)
   - PC platform photonix override
   - Override conditions
   - Non-pulse tech handling
-  
+
 - `TestFilterSolvesEdgeCases` (3 tests)
   - Empty solve dicts
   - None solve data
@@ -192,42 +192,42 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
 - `TestMLPlacementModelLoading` (2 tests)
   - Nonexistent model handling
   - Missing training module IDs
-  
+
 - `TestMLPlacementTensorPreparation` (2 tests)
   - Input tensor shape validation
   - Supercharge flag encoding
-  
+
 - `TestMLPlacementModuleAssignment` (3 tests)
   - Active cell placement
   - Module count constraints
   - Cell conflict avoidance
-  
+
 - `TestMLPlacementEmptyResults` (1 test)
   - No placeable modules handling
-  
+
 - `TestMLPlacementPolishing` (3 tests)
   - SA polishing enable/disable
   - Score improvement validation
-  
+
 - `TestMLPlacementGridHandling` (3 tests)
   - Input grid independence
   - Localized grid offsets
   - Supercharge preservation
-  
+
 - `TestMLPlacementErrorHandling` (4 tests)
   - Empty grid handling
   - All-supercharged grids
   - Model prediction errors
-  
+
 - `TestMLPlacementProgressCallback` (2 tests)
   - Callback invocation
   - Optional callback handling
-  
+
 - `TestMLPlacementOutputValidation` (5 tests)
   - Output tuple format
   - Grid instance validation
   - Score type and range
-  
+
 - `TestMLPlacementIntegration` (2 tests)
   - Parameter completeness
   - Idempotency
@@ -244,50 +244,50 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
   - Flask app creation
   - CORS enablement
   - Compression setup
-  
+
 - `TestHealthEndpoint` (1 test)
   - Health endpoint existence
-  
+
 - `TestOptimizationEndpoint` (6 tests)
   - POST method requirement
   - Parameter validation (ship, tech)
   - Invalid JSON handling
   - Response format (JSON)
   - Grid data presence
-  
+
 - `TestTechTreeEndpoint` (3 tests)
   - POST method requirement
   - Ship parameter requirement
   - JSON response format
-  
+
 - `TestAnalyticsEndpoint` (2 tests)
   - Endpoint existence
   - Response format
-  
+
 - `TestErrorHandling` (4 tests)
   - 404 for invalid endpoints
   - Malformed request rejection
   - Empty/null body rejection
-  
+
 - `TestRequestValidation` (5 tests)
   - Invalid ship handling
   - Invalid tech handling
   - Empty rewards handling
   - Invalid reward format
   - Negative seed handling
-  
+
 - `TestResponseFormat` (2 tests)
   - Error message inclusion
   - Header validity
-  
+
 - `TestCORSHeaders` (2 tests)
   - CORS header presence
   - Preflight request handling
-  
+
 - `TestContentNegotiation` (2 tests)
   - JSON content type acceptance
   - Wrong content type handling
-  
+
 - `TestEndpointIntegration` (2 tests)
   - Sequential requests
   - Request isolation
@@ -304,7 +304,7 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
 
 **Location**: `src/pattern_matching.py`, function `get_all_unique_pattern_variations()`
 
-**Description**: 
+**Description**:
 - Single-cell patterns returned 2 variations instead of 1
 - Uniform 2×2 squares returned 3 variations instead of 1
 - Root cause: Separate tracking for rotations vs mirrors didn't catch overlaps
@@ -388,11 +388,11 @@ Successfully improved test coverage for the NMS Optimizer Service from **41 test
 1. **optimization/refinement.py** (SA polishing algorithm)
    - Complex algorithm with many parameters
    - Critical path for result quality
-   
+
 2. **optimization/helpers.py** (Optimization utility functions)
    - Grid windowing and localization
    - Module tracking and validation
-   
+
 3. **optimization/core.py** (Core optimization logic)
    - Pattern matching orchestration
    - Multi-strategy optimization

@@ -6,7 +6,7 @@ module ownership checking, and edge cases.
 """
 
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from src.solve_map_utils import filter_solves
 
 
@@ -21,25 +21,46 @@ class TestFilterSolves(unittest.TestCase):
                     {
                         "key": "pulse",
                         "modules": [
-                            {"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                             "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None},
-                            {"id": "pulse_b", "label": "Pulse B", "bonus": 8.0,
-                             "adjacency": "lesser", "type": "bonus", "sc_eligible": False, "image": None},
-                        ]
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            },
+                            {
+                                "id": "pulse_b",
+                                "label": "Pulse B",
+                                "bonus": 8.0,
+                                "adjacency": "lesser",
+                                "type": "bonus",
+                                "sc_eligible": False,
+                                "image": None,
+                            },
+                        ],
                     }
                 ],
                 "Engineering": [
                     {
                         "key": "engineering",
                         "modules": [
-                            {"id": "eng_a", "label": "Eng A", "bonus": 12.0,
-                             "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None},
-                        ]
+                            {
+                                "id": "eng_a",
+                                "label": "Eng A",
+                                "bonus": 12.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            },
+                        ],
                     }
-                ]
+                ],
             }
         }
-        
+
         self.solves = {
             "corvette": {
                 "pulse": {
@@ -48,21 +69,21 @@ class TestFilterSolves(unittest.TestCase):
                         (1, 0): "pulse_b",
                         (2, 0): None,
                     },
-                    "score": 25.5
+                    "score": 25.5,
                 },
                 "engineering": {
                     "map": {
                         (0, 1): "eng_a",
                     },
-                    "score": 12.0
-                }
+                    "score": 12.0,
+                },
             }
         }
 
     def test_filter_solves_basic(self):
         """Basic filtering should include owned modules and None slots."""
         result = filter_solves(self.solves, "corvette", self.modules_data, "pulse")
-        
+
         self.assertIn("corvette", result)
         self.assertIn("pulse", result["corvette"])
         self.assertIn("map", result["corvette"]["pulse"])
@@ -71,13 +92,13 @@ class TestFilterSolves(unittest.TestCase):
     def test_filter_solves_preserves_score(self):
         """Filtered solve should preserve original score."""
         result = filter_solves(self.solves, "corvette", self.modules_data, "pulse")
-        
+
         self.assertEqual(result["corvette"]["pulse"]["score"], 25.5)
 
     def test_filter_solves_includes_owned_modules(self):
         """Filtered solve should include modules the player owns."""
         result = filter_solves(self.solves, "corvette", self.modules_data, "pulse")
-        
+
         filtered_map = result["corvette"]["pulse"]["map"]
         self.assertIn((0, 0), filtered_map)
         self.assertEqual(filtered_map[(0, 0)], "pulse_a")
@@ -87,7 +108,7 @@ class TestFilterSolves(unittest.TestCase):
     def test_filter_solves_includes_none_slots(self):
         """Filtered solve should include None (empty) slots."""
         result = filter_solves(self.solves, "corvette", self.modules_data, "pulse")
-        
+
         filtered_map = result["corvette"]["pulse"]["map"]
         self.assertIn((2, 0), filtered_map)
         self.assertIsNone(filtered_map[(2, 0)])
@@ -95,28 +116,22 @@ class TestFilterSolves(unittest.TestCase):
     def test_filter_solves_nonexistent_ship(self):
         """Filtering for nonexistent ship should return empty dict."""
         result = filter_solves(self.solves, "nonexistent", self.modules_data, "pulse")
-        
+
         self.assertEqual(result, {})
 
     def test_filter_solves_nonexistent_tech(self):
         """Filtering for nonexistent tech should return empty dict."""
         result = filter_solves(self.solves, "corvette", self.modules_data, "nonexistent")
-        
+
         self.assertEqual(result, {})
 
     def test_filter_solves_no_modules_for_tech(self):
         """If no modules found for tech, should return empty dict."""
         # Create modules_data with no pulse modules
-        modules_data = {
-            "types": {
-                "Engineering": [
-                    {"key": "engineering", "modules": []}
-                ]
-            }
-        }
-        
+        modules_data = {"types": {"Engineering": [{"key": "engineering", "modules": []}]}}
+
         result = filter_solves(self.solves, "corvette", modules_data, "pulse")
-        
+
         self.assertEqual(result, {})
 
     def test_filter_solves_excludes_unowned_modules(self):
@@ -129,13 +144,13 @@ class TestFilterSolves(unittest.TestCase):
                         (0, 0): "pulse_a",
                         (1, 0): "unowned_module",
                     },
-                    "score": 20.0
+                    "score": 20.0,
                 }
             }
         }
-        
+
         result = filter_solves(solves, "corvette", self.modules_data, "pulse")
-        
+
         filtered_map = result["corvette"]["pulse"]["map"]
         self.assertIn((0, 0), filtered_map)
         # Unowned module should be excluded
@@ -143,24 +158,17 @@ class TestFilterSolves(unittest.TestCase):
 
     def test_filter_solves_empty_solve_map(self):
         """Empty solve map should be handled gracefully."""
-        solves = {
-            "corvette": {
-                "pulse": {
-                    "map": {},
-                    "score": 0.0
-                }
-            }
-        }
-        
+        solves = {"corvette": {"pulse": {"map": {}, "score": 0.0}}}
+
         result = filter_solves(solves, "corvette", self.modules_data, "pulse")
-        
+
         self.assertEqual(result["corvette"]["pulse"]["map"], {})
 
     def test_filter_solves_multiple_techs(self):
         """Filtering different techs from same ship should work correctly."""
         result_pulse = filter_solves(self.solves, "corvette", self.modules_data, "pulse")
         result_eng = filter_solves(self.solves, "corvette", self.modules_data, "engineering")
-        
+
         self.assertEqual(result_pulse["corvette"]["pulse"]["score"], 25.5)
         self.assertEqual(result_eng["corvette"]["engineering"]["score"], 12.0)
 
@@ -172,15 +180,15 @@ class TestFilterSolves(unittest.TestCase):
                     "map": {
                         (0, 0): "pulse_a",
                         (1, 0): "None",  # String "None" instead of None
-                        (2, 0): None,    # Actual None
+                        (2, 0): None,  # Actual None
                     },
-                    "score": 20.0
+                    "score": 20.0,
                 }
             }
         }
-        
+
         result = filter_solves(solves, "corvette", self.modules_data, "pulse")
-        
+
         filtered_map = result["corvette"]["pulse"]["map"]
         # Both should be included
         self.assertIn((1, 0), filtered_map)
@@ -189,23 +197,22 @@ class TestFilterSolves(unittest.TestCase):
     def test_filter_solves_returns_new_dict(self):
         """Filtering should return a new dict, not modify original."""
         original_map = self.solves["corvette"]["pulse"]["map"].copy()
-        
+
         filter_solves(self.solves, "corvette", self.modules_data, "pulse")
-        
+
         # Original should be unchanged
         self.assertEqual(self.solves["corvette"]["pulse"]["map"], original_map)
 
     def test_filter_solves_with_no_available_modules(self):
         """Should handle available_modules parameter when None."""
-        result = filter_solves(self.solves, "corvette", self.modules_data, "pulse", 
-                              available_modules=None)
-        
+        result = filter_solves(self.solves, "corvette", self.modules_data, "pulse", available_modules=None)
+
         self.assertIn("corvette", result)
 
     def test_filter_solves_preserves_map_keys(self):
         """Map position keys should be preserved (tuples)."""
         result = filter_solves(self.solves, "corvette", self.modules_data, "pulse")
-        
+
         filtered_map = result["corvette"]["pulse"]["map"]
         for key in filtered_map.keys():
             self.assertIsInstance(key, tuple)
@@ -221,26 +228,18 @@ class TestFilterSolves(unittest.TestCase):
                 }
             }
         }
-        
+
         result = filter_solves(solves, "corvette", self.modules_data, "pulse")
-        
+
         self.assertEqual(result["corvette"]["pulse"]["score"], 0)
 
     def test_filter_solves_large_pattern(self):
         """Should handle large solve patterns."""
-        large_map = {(x, y): "pulse_a" if (x + y) % 2 == 0 else "pulse_b" 
-                     for x in range(10) for y in range(10)}
-        solves = {
-            "corvette": {
-                "pulse": {
-                    "map": large_map,
-                    "score": 100.0
-                }
-            }
-        }
-        
+        large_map = {(x, y): "pulse_a" if (x + y) % 2 == 0 else "pulse_b" for x in range(10) for y in range(10)}
+        solves = {"corvette": {"pulse": {"map": large_map, "score": 100.0}}}
+
         result = filter_solves(solves, "corvette", self.modules_data, "pulse")
-        
+
         # Should have many entries after filtering
         self.assertGreater(len(result["corvette"]["pulse"]["map"]), 0)
 
@@ -256,33 +255,33 @@ class TestFilterSolvesPhotonixOverride(unittest.TestCase):
                     {
                         "key": "pulse",
                         "modules": [
-                            {"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                             "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None},
-                        ]
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            },
+                        ],
                     }
                 ]
             }
         }
-        
+
         self.solves = {
             "corvette": {
-                "pulse": {
-                    "map": {(0, 0): "pulse_a"},
-                    "score": 10.0
-                },
-                "photonix": {
-                    "map": {(0, 0): "pulse_a"},
-                    "score": 15.0
-                }
+                "pulse": {"map": {(0, 0): "pulse_a"}, "score": 10.0},
+                "photonix": {"map": {(0, 0): "pulse_a"}, "score": 15.0},
             }
         }
 
-    @patch('builtins.print')
+    @patch("builtins.print")
     def test_filter_solves_photonix_override_with_pc(self, mock_print):
         """When tech is pulse and PC in available_modules, should use photonix."""
-        result = filter_solves(self.solves, "corvette", self.modules_data, "pulse",
-                              available_modules=["PC"])
-        
+        result = filter_solves(self.solves, "corvette", self.modules_data, "pulse", available_modules=["PC"])
+
         # Should return photonix data instead
         self.assertEqual(result["corvette"]["pulse"]["score"], 15.0)
         # Should print info message
@@ -290,36 +289,40 @@ class TestFilterSolvesPhotonixOverride(unittest.TestCase):
 
     def test_filter_solves_no_photonix_override_without_pc(self):
         """Without PC in available_modules, should not override."""
-        result = filter_solves(self.solves, "corvette", self.modules_data, "pulse",
-                              available_modules=["other_platform"])
-        
+        result = filter_solves(
+            self.solves, "corvette", self.modules_data, "pulse", available_modules=["other_platform"]
+        )
+
         # Should return regular pulse data
         self.assertEqual(result["corvette"]["pulse"]["score"], 10.0)
 
     def test_filter_solves_no_photonix_override_for_other_techs(self):
         """Photonix override should only apply to pulse tech."""
-        solves = {
-            "corvette": {
-                "engineering": {
-                    "map": {(0, 0): "eng_a"},
-                    "score": 12.0
-                }
-            }
-        }
-        
+        solves = {"corvette": {"engineering": {"map": {(0, 0): "eng_a"}, "score": 12.0}}}
+
         modules_data = {
             "types": {
                 "Engineering": [
-                    {"key": "engineering", "modules": 
-                     [{"id": "eng_a", "label": "Eng A", "bonus": 12.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "engineering",
+                        "modules": [
+                            {
+                                "id": "eng_a",
+                                "label": "Eng A",
+                                "bonus": 12.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
-        
-        result = filter_solves(solves, "corvette", modules_data, "engineering",
-                              available_modules=["PC"])
-        
+
+        result = filter_solves(solves, "corvette", modules_data, "engineering", available_modules=["PC"])
+
         # Should not override for non-pulse tech
         self.assertEqual(result["corvette"]["engineering"]["score"], 12.0)
 
@@ -334,13 +337,9 @@ class TestFilterSolvesEdgeCases(unittest.TestCase):
 
     def test_filter_solves_solve_data_none(self):
         """If solve_data is None or falsy, should return empty dict."""
-        solves = {
-            "corvette": {
-                "pulse": None
-            }
-        }
+        solves = {"corvette": {"pulse": None}}
         modules_data = {"types": {}}
-        
+
         result = filter_solves(solves, "corvette", modules_data, "pulse")
         self.assertEqual(result, {})
 
@@ -354,22 +353,33 @@ class TestFilterSolvesEdgeCases(unittest.TestCase):
                         (1, 0): "pulse_a",
                         (2, 0): "pulse_a",
                     },
-                    "score": 30.0
+                    "score": 30.0,
                 }
             }
         }
         modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
-        
+
         result = filter_solves(solves, "corvette", modules_data, "pulse")
-        
+
         filtered_map = result["corvette"]["pulse"]["map"]
         # All three positions should be included
         self.assertEqual(len(filtered_map), 3)
@@ -387,15 +397,26 @@ class TestFilterSolvesEdgeCases(unittest.TestCase):
         modules_data = {
             "types": {
                 "Pulse": [
-                    {"key": "pulse", "modules": 
-                     [{"id": "pulse_a", "label": "Pulse A", "bonus": 10.0,
-                       "adjacency": "greater", "type": "bonus", "sc_eligible": True, "image": None}]}
+                    {
+                        "key": "pulse",
+                        "modules": [
+                            {
+                                "id": "pulse_a",
+                                "label": "Pulse A",
+                                "bonus": 10.0,
+                                "adjacency": "greater",
+                                "type": "bonus",
+                                "sc_eligible": True,
+                                "image": None,
+                            }
+                        ],
+                    }
                 ]
             }
         }
-        
+
         result = filter_solves(solves, "corvette", modules_data, "pulse")
-        
+
         # Should create empty map
         self.assertEqual(result["corvette"]["pulse"]["map"], {})
 
