@@ -216,39 +216,42 @@ def get_all_unique_pattern_variations(original_pattern):
     Returns:
         list[dict]: A list of unique pattern dictionaries.
     """
-    patterns_to_try = [original_pattern]
-    rotated_patterns = set()
-    mirrored_patterns = set()
-
-    rotated_pattern_90 = rotate_pattern(original_pattern)
-    if rotated_pattern_90 != original_pattern:
-        if tuple(rotated_pattern_90.items()) not in rotated_patterns:
-            patterns_to_try.append(rotated_pattern_90)
-            rotated_patterns.add(tuple(rotated_pattern_90.items()))
-            rotated_pattern_180 = rotate_pattern(rotated_pattern_90)
-            if rotated_pattern_180 != original_pattern and tuple(rotated_pattern_180.items()) not in rotated_patterns:
-                patterns_to_try.append(rotated_pattern_180)
-                rotated_patterns.add(tuple(rotated_pattern_180.items()))
-                rotated_pattern_270 = rotate_pattern(rotated_pattern_180)
-                if (
-                    rotated_pattern_270 != original_pattern
-                    and tuple(rotated_pattern_270.items()) not in rotated_patterns
-                ):
-                    patterns_to_try.append(rotated_pattern_270)
-                    rotated_patterns.add(tuple(rotated_pattern_270.items()))
-
-    # Add mirrored patterns
-    for pattern in list(patterns_to_try):
-        mirrored_horizontal = mirror_pattern_horizontally(pattern)
-        if tuple(mirrored_horizontal.items()) not in mirrored_patterns:
-            patterns_to_try.append(mirrored_horizontal)
-            mirrored_patterns.add(tuple(mirrored_horizontal.items()))
-        mirrored_vertical = mirror_pattern_vertically(pattern)
-        if tuple(mirrored_vertical.items()) not in mirrored_patterns:
-            patterns_to_try.append(mirrored_vertical)
-            mirrored_patterns.add(tuple(mirrored_vertical.items()))
-
-    return patterns_to_try
+    # Use a single set to track all unique patterns across rotations and mirrors
+    unique_patterns = set()
+    patterns_to_return = []
+    
+    def add_unique_pattern(pattern):
+        """Add a pattern if it hasn't been seen before."""
+        pattern_tuple = tuple(sorted(pattern.items()))
+        if pattern_tuple not in unique_patterns:
+            unique_patterns.add(pattern_tuple)
+            patterns_to_return.append(pattern)
+    
+    # Start with the original pattern
+    add_unique_pattern(original_pattern)
+    
+    # Generate all rotations
+    current_rotation = original_pattern
+    for _ in range(3):  # 90°, 180°, 270°
+        current_rotation = rotate_pattern(current_rotation)
+        add_unique_pattern(current_rotation)
+    
+    # Generate all mirrors for the original and each rotation
+    current_rotation = original_pattern
+    for _ in range(4):  # Original, 90°, 180°, 270°
+        # Try horizontal mirror
+        mirrored_h = mirror_pattern_horizontally(current_rotation)
+        add_unique_pattern(mirrored_h)
+        
+        # Try vertical mirror
+        mirrored_v = mirror_pattern_vertically(current_rotation)
+        add_unique_pattern(mirrored_v)
+        
+        # Move to next rotation
+        if _ < 3:
+            current_rotation = rotate_pattern(current_rotation)
+    
+    return patterns_to_return
 
 
 def calculate_pattern_adjacency_score(grid, tech):
