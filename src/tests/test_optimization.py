@@ -216,30 +216,33 @@ class TestOptimization(unittest.TestCase):
             )
 
     @patch("src.optimization.core.get_solve_map")
-    @patch("src.optimization.core.place_all_modules_in_empty_slots")
+    @patch("src.optimization.core.calculate_pattern_adjacency_score")
     @patch("src.optimization.core.calculate_grid_score")
-    def test_optimize_no_solve_map_available(self, mock_calculate_score, mock_place_all, mock_get_solves):
-        """Test behavior when no solve map is found for the ship."""
+    def test_optimize_no_solve_map_available(self, mock_calculate_score, mock_adjacency_score, mock_get_solves):
+        """Test behavior when no solve map is found for the ship (uses adjacency scoring)."""
         mock_get_solves.return_value = {}
-        placed_grid = self.empty_grid.copy()
-        placed_grid.set_module(0, 0, "IK")
-        placed_grid.set_tech(0, 0, self.tech)
-        mock_place_all.return_value = placed_grid
-        mock_calculate_score.return_value = 5.0
-
+        
+        # Mock adjacency scoring for placement selection (one per cell in grid for multi-module)
+        # Standard grid is 4x3, so we need enough scores for all cells × number of modules
+        mock_adjacency_score.return_value = 5.0
+        mock_calculate_score.return_value = 8.5
+    
         result_grid, percentage, solved_bonus, solve_method = optimize_placement(
             self.empty_grid,
             self.ship,
             self.modules,
             self.tech,
         )
-
+    
         mock_get_solves.assert_called_once_with(self.ship)
-        mock_place_all.assert_called_once()
-        mock_calculate_score.assert_called_once_with(placed_grid, self.tech, apply_supercharge_first=False)
-        self.assertEqual(result_grid, placed_grid)
-        self.assertEqual(solved_bonus, 5.0)
+        # Should use adjacency scoring for placement selection
+        self.assertTrue(mock_adjacency_score.called)
+        # Final score should be calculated
+        mock_calculate_score.assert_called()
+        self.assertEqual(solved_bonus, 8.5)
         self.assertEqual(percentage, 100.0)
+        # Should indicate fallback method
+        self.assertIn("No Solve", solve_method)
 
     @patch("src.optimization.core.get_solve_map")
     @patch("src.optimization.core.apply_pattern_to_grid")

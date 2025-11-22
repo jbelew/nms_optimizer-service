@@ -1,5 +1,6 @@
 import json
 import logging
+import pytest
 
 from rust_scorer import simulated_annealing, Module, ModuleType, AdjacencyType
 
@@ -8,7 +9,8 @@ from rust_scorer import simulated_annealing, Module, ModuleType, AdjacencyType
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 
-def test_progress_callback(progress_data):
+def progress_callback(progress_data):
+    """Callback function passed to Rust simulated_annealing (not a pytest test)"""
     logging.info(f"Python Callback: {progress_data}")
 
 
@@ -155,7 +157,7 @@ def run_test():
         cooling_rate,
         stopping_temperature,
         iterations_per_temp,
-        test_progress_callback,
+        progress_callback,
     )
     logging.info(f"Simulated Annealing (with callback) finished. Best score: {best_score}")
 

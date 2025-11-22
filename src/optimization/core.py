@@ -6,7 +6,7 @@ from src.modules_utils import get_tech_modules
 from src.grid_display import print_grid_compact
 from src.bonus_calculations import calculate_grid_score
 
-from src.module_placement import clear_all_modules_of_tech
+from src.module_placement import clear_all_modules_of_tech, place_module
 from .refinement import simulated_annealing, _handle_ml_opportunity, _handle_sa_refine_opportunity
 from src.data_loader import get_solve_map
 from src.solve_map_utils import filter_solves
@@ -14,6 +14,7 @@ from src.pattern_matching import (
     apply_pattern_to_grid,
     get_all_unique_pattern_variations,
     _extract_pattern_from_grid,
+    calculate_pattern_adjacency_score,
 )
 from .helpers import (
     determine_window_dimensions,
@@ -130,19 +131,137 @@ def optimize_placement(
     # --- Initial Placement Strategy ---
     if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
         # --- Special Case: No Solve Available ---
-        logging.info(
-            f"No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules in empty slots."
-        )  # <<< KEEP: Important outcome >>>
-        solve_method = "Initial Placement (No Solve)"  # <<< Set method >>>
-        # Assuming place_all_modules_in_empty_slots is defined elsewhere
-        solved_grid = place_all_modules_in_empty_slots(
-            grid,
-            modules,
-            ship,
-            tech,
-            tech_modules=tech_modules,
-        )
-        solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
+        num_modules = len(tech_modules)
+        
+        # Special handling for single modules: find best location using adjacency scoring
+        if num_modules == 1:
+            logging.info(
+                f"No solve found for ship: '{ship}' -- tech: '{tech}'. Single module - finding best scoring location."
+            )
+            grid_for_place = grid.copy()
+            clear_all_modules_of_tech(grid_for_place, tech)
+            
+            # Find all empty cells and evaluate each with adjacency scoring
+            best_adjacency_score = -float("inf")
+            best_pos = None
+            best_grid = None
+            module = tech_modules[0]
+            
+            for y in range(grid_for_place.height):
+                for x in range(grid_for_place.width):
+                    cell = grid_for_place.get_cell(x, y)
+                    if cell["active"] and cell["module"] is None:
+                        # Try placing module at this position
+                        test_grid = grid_for_place.copy()
+                        place_module(
+                            test_grid,
+                            x,
+                            y,
+                            module["id"],
+                            module.get("label", module["id"]),
+                            tech,
+                            module.get("module_type", "bonus"),
+                            module.get("bonus", 0),
+                            module.get("adjacency", "no_adjacency"),
+                            module.get("sc_eligible", False),
+                            module.get("image", None),
+                        )
+                        
+                        # Score this placement using adjacency scoring (same as patterns)
+                        adjacency_score = calculate_pattern_adjacency_score(test_grid, tech)
+                        
+                        if adjacency_score > best_adjacency_score:
+                            best_adjacency_score = adjacency_score
+                            best_pos = (x, y)
+                            best_grid = test_grid
+            
+            if best_pos:
+                best_x, best_y = best_pos
+                solved_grid = best_grid
+                solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
+                solve_method = "Initial Placement (No Solve - Single Module)"
+                logging.info(
+                    f"Placed single module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
+                )
+            else:
+                # No empty cells at all
+                solved_grid = grid.copy()
+                solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
+                solve_method = "Initial Placement (No Solve)"
+                logging.warning("No empty cells available for single module placement")
+        else:
+            # Multi-module case: place each module individually using adjacency scoring
+            logging.info(
+                f"No solve found for ship: '{ship}' -- tech: '{tech}'. Placing modules individually using adjacency scoring."
+            )
+            
+            grid_for_place = grid.copy()
+            clear_all_modules_of_tech(grid_for_place, tech)
+            
+            # Place each module one at a time, choosing the best location for each
+            for module in tech_modules:
+                best_adjacency_score = -float("inf")
+                best_pos = None
+                
+                for y in range(grid_for_place.height):
+                    for x in range(grid_for_place.width):
+                        cell = grid_for_place.get_cell(x, y)
+                        if cell["active"] and cell["module"] is None:
+                            # Try placing module at this position
+                            test_grid = grid_for_place.copy()
+                            place_module(
+                                test_grid,
+                                x,
+                                y,
+                                module["id"],
+                                module.get("label", module["id"]),
+                                tech,
+                                module.get("module_type", "bonus"),
+                                module.get("bonus", 0),
+                                module.get("adjacency", "no_adjacency"),
+                                module.get("sc_eligible", False),
+                                module.get("image", None),
+                            )
+                            
+                            # Score this placement using adjacency scoring
+                            adjacency_score = calculate_pattern_adjacency_score(test_grid, tech)
+                            
+                            if adjacency_score > best_adjacency_score:
+                                best_adjacency_score = adjacency_score
+                                best_pos = (x, y)
+                
+                if best_pos:
+                    best_x, best_y = best_pos
+                    place_module(
+                        grid_for_place,
+                        best_x,
+                        best_y,
+                        module["id"],
+                        module.get("label", module["id"]),
+                        tech,
+                        module.get("module_type", "bonus"),
+                        module.get("bonus", 0),
+                        module.get("adjacency", "no_adjacency"),
+                        module.get("sc_eligible", False),
+                        module.get("image", None),
+                    )
+                    logging.debug(
+                        f"Placed module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
+                    )
+            
+            solved_grid = grid_for_place
+            solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
+            solve_method = "Initial Placement (No Solve - Multiple Modules)"
+            
+            # If no modules were placed at all
+            if all(cell["tech"] != tech for y in range(solved_grid.height) for x in range(solved_grid.width) 
+                   if (cell := solved_grid.get_cell(x, y))):
+                logging.warning("No empty cells available for module placement")
+            else:
+                logging.info(
+                    f"Placed {num_modules} modules using individual adjacency scoring"
+                )
+        
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
         # <<< KEEP: Final result for this path >>>
         logging.info(
