@@ -49,16 +49,19 @@ def filter_solves(
 
         filtered_solves[ship] = {tech: {}}
         tech_modules = get_tech_modules(modules, ship, tech)
-        
+
         # Initialize the 'map' and 'score' for the filtered solve
         filtered_solves[ship][tech]["map"] = {}
         filtered_solves[ship][tech]["score"] = solve_data.get("score", 0)
-        
+
         if tech_modules is None:
             # If tech_modules retrieval fails, include all modules from the solve map
             # This allows the solve to proceed even if module data structure is unusual
             import logging
-            logging.warning(f"Could not retrieve module data for ship '{ship}' and tech '{tech}'. Including all modules from solve map.")
+
+            logging.warning(
+                f"Could not retrieve module data for ship '{ship}' and tech '{tech}'. Including all modules from solve map."
+            )
             for position, module_id in solve_data.get("map", {}).items():
                 filtered_solves[ship][tech]["map"][position] = module_id
         else:
