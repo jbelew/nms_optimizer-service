@@ -369,6 +369,11 @@ def optimize_placement(
                     send_grid_updates=send_grid_updates,
                     tech_modules=tech_modules,
                 )
+
+                if solved_grid is None:
+                    logging.error(f"Partial set SA refinement failed for {ship}/{tech}. solved_grid is None.")
+                    raise ValueError(f"Partial set SA refinement failed to produce a grid for {ship}/{tech}.")
+
                 solve_method = "Partial Set SA"
 
                 # Recalculate score just in case to ensure accuracy
@@ -585,6 +590,12 @@ def optimize_placement(
                             )
                         logging.info(f"Forced fallback SA score (no SA-generated pattern fit): {solved_bonus:.4f}")
                         solve_method = "Forced Initial SA (No SA-generated Pattern Fit)"
+
+            # Ensure solved_grid and solved_bonus are valid before returning
+            if solved_grid is None or solved_bonus == -float("inf"):
+                raise ValueError(
+                    f"Partial set optimization failed: solved_grid is None or solved_bonus is invalid for {ship}/{tech}. solve_method={solve_method}"
+                )
 
             if solve_score > 1e-9:
                 percentage = (solved_bonus / solve_score) * 100
