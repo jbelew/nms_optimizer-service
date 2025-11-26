@@ -31,7 +31,7 @@ def _scan_grid_with_window(
     window_height: int,
     module_count: int,
     tech: str,
-    require_supercharge: bool = True
+    require_supercharge: bool = True,
 ) -> Tuple[float, Optional[Tuple[int, int]]]:
     """
     Scans a grid with a fixed window size to find the best placement opportunity.
@@ -296,11 +296,7 @@ def find_supercharged_opportunities(
 
 
 def calculate_window_score(
-    window_grid: Grid,
-    tech: str,
-    full_grid: Optional[Grid] = None,
-    window_start_x: int = 0,
-    window_start_y: int = 0
+    window_grid: Grid, tech: str, full_grid: Optional[Grid] = None, window_start_x: int = 0, window_start_y: int = 0
 ) -> float:
     """
     Calculates a quality score for a placement window.
@@ -397,12 +393,7 @@ def calculate_window_score(
 
 
 def create_localized_grid(
-    grid: Grid,
-    opportunity_x: int,
-    opportunity_y: int,
-    tech: str,
-    localized_width: int,
-    localized_height: int
+    grid: Grid, opportunity_x: int, opportunity_y: int, tech: str, localized_width: int, localized_height: int
 ) -> Tuple[Grid, int, int]:
     """
     Creates a localized grid for SA/permutation-based refinement.
@@ -496,12 +487,7 @@ def create_localized_grid(
 
 
 def create_localized_grid_ml(
-    grid: Grid,
-    opportunity_x: int,
-    opportunity_y: int,
-    tech: str,
-    localized_width: int,
-    localized_height: int
+    grid: Grid, opportunity_x: int, opportunity_y: int, tech: str, localized_width: int, localized_height: int
 ) -> Tuple[Grid, int, int, dict]:
     """
     Creates a localized grid for ML-based refinement.

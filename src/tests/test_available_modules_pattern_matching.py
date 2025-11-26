@@ -6,7 +6,7 @@ available_modules exactly match the solve pattern modules.
 """
 
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from src.grid_utils import Grid
 from src.optimization.core import optimize_placement
 
@@ -68,33 +68,21 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                     "src.optimization.core.filter_solves",
                     return_value=self.pattern_solve,
                 ):
-                    with patch(
-                        "src.optimization.core.get_all_unique_pattern_variations"
-                    ) as mock_get_patterns:
-                        with patch(
-                            "src.optimization.core.apply_pattern_to_grid"
-                        ) as mock_apply:
+                    with patch("src.optimization.core.get_all_unique_pattern_variations") as mock_get_patterns:
+                        with patch("src.optimization.core.apply_pattern_to_grid") as mock_apply:
                             with patch(
                                 "src.optimization.core.calculate_grid_score",
                                 return_value=0.1334,
                             ):
-                                with patch(
-                                    "src.optimization.core.clear_all_modules_of_tech"
-                                ):
-                                    with patch(
-                                        "src.optimization.core.print_grid_compact"
-                                    ):
+                                with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                    with patch("src.optimization.core.print_grid_compact"):
                                         mock_get_tech.return_value = [
                                             m
                                             for m in self.modules["corvette"]["trails"]
                                             if m["id"] in available_modules
                                         ]
-                                        mock_get_solve.return_value = (
-                                            self.pattern_solve[self.ship]
-                                        )
-                                        mock_get_patterns.return_value = [
-                                            {(0, 0): "RT"}
-                                        ]
+                                        mock_get_solve.return_value = self.pattern_solve[self.ship]
+                                        mock_get_patterns.return_value = [{(0, 0): "RT"}]
                                         test_grid = self.grid.copy()
                                         mock_apply.return_value = (
                                             test_grid,
@@ -102,14 +90,12 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                                         )
 
                                         # Call optimize_placement
-                                        result_grid, percentage, bonus, method = (
-                                            optimize_placement(
-                                                self.grid,
-                                                self.ship,
-                                                self.modules,
-                                                self.tech,
-                                                available_modules=available_modules,
-                                            )
+                                        result_grid, percentage, bonus, method = optimize_placement(
+                                            self.grid,
+                                            self.ship,
+                                            self.modules,
+                                            self.tech,
+                                            available_modules=available_modules,
                                         )
 
                                         # Should use "Pattern Match" method, not windowed SA
@@ -151,32 +137,20 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                             "src.optimization.core.determine_window_dimensions",
                             return_value=(3, 3),
                         ):
-                            with patch(
-                                "src.optimization.core._scan_grid_with_window"
-                            ) as mock_scan:
-                                with patch(
-                                    "src.optimization.core._handle_sa_refine_opportunity"
-                                ) as mock_sa:
-                                    with patch(
-                                        "src.optimization.core.clear_all_modules_of_tech"
-                                    ):
-                                        with patch(
-                                            "src.optimization.core.print_grid_compact"
-                                        ):
+                            with patch("src.optimization.core._scan_grid_with_window") as mock_scan:
+                                with patch("src.optimization.core._handle_sa_refine_opportunity") as mock_sa:
+                                    with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                        with patch("src.optimization.core.print_grid_compact"):
                                             with patch(
                                                 "src.optimization.core.calculate_grid_score",
                                                 return_value=0.2,
                                             ):
                                                 mock_get_tech.return_value = [
                                                     m
-                                                    for m in self.modules["corvette"][
-                                                        "trails"
-                                                    ]
+                                                    for m in self.modules["corvette"]["trails"]
                                                     if m["id"] in available_modules
                                                 ]
-                                                mock_get_solve.return_value = (
-                                                    self.pattern_solve[self.ship]
-                                                )
+                                                mock_get_solve.return_value = self.pattern_solve[self.ship]
                                                 mock_scan.return_value = (5.0, (0, 0))
                                                 test_grid = self.grid.copy()
                                                 mock_sa.return_value = (
@@ -184,14 +158,12 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                                                     0.2,
                                                 )
 
-                                                result_grid, percentage, bonus, method = (
-                                                    optimize_placement(
-                                                        self.grid,
-                                                        self.ship,
-                                                        self.modules,
-                                                        self.tech,
-                                                        available_modules=available_modules,
-                                                    )
+                                                result_grid, percentage, bonus, method = optimize_placement(
+                                                    self.grid,
+                                                    self.ship,
+                                                    self.modules,
+                                                    self.tech,
+                                                    available_modules=available_modules,
                                                 )
 
                                                 # Should use windowed SA, not pattern match
@@ -220,18 +192,10 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                             "src.optimization.core.determine_window_dimensions",
                             return_value=(3, 3),
                         ):
-                            with patch(
-                                "src.optimization.core._scan_grid_with_window"
-                            ) as mock_scan:
-                                with patch(
-                                    "src.optimization.core._handle_sa_refine_opportunity"
-                                ) as mock_sa:
-                                    with patch(
-                                        "src.optimization.core.clear_all_modules_of_tech"
-                                    ):
-                                        with patch(
-                                            "src.optimization.core.print_grid_compact"
-                                        ):
+                            with patch("src.optimization.core._scan_grid_with_window") as mock_scan:
+                                with patch("src.optimization.core._handle_sa_refine_opportunity") as mock_sa:
+                                    with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                        with patch("src.optimization.core.print_grid_compact"):
                                             with patch(
                                                 "src.optimization.core.calculate_grid_score",
                                                 return_value=0.2,
@@ -244,9 +208,7 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                                                     }
                                                     for m in available_modules
                                                 ]
-                                                mock_get_solve.return_value = (
-                                                    self.pattern_solve[self.ship]
-                                                )
+                                                mock_get_solve.return_value = self.pattern_solve[self.ship]
                                                 mock_scan.return_value = (5.0, (0, 0))
                                                 test_grid = self.grid.copy()
                                                 mock_sa.return_value = (
@@ -254,14 +216,12 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                                                     0.2,
                                                 )
 
-                                                result_grid, percentage, bonus, method = (
-                                                    optimize_placement(
-                                                        self.grid,
-                                                        self.ship,
-                                                        self.modules,
-                                                        self.tech,
-                                                        available_modules=available_modules,
-                                                    )
+                                                result_grid, percentage, bonus, method = optimize_placement(
+                                                    self.grid,
+                                                    self.ship,
+                                                    self.modules,
+                                                    self.tech,
+                                                    available_modules=available_modules,
                                                 )
 
                                                 # Should use windowed SA
@@ -279,34 +239,19 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                     "src.optimization.core.filter_solves",
                     return_value=self.pattern_solve,
                 ):
-                    with patch(
-                        "src.optimization.core.get_all_unique_pattern_variations"
-                    ) as mock_get_patterns:
-                        with patch(
-                            "src.optimization.core.apply_pattern_to_grid"
-                        ) as mock_apply:
+                    with patch("src.optimization.core.get_all_unique_pattern_variations") as mock_get_patterns:
+                        with patch("src.optimization.core.apply_pattern_to_grid") as mock_apply:
                             with patch(
                                 "src.optimization.core.calculate_grid_score",
                                 return_value=0.1334,
                             ):
-                                with patch(
-                                    "src.optimization.core.clear_all_modules_of_tech"
-                                ):
-                                    with patch(
-                                        "src.optimization.core.print_grid_compact"
-                                    ):
+                                with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                    with patch("src.optimization.core.print_grid_compact"):
                                         # All 12 modules available
-                                        all_modules = [
-                                            m
-                                            for m in self.modules["corvette"]["trails"]
-                                        ]
+                                        all_modules = [m for m in self.modules["corvette"]["trails"]]
                                         mock_get_tech.return_value = all_modules
-                                        mock_get_solve.return_value = (
-                                            self.pattern_solve[self.ship]
-                                        )
-                                        mock_get_patterns.return_value = [
-                                            {(0, 0): "RT"}
-                                        ]
+                                        mock_get_solve.return_value = self.pattern_solve[self.ship]
+                                        mock_get_patterns.return_value = [{(0, 0): "RT"}]
                                         test_grid = self.grid.copy()
                                         mock_apply.return_value = (
                                             test_grid,
@@ -314,14 +259,12 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                                         )
 
                                         # Call with available_modules=None
-                                        result_grid, percentage, bonus, method = (
-                                            optimize_placement(
-                                                self.grid,
-                                                self.ship,
-                                                self.modules,
-                                                self.tech,
-                                                available_modules=None,
-                                            )
+                                        result_grid, percentage, bonus, method = optimize_placement(
+                                            self.grid,
+                                            self.ship,
+                                            self.modules,
+                                            self.tech,
+                                            available_modules=None,
                                         )
 
                                         # Since 12 modules != 7 in pattern, should use SA
@@ -359,47 +302,33 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                     "src.optimization.core.filter_solves",
                     return_value=pattern_with_nones,
                 ):
-                    with patch(
-                        "src.optimization.core.get_all_unique_pattern_variations"
-                    ) as mock_get_patterns:
-                        with patch(
-                            "src.optimization.core.apply_pattern_to_grid"
-                        ) as mock_apply:
+                    with patch("src.optimization.core.get_all_unique_pattern_variations") as mock_get_patterns:
+                        with patch("src.optimization.core.apply_pattern_to_grid") as mock_apply:
                             with patch(
                                 "src.optimization.core.calculate_grid_score",
                                 return_value=0.1334,
                             ):
-                                with patch(
-                                    "src.optimization.core.clear_all_modules_of_tech"
-                                ):
-                                    with patch(
-                                        "src.optimization.core.print_grid_compact"
-                                    ):
+                                with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                    with patch("src.optimization.core.print_grid_compact"):
                                         mock_get_tech.return_value = [
                                             m
                                             for m in self.modules["corvette"]["trails"]
                                             if m["id"] in available_modules
                                         ]
-                                        mock_get_solve.return_value = (
-                                            pattern_with_nones[self.ship]
-                                        )
-                                        mock_get_patterns.return_value = [
-                                            {(0, 0): "RT"}
-                                        ]
+                                        mock_get_solve.return_value = pattern_with_nones[self.ship]
+                                        mock_get_patterns.return_value = [{(0, 0): "RT"}]
                                         test_grid = self.grid.copy()
                                         mock_apply.return_value = (
                                             test_grid,
                                             1.0,
                                         )
 
-                                        result_grid, percentage, bonus, method = (
-                                            optimize_placement(
-                                                self.grid,
-                                                self.ship,
-                                                self.modules,
-                                                self.tech,
-                                                available_modules=available_modules,
-                                            )
+                                        result_grid, percentage, bonus, method = optimize_placement(
+                                            self.grid,
+                                            self.ship,
+                                            self.modules,
+                                            self.tech,
+                                            available_modules=available_modules,
                                         )
 
                                         # Should match pattern (7 modules match exactly)
@@ -435,47 +364,33 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                     "src.optimization.core.filter_solves",
                     return_value=pattern_dict_format,
                 ):
-                    with patch(
-                        "src.optimization.core.get_all_unique_pattern_variations"
-                    ) as mock_get_patterns:
-                        with patch(
-                            "src.optimization.core.apply_pattern_to_grid"
-                        ) as mock_apply:
+                    with patch("src.optimization.core.get_all_unique_pattern_variations") as mock_get_patterns:
+                        with patch("src.optimization.core.apply_pattern_to_grid") as mock_apply:
                             with patch(
                                 "src.optimization.core.calculate_grid_score",
                                 return_value=0.1334,
                             ):
-                                with patch(
-                                    "src.optimization.core.clear_all_modules_of_tech"
-                                ):
-                                    with patch(
-                                        "src.optimization.core.print_grid_compact"
-                                    ):
+                                with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                    with patch("src.optimization.core.print_grid_compact"):
                                         mock_get_tech.return_value = [
                                             m
                                             for m in self.modules["corvette"]["trails"]
                                             if m["id"] in available_modules
                                         ]
-                                        mock_get_solve.return_value = (
-                                            pattern_dict_format[self.ship]
-                                        )
-                                        mock_get_patterns.return_value = [
-                                            {(0, 0): "RT"}
-                                        ]
+                                        mock_get_solve.return_value = pattern_dict_format[self.ship]
+                                        mock_get_patterns.return_value = [{(0, 0): "RT"}]
                                         test_grid = self.grid.copy()
                                         mock_apply.return_value = (
                                             test_grid,
                                             1.0,
                                         )
 
-                                        result_grid, percentage, bonus, method = (
-                                            optimize_placement(
-                                                self.grid,
-                                                self.ship,
-                                                self.modules,
-                                                self.tech,
-                                                available_modules=available_modules,
-                                            )
+                                        result_grid, percentage, bonus, method = optimize_placement(
+                                            self.grid,
+                                            self.ship,
+                                            self.modules,
+                                            self.tech,
+                                            available_modules=available_modules,
                                         )
 
                                         # Should match pattern (7 modules match exactly)
@@ -491,25 +406,17 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                     "src.optimization.core.filter_solves",
                     return_value=self.pattern_solve,
                 ):
-                    with patch(
-                        "src.optimization.core.clear_all_modules_of_tech"
-                    ):
-                        with patch(
-                            "src.optimization.core.print_grid_compact"
-                        ):
+                    with patch("src.optimization.core.clear_all_modules_of_tech"):
+                        with patch("src.optimization.core.print_grid_compact"):
                             mock_get_tech.return_value = []
-                            mock_get_solve.return_value = (
-                                self.pattern_solve[self.ship]
-                            )
+                            mock_get_solve.return_value = self.pattern_solve[self.ship]
 
-                            result_grid, percentage, bonus, method = (
-                                optimize_placement(
-                                    self.grid,
-                                    self.ship,
-                                    self.modules,
-                                    self.tech,
-                                    available_modules=available_modules,
-                                )
+                            result_grid, percentage, bonus, method = optimize_placement(
+                                self.grid,
+                                self.ship,
+                                self.modules,
+                                self.tech,
+                                available_modules=available_modules,
                             )
 
                             # Should return error tuple with cleared grid and error message
@@ -537,32 +444,20 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                             "src.optimization.core.determine_window_dimensions",
                             return_value=(3, 3),
                         ):
-                            with patch(
-                                "src.optimization.core._scan_grid_with_window"
-                            ) as mock_scan:
-                                with patch(
-                                    "src.optimization.core._handle_sa_refine_opportunity"
-                                ) as mock_sa:
-                                    with patch(
-                                        "src.optimization.core.clear_all_modules_of_tech"
-                                    ):
-                                        with patch(
-                                            "src.optimization.core.print_grid_compact"
-                                        ):
+                            with patch("src.optimization.core._scan_grid_with_window") as mock_scan:
+                                with patch("src.optimization.core._handle_sa_refine_opportunity") as mock_sa:
+                                    with patch("src.optimization.core.clear_all_modules_of_tech"):
+                                        with patch("src.optimization.core.print_grid_compact"):
                                             with patch(
                                                 "src.optimization.core.calculate_grid_score",
                                                 return_value=0.1,
                                             ):
                                                 mock_get_tech.return_value = [
                                                     m
-                                                    for m in self.modules["corvette"][
-                                                        "trails"
-                                                    ]
+                                                    for m in self.modules["corvette"]["trails"]
                                                     if m["id"] in available_modules
                                                 ]
-                                                mock_get_solve.return_value = (
-                                                    self.pattern_solve[self.ship]
-                                                )
+                                                mock_get_solve.return_value = self.pattern_solve[self.ship]
                                                 mock_scan.return_value = (5.0, (0, 0))
                                                 test_grid = self.grid.copy()
                                                 mock_sa.return_value = (
@@ -570,14 +465,12 @@ class TestAvailableModulesPatternMatching(unittest.TestCase):
                                                     0.1,
                                                 )
 
-                                                result_grid, percentage, bonus, method = (
-                                                    optimize_placement(
-                                                        self.grid,
-                                                        self.ship,
-                                                        self.modules,
-                                                        self.tech,
-                                                        available_modules=available_modules,
-                                                    )
+                                                result_grid, percentage, bonus, method = optimize_placement(
+                                                    self.grid,
+                                                    self.ship,
+                                                    self.modules,
+                                                    self.tech,
+                                                    available_modules=available_modules,
                                                 )
 
                                                 # Should use windowed SA

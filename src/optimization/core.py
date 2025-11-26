@@ -113,7 +113,7 @@ def optimize_placement(
 
     This is the main optimization orchestrator. It follows a multi-stage approach:
 
-    1. **Initial Placement**: 
+    1. **Initial Placement**:
        - If no solve map exists: Places modules individually using adjacency scoring
        - If solve map exists but modules don't match pattern: Uses windowed SA
        - If solve map exists and modules match: Attempts pattern matching
@@ -358,7 +358,7 @@ def optimize_placement(
             and full_tech_modules_list is not None
             and len(tech_modules) < len(full_tech_modules_list)
         )
-        
+
         # Check if available modules match or differ from the solve pattern
         # If they match exactly, we can use pattern matching even with available_modules set
         if available_modules is not None and ship in filtered_solves and tech in filtered_solves[ship]:
@@ -370,20 +370,16 @@ def optimize_placement(
                 elif isinstance(module_info, str) and module_info != "None":
                     pattern_module_ids.add(module_info)
             available_ids = set(available_modules)
-            
+
             if pattern_module_ids and available_ids:
                 if available_ids == pattern_module_ids:
                     # Available modules exactly match pattern - use pattern matching
-                    logging.info(
-                        f"Available modules exactly match solve pattern. Using pattern matching."
-                    )
+                    logging.info("Available modules exactly match solve pattern. Using pattern matching.")
                     is_partial_set = False
                 elif available_ids != pattern_module_ids:
                     # Available modules differ from pattern - must use windowed SA
                     if not is_partial_set:
-                        logging.info(
-                            f"Available modules do not match solve pattern. Using windowed SA instead."
-                        )
+                        logging.info("Available modules do not match solve pattern. Using windowed SA instead.")
                         is_partial_set = True
 
         # Special case for 'pulse' tech: if only 'PC' is missing, it's not a partial set
@@ -796,12 +792,8 @@ def optimize_placement(
                     tech_modules=tech_modules,
                 )
                 if solved_grid is None:
-                    raise ValueError(
-                        f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit."
-                    )
-                logging.info(
-                    f"Fallback SA score: {solved_bonus:.4f}"
-                )
+                    raise ValueError(f"Fallback simulated_annealing failed for {ship}/{tech} when no pattern fit.")
+                logging.info(f"Fallback SA score: {solved_bonus:.4f}")
                 solve_method = "Forced Initial SA (No Pattern Fit)"
 
     # --- Opportunity Refinement Stage ---
@@ -892,9 +884,7 @@ def optimize_placement(
     final_opportunity_result = None
     opportunity_source = "None"  # For logging
     if pattern_window_score >= scanned_window_score and pattern_opportunity_result is not None:
-        logging.info(
-            "Using pattern location as the refinement opportunity window (score >= scanned)."
-        )
+        logging.info("Using pattern location as the refinement opportunity window (score >= scanned).")
         final_opportunity_result = pattern_opportunity_result
         opportunity_source = "Pattern"
     elif scanned_opportunity_result is not None:
@@ -905,9 +895,7 @@ def optimize_placement(
         opportunity_source = "Scan"
     elif pattern_opportunity_result is not None:
         # Fallback if scanning failed but pattern exists
-        logging.info(
-            "Using pattern location as the refinement opportunity window (scanning failed)."
-        )
+        logging.info("Using pattern location as the refinement opportunity window (scanning failed).")
         final_opportunity_result = pattern_opportunity_result
         opportunity_source = "Pattern (Fallback)"
     else:
@@ -1030,9 +1018,7 @@ def optimize_placement(
                 available_modules=available_modules,
             )
             if refined_grid_candidate is None:
-                logging.info(
-                    "ML refinement failed or model not found. Falling back to SA/Refine refinement."
-                )
+                logging.info("ML refinement failed or model not found. Falling back to SA/Refine refinement.")
                 # Fallback to SA-based refinement if ML is unavailable
 
                 refinement_method = "ML->SA/Refine Fallback"
