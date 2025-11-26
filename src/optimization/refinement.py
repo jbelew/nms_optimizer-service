@@ -1,11 +1,28 @@
-# optimization/refinement.py
+"""
+Refinement module for NMS grid module placement optimization.
+
+This module provides refinement strategies for improving module placement scores:
+- ML-based refinement: Uses machine learning models to optimize placement
+- SA-based refinement: Uses simulated annealing for exploration and optimization
+- Permutation refinement: Exhaustive placement optimization for small module sets
+
+The module handles both full-grid and windowed (localized) optimization scenarios,
+with support for progress tracking and multi-run strategies.
+
+Key Functions:
+- _handle_ml_opportunity(): ML-based window refinement
+- _handle_sa_refine_opportunity(): SA/permutation-based window refinement
+- simulated_annealing(): Multi-run SA optimization with cooling schedule
+- refine_placement(): Exhaustive permutation-based optimization
+"""
+
 import random
 import math
 import gevent
 import logging
 from copy import deepcopy
 from itertools import permutations
-from typing import Optional
+from typing import Optional, Tuple, Callable
 
 import rust_scorer
 
@@ -17,22 +34,62 @@ from .windowing import create_localized_grid, create_localized_grid_ml
 
 
 def _handle_ml_opportunity(
-    grid,
-    modules,
-    ship,
-    tech,
-    opportunity_x,
-    opportunity_y,
-    window_width,
-    window_height,
-    progress_callback=None,
-    run_id=None,
-    stage=None,
-    send_grid_updates=False,
-    tech_modules=None,
-    available_modules=None,
-):
-    """Handles the ML-based refinement within an opportunity window."""
+    grid: Grid,
+    modules: dict,
+    ship: str,
+    tech: str,
+    opportunity_x: int,
+    opportunity_y: int,
+    window_width: int,
+    window_height: int,
+    progress_callback: Optional[Callable] = None,
+    run_id: Optional[str] = None,
+    stage: Optional[str] = None,
+    send_grid_updates: bool = False,
+    tech_modules: Optional[list] = None,
+    available_modules: Optional[list[str]] = None,
+) -> Tuple[Optional[Grid], float]:
+    """
+    Applies ML-based refinement within a specified opportunity window.
+
+    Creates a localized grid around the opportunity, runs the ML placement model
+    on it, and applies the results back to the full grid while preserving other
+    tech modules and restoring original grid state.
+
+    Args:
+        grid (Grid): The full grid state (input remains unmodified, changes applied to internal copy).
+        modules (dict): Module definitions indexed by ship and tech.
+        ship (str): Ship identifier (e.g., "corvette", "freighter").
+        tech (str): Technology identifier (e.g., "trails", "photon", "pulse").
+        opportunity_x (int): X-coordinate (column) of the window's top-left corner.
+        opportunity_y (int): Y-coordinate (row) of the window's top-left corner.
+        window_width (int): Width of the opportunity window in cells.
+        window_height (int): Height of the opportunity window in cells.
+        progress_callback (Optional[Callable], optional): Callback for progress updates.
+                                                        Signature: fn(progress_dict).
+                                                        Defaults to None.
+        run_id (Optional[str], optional): Run identifier for tracking. Defaults to None.
+        stage (Optional[str], optional): Stage identifier for logging context. Defaults to None.
+        send_grid_updates (bool, optional): Whether to emit intermediate grid updates.
+                                           Defaults to False.
+        tech_modules (Optional[list], optional): List of module definitions for the tech.
+                                                If None, fetched from modules dict.
+                                                Defaults to None.
+        available_modules (Optional[list[str]], optional): List of module IDs available to player.
+                                                         Passed to ML placement function.
+                                                         Defaults to None.
+
+    Returns:
+        Tuple[Optional[Grid], float]: A tuple containing:
+            - best_grid (Grid | None): The refined grid with ML optimizations applied,
+                                      or None if ML refinement failed
+            - best_score (float): The score of the refined grid, or 0.0 if refinement failed
+
+    Notes:
+        - The ML refinement works on a localized window, preserving modules outside the window
+        - Original grid state is restored after ML processing to maintain consistency
+        - If ML processing fails, returns None with score 0.0
+    """
     from src.ml_placement import ml_placement  # Keep import local if possible
 
     logging.info(
@@ -102,21 +159,61 @@ def _handle_ml_opportunity(
 
 
 def _handle_sa_refine_opportunity(
-    grid,
-    modules,
-    ship,
-    tech,
-    opportunity_x,
-    opportunity_y,
-    window_width,
-    window_height,
-    progress_callback=None,
-    run_id=None,
-    stage=None,
-    send_grid_updates=False,
-    tech_modules=None,
-):
-    """Handles the SA/Refine-based refinement within an opportunity window."""
+    grid: Grid,
+    modules: dict,
+    ship: str,
+    tech: str,
+    opportunity_x: int,
+    opportunity_y: int,
+    window_width: int,
+    window_height: int,
+    progress_callback: Optional[Callable] = None,
+    run_id: Optional[str] = None,
+    stage: Optional[str] = None,
+    send_grid_updates: bool = False,
+    tech_modules: Optional[list] = None,
+) -> Tuple[Optional[Grid], float]:
+    """
+    Applies SA/permutation-based refinement within a specified opportunity window.
+
+    Creates a localized window and applies either simulated annealing (for 6+ modules)
+    or exhaustive permutation optimization (for <6 modules). Results are applied back
+    to the full grid while preserving other tech modules.
+
+    Args:
+        grid (Grid): The full grid state (modified copy is returned on success).
+        modules (dict): Module definitions indexed by ship and tech.
+        ship (str): Ship identifier (e.g., "corvette", "freighter").
+        tech (str): Technology identifier (e.g., "trails", "photon", "pulse").
+        opportunity_x (int): X-coordinate (column) of the window's top-left corner.
+        opportunity_y (int): Y-coordinate (row) of the window's top-left corner.
+        window_width (int): Width of the opportunity window in cells.
+        window_height (int): Height of the opportunity window in cells.
+        progress_callback (Optional[Callable], optional): Callback for progress updates.
+                                                        Signature: fn(progress_dict).
+                                                        Defaults to None.
+        run_id (Optional[str], optional): Run identifier for tracking. Defaults to None.
+        stage (Optional[str], optional): Stage identifier for logging context. Defaults to None.
+        send_grid_updates (bool, optional): Whether to emit intermediate grid updates.
+                                           Defaults to False.
+        tech_modules (Optional[list], optional): List of module definitions for the tech.
+                                                If None, fetched from modules dict.
+                                                Defaults to None.
+
+    Returns:
+        Tuple[Optional[Grid], float]: A tuple containing:
+            - refined_grid (Grid | None): The refined grid with changes applied, or None on failure
+            - refined_score (float): The score of the refined grid, or -1.0 on failure
+
+    Strategy Selection:
+        - For <6 modules: Uses refine_placement() for exhaustive permutation optimization
+        - For 6+ modules: Uses simulated_annealing() for efficient exploration
+
+    Notes:
+        - The input grid is modified in-place by this function
+        - Modules of other tech types outside the window are preserved
+        - If refinement fails, returns (grid, -1.0) indicating failure
+    """
     logging.info(
         f"Using SA/Refine for opportunity refinement at ({opportunity_x}, {opportunity_y}) with window {window_width}x{window_height}"
     )
@@ -193,15 +290,54 @@ def _handle_sa_refine_opportunity(
 
 
 def refine_placement(
-    grid,
-    ship,
-    modules,
-    tech,
-    tech_modules=None,
-    progress_callback=None,
-    run_id=None,
-    stage=None,
-):
+    grid: Grid,
+    ship: str,
+    modules: dict,
+    tech: str,
+    tech_modules: Optional[list] = None,
+    progress_callback: Optional[Callable] = None,
+    run_id: Optional[str] = None,
+    stage: Optional[str] = None,
+) -> Tuple[Optional[Grid], float]:
+    """
+    Exhaustively optimizes module placement using all permutations.
+
+    Generates all possible permutations of placement positions and module assignments,
+    evaluating each to find the configuration with the highest bonus score. Suitable
+    for small module sets (typically <6 modules) where brute-force is feasible.
+
+    Args:
+        grid (Grid): The grid to optimize (modified in-place during processing).
+        ship (str): Ship identifier (e.g., "corvette", "freighter").
+        modules (dict): Module definitions indexed by ship and tech.
+        tech (str): Technology identifier (e.g., "trails", "photon", "pulse").
+        tech_modules (Optional[list], optional): Pre-fetched list of module definitions.
+                                                If None, fetched from modules dict.
+                                                Defaults to None.
+        progress_callback (Optional[Callable], optional): Callback for progress updates.
+                                                        Signature: fn(progress_dict).
+                                                        Defaults to None.
+        run_id (Optional[str], optional): Run identifier for tracking. Defaults to None.
+        stage (Optional[str], optional): Stage identifier for logging context. Defaults to None.
+
+    Returns:
+        Tuple[Optional[Grid], float]: A tuple containing:
+            - optimal_grid (Grid | None): The best grid found, or None if no valid placement exists
+            - highest_bonus (float): The score of the optimal grid, or 0.0 if no valid placement
+
+    Algorithm:
+        1. Find all available empty, active cells in the grid
+        2. Generate all permutations of selecting module_count positions from available cells
+        3. For each permutation, shuffle modules and place them at those positions
+        4. Score each configuration and track the best
+        5. Report progress at regular intervals
+
+    Notes:
+        - Time complexity is O(P(n, k) * k) where n = available cells, k = module count
+        - Only practical for small module sets (k < 6) due to permutation explosion
+        - The grid passed in will be modified during evaluation but only the best is returned
+        - Requires sufficient empty cells for all modules or returns None
+    """
     optimal_grid = None
     highest_bonus = 0.0
     if tech_modules is None:
@@ -292,35 +428,123 @@ def refine_placement(
 
 
 def simulated_annealing(
-    grid,
-    ship,
-    modules,
-    tech,
-    full_grid,
-    initial_temperature=7000,
-    cooling_rate=0.99,
-    stopping_temperature=0.1,
-    iterations_per_temp=75,
-    initial_swap_probability=0.75,
-    final_swap_probability=0.25,
+    grid: Grid,
+    ship: str,
+    modules: dict,
+    tech: str,
+    full_grid: Grid,
+    initial_temperature: float = 7000,
+    cooling_rate: float = 0.99,
+    stopping_temperature: float = 0.1,
+    iterations_per_temp: int = 75,
+    initial_swap_probability: float = 0.75,
+    final_swap_probability: float = 0.25,
     start_from_current_grid: bool = False,
     max_processing_time: float = 600.0,
-    progress_callback=None,
-    run_id=None,
-    stage=None,
-    progress_offset=0,
-    progress_scale=100,
-    send_grid_updates=False,
+    progress_callback: Optional[Callable] = None,
+    run_id: Optional[str] = None,
+    stage: Optional[str] = None,
+    progress_offset: int = 0,
+    progress_scale: int = 100,
+    send_grid_updates: bool = False,
     start_x: int = 0,
     start_y: int = 0,
     tech_modules: Optional[list] = None,
-    max_steps_without_improvement=200,
-    reheat_factor=0.6,
+    max_steps_without_improvement: int = 200,
+    reheat_factor: float = 0.6,
     max_reheats: int = 10,
     num_sa_runs: int = 6,
-    seed: int = 161616,  # Default seed set to 42
-):
-    # --- Define max_reheats early ---
+    seed: int = 161616,
+) -> Tuple[Grid, float]:
+    """
+    Multi-run simulated annealing optimization for module placement.
+
+    Performs multiple independent SA runs with a cooling schedule, reheat strategy,
+    and adaptive swap probabilities. Delegates to Rust-based SA for computational
+    efficiency. Tracks progress across all runs and returns the overall best result.
+
+    Args:
+        grid (Grid): The grid to optimize (typically localized/windowed).
+        ship (str): Ship identifier (e.g., "corvette", "freighter").
+        modules (dict): Module definitions indexed by ship and tech.
+        tech (str): Technology identifier (e.g., "trails", "photon", "pulse").
+        full_grid (Grid): The complete grid for adjacency calculations and context.
+        initial_temperature (float, optional): Starting temperature for SA.
+                                              Higher = more exploration. Defaults to 7000.
+        cooling_rate (float, optional): Temperature reduction rate per iteration.
+                                       Range (0, 1), closer to 1 = slower cooling.
+                                       Defaults to 0.99.
+        stopping_temperature (float, optional): Temperature threshold to stop cooling.
+                                               Defaults to 0.1.
+        iterations_per_temp (int, optional): Swaps evaluated at each temperature.
+                                            Defaults to 75.
+        initial_swap_probability (float, optional): Probability of module swap at start.
+                                                   Range (0, 1). Defaults to 0.75.
+        final_swap_probability (float, optional): Probability of module swap at end.
+                                                 Range (0, 1). Defaults to 0.25.
+        start_from_current_grid (bool, optional): If True, use grid as initial state
+                                                 (polishing mode). Otherwise random init.
+                                                 Defaults to False.
+        max_processing_time (float, optional): Maximum time limit in seconds.
+                                              Defaults to 600.0.
+        progress_callback (Optional[Callable], optional): Callback for progress updates.
+                                                        Signature: fn(progress_dict).
+                                                        Defaults to None.
+        run_id (Optional[str], optional): Run identifier for tracking. Defaults to None.
+        stage (Optional[str], optional): Stage identifier for logging context. Defaults to None.
+        progress_offset (int, optional): Starting progress percentage. Defaults to 0.
+        progress_scale (int, optional): Scale of progress range (usually 100). Defaults to 100.
+        send_grid_updates (bool, optional): Whether to emit intermediate grid updates.
+                                           Defaults to False.
+        start_x (int, optional): X offset for localized grid context. Defaults to 0.
+        start_y (int, optional): Y offset for localized grid context. Defaults to 0.
+        tech_modules (Optional[list], optional): Pre-fetched module definitions.
+                                                If None, fetched from modules dict.
+                                                Defaults to None.
+        max_steps_without_improvement (int, optional): Steps before reheat trigger.
+                                                      Defaults to 200.
+        reheat_factor (float, optional): Temperature multiplier for reheats.
+                                        Range (0, 1]. Defaults to 0.6.
+        max_reheats (int, optional): Maximum reheat cycles per run (4 for polishing,
+                                    10 otherwise). Defaults to 10.
+        num_sa_runs (int, optional): Number of independent SA runs to perform.
+                                    Each run uses a different seed. Defaults to 6.
+        seed (int, optional): Base seed for deterministic randomization. Actual seeds
+                             are derived from this to ensure reproducibility.
+                             Defaults to 161616.
+
+    Returns:
+        Tuple[Grid, float]: A tuple containing:
+            - best_grid (Grid): The best grid found across all runs
+            - best_score (float): The score of the best grid
+
+    Algorithm:
+        1. Convert tech_modules to Rust Module objects
+        2. Serialize grid to JSON for Rust processing
+        3. For each of num_sa_runs:
+           a. Generate deterministic seed
+           b. Wrap progress callback to adjust percentages
+           c. Call Rust SA implementation
+           d. Track overall best result
+        4. Return grid with overall best score
+
+    Cooling Schedule:
+        - Linear temperature reduction: T(n) = initial_T * cooling_rate^n
+        - Stops when T reaches stopping_temperature
+        - Reheat triggered after max_steps_without_improvement without improvement
+
+    Progress Reporting:
+        - Adjusted across runs to reflect overall progress
+        - Status messages: "start", "in_progress", "finish"
+        - Percentage scaled relative to progress_offset and progress_scale
+
+    Notes:
+        - This function delegates actual optimization to Rust via rust_scorer module
+        - Deterministic with same seed produces same results
+        - Multi-run strategy balances exploration with computational cost
+        - Adaptive probabilities transition from exploration to exploitation
+        - Polishing mode (start_from_current_grid=True) uses fewer reheats
+    """
     if start_from_current_grid:  # Polishing
         max_reheats = 4
     else:

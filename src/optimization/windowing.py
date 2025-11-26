@@ -1,6 +1,23 @@
-# optimization/windowing.py
+"""
+Windowing module for localized grid optimization.
+
+This module provides functions for identifying and extracting localized regions
+(windows/opportunities) within a larger grid for focused optimization. It includes:
+- Window scanning and opportunity detection
+- Localized grid creation (preserving other tech modules)
+- Window scoring based on supercharged slots and adjacency
+
+Key Functions:
+- find_supercharged_opportunities(): Scans grid for high-value windows
+- _scan_grid_with_window(): Helper for window-based grid scanning
+- calculate_window_score(): Evaluates window quality
+- create_localized_grid(): Extracts subgrid for SA/permutation refinement
+- create_localized_grid_ml(): Extracts subgrid for ML-based refinement
+"""
+
 import logging
 from copy import deepcopy
+from typing import Optional, Tuple
 
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules
@@ -9,21 +26,50 @@ from .helpers import determine_window_dimensions
 
 
 def _scan_grid_with_window(
-    grid_copy, window_width, window_height, module_count, tech, require_supercharge: bool = True
-):
+    grid_copy: Grid,
+    window_width: int,
+    window_height: int,
+    module_count: int,
+    tech: str,
+    require_supercharge: bool = True
+) -> Tuple[float, Optional[Tuple[int, int]]]:
     """
-    Helper function to scan the grid with a specific window size and find the best opportunity.
+    Scans a grid with a fixed window size to find the best placement opportunity.
+
+    Slides a window of specified dimensions across the entire grid, evaluating each
+    position based on available supercharged slots and empty cells. Optionally
+    filters for windows containing at least one supercharged slot.
 
     Args:
-        grid_copy (Grid): A copy of the main grid (with target tech cleared).
-        window_width (int): The width of the scanning window.
-        window_height (int): The height of the scanning window.
-        module_count (int): The number of modules for the tech.
-        tech (str): The technology key.
+        grid_copy (Grid): The grid to scan (typically with target tech cleared).
+        window_width (int): Width of the scanning window in cells.
+        window_height (int): Height of the scanning window in cells.
+        module_count (int): Number of modules to place (used for availability check).
+        tech (str): Technology identifier being optimized.
+        require_supercharge (bool, optional): If True, only considers windows with
+                                             at least one available supercharged slot.
+                                             Defaults to True.
 
     Returns:
-        tuple: (best_score, best_start_pos) where best_start_pos is (x, y) or None.
-               Returns (-1, None) if the window size is invalid for the grid.
+        Tuple[float, Optional[Tuple[int, int]]]: A tuple containing:
+            - best_score (float): The best score found (-1 if invalid window size or no match)
+            - best_start_pos (Tuple[int, int] | None): (x, y) of best window's top-left corner,
+                                                       or None if no valid window found
+
+    Validation:
+        - Window dimensions must fit within grid bounds
+        - Window must have at least module_count available cells
+        - If require_supercharge=True, must have ≥1 unoccupied supercharged slot
+
+    Scoring:
+        - Higher score indicates better placement opportunity
+        - Based on supercharged slot availability and empty cell count
+        - Calculated via calculate_window_score()
+
+    Notes:
+        - Returns (-1, None) if window is too large for grid
+        - Iteration order is top-to-bottom, left-to-right
+        - Empty cells outside the window are not considered
     """
     best_score = -1
     best_start_pos = None
@@ -89,28 +135,57 @@ def _scan_grid_with_window(
 
 
 def find_supercharged_opportunities(
-    grid,
-    modules,
-    ship,
-    tech,
-    tech_modules=None,
-):
+    grid: Grid,
+    modules: dict,
+    ship: str,
+    tech: str,
+    tech_modules: Optional[list] = None,
+) -> Optional[Tuple[int, int, int, int]]:
     """
-    Scans the entire grid with a sliding window (dynamically sized, including rotation
-    if non-square) to find the highest-scoring window containing available
-    supercharged slots.
+    Finds the highest-scoring window with available supercharged slots.
+
+    Dynamically sizes windows based on module count, scans with both original and
+    rotated dimensions (if non-square), and returns the position and size of the
+    best window. Falls back to non-supercharged windows if no supercharged
+    opportunities exist.
 
     Args:
         grid (Grid): The current grid layout.
-        modules (dict): The module data.
-        ship (str): The ship type.
-        tech (str): The technology type.
+        modules (dict): Module definitions indexed by ship and tech.
+        ship (str): Ship identifier (e.g., "corvette", "freighter").
+        tech (str): Technology identifier (e.g., "trails", "photon", "pulse").
+        tech_modules (Optional[list], optional): Pre-fetched list of module definitions.
+                                                If None, fetched from modules dict.
+                                                Defaults to None.
 
     Returns:
-        tuple or None: A tuple (opportunity_x, opportunity_y, best_width, best_height)
-                       representing the top-left corner and dimensions of the best window,
-                       or None if no suitable window is found or if all supercharged slots
-                       are occupied.
+        Optional[Tuple[int, int, int, int]]: A tuple (opportunity_x, opportunity_y, width, height)
+                                            representing:
+                                            - opportunity_x: X-coordinate of top-left corner
+                                            - opportunity_y: Y-coordinate of top-left corner
+                                            - width: Window width in cells
+                                            - height: Window height in cells
+                                            Returns None if:
+                                            - No modules found for tech
+                                            - All supercharged slots are occupied
+                                            - No suitable window found even as fallback
+
+    Window Sizing:
+        - Dynamically determined by determine_window_dimensions() based on module_count
+        - Non-square windows are scanned in both orientations (original + rotated)
+        - Rotated dimensions use (height, width) instead of (width, height)
+
+    Scoring Strategy:
+        1. Prefer windows with available supercharged slots (require_supercharge=True)
+        2. Compare original vs rotated dimensions and select best score
+        3. If no supercharged window found, retry without supercharge requirement
+        4. Return position and dimensions of overall best window
+
+    Notes:
+        - If rotated dimensions equal original (square window), rotation is skipped
+        - Logs selection rationale (which dimensions were best)
+        - Returns None if grid has no unoccupied supercharged slots AND no fallback window
+        - Clears target tech modules before scanning to evaluate placement potential
     """
     grid_copy = grid.copy()
     # Clear the target tech modules to evaluate potential placement areas
@@ -220,18 +295,59 @@ def find_supercharged_opportunities(
         return None
 
 
-def calculate_window_score(window_grid, tech, full_grid=None, window_start_x=0, window_start_y=0):
+def calculate_window_score(
+    window_grid: Grid,
+    tech: str,
+    full_grid: Optional[Grid] = None,
+    window_start_x: int = 0,
+    window_start_y: int = 0
+) -> float:
     """
-    Calculates a score for a given window based on supercharged and empty slots,
-    excluding inactive cells. Prioritizes supercharged slots away from the horizontal edges of the window.
-    For single-cell windows, also considers adjacency to existing modules in the full grid.
+    Calculates a quality score for a placement window.
+
+    Evaluates window desirability based on supercharged slot availability, empty
+    cells, and adjacency to existing modules. Prioritizes supercharged slots while
+    penalizing edge placements. For single-cell windows, adjacency bonus is applied.
 
     Args:
-        window_grid (Grid): The window being evaluated
-        tech (str): The technology type
-        full_grid (Grid): Optional full grid for adjacency scoring in single-module placement
-        window_start_x (int): Starting x coordinate of window in full grid
-        window_start_y (int): Starting y coordinate of window in full grid
+        window_grid (Grid): The window being evaluated.
+        tech (str): Technology identifier being optimized.
+        full_grid (Optional[Grid], optional): Complete grid for adjacency context.
+                                             Required for single-module windows.
+                                             Defaults to None.
+        window_start_x (int, optional): X-coordinate of window's top-left in full grid.
+                                       Defaults to 0.
+        window_start_y (int, optional): Y-coordinate of window's top-left in full grid.
+                                       Defaults to 0.
+
+    Returns:
+        float: A numeric score representing window quality. Higher = better.
+               Score components:
+               - Supercharged slots: multiplied by 3
+               - Edge penalty: -0.25 per horizontal edge supercharged slot
+               - Empty cells (no supercharge): multiplied by 1
+               - Adjacency (single cells): bonus per neighboring module
+
+    Scoring Logic:
+        1. Count active supercharged slots (empty or current tech)
+        2. Count empty cells (unoccupied, active)
+        3. Count edge penalties (supercharged on left/right edge of window)
+        4. If no supercharged slots:
+           - Single cells: prioritize adjacency
+           - Multi-cell: use empty count
+        5. If supercharged slots exist: return supercharged_count * 3
+
+    Adjacency Bonus (Single-Cell Windows):
+        - Applied when window_grid.width == 1 and window_grid.height == 1
+        - +3.0 points for each adjacent cell with a module in full_grid
+        - Only evaluated when full_grid is provided
+
+    Notes:
+        - Only counts active cells (inactive cells are completely ignored)
+        - Edge penalty applies to supercharged cells on window edges (not corner edges)
+        - Supercharged scoring dominates (ignores empty_count in that case)
+        - Returns 0 if window contains no active cells
+        - Used for both opportunity scanning and window selection
     """
     supercharged_count = 0
     empty_count = 0
@@ -280,25 +396,56 @@ def calculate_window_score(window_grid, tech, full_grid=None, window_start_x=0, 
         return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
 
 
-def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
+def create_localized_grid(
+    grid: Grid,
+    opportunity_x: int,
+    opportunity_y: int,
+    tech: str,
+    localized_width: int,
+    localized_height: int
+) -> Tuple[Grid, int, int]:
     """
-    Creates a localized grid around a given opportunity, ensuring it stays within
-    the bounds of the main grid and preserves modules of other tech types.
-    Uses the provided dimensions for the localized grid size.
+    Creates a localized grid for SA/permutation-based refinement.
+
+    Extracts a rectangular subgrid around a specified opportunity, clamping to grid
+    bounds if necessary. Preserves all module data including other tech types.
+    Used for windowed simulated annealing and permutation-based optimization.
 
     Args:
-        grid (Grid): The main grid.
-        opportunity_x (int): The x-coordinate of the opportunity (top-left corner).
-        opportunity_y (int): The y-coordinate of the opportunity (top-left corner).
-        tech (str): The technology type being optimized.
-        localized_width (int): The desired width of the localized window. # <<< New
-        localized_height (int): The desired height of the localized window. # <<< New
+        grid (Grid): The main grid to extract from.
+        opportunity_x (int): X-coordinate (column) of window's top-left corner.
+        opportunity_y (int): Y-coordinate (row) of window's top-left corner.
+        tech (str): Technology being optimized (for reference, not filtering).
+        localized_width (int): Desired width of extracted window in cells.
+        localized_height (int): Desired height of extracted window in cells.
 
     Returns:
-        tuple: A tuple containing:
-            - localized_grid (Grid): The localized grid.
-            - start_x (int): The starting x-coordinate of the localized grid in the main grid.
-            - start_y (int): The starting y-coordinate of the localized grid in the main grid.
+        Tuple[Grid, int, int]: A tuple containing:
+            - localized_grid (Grid): Extracted subgrid with all modules preserved
+            - start_x (int): Actual X-coordinate of extraction (may differ if clamped)
+            - start_y (int): Actual Y-coordinate of extraction (may differ if clamped)
+
+    Clamping Behavior:
+        - start_x/start_y clamped to [0, grid.width-1] and [0, grid.height-1]
+        - end coordinates clamped to grid bounds
+        - Resulting localized_grid may be smaller than requested if near grid edges
+
+    Data Preservation:
+        - All module properties copied for existing modules
+        - Other tech modules are preserved (not removed)
+        - Supercharged status preserved
+        - Active/inactive status preserved
+        - All cell attributes copied (bonus, adjacency, type, etc.)
+
+    Uses:
+        - SA/permutation refinement: works with all tech modules in window
+        - Window sizing: actual extracted dimensions returned for reference
+
+    Notes:
+        - Does NOT clear other tech modules (unlike create_localized_grid_ml)
+        - Does NOT mark other tech cells as inactive
+        - Actual grid dimensions may be smaller than requested if window extends beyond bounds
+        - start_x and start_y indicate where extraction started (for coordinate mapping)
     """
     # <<< Remove hardcoded dimensions >>>
     # localized_width = 4
@@ -348,33 +495,64 @@ def create_localized_grid(grid, opportunity_x, opportunity_y, tech, localized_wi
     return localized_grid, start_x, start_y
 
 
-# --- NEW ML-Specific Function ---
-def create_localized_grid_ml(grid, opportunity_x, opportunity_y, tech, localized_width, localized_height):
+def create_localized_grid_ml(
+    grid: Grid,
+    opportunity_x: int,
+    opportunity_y: int,
+    tech: str,
+    localized_width: int,
+    localized_height: int
+) -> Tuple[Grid, int, int, dict]:
     """
-    Creates a localized grid around a given opportunity for ML processing,
-    using the provided dimensions.
+    Creates a localized grid for ML-based refinement.
 
-    Modules of *other* tech types within the localized area are temporarily
-    removed, and their corresponding cells in the localized grid are marked
-    as inactive. The original state of these modified cells (from the main grid)
-    is stored for later restoration.
+    Extracts a rectangular subgrid around a specified opportunity, removing modules
+    of other tech types and marking their cells as inactive. This creates an isolated
+    environment for ML optimization while preserving original state for restoration.
 
     Args:
-        grid (Grid): The main grid.
-        opportunity_x (int): The x-coordinate of the opportunity (top-left corner).
-        opportunity_y (int): The y-coordinate of the opportunity (top-left corner).
-        tech (str): The technology type being optimized (modules of this tech are kept).
-        localized_width (int): The desired width of the localized window. # <<< New
-        localized_height (int): The desired height of the localized window. # <<< New
+        grid (Grid): The main grid to extract from.
+        opportunity_x (int): X-coordinate (column) of window's top-left corner.
+        opportunity_y (int): Y-coordinate (row) of window's top-left corner.
+        tech (str): Technology being optimized (modules of this tech are preserved).
+        localized_width (int): Desired width of extracted window in cells.
+        localized_height (int): Desired height of extracted window in cells.
 
     Returns:
-        tuple: A tuple containing:
-            - localized_grid (Grid): The localized grid prepared for ML.
-            - start_x (int): The starting x-coordinate of the localized grid in the main grid.
-            - start_y (int): The starting y-coordinate of the localized grid in the main grid.
-            - original_state_map (dict): A dictionary mapping main grid coordinates
-                                         (x, y) to their original cell data for cells
-                                         that were modified (other tech removed).
+        Tuple[Grid, int, int, dict]: A tuple containing:
+            - localized_grid (Grid): Extracted subgrid with other tech removed
+            - start_x (int): Actual X-coordinate of extraction (may differ if clamped)
+            - start_y (int): Actual Y-coordinate of extraction (may differ if clamped)
+            - original_state_map (dict): Mapping {(x, y): original_cell_data} for cells
+                                        that were modified (other tech modules removed)
+
+    Clamping Behavior:
+        - start_x/start_y clamped to [0, grid.width-1] and [0, grid.height-1]
+        - end coordinates clamped to grid bounds
+        - Resulting localized_grid may be smaller than requested if near grid edges
+
+    Cell Handling:
+        1. **Target Tech Modules**: Preserved as-is
+        2. **Other Tech Modules**: Removed, cell marked inactive, original state saved
+        3. **Inactive Cells**: Preserved as inactive (empty)
+        4. **Empty Active Cells**: Copied as-is (available for placement)
+        5. **Supercharged Status**: Always preserved
+
+    Original State Restoration:
+        - original_state_map contains deepcopy of main grid cells that were modified
+        - Used by refinement handlers to restore grid after ML processing
+        - Only includes cells with other tech modules (not inactive cells)
+
+    ML Isolation:
+        - Other tech modules are removed to give ML model pure search space
+        - Cells with other tech are marked inactive (unavailable for new modules)
+        - Allows ML to focus optimization on target tech placement
+
+    Notes:
+        - Differs from create_localized_grid by removing other tech modules
+        - The deepcopy in original_state_map ensures safe restoration
+        - Inactive cells are NOT added to original_state_map (not modified)
+        - Used exclusively by _handle_ml_opportunity() for refinement
     """
     # <<< Remove hardcoded dimensions >>>
     # localized_width = 4
