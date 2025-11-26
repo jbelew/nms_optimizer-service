@@ -63,6 +63,10 @@ def generate_solve_map(
             if not tech_modules:
                 print(f"Error: No modules found for {ship_type}/{tech} with solve_type {solve_type}")
                 return None, None
+            
+            # Filter to only checked modules, unless tech is pulse or photonix
+            if tech not in ("pulse", "photonix"):
+                tech_modules = [m for m in tech_modules if m.get("checked", True)]
 
             optimized_grid, optimized_score = simulated_annealing(
                 grid=grid,
@@ -78,6 +82,11 @@ def generate_solve_map(
         elif solver_choice == "refine_training":
             print(f"INFO -- Using refine_placement_for_training for {ship_type}/{tech}")
             tech_modules = get_tech_modules_for_training(ship_modules, ship_type, tech)
+            
+            # Filter to only checked modules, unless tech is pulse or photonix
+            if tech not in ("pulse", "photonix"):
+                tech_modules = [m for m in tech_modules if m.get("checked", True)]
+            
             optimized_grid, optimized_score = refine_placement_for_training(grid, tech_modules, tech)
         else:
             print(f"Error: Unknown solver_choice '{solver_choice}'. Use 'sa' or 'refine_training'.")
