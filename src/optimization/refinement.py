@@ -608,6 +608,27 @@ def simulated_annealing(
             def _wrapped_callback(pd):
                 # Create a copy to avoid modifying the original dict if it's reused
                 pd_copy = pd.copy()
+
+                # Handle grid updates if present
+                if "best_grid_json" in pd_copy and send_grid_updates:
+                    try:
+                        # Deserialize the grid from Rust
+                        localized_best_grid = Grid.from_json(pd_copy["best_grid_json"])
+
+                        # Reconstitute with full grid context
+                        reconstituted_grid = full_grid.copy()
+                        clear_all_modules_of_tech(reconstituted_grid, tech)
+                        apply_localized_grid_changes(reconstituted_grid, localized_best_grid, tech, start_x, start_y)
+
+                        # Convert to dict for transmission
+                        pd_copy["best_grid"] = reconstituted_grid.to_dict()
+                        del pd_copy["best_grid_json"]  # Remove the JSON version
+                    except Exception as e:
+                        logging.warning(f"Failed to reconstitute grid for progress update: {e}")
+                        # Remove the failed grid data
+                        if "best_grid_json" in pd_copy:
+                            del pd_copy["best_grid_json"]
+
                 # Only adjust progress_percent for 'in_progress' status
                 if pd_copy.get("status") == "in_progress" and "progress_percent" in pd_copy:
                     adjusted_progress_percent = current_progress_offset + (pd_copy["progress_percent"] / 100) * (
@@ -642,6 +663,7 @@ def simulated_annealing(
             run_idx,  # type: ignore[arg-type]
             num_sa_runs,  # type: ignore[arg-type]
             current_run_seed,  # Pass the seed to the Rust function  # type: ignore[arg-type]
+            send_grid_updates,  # type: ignore[arg-type]
         )
 
         if current_run_best_score > overall_best_score:

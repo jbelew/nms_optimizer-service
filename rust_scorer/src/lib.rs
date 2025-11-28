@@ -567,6 +567,7 @@ fn simulated_annealing(
     run_idx: i32,
     num_sa_runs: i32,
     seed: Option<u64>, // Added seed parameter
+    send_grid_updates: bool, // Added parameter for grid updates
 ) -> PyResult<(String, f64)> {
     let mut current_grid: Grid = serde_json::from_str(&grid_json).unwrap();
     let tech_modules_vec: Vec<Module> = tech_modules.iter().map(|m| (**m).clone()).collect();
@@ -649,6 +650,16 @@ fn simulated_annealing(
                                 progress_data.set_item("current_score", current_score).unwrap();
                                 progress_data.set_item("temperature", temperature).unwrap();
                                 progress_data.set_item("time", start_time.elapsed().as_secs_f64()).unwrap();
+
+                                // Include grid JSON if requested
+                                if send_grid_updates {
+                                    let best_grid_json = serde_json::to_string(&best_grid).unwrap();
+                                    progress_data.set_item("best_grid_json", best_grid_json).unwrap();
+                                }
+
+                                let progress_percent = (iteration_count as f64 / total_iterations_estimate) * 100.0;
+                                progress_data.set_item("progress_percent", progress_percent.min(100.0)).unwrap();
+
                                 // log::info!("SA: New best score for {}: {:.4} (Temp: {:.2}, Time: {:.2}s)",
                                 //     tech,
                                 //     best_score,
