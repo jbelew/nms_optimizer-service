@@ -72,13 +72,14 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
     if ship == "sentinel" and tech == "photonix":
         return 4, 3
 
-    # if ship == "corvette" and tech == "hyper":  # Override for existing generated data
-    # return 4, 4
-
     if ship == "corvette" and tech == "pulse" and module_count == 7:
         return 4, 2
 
-    if ship == "corvette" and (module_count == 8 or module_count == 7):
+    if ship == "corvette" and module_count in (7, 8):
+        return 3, 3
+
+    # Set 8 modules to 3x3 unless tech has specific sizing rules
+    if module_count == 8 and tech not in ("pulse", "photonix", "hyper", "pulse-spitter"):
         return 3, 3
 
     # Default window size if no other conditions are met
@@ -95,7 +96,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
         else:
             window_width, window_height = 4, 2
 
-    elif tech in ("bolt-caster"):
+    elif tech == "bolt-caster":
         window_width, window_height = 4, 3
 
     elif tech in ("pulse-spitter", "jetpack"):
@@ -104,7 +105,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
         else:
             window_width, window_height = 4, 2
 
-    elif tech in ("pulse"):
+    elif tech == "pulse":
         if module_count == 6:
             window_width, window_height = 3, 2
         elif module_count < 9:
@@ -124,9 +125,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
         window_width, window_height = 3, 2
     elif module_count < 7:
         window_width, window_height = 3, 2
-    elif module_count < 9:
-        window_width, window_height = 3, 3
-    elif module_count == 9:
+    elif module_count <= 9:
         window_width, window_height = 3, 3
     else:  # module_count >= 10
         window_width, window_height = 4, 3
