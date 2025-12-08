@@ -99,9 +99,9 @@ class TestDetermineWindowDimensions(unittest.TestCase):
             self.assertEqual((w, h), (4, 3))
 
     def test_pulse_spitter_jetpack_less_than_8(self):
-        """Pulse-spitter/jetpack <8 modules should use 3x3"""
+        """Pulse-spitter/jetpack <7 modules should use 3x3, 7+ modules should use 4x2"""
         w, h = determine_window_dimensions(7, "pulse-spitter", "any_ship")
-        self.assertEqual((w, h), (3, 3))
+        self.assertEqual((w, h), (4, 2))  # Changed from 3x3 based on SA validation
         w, h = determine_window_dimensions(5, "jetpack", "any_ship")
         self.assertEqual((w, h), (3, 3))
 
@@ -152,9 +152,9 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual((w, h), (3, 2))
 
     def test_generic_fallback_7_to_8_modules(self):
-        """Generic with 7-8 modules should use 3x3"""
+        """Generic with 7 modules should use 4x2, 8 modules should use 3x3"""
         w, h = determine_window_dimensions(7, "unknown_tech", "unknown_ship")
-        self.assertEqual((w, h), (3, 3))
+        self.assertEqual((w, h), (4, 2))  # Changed from 3x3 based on SA validation
         w, h = determine_window_dimensions(8, "unknown_tech", "unknown_ship")
         self.assertEqual((w, h), (3, 3))
 

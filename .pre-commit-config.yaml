@@ -1,24 +1,24 @@
 repos:
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v4.6.0
-  hooks:
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
-  - id: check-yaml
-- repo: https://github.com/psf/black
-  rev: 24.4.2
-  hooks:
-  - id: black
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.4.4
-  hooks:
-  - id: ruff
-    args: [--fix]
-- repo: local
-  hooks:
-  - id: unittest
-    name: Run unit tests
-    entry: bash -c "source venv/bin/activate && python -m unittest discover -s src/tests"
-    language: system
-    pass_filenames: false
-    stages: [commit]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        args: [--fix]
+  - repo: local
+    hooks:
+      - id: unittest
+        name: Run unit tests
+        entry: bash -c "source venv/bin/activate && python -m unittest discover -s src/tests"
+        language: system
+        pass_filenames: false
+        stages: [commit]
