@@ -34,6 +34,11 @@ from .data_loader import get_all_module_data, get_module_data
 from .grid_utils import Grid
 from .modules_utils import get_tech_tree_json
 from .optimization import optimize_placement
+from .analytics import send_analytics_event, AnalyticsEvent
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # app.py
 # Configure logging as the first step after monkey-patching
@@ -393,6 +398,56 @@ def get_popular_analytics_data():
     except Exception as e:
         app.logger.error(f"Error fetching Google Analytics data: {e}")
         return jsonify({"error": f"Failed to fetch analytics data: {e}"}), 500
+
+
+# --- Analytics Event Tracking Endpoint ---
+@app.route("/api/events", methods=["POST"])
+def track_event():
+	"""Receive and relay analytics events to GA4.
+
+	Expected JSON body:
+	{
+		"clientId": "string",
+		"userId": "string (optional)",
+		"eventName": "string",
+		"params": { "key": "value", ... }
+	}
+
+	Returns:
+		200 OK on success
+		400 Bad Request if required fields missing
+		500 Server Error on GA4 send failure
+	"""
+	try:
+		data = request.get_json()
+		if not data:
+			return jsonify({"error": "No JSON body provided"}), 400
+
+		client_id = data.get("clientId")
+		event_name = data.get("eventName")
+		params = data.get("params", {})
+		user_id = data.get("userId")
+
+		# Validate required fields
+		if not client_id or not event_name:
+			return jsonify({"error": "Missing required fields: clientId, eventName"}), 400
+
+		# Send event to GA4
+		success = send_analytics_event(
+			event_name=event_name,
+			client_id=client_id,
+			params=params,
+			user_id=user_id,
+		)
+
+		if success:
+			return jsonify({"status": "ok"}), 200
+		else:
+			return jsonify({"error": "Failed to send event to GA4"}), 500
+
+	except Exception as e:
+		app.logger.error(f"Error in analytics endpoint: {e}")
+		return jsonify({"error": str(e)}), 500
 
 
 # Start the message sending thread

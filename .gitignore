@@ -17,3 +17,4 @@ rust_scorer/target/
 
 # Ignore Node.js modules
 /node_modules/
+.env
