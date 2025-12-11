@@ -9,7 +9,7 @@ Reference: https://developers.google.com/analytics/devguides/collection/protocol
 """
 
 import os
-import json
+import re
 import logging
 import uuid
 from typing import Any, Dict, Optional
@@ -19,9 +19,12 @@ import requests
 logger = logging.getLogger(__name__)
 
 # GA4 Configuration
-GA4_MEASUREMENT_ID = os.environ.get("GA4_MEASUREMENT_ID", "G-P5VBZQ69Q9")
-GA4_API_SECRET = os.environ.get("GA4_API_SECRET", "")
+GA4_MEASUREMENT_ID = os.environ.get("GA4_MEASUREMENT_ID")
+GA4_API_SECRET = os.environ.get("GA4_API_SECRET")
 GA4_MEASUREMENT_PROTOCOL_URL = "https://www.google-analytics.com/mp/collect"
+
+# Valid GA4 event name pattern (alphanumeric and underscore)
+VALID_EVENT_NAME_PATTERN = r"^[a-zA-Z0-9_]+$"
 
 
 @dataclass
@@ -35,10 +38,10 @@ class AnalyticsEvent:
     timestamp_micros: Optional[int] = None  # Event timestamp in microseconds
 
     def to_measurement_protocol_dict(self) -> Dict[str, Any]:
-        """Convert event to Measurement Protocol format."""
-        if not self.client_id:
-            self.client_id = str(uuid.uuid4())
+        """Convert event to Measurement Protocol format.
 
+        Note: Does not mutate self. Generates temp client_id if not set.
+        """
         event_dict = {
             "name": self.name,
             "params": self.params,
@@ -53,19 +56,19 @@ class AnalyticsEvent:
 class GA4Client:
     """Client for sending events to GA4 via the Measurement Protocol."""
 
-    def __init__(self, measurement_id: str = GA4_MEASUREMENT_ID, api_secret: str = GA4_API_SECRET):
+    def __init__(self, measurement_id: Optional[str] = None, api_secret: Optional[str] = None):
         """Initialize GA4 client.
 
         Args:
                 measurement_id: GA4 Measurement ID (usually starts with G-)
                 api_secret: GA4 API Secret for Measurement Protocol
         """
-        self.measurement_id = measurement_id
-        self.api_secret = api_secret
-        self.enabled = bool(api_secret)  # Only send if API secret is configured
+        self.measurement_id = measurement_id or GA4_MEASUREMENT_ID
+        self.api_secret = api_secret or GA4_API_SECRET
+        self.enabled = bool(self.measurement_id and self.api_secret)
 
         if not self.enabled:
-            logger.warning("GA4_API_SECRET not configured. Analytics events will not be sent.")
+            logger.debug("GA4 not fully configured (missing measurement_id or api_secret). Analytics disabled.")
 
     def send_event(self, event: AnalyticsEvent) -> bool:
         """Send a single event to GA4.
@@ -79,9 +82,13 @@ class GA4Client:
         if not self.enabled:
             return False
 
+        if not self._validate_event(event):
+            return False
+
         try:
+            client_id = event.client_id or str(uuid.uuid4())
             payload = {
-                "client_id": event.client_id or str(uuid.uuid4()),
+                "client_id": client_id,
                 "events": [event.to_measurement_protocol_dict()],
             }
 
@@ -93,7 +100,8 @@ class GA4Client:
                 "api_secret": self.api_secret,
             }
 
-            logger.debug(f"Sending GA4 event: {event.name} with payload: {json.dumps(payload, indent=2)}")
+            # Log only non-sensitive event info
+            logger.debug(f"Sending GA4 event: {event.name} (event_count=1)")
 
             response = requests.post(
                 GA4_MEASUREMENT_PROTOCOL_URL,
@@ -103,21 +111,25 @@ class GA4Client:
             )
 
             logger.debug(f"GA4 response status: {response.status_code}")
-            if response.text:
-                logger.debug(f"GA4 response body: {response.text}")
 
             if response.status_code == 204:
-                logger.info(f"✓ GA4 event sent successfully: {event.name}")
+                logger.info(f"GA4 event sent: {event.name}")
                 return True
             else:
-                logger.warning(f"GA4 event failed (status {response.status_code}): {response.text}")
+                logger.warning(f"GA4 event failed (status {response.status_code})")
                 return False
 
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Error sending GA4 event: {e}")
+        except requests.exceptions.Timeout:
+            logger.error(f"GA4 request timeout sending event: {event.name}")
             return False
-        except Exception as e:
-            logger.error(f"Unexpected error in GA4 event tracking: {e}")
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"GA4 connection error: {e}")
+            return False
+        except requests.exceptions.RequestException as e:
+            logger.error(f"GA4 request error: {e}")
+            return False
+        except ValueError as e:
+            logger.error(f"Invalid event data: {e}")
             return False
 
     def send_events(self, events: list[AnalyticsEvent]) -> bool:
@@ -132,22 +144,18 @@ class GA4Client:
         if not self.enabled or not events:
             return False
 
+        # Validate all events
+        for event in events:
+            if not self._validate_event(event):
+                return False
+
         try:
             # Use first event's client_id for all if not specified
             default_client_id = events[0].client_id or str(uuid.uuid4())
 
             payload = {
                 "client_id": default_client_id,
-                "events": [
-                    {
-                        **event.to_measurement_protocol_dict(),
-                        # Ensure all events use same client_id for batching
-                        "params": {
-                            **event.params,
-                        },
-                    }
-                    for event in events
-                ],
+                "events": [event.to_measurement_protocol_dict() for event in events],
             }
 
             params = {
@@ -155,7 +163,8 @@ class GA4Client:
                 "api_secret": self.api_secret,
             }
 
-            logger.debug(f"Sending GA4 batch: {len(events)} events with payload: {json.dumps(payload, indent=2)}")
+            # Log only non-sensitive info
+            logger.debug(f"Sending GA4 batch: {len(events)} events")
 
             response = requests.post(
                 GA4_MEASUREMENT_PROTOCOL_URL,
@@ -167,18 +176,47 @@ class GA4Client:
             logger.debug(f"GA4 batch response status: {response.status_code}")
 
             if response.status_code == 204:
-                logger.info(f"✓ GA4 batch sent successfully: {len(events)} events")
+                logger.info(f"GA4 batch sent: {len(events)} events")
                 return True
             else:
-                logger.warning(f"GA4 batch failed (status {response.status_code}): {response.text}")
+                logger.warning(f"GA4 batch failed (status {response.status_code})")
                 return False
 
+        except requests.exceptions.Timeout:
+            logger.error(f"GA4 batch request timeout: {len(events)} events")
+            return False
+        except requests.exceptions.ConnectionError as e:
+            logger.error(f"GA4 connection error: {e}")
+            return False
         except requests.exceptions.RequestException as e:
-            logger.error(f"Error sending GA4 batch: {e}")
+            logger.error(f"GA4 batch request error: {e}")
             return False
-        except Exception as e:
-            logger.error(f"Unexpected error in GA4 batch tracking: {e}")
+        except ValueError as e:
+            logger.error(f"Invalid event data in batch: {e}")
             return False
+
+    def _validate_event(self, event: AnalyticsEvent) -> bool:
+        """Validate event before sending.
+
+        Args:
+                event: Event to validate
+
+        Returns:
+                True if valid, False otherwise
+        """
+        if not event.name or not isinstance(event.name, str):
+            logger.error("Event name is required and must be a string")
+            return False
+
+        if not re.match(VALID_EVENT_NAME_PATTERN, event.name):
+            logger.error(f"Invalid event name format: {event.name}")
+            return False
+
+        if not isinstance(event.params, dict):
+            logger.error("Event params must be a dictionary")
+            return False
+
+        return True
 
 
 # Singleton instance
