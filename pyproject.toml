@@ -19,7 +19,7 @@ line-length = 120
 
 [project]
 name = "nms-optimizer-service"
-version = "5.6.0"
+version = "5.6.1"
 requires-python = ">=3.8"
 
 [tool.setuptools]
@@ -34,7 +34,7 @@ DEP003 = ["flask", "flask_compress", "flask_cors", "flask_socketio", "gevent", "
 
 [tool.commitizen]
 name = "cz_conventional_commits"
-version = "5.6.0"
+version = "5.6.1"
 version_files = [
     "pyproject.toml:version"
 ]
