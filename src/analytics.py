@@ -18,6 +18,10 @@ import requests
 
 logger = logging.getLogger(__name__)
 
+# Suppress verbose logging from requests and urllib3 to avoid leaking secrets
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+
 # GA4 Configuration
 GA4_MEASUREMENT_ID = os.environ.get("GA4_MEASUREMENT_ID")
 GA4_API_SECRET = os.environ.get("GA4_API_SECRET")
@@ -95,18 +99,16 @@ class GA4Client:
             if event.user_id:
                 payload["user_id"] = event.user_id
 
-            params = {
-                "measurement_id": self.measurement_id,
-                "api_secret": self.api_secret,
-            }
-
             # Log only non-sensitive event info
             logger.debug(f"Sending GA4 event: {event.name} (event_count=1)")
 
+            # Use query params as required by GA4 Measurement Protocol
+            # (secrets in URLs are a limitation of this API)
+            url = f"{GA4_MEASUREMENT_PROTOCOL_URL}?measurement_id={self.measurement_id}&api_secret={self.api_secret}"
+
             response = requests.post(
-                GA4_MEASUREMENT_PROTOCOL_URL,
+                url,
                 json=payload,
-                params=params,
                 timeout=5,
             )
 
@@ -158,18 +160,15 @@ class GA4Client:
                 "events": [event.to_measurement_protocol_dict() for event in events],
             }
 
-            params = {
-                "measurement_id": self.measurement_id,
-                "api_secret": self.api_secret,
-            }
-
             # Log only non-sensitive info
             logger.debug(f"Sending GA4 batch: {len(events)} events")
 
+            # Use query params as required by GA4 Measurement Protocol
+            url = f"{GA4_MEASUREMENT_PROTOCOL_URL}?measurement_id={self.measurement_id}&api_secret={self.api_secret}"
+
             response = requests.post(
-                GA4_MEASUREMENT_PROTOCOL_URL,
+                url,
                 json=payload,
-                params=params,
                 timeout=5,
             )
 
