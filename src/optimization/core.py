@@ -561,7 +561,7 @@ def optimize_placement(
                         )
                         sa_method_for_pattern_gen = "Full SA"
 
-                if solved_grid_sa is None:
+                if solved_grid_sa is None or solved_bonus_sa < 0:
                     logging.error(
                         f"Initial SA for pattern generation failed for {ship}/{tech}. Returning 'Partial SA Failed'."
                     )

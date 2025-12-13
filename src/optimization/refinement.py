@@ -339,11 +339,11 @@ def refine_placement(
         - Requires sufficient empty cells for all modules or returns None
     """
     optimal_grid = None
-    highest_bonus = 0.0
+    highest_bonus = -float("inf")
     if tech_modules is None:
         tech_modules = get_tech_modules(modules, ship, tech)
 
-    if tech_modules is None:
+    if tech_modules is None or len(tech_modules) == 0:
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}'.")
         return None, 0.0
 
