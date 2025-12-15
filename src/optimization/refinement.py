@@ -377,7 +377,19 @@ def refine_placement(
         # Increment the iteration counter
         iteration_count += 1
 
-        # Clear all modules of the selected technology - MOVED BEFORE PLACEMENT
+        # Validate that the permutation doesn't violate sc_eligible constraint
+        valid_placement = True
+        for index, (x, y) in enumerate(placement):
+            module = shuffled_tech_modules[index]
+            cell = grid.get_cell(x, y)
+            if cell["supercharged"] and not module.get("sc_eligible", False):
+                valid_placement = False
+                break
+        
+        if not valid_placement:
+            continue
+
+        # Clear all modules of the selected technology before placing this permutation
         clear_all_modules_of_tech(grid, tech)
 
         # Place all modules in the current permutation

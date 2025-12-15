@@ -191,7 +191,18 @@ def find_supercharged_opportunities(
     # Clear the target tech modules to evaluate potential placement areas
     clear_all_modules_of_tech(grid_copy, tech)
 
-    # Check if there are any unoccupied supercharged slots (no change needed)
+    # Determine Dynamic Window Size (needed first to check sc_eligible modules)
+    if tech_modules is None:
+        tech_modules = get_tech_modules(modules, ship, tech)
+    if tech_modules is None:
+        logging.error(f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
+        return None
+    module_count = len(tech_modules)
+    
+    # Check if all modules are non-sc_eligible
+    all_non_sc_eligible = all(not m.get("sc_eligible", False) for m in tech_modules)
+    
+    # Check if there are any unoccupied supercharged slots
     unoccupied_supercharged_slots = False
     for y in range(grid_copy.height):
         for x in range(grid_copy.width):
@@ -201,17 +212,15 @@ def find_supercharged_opportunities(
                 break
         if unoccupied_supercharged_slots:
             break
+    
+    # If all modules are non-sc_eligible, we can't use supercharged windows
+    if all_non_sc_eligible and unoccupied_supercharged_slots:
+        logging.info("All modules are non-sc_eligible. Skipping supercharged window search, looking for regular active windows.")
+        unoccupied_supercharged_slots = False
+    
     if not unoccupied_supercharged_slots:
-        logging.info("No unoccupied supercharged slots found.")
+        logging.info("No suitable supercharged windows found or all modules are non-sc_eligible.")
         return None
-
-    # Determine Dynamic Window Size (no change needed)
-    if tech_modules is None:
-        tech_modules = get_tech_modules(modules, ship, tech)
-    if tech_modules is None:
-        logging.error(f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
-        return None
-    module_count = len(tech_modules)
     window_width, window_height = determine_window_dimensions(module_count, tech, ship)
     logging.info(f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
 

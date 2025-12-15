@@ -228,6 +228,10 @@ def optimize_placement(
                 for x in range(grid_for_place.width):
                     cell = grid_for_place.get_cell(x, y)
                     if cell["active"] and cell["module"] is None:
+                        # Skip supercharged slots for non-sc_eligible modules
+                        if cell["supercharged"] and not module.get("sc_eligible", False):
+                            continue
+                        
                         # Test placement at this position
                         test_grid = grid_for_place.copy()
                         place_module(
@@ -286,6 +290,10 @@ def optimize_placement(
                     for x in range(grid_for_place.width):
                         cell = grid_for_place.get_cell(x, y)
                         if cell["active"] and cell["module"] is None:
+                            # Skip supercharged slots for non-sc_eligible modules
+                            if cell["supercharged"] and not module.get("sc_eligible", False):
+                                continue
+                            
                             # Test module placement at this position
                             test_grid = grid_for_place.copy()
                             place_module(

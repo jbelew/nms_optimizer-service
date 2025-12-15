@@ -190,31 +190,102 @@ def place_all_modules_in_empty_slots(
         logging.error(f"No modules found for ship: '{ship}' -- tech: '{tech}'")
         return grid
 
-    module_index = 0  # Keep track of the current module to place
-
-    for x in range(grid.width):  # Iterate through columns first
-        for y in range(grid.height):  # Then iterate through rows
-            if module_index >= len(tech_modules):
-                return grid  # All modules placed, exit early
-
-            if grid.get_cell(x, y)["module"] is None and grid.get_cell(x, y)["active"]:
-                module = tech_modules[module_index]
-                place_module(
-                    grid,
-                    x,
-                    y,
-                    module["id"],
-                    module["label"],
-                    tech,
-                    module["type"],
-                    module["bonus"],
-                    module["adjacency"],
-                    module["sc_eligible"],
-                    module["image"],
-                )
-                module_index += 1  # Move to the next module
-
-    if module_index < len(tech_modules) and len(tech_modules) > 0:
+    # Two-pass approach to respect sc_eligible constraint
+    # Pass 1: Place non-sc_eligible modules in non-supercharged slots only
+    # Pass 2: Place sc_eligible modules in remaining slots (preferring supercharged)
+    
+    placed_modules = set()
+    
+    # Pass 1: Place non-sc_eligible modules in non-supercharged slots
+    for module in tech_modules:
+        if module.get("sc_eligible", False):
+            continue  # Skip eligible modules in pass 1
+        
+        placed = False
+        for x in range(grid.width):
+            for y in range(grid.height):
+                cell = grid.get_cell(x, y)
+                if cell["module"] is None and cell["active"] and not cell["supercharged"]:
+                    place_module(
+                        grid,
+                        x,
+                        y,
+                        module["id"],
+                        module["label"],
+                        tech,
+                        module["type"],
+                        module["bonus"],
+                        module["adjacency"],
+                        module["sc_eligible"],
+                        module["image"],
+                    )
+                    placed_modules.add(module["id"])
+                    placed = True
+                    break
+            if placed:
+                break
+        
+        # If non-sc_eligible module couldn't be placed in non-supercharged slot,
+        # fall back to any available slot (including supercharged) as last resort
+        if not placed:
+            for x in range(grid.width):
+                for y in range(grid.height):
+                    cell = grid.get_cell(x, y)
+                    if cell["module"] is None and cell["active"]:
+                        place_module(
+                            grid,
+                            x,
+                            y,
+                            module["id"],
+                            module["label"],
+                            tech,
+                            module["type"],
+                            module["bonus"],
+                            module["adjacency"],
+                            module["sc_eligible"],
+                            module["image"],
+                        )
+                        placed_modules.add(module["id"])
+                        placed = True
+                        logging.warning(
+                            f"Non-sc_eligible module {module['id']} placed in supercharged slot "
+                            f"- no non-supercharged slots available (fallback behavior)"
+                        )
+                        break
+                if placed:
+                    break
+    
+    # Pass 2: Place sc_eligible modules in remaining slots (can use supercharged)
+    for module in tech_modules:
+        if module["id"] in placed_modules:
+            continue  # Already placed
+        
+        # sc_eligible modules can use any active slot
+        placed = False
+        for x in range(grid.width):
+            for y in range(grid.height):
+                cell = grid.get_cell(x, y)
+                if cell["module"] is None and cell["active"]:
+                    place_module(
+                        grid,
+                        x,
+                        y,
+                        module["id"],
+                        module["label"],
+                        tech,
+                        module["type"],
+                        module["bonus"],
+                        module["adjacency"],
+                        module["sc_eligible"],
+                        module["image"],
+                    )
+                    placed_modules.add(module["id"])
+                    placed = True
+                    break
+            if placed:
+                break
+    
+    if len(placed_modules) < len(tech_modules):
         logging.warning(f"Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'")
 
     return grid
