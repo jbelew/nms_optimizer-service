@@ -385,7 +385,7 @@ def refine_placement(
             if cell["supercharged"] and not module.get("sc_eligible", False):
                 valid_placement = False
                 break
-        
+
         if not valid_placement:
             continue
 

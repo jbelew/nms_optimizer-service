@@ -193,14 +193,14 @@ def place_all_modules_in_empty_slots(
     # Two-pass approach to respect sc_eligible constraint
     # Pass 1: Place non-sc_eligible modules in non-supercharged slots only
     # Pass 2: Place sc_eligible modules in remaining slots (preferring supercharged)
-    
+
     placed_modules = set()
-    
+
     # Pass 1: Place non-sc_eligible modules in non-supercharged slots
     for module in tech_modules:
         if module.get("sc_eligible", False):
             continue  # Skip eligible modules in pass 1
-        
+
         placed = False
         for x in range(grid.width):
             for y in range(grid.height):
@@ -224,7 +224,7 @@ def place_all_modules_in_empty_slots(
                     break
             if placed:
                 break
-        
+
         # If non-sc_eligible module couldn't be placed in non-supercharged slot,
         # fall back to any available slot (including supercharged) as last resort
         if not placed:
@@ -254,12 +254,12 @@ def place_all_modules_in_empty_slots(
                         break
                 if placed:
                     break
-    
+
     # Pass 2: Place sc_eligible modules in remaining slots (can use supercharged)
     for module in tech_modules:
         if module["id"] in placed_modules:
             continue  # Already placed
-        
+
         # sc_eligible modules can use any active slot
         placed = False
         for x in range(grid.width):
@@ -284,7 +284,7 @@ def place_all_modules_in_empty_slots(
                     break
             if placed:
                 break
-    
+
     if len(placed_modules) < len(tech_modules):
         logging.warning(f"Not enough space to place all modules for ship: '{ship}' -- tech: '{tech}'")
 

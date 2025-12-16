@@ -198,10 +198,11 @@ def find_supercharged_opportunities(
         logging.error(f"No modules found for ship '{ship}' and tech '{tech}' in find_supercharged_opportunities.")
         return None
     module_count = len(tech_modules)
-    
+
     # Check if all modules are non-sc_eligible
-    all_non_sc_eligible = all(not m.get("sc_eligible", False) for m in tech_modules)
-    
+    # Default to True (eligible) if sc_eligible is not specified
+    all_non_sc_eligible = all(not m.get("sc_eligible", True) for m in tech_modules)
+
     # Check if there are any unoccupied supercharged slots
     unoccupied_supercharged_slots = False
     for y in range(grid_copy.height):
@@ -212,12 +213,14 @@ def find_supercharged_opportunities(
                 break
         if unoccupied_supercharged_slots:
             break
-    
+
     # If all modules are non-sc_eligible, we can't use supercharged windows
     if all_non_sc_eligible and unoccupied_supercharged_slots:
-        logging.info("All modules are non-sc_eligible. Skipping supercharged window search, looking for regular active windows.")
+        logging.info(
+            "All modules are non-sc_eligible. Skipping supercharged window search, looking for regular active windows."
+        )
         unoccupied_supercharged_slots = False
-    
+
     if not unoccupied_supercharged_slots:
         logging.info("No suitable supercharged windows found or all modules are non-sc_eligible.")
         return None
