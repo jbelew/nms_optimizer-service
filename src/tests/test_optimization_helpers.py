@@ -135,14 +135,14 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual((w, h), (2, 1))
 
     def test_generic_fallback_3_modules(self):
-        """Generic with 3 modules should use 3x1"""
+        """Generic with 3 modules should use 2x2"""
         w, h = determine_window_dimensions(3, "unknown_tech", "unknown_ship")
-        self.assertEqual((w, h), (3, 1))
+        self.assertEqual((w, h), (2, 2))
 
     def test_generic_fallback_4_modules(self):
-        """Generic with 4 modules should use 3x2"""
+        """Generic with 4 modules should use 2x2"""
         w, h = determine_window_dimensions(4, "unknown_tech", "unknown_ship")
-        self.assertEqual((w, h), (3, 2))
+        self.assertEqual((w, h), (2, 2))
 
     def test_generic_fallback_5_to_6_modules(self):
         """Generic with 5-6 modules should use 3x2"""

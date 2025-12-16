@@ -39,7 +39,7 @@ class TestScEligibleAdversarial(unittest.TestCase):
         # Should find a window
         self.assertIsNotNone(pos)
         x, y = pos
-        
+
         # Verify the found window contains NO supercharged cells
         for dy in range(2):
             for dx in range(2):
@@ -194,9 +194,7 @@ class TestScEligibleAdversarial(unittest.TestCase):
         # The require_non_supercharge check comes after require_supercharge in the code
         # so it should take precedence
         score, pos = _scan_grid_with_window(
-            grid, 2, 1, 2, "tech",
-            require_supercharge=True,  # Want SC
-            require_non_supercharge=True  # Want no SC
+            grid, 2, 1, 2, "tech", require_supercharge=True, require_non_supercharge=True  # Want SC  # Want no SC
         )
 
         # Should return None (no window can satisfy both)
@@ -211,7 +209,7 @@ class TestScEligibleAdversarial(unittest.TestCase):
             for x in range(4):
                 grid.cells[y][x]["active"] = True
                 # Top-right corner is supercharged
-                grid.cells[y][x]["supercharged"] = (x >= 2 and y <= 1)
+                grid.cells[y][x]["supercharged"] = x >= 2 and y <= 1
 
         with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             # All non-eligible
@@ -231,7 +229,7 @@ class TestScEligibleAdversarial(unittest.TestCase):
                     cell = grid.get_cell(x + dx, y + dy)
                     self.assertFalse(
                         cell["supercharged"],
-                        f"Window should not include SC cells",
+                        "Window should not include SC cells",
                     )
 
     def test_explicit_false_vs_missing_sc_eligible(self):
@@ -304,10 +302,7 @@ class TestScEligibleWindowSizeWithConstraint(unittest.TestCase):
 
         with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             # All non-eligible modules
-            mock_modules.return_value = [
-                {"id": f"M{i}", "sc_eligible": False}
-                for i in range(4)
-            ]
+            mock_modules.return_value = [{"id": f"M{i}", "sc_eligible": False} for i in range(4)]
 
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
 
@@ -339,15 +334,11 @@ class TestScEligibleWindowSizeWithConstraint(unittest.TestCase):
         # Both should be able to fit in the left side (x < 4)
 
         score_orig, pos_orig = _scan_grid_with_window(
-            grid, 3, 2, 6, "tech",
-            require_supercharge=False,
-            require_non_supercharge=True
+            grid, 3, 2, 6, "tech", require_supercharge=False, require_non_supercharge=True
         )
 
         score_rot, pos_rot = _scan_grid_with_window(
-            grid, 2, 3, 6, "tech",
-            require_supercharge=False,
-            require_non_supercharge=True
+            grid, 2, 3, 6, "tech", require_supercharge=False, require_non_supercharge=True
         )
 
         # Both should find valid windows
@@ -395,22 +386,27 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
                     {
                         "key": "test_tech",
                         "modules": [
-                            {"id": "M1", "label": "Test", "type": "bonus", "bonus": 1.0,
-                             "adjacency": "no_adjacency", "sc_eligible": False, "image": None}
-                        ]
+                            {
+                                "id": "M1",
+                                "label": "Test",
+                                "type": "bonus",
+                                "bonus": 1.0,
+                                "adjacency": "no_adjacency",
+                                "sc_eligible": False,
+                                "image": None,
+                            }
+                        ],
                     }
                 ]
             }
         }
 
         # Run optimization
-        result_grid, percentage, bonus, method = optimize_placement(
-            grid, "corvette", modules, "test_tech", forced=True
-        )
+        result_grid, percentage, bonus, method = optimize_placement(grid, "corvette", modules, "test_tech", forced=True)
 
         # Module should be placed despite supercharged constraint
         self.assertIsNotNone(result_grid)
-        
+
         # Verify module was actually placed
         module_found = False
         for y in range(result_grid.height):
@@ -420,9 +416,9 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
                     # It should be in a supercharged slot
                     self.assertTrue(
                         result_grid.get_cell(x, y)["supercharged"],
-                        "Non-eligible module should be placed in SC slot as fallback"
+                        "Non-eligible module should be placed in SC slot as fallback",
                     )
-        
+
         self.assertTrue(module_found, "Module should have been placed")
 
     def test_non_eligible_module_prefers_non_sc_then_falls_back(self):
@@ -448,18 +444,23 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
                     {
                         "key": "test_tech",
                         "modules": [
-                            {"id": "M1", "label": "Test", "type": "bonus", "bonus": 1.0,
-                             "adjacency": "no_adjacency", "sc_eligible": False, "image": None}
-                        ]
+                            {
+                                "id": "M1",
+                                "label": "Test",
+                                "type": "bonus",
+                                "bonus": 1.0,
+                                "adjacency": "no_adjacency",
+                                "sc_eligible": False,
+                                "image": None,
+                            }
+                        ],
                     }
                 ]
             }
         }
 
         # Run optimization
-        result_grid, _, _, _ = optimize_placement(
-            grid, "test_ship", modules, "test_tech", forced=True
-        )
+        result_grid, _, _, _ = optimize_placement(grid, "test_ship", modules, "test_tech", forced=True)
 
         # Module should be placed in non-supercharged slot (preference)
         module_found = False
@@ -470,7 +471,7 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
                     module_found = True
                     if result_grid.get_cell(x, y)["supercharged"]:
                         module_in_sc = True
-        
+
         self.assertTrue(module_found, "Module should be placed")
         # With available non-SC slots, it should not use SC slots
         self.assertFalse(module_in_sc, "Module should prefer non-SC slots when available")
@@ -497,19 +498,24 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
                     {
                         "key": "test_tech",
                         "modules": [
-                            {"id": f"M{i}", "label": f"Test{i}", "type": "bonus", "bonus": 1.0,
-                             "adjacency": "no_adjacency", "sc_eligible": False, "image": None}
+                            {
+                                "id": f"M{i}",
+                                "label": f"Test{i}",
+                                "type": "bonus",
+                                "bonus": 1.0,
+                                "adjacency": "no_adjacency",
+                                "sc_eligible": False,
+                                "image": None,
+                            }
                             for i in range(3)
-                        ]
+                        ],
                     }
                 ]
             }
         }
 
         # Run optimization
-        result_grid, _, _, _ = optimize_placement(
-            grid, "test_ship", modules, "test_tech", forced=True
-        )
+        result_grid, _, _, _ = optimize_placement(grid, "test_ship", modules, "test_tech", forced=True)
 
         # All three modules should be placed
         placed_count = 0
@@ -521,7 +527,7 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
                     placed_count += 1
                     if cell["supercharged"]:
                         placed_in_sc += 1
-        
+
         self.assertEqual(placed_count, 3, "All 3 modules should be placed")
         # At least 2 should be in SC slots (since only 1 non-SC slot available)
         self.assertGreaterEqual(placed_in_sc, 2, "At least 2 modules should fallback to SC slots")

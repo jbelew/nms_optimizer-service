@@ -120,7 +120,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
     elif module_count < 3:
         window_width, window_height = 2, 1
     elif module_count < 5:
-        window_width, window_height = 2, 3
+        window_width, window_height = 2, 2
     elif module_count < 7:
         window_width, window_height = 3, 2
     elif module_count == 7:
