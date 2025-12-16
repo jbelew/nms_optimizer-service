@@ -338,8 +338,12 @@ def refine_placement(
         - The grid passed in will be modified during evaluation but only the best is returned
         - Requires sufficient empty cells for all modules or returns None
     """
-    optimal_grid = None
-    highest_bonus = -float("inf")
+    optimal_grid_valid = None
+    highest_bonus_valid = -float("inf")
+
+    optimal_grid_fallback = None
+    highest_bonus_fallback = -float("inf")
+
     if tech_modules is None:
         tech_modules = get_tech_modules(modules, ship, tech)
 
@@ -377,17 +381,16 @@ def refine_placement(
         # Increment the iteration counter
         iteration_count += 1
 
-        # Validate that the permutation doesn't violate sc_eligible constraint
-        valid_placement = True
+        # Check if the placement is strictly valid (honors sc_eligible)
+        is_strictly_valid = True
         for index, (x, y) in enumerate(placement):
             module = shuffled_tech_modules[index]
             cell = grid.get_cell(x, y)
             if cell["supercharged"] and not module.get("sc_eligible", False):
-                valid_placement = False
+                is_strictly_valid = False
                 break
 
-        if not valid_placement:
-            continue
+        # We process ALL placements now, tracking valid and fallback separately
 
         # Clear all modules of the selected technology before placing this permutation
         clear_all_modules_of_tech(grid, tech)
@@ -409,25 +412,32 @@ def refine_placement(
                 module["image"],
             )
 
-        # Calculate the score for the current arrangement - MOVED OUTSIDE THE INNER LOOP
+        # Calculate the score for the current arrangement
         grid_bonus = calculate_grid_score(grid, tech)
 
-        # Update the best grid if a better score is found - MOVED OUTSIDE THE INNER LOOP
-        if grid_bonus > highest_bonus:
-            highest_bonus = grid_bonus
-            optimal_grid = deepcopy(grid)
-            # print(highest_bonus)
-            # print_grid(optimal_grid)
+        # Update best valid grid if this placement is valid
+        if is_strictly_valid:
+            if grid_bonus > highest_bonus_valid:
+                highest_bonus_valid = grid_bonus
+                optimal_grid_valid = deepcopy(grid)
+
+        # Always update fallback (best overall) - used if no valid placement exists
+        if grid_bonus > highest_bonus_fallback:
+            highest_bonus_fallback = grid_bonus
+            optimal_grid_fallback = deepcopy(grid)
 
         # --- Progress Reporting ---
         if progress_callback and (iteration_count % 5000 == 0 or iteration_count == total_iterations):
+            # Best score to report depends on what we've found so far
+            current_best = highest_bonus_valid if highest_bonus_valid > -float("inf") else highest_bonus_fallback
+
             progress_percent = (iteration_count / total_iterations) * 100 if total_iterations > 0 else 0
             progress_data = {
                 "tech": tech,
                 "run_id": run_id,
                 "stage": stage,
                 "progress_percent": progress_percent,
-                "best_score": highest_bonus,
+                "best_score": current_best,
                 "status": "Optimized with Rust. Obviously.",
             }
             progress_callback(progress_data)
@@ -436,7 +446,17 @@ def refine_placement(
     # Print the total number of iterations
     logging.info(f"refine_placement completed {iteration_count} iterations for ship: '{ship}' -- tech: '{tech}'")
 
-    return optimal_grid, highest_bonus
+    # Return valid grid if found, otherwise fallback
+    if optimal_grid_valid is not None:
+        logging.info(f"Found valid placement (honoring sc_eligible) with score {highest_bonus_valid:.4f}")
+        return optimal_grid_valid, highest_bonus_valid
+    elif optimal_grid_fallback is not None:
+        logging.warning(
+            f"No strictly valid placement found. Using best fallback (ignoring sc_eligible) with score {highest_bonus_fallback:.4f}"
+        )
+        return optimal_grid_fallback, highest_bonus_fallback
+    else:
+        return None, 0.0
 
 
 def simulated_annealing(

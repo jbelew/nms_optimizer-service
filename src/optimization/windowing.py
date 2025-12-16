@@ -32,6 +32,7 @@ def _scan_grid_with_window(
     module_count: int,
     tech: str,
     require_supercharge: bool = True,
+    require_non_supercharge: bool = False,
 ) -> Tuple[float, Optional[Tuple[int, int]]]:
     """
     Scans a grid with a fixed window size to find the best placement opportunity.
@@ -114,6 +115,20 @@ def _scan_grid_with_window(
                         break
                 if not has_available_supercharged:
                     continue  # Skip this window
+
+            if require_non_supercharge:
+                # Check if the window has NO supercharged slots (for non-sc_eligible modules)
+                has_supercharged = False
+                for y in range(window_height):
+                    for x in range(window_width):
+                        cell = window_grid.get_cell(x, y)
+                        if cell["supercharged"]:
+                            has_supercharged = True
+                            break
+                    if has_supercharged:
+                        break
+                if has_supercharged:
+                    continue  # Skip this window - it has supercharged slots
 
             # Check if the number of available cells in the current window is sufficient
             available_cells_in_window = 0
@@ -200,8 +215,8 @@ def find_supercharged_opportunities(
     module_count = len(tech_modules)
 
     # Check if all modules are non-sc_eligible
-    # Default to True (eligible) if sc_eligible is not specified
-    all_non_sc_eligible = all(not m.get("sc_eligible", True) for m in tech_modules)
+    # Default to False (not eligible) if sc_eligible is not specified
+    all_non_sc_eligible = all(not m.get("sc_eligible", False) for m in tech_modules)
 
     # Check if there are any unoccupied supercharged slots
     unoccupied_supercharged_slots = False
@@ -214,21 +229,49 @@ def find_supercharged_opportunities(
         if unoccupied_supercharged_slots:
             break
 
+    # Check if there are any unoccupied non-supercharged slots
+    unoccupied_non_supercharged_slots = False
+    for y in range(grid_copy.height):
+        for x in range(grid_copy.width):
+            cell = grid_copy.get_cell(x, y)
+            if not cell["supercharged"] and cell["module"] is None and cell["active"]:
+                unoccupied_non_supercharged_slots = True
+                break
+        if unoccupied_non_supercharged_slots:
+            break
+
     # If all modules are non-sc_eligible, we can't use supercharged windows
+    require_supercharge_for_scan = True
+    require_non_supercharge_for_scan = False
     if all_non_sc_eligible and unoccupied_supercharged_slots:
         logging.info(
             "All modules are non-sc_eligible. Skipping supercharged window search, looking for regular active windows."
         )
         unoccupied_supercharged_slots = False
+        require_supercharge_for_scan = False
+        require_non_supercharge_for_scan = True
 
-    if not unoccupied_supercharged_slots:
+    # Return None if we need supercharge but don't have it, or if we need non-sc windows but don't have any
+    if not unoccupied_supercharged_slots and require_supercharge_for_scan:
         logging.info("No suitable supercharged windows found or all modules are non-sc_eligible.")
+        return None
+
+    if all_non_sc_eligible and not unoccupied_non_supercharged_slots:
+        logging.info("All modules are non-sc_eligible but no non-supercharged slots available.")
         return None
     window_width, window_height = determine_window_dimensions(module_count, tech, ship)
     logging.info(f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
 
     # --- Scan with Original Dimensions ---
-    best_score1, best_pos1 = _scan_grid_with_window(grid_copy, window_width, window_height, module_count, tech)
+    best_score1, best_pos1 = _scan_grid_with_window(
+        grid_copy,
+        window_width,
+        window_height,
+        module_count,
+        tech,
+        require_supercharge=require_supercharge_for_scan,
+        require_non_supercharge=require_non_supercharge_for_scan,
+    )
 
     # --- Scan with Rotated Dimensions (if needed) ---
     best_score2 = -1
@@ -239,7 +282,15 @@ def find_supercharged_opportunities(
     if rotated_needed:
         rotated_width, rotated_height = window_height, window_width  # Swap dimensions
         # print(f"INFO -- Also checking rotated window size {rotated_width}x{rotated_height}.")
-        best_score2, best_pos2 = _scan_grid_with_window(grid_copy, rotated_width, rotated_height, module_count, tech)
+        best_score2, best_pos2 = _scan_grid_with_window(
+            grid_copy,
+            rotated_width,
+            rotated_height,
+            module_count,
+            tech,
+            require_supercharge=require_supercharge_for_scan,
+            require_non_supercharge=require_non_supercharge_for_scan,
+        )
 
     # --- Compare Results and Determine Best Dimensions ---
     overall_best_score = -1
@@ -276,11 +327,23 @@ def find_supercharged_opportunities(
     if overall_best_pos is None:
         logging.info("No supercharged window found. Retrying without supercharge requirement.")
         best_score1, best_pos1 = _scan_grid_with_window(
-            grid_copy, window_width, window_height, module_count, tech, require_supercharge=False
+            grid_copy,
+            window_width,
+            window_height,
+            module_count,
+            tech,
+            require_supercharge=False,
+            require_non_supercharge=False,
         )
         if rotated_needed:
             best_score2, best_pos2 = _scan_grid_with_window(
-                grid_copy, rotated_width, rotated_height, module_count, tech, require_supercharge=False
+                grid_copy,
+                rotated_width,
+                rotated_height,
+                module_count,
+                tech,
+                require_supercharge=False,
+                require_non_supercharge=False,
             )
 
         # Re-compare scores

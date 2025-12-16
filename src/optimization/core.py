@@ -223,13 +223,14 @@ def optimize_placement(
             best_pos = None
             best_grid = None
             module = tech_modules[0]
+            is_sc_eligible = module.get("sc_eligible", False)
 
             for y in range(grid_for_place.height):
                 for x in range(grid_for_place.width):
                     cell = grid_for_place.get_cell(x, y)
                     if cell["active"] and cell["module"] is None:
-                        # Skip supercharged slots for non-sc_eligible modules
-                        if cell["supercharged"] and not module.get("sc_eligible", False):
+                        # Skip supercharged slots for non-sc_eligible modules (first pass)
+                        if cell["supercharged"] and not is_sc_eligible:
                             continue
 
                         # Test placement at this position
@@ -244,7 +245,7 @@ def optimize_placement(
                             module.get("module_type", "bonus"),
                             module.get("bonus", 0),
                             module.get("adjacency", "no_adjacency"),
-                            module.get("sc_eligible", False),
+                            is_sc_eligible,
                             module.get("image", None),
                         )
 
@@ -256,14 +257,55 @@ def optimize_placement(
                             best_pos = (x, y)
                             best_grid = test_grid
 
+            # Fallback: if no non-supercharged position found and module is non-eligible,
+            # retry allowing supercharged slots as last resort
+            if not best_pos and not is_sc_eligible:
+                logging.debug(
+                    f"No non-supercharged slots available for {module['id']}, trying supercharged slots as fallback."
+                )
+                for y in range(grid_for_place.height):
+                    for x in range(grid_for_place.width):
+                        cell = grid_for_place.get_cell(x, y)
+                        if cell["active"] and cell["module"] is None and cell["supercharged"]:
+                            # Test placement at this supercharged position
+                            test_grid = grid_for_place.copy()
+                            place_module(
+                                test_grid,
+                                x,
+                                y,
+                                module["id"],
+                                module.get("label", module["id"]),
+                                tech,
+                                module.get("module_type", "bonus"),
+                                module.get("bonus", 0),
+                                module.get("adjacency", "no_adjacency"),
+                                is_sc_eligible,
+                                module.get("image", None),
+                            )
+
+                            # Evaluate this placement using adjacency scoring
+                            adjacency_score = calculate_pattern_adjacency_score(test_grid, tech)
+
+                            if adjacency_score > best_adjacency_score:
+                                best_adjacency_score = adjacency_score
+                                best_pos = (x, y)
+                                best_grid = test_grid
+
             if best_pos and best_grid is not None:
                 best_x, best_y = best_pos
                 solved_grid = best_grid
                 solved_bonus = calculate_grid_score(solved_grid, tech, apply_supercharge_first=False)
-                solve_method = "Initial Placement (No Solve - Single Module)"
-                logging.info(
-                    f"Placed single module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
-                )
+                cell = grid_for_place.get_cell(best_x, best_y)
+                if cell["supercharged"] and not is_sc_eligible:
+                    logging.info(
+                        f"Placed single module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f} (FALLBACK: supercharged slot)"
+                    )
+                    solve_method = "Initial Placement (No Solve - Single Module - Fallback SC)"
+                else:
+                    logging.info(
+                        f"Placed single module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
+                    )
+                    solve_method = "Initial Placement (No Solve - Single Module)"
             else:
                 # No empty cells at all
                 solved_grid = grid.copy()
@@ -285,13 +327,14 @@ def optimize_placement(
             for module in tech_modules:
                 best_adjacency_score = -float("inf")
                 best_pos = None
+                is_sc_eligible = module.get("sc_eligible", False)
 
                 for y in range(grid_for_place.height):
                     for x in range(grid_for_place.width):
                         cell = grid_for_place.get_cell(x, y)
                         if cell["active"] and cell["module"] is None:
-                            # Skip supercharged slots for non-sc_eligible modules
-                            if cell["supercharged"] and not module.get("sc_eligible", False):
+                            # Skip supercharged slots for non-sc_eligible modules (first pass)
+                            if cell["supercharged"] and not is_sc_eligible:
                                 continue
 
                             # Test module placement at this position
@@ -306,7 +349,7 @@ def optimize_placement(
                                 module.get("module_type", "bonus"),
                                 module.get("bonus", 0),
                                 module.get("adjacency", "no_adjacency"),
-                                module.get("sc_eligible", False),
+                                is_sc_eligible,
                                 module.get("image", None),
                             )
 
@@ -317,8 +360,50 @@ def optimize_placement(
                                 best_adjacency_score = adjacency_score
                                 best_pos = (x, y)
 
+                # Fallback: if no non-supercharged position found and module is non-eligible,
+                # retry allowing supercharged slots as last resort
+                if not best_pos and not is_sc_eligible:
+                    logging.debug(
+                        f"No non-supercharged slots available for {module['id']}, trying supercharged slots as fallback."
+                    )
+                    for y in range(grid_for_place.height):
+                        for x in range(grid_for_place.width):
+                            cell = grid_for_place.get_cell(x, y)
+                            if cell["active"] and cell["module"] is None and cell["supercharged"]:
+                                # Test module placement at this supercharged position
+                                test_grid = grid_for_place.copy()
+                                place_module(
+                                    test_grid,
+                                    x,
+                                    y,
+                                    module["id"],
+                                    module.get("label", module["id"]),
+                                    tech,
+                                    module.get("module_type", "bonus"),
+                                    module.get("bonus", 0),
+                                    module.get("adjacency", "no_adjacency"),
+                                    is_sc_eligible,
+                                    module.get("image", None),
+                                )
+
+                                # Evaluate placement quality via adjacency scoring
+                                adjacency_score = calculate_pattern_adjacency_score(test_grid, tech)
+
+                                if adjacency_score > best_adjacency_score:
+                                    best_adjacency_score = adjacency_score
+                                    best_pos = (x, y)
+
                 if best_pos:
                     best_x, best_y = best_pos
+                    cell = grid_for_place.get_cell(best_x, best_y)
+                    if cell["supercharged"] and not is_sc_eligible:
+                        logging.debug(
+                            f"Placed module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f} (FALLBACK: supercharged slot)"
+                        )
+                    else:
+                        logging.debug(
+                            f"Placed module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
+                        )
                     place_module(
                         grid_for_place,
                         best_x,
@@ -329,11 +414,8 @@ def optimize_placement(
                         module.get("module_type", "bonus"),
                         module.get("bonus", 0),
                         module.get("adjacency", "no_adjacency"),
-                        module.get("sc_eligible", False),
+                        is_sc_eligible,
                         module.get("image", None),
-                    )
-                    logging.debug(
-                        f"Placed module {module['id']} at ({best_x}, {best_y}) with adjacency score {best_adjacency_score:.2f}"
                     )
 
             solved_grid = grid_for_place

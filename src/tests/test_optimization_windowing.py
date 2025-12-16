@@ -527,7 +527,7 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
         grid = self._create_grid(5, 5)
 
         with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
-            mock_modules.return_value = [{"id": "m1"}]
+            mock_modules.return_value = [{"id": "m1", "sc_eligible": True}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
 
         self.assertIsNotNone(result)
@@ -539,7 +539,7 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
         grid = self._create_grid(5, 5)
 
         with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
-            mock_modules.return_value = [{"id": "m1"}]
+            mock_modules.return_value = [{"id": "m1", "sc_eligible": True}]
             result = find_supercharged_opportunities(grid, {}, "ship", "tech")
 
         if result:
@@ -568,7 +568,7 @@ class TestFindSuperchargedOpportunities(unittest.TestCase):
 
         with patch("src.optimization.windowing.get_tech_modules") as mock_modules:
             with patch("src.optimization.windowing.determine_window_dimensions") as mock_dims:
-                mock_modules.return_value = [{"id": "m1"}]
+                mock_modules.return_value = [{"id": "m1", "sc_eligible": True}]
                 mock_dims.return_value = (4, 2)  # Not square
 
                 result = find_supercharged_opportunities(grid, {}, "ship", "tech")
