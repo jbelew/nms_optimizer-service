@@ -133,7 +133,7 @@
                 "color": "orange",
                 "modules": [
                     {"id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/luminance.webp", "checked": true},
-                    {"id": "PC", "type": "bonus", "label": "Photonix Core", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": false},
+                    {"id": "PC", "type": "bonus", "label": "Photonix Core (Expedition 12)", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": false},
                     {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp", "checked": true},
                     {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/sublight.webp", "checked": true},
                     {"id": "ID", "type": "bonus", "label": "Instability Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/instability.webp", "checked": true},
@@ -215,10 +215,10 @@
                     {"id": "ET", "type": "bonus", "label": "[P3] Emeril Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/emeril-trail.webp", "checked": true},
                     {"id": "GT", "type": "bonus", "label": "[P5] Golden Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/golden-trail.webp", "checked": true},
                     {"id": "ST", "type": "bonus", "label": "[P4] Stealth Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/stealth-trail.webp", "checked": true},
-                    {"id": "SP", "type": "bonus", "label": "[P6] Sputtering Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sputtering-trail.webp", "checked": false},
-                    {"id": "TT", "type": "bonus", "label": "[P7] Temporal Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/temporal-trail.webp", "checked": false},
-                    {"id": "PT", "type": "bonus", "label": "[P8] Plasma Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/plasma-trail.webp", "checked": false},
-                    {"id": "AT", "type": "bonus", "label": "[P9] Aeron Starship Trail", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/aeron-trail.webp", "checked": false}
+                    {"id": "SP", "type": "bonus", "label": "[P6] Sputtering Starship Trail (Expedition 6/13)", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/sputtering-trail.webp", "checked": false},
+                    {"id": "TT", "type": "bonus", "label": "[P7] Temporal Starship Trail (Expedition 7)", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/temporal-trail.webp", "checked": false},
+                    {"id": "PT", "type": "bonus", "label": "[P8] Plasma Starship Trail (Expedition 19)", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/plasma-trail.webp", "checked": false},
+                    {"id": "AT", "type": "bonus", "label": "[P9] Aeron Starship Trail (Expedition 20)", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/aeron-trail.webp", "checked": false}
                 ]
             },
             {
