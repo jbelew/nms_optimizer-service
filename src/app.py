@@ -50,7 +50,17 @@ class SocketIORequest(request.__class__):
 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+# Define allowed origins
+# Default to production and common local dev ports
+DEFAULT_ORIGINS = [
+    "https://nms-optimizer.app",
+    "http://localhost:5173",  # Vite dev
+    "http://localhost:4173",  # Vite preview
+    "http://localhost:3000",
+]
+allowed_origins = os.environ.get("ALLOWED_ORIGINS", ",".join(DEFAULT_ORIGINS)).split(",")
+
+CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
 Compress(app)  # Initialize Flask-Compress
 socketio = SocketIO(app, cors_allowed_origins="*")
 
