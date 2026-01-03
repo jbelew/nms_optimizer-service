@@ -6,6 +6,7 @@ monkey.patch_all()
 # --- End Gevent monkey-patching ---
 
 import os
+import re
 import time
 import uuid
 from typing import cast
@@ -50,17 +51,28 @@ class SocketIORequest(request.__class__):
 
 
 app = Flask(__name__)
-# Define allowed origins
-# Default to production and common local dev ports
+
+# --- CORS Configuration ---
+# In development/testing, we want to be permissive but still support credentials.
+# In production, we restrict to known origins.
 DEFAULT_ORIGINS = [
     "https://nms-optimizer.app",
-    "http://localhost:5173",  # Vite dev
-    "http://localhost:4173",  # Vite preview
-    "http://localhost:3000",
+    re.compile(r"https?://localhost:\d+"),  # Matches any localhost port
+    re.compile(r"https?://127\.0\.0\.1:\d+"),  # Matches any 127.0.0.1 port
 ]
-allowed_origins = os.environ.get("ALLOWED_ORIGINS", ",".join(DEFAULT_ORIGINS)).split(",")
 
+# Allow overriding via environment variable
+env_origins = os.environ.get("ALLOWED_ORIGINS")
+if env_origins:
+    allowed_origins = env_origins.split(",")
+else:
+    allowed_origins = DEFAULT_ORIGINS
+
+# If we are in debug or testing mode, we can be even more permissive
+# Note: supports_credentials=True requires specific origins (not '*').
+# We use regexes to match various localhost incarnations.
 CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
+# --- End CORS Configuration ---
 Compress(app)  # Initialize Flask-Compress
 socketio = SocketIO(app, cors_allowed_origins="*")
 
