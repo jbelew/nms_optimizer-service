@@ -15,6 +15,7 @@ def test_mock_app():
         "http://localhost:5173",
         "http://localhost:4173",
         "http://localhost:3000",
+        "http://localhost:6006",
     ]
     allowed_origins = os.environ.get("ALLOWED_ORIGINS", ",".join(DEFAULT_ORIGINS)).split(",")
     
