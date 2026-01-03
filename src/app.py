@@ -68,10 +68,13 @@ if env_origins:
 else:
     allowed_origins = DEFAULT_ORIGINS
 
-# If we are in debug or testing mode, we can be even more permissive
-# Note: supports_credentials=True requires specific origins (not '*').
-# We use regexes to match various localhost incarnations.
-CORS(app, resources={r"/*": {"origins": allowed_origins}}, supports_credentials=True)
+# --- CORS Configuration ---
+# We split the CORS policy:
+# 1. /api/events requires credentials and a strict origin list.
+# 2. Everything else is permissive to support Storybook, local dev, and tests.
+CORS(
+    app, resources={r"/api/events": {"origins": allowed_origins, "supports_credentials": True}, r"/*": {"origins": "*"}}
+)
 # --- End CORS Configuration ---
 Compress(app)  # Initialize Flask-Compress
 socketio = SocketIO(app, cors_allowed_origins="*")
