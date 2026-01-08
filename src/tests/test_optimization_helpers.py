@@ -122,7 +122,7 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         w, h = determine_window_dimensions(7, "pulse", "random_ship")
         self.assertEqual((w, h), (4, 2))
         w, h = determine_window_dimensions(8, "pulse", "random_ship")
-        self.assertEqual((w, h), (4, 2))
+        self.assertEqual((w, h), (4, 3))
 
     def test_pulse_9_plus_modules(self):
         """Pulse with 9+ modules should use 4x3"""

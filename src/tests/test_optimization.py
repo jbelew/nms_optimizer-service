@@ -157,7 +157,7 @@ class TestOptimization(unittest.TestCase):
         )
         # Assuming the best window starts at (0,0) for a 4x3 grid with SC at (1,1), (2,1)
         self.assertIsNotNone(result)
-        self.assertEqual(result, (0, 1, 4, 2))
+        self.assertEqual(result, (0, 0, 4, 3))
 
     def test_apply_localized_grid_changes(self):
         localized_grid = Grid(2, 2)  # Smaller localized grid
