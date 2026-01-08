@@ -114,7 +114,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
     elif tech == "pulse":
         if module_count == 6:
             window_width, window_height = 3, 2
-        elif module_count < 9:
+        elif module_count < 8:
             window_width, window_height = 4, 2
         else:
             window_width, window_height = 4, 3
