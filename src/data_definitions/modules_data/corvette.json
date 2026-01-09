@@ -107,12 +107,12 @@
                 "modules": [
                     {"id": "DS", "type": "core", "label": "Defensive Shields", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": true, "image": "starship/shield.webp", "checked": true},
                     {"id": "AA", "type": "bonus", "label": "Ablative Armor", "bonus": 0.07, "adjacency": "greater", "sc_eligible": true, "image": "starship/ablative.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Shield Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": false},
-                    {"id": "Xb", "type": "upgrade", "label": "Shield Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": false},
-                    {"id": "Xc", "type": "upgrade", "label": "Shield Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": false},
-                    {"id": "Ca", "type": "cosmetic", "label": "Ion Barrier Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ion.webp", "checked": true},
-                    {"id": "Cb", "type": "cosmetic", "label": "Deflector Shield Tau", "bonus": 0.09, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deflector.webp", "checked": true},
-                    {"id": "Cc", "type": "cosmetic", "label": "Ion Barrier Sigma", "bonus": 0.08, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ion.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "Shield Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "Shield Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "Shield Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},
+                    {"id": "Ca", "type": "cosmetic", "label": "Ion Barrier Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ion.webp", "checked": false},
+                    {"id": "Cb", "type": "cosmetic", "label": "Deflector Shield Tau", "bonus": 0.09, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deflector.webp", "checked": false},
+                    {"id": "Cc", "type": "cosmetic", "label": "Ion Barrier Sigma", "bonus": 0.08, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ion.webp", "checked": false}
                 ]
             },
             {
