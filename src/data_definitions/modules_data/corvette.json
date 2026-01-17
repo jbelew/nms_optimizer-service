@@ -170,9 +170,9 @@
                     {"id": "Xa", "type": "upgrade", "label": "Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": false},
                     {"id": "Xb", "type": "upgrade", "label": "Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": false},
                     {"id": "Xc", "type": "upgrade", "label": "Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": false},
-                    {"id": "La", "type": "cosmetic", "label": "[C1] Thunderbird Landing Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": false},
-                    {"id": "Lb", "type": "cosmetic", "label": "[C2] Thunderbird Landing Thruster Tau", "bonus": 0.029, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": false},
-                    {"id": "Lc", "type": "cosmetic", "label": "[C3] Mag-Field Landing Thruster Sigma", "bonus": 0.028, "adjacency": "greater", "sc_eligible": true, "image": "corvette/mag-field.webp", "checked": false},
+                    {"id": "La", "type": "cosmetic", "label": "[C1] Thunderbird Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": false},
+                    {"id": "Lb", "type": "cosmetic", "label": "[C2] Thunderbird Thruster Tau", "bonus": 0.029, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": false},
+                    {"id": "Lc", "type": "cosmetic", "label": "[C3] Mag-Field Thruster Sigma", "bonus": 0.028, "adjacency": "greater", "sc_eligible": true, "image": "corvette/mag-field.webp", "checked": false},
                     {"id": "Aa", "type": "reactor", "label": "[R1] Azimuth-Class Reactor Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true},
                     {"id": "Ab", "type": "reactor", "label": "[R2] Azimuth-Class Reactor Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true},
                     {"id": "Ac", "type": "reactor", "label": "[R3] Azimuth-Class Reactor Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true}
