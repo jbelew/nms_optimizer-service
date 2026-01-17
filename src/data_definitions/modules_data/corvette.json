@@ -121,9 +121,9 @@
                 "image": "corvette/ceto.webp",
                 "color": "cyan",
                 "modules": [
-                    {"id": "Ca", "type": "reactor", "label": "Ceto-Class Reactor Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
-                    {"id": "Cb", "type": "reactor", "label": "Ceto-Class Reactor Tau", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
-                    {"id": "Cc", "type": "reactor", "label": "Ceto-Class Reactor Sigma", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true}
+                    {"id": "Ca", "type": "reactor", "label": "[R1] Ceto-Class Reactor Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
+                    {"id": "Cb", "type": "reactor", "label": "[R2] Ceto-Class Reactor Tau", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
+                    {"id": "Cc", "type": "reactor", "label": "[R3] Ceto-Class Reactor Sigma", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true}
                 ]
             }
         ],
@@ -155,8 +155,8 @@
                 "color": "teal",
                 "modules": [
                     {"id": "CP", "type": "core", "label": "Titan-Class Cockpit", "bonus": 0.08, "adjacency": "greater", "sc_eligible": true, "image": "corvette/cockpit.webp", "checked": true},
-                    {"id": "Ca", "type": "reactor", "label": "Medusa-Class Reactor Theta", "bonus": 0.35, "adjacency": "greater", "sc_eligible": false, "image": "corvette/medusa.webp", "checked": true},
-                    {"id": "Cb", "type": "reactor", "label": "Medusa-Class Reactor Tau", "bonus": 0.23, "adjacency": "greater", "sc_eligible": false, "image": "corvette/medusa.webp", "checked": true}                ]
+                    {"id": "Ca", "type": "reactor", "label": "[R1] Medusa-Class Reactor Theta", "bonus": 0.35, "adjacency": "greater", "sc_eligible": false, "image": "corvette/medusa.webp", "checked": true},
+                    {"id": "Cb", "type": "reactor", "label": "[R2] Medusa-Class Reactor Tau", "bonus": 0.23, "adjacency": "greater", "sc_eligible": false, "image": "corvette/medusa.webp", "checked": true}                ]
             },
             {
                 "label": "Launch Thruster",
