@@ -52,7 +52,7 @@
                 "modules": [
                     {"id": "SS", "type": "bonus", "label": "Star Seed", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exosuit/starseed.webp", "checked": true},
                     {"id": "RM", "type": "bonus", "label": "Remembrance", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exosuit/remembrance.webp", "checked": true},
-                    {"id": "MD", "type": "bonus", "label": "Mark of the Denier", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exosuit/denier.webp", "checked": false}
+                    {"id": "MD", "type": "bonus", "label": "Mark of the Denier", "bonus": 1.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/denier.webp", "checked": false}
                 ]
             }
         ],
