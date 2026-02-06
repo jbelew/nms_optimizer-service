@@ -745,8 +745,8 @@ recommended_builds = {
             "layout": [
                 [
                     {"tech": "skiff", "module": "ES", "adjacency_bonus": 0},
-                    {"tech": "remembrance", "module": "RM", "adjacency_bonus": 0},
-                    {"tech": "starseed", "module": "SS", "adjacency_bonus": 0},
+                    {"tech": "core_health", "module": "RM", "adjacency_bonus": 1},
+                    {"tech": "core_health", "module": "SS", "adjacency_bonus": 1},
                     {"tech": "forbidden", "module": "Xc", "adjacency_bonus": 1},
                     {
                         "tech": "forbidden",

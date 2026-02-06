@@ -43,9 +43,29 @@
                     {"id": "RR", "type": "bonus", "label": "Oxygen Rereouter", "bonus": 0.0, "adjacency": "none", "sc_eligible": true, "image": "exosuit/rerouter.webp", "checked": true},
                     {"id": "OR", "type": "bonus", "label": "Oxygen Recycler", "bonus": 0.1, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/recycler.webp", "checked": true}
                 ]
+            },
+            {
+                "label": "Core Health",
+                "key": "core_health",
+                "image": "exosuit/starseed.webp",
+                "color": "white",
+                "modules": [
+                    {"id": "SS", "type": "bonus", "label": "Star Seed", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exosuit/starseed.webp", "checked": true},
+                    {"id": "RM", "type": "bonus", "label": "Remembrance", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exosuit/remembrance.webp", "checked": true},
+                    {"id": "MD", "type": "bonus", "label": "Mark of the Denier", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exosuit/denier.webp", "checked": false}
+                ]
             }
         ],
         "Hazard Protection": [
+            {
+                "label": "Anomaly Suppressor",
+                "key": "anomaly",
+                "image": "exosuit/anomaly.webp",
+                "color": "gray",
+                "modules": [
+                    {"id": "AS", "type": "core", "label": "Anomaly Suppressor", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/anomaly.webp", "checked": true}
+                ]
+            },
             {
                 "label": "Hazard Protection",
                 "key": "hazard",
@@ -169,44 +189,6 @@
                     {"id": "Xa", "type": "upgrade", "label": "Forbidden Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "Forbidden Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "Forbidden Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true}
-                ]
-            }
-        ],
-        "Quest Rewards": [
-            {
-                "label": "Anomaly Suppressor",
-                "key": "anomaly",
-                "image": "exosuit/anomaly.webp",
-                "color": "gray",
-                "modules": [
-                    {"id": "AS", "type": "core", "label": "Anomaly Suppressor", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/anomaly.webp", "checked": true}
-                ]
-            },
-            {
-                "label": "Mark of the Denier",
-                "key": "denier",
-                "image": "exosuit/denier.webp",
-                "color": "gray",
-                "modules": [
-                    {"id": "MD", "type": "core", "label": "Mark of the Denier", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/denier.webp", "checked": true}
-                ]
-            },
-            {
-                "label": "Remembrance",
-                "key": "remembrance",
-                "image": "exosuit/remembrance.webp",
-                "color": "gray",
-                "modules": [
-                    {"id": "RM", "type": "core", "label": "Remembrance", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/remembrance.webp", "checked": true}
-                ]
-            },
-            {
-                "label": "Star Seed",
-                "key": "starseed",
-                "image": "exosuit/starseed.webp",
-                "color": "gray",
-                "modules": [
-                    {"id": "SS", "type": "core", "label": "Star Seed", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/starseed.webp", "checked": true}
                 ]
             }
         ],
