@@ -17,9 +17,9 @@
                     {"id": "AW", "type": "bonus", "label": "Amplified Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-amplified.webp", "checked": true},
                     {"id": "WC", "type": "bonus", "label": "Warp Core Resonator", "bonus": 0.2, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-warpcore.webp", "checked": true},
                     {"id": "CW", "type": "bonus", "label": "Chromatic Warp Shielding", "bonus": 0.05, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-chromatic.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Hyperdrive Upgrade Theta", "bonus": 0.25, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Hyperdrive Upgrade Tau", "bonus": 0.24, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Hyperdrive Upgrade Sigma", "bonus": 0.23, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Hyperdrive Upgrade Theta", "bonus": 0.25, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Hyperdrive Upgrade Tau", "bonus": 0.24, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Hyperdrive Upgrade Sigma", "bonus": 0.23, "adjacency": "greater", "sc_eligible": true, "image": "other/freighter-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -50,9 +50,9 @@
                 "image": "other/fleet-fuel.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Fleet Fuel Efficiency Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-fuel.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fleet Fuel Efficiency Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-fuel.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fleet Fuel Efficiency Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-fuel.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Fuel Efficiency Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-fuel.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Fuel Efficiency Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-fuel.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Fuel Efficiency Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-fuel.webp", "checked": true}
                 ]
             },
             {
@@ -61,9 +61,9 @@
                 "image": "other/fleet-speed.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Fleet Expedition Speed Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-speed.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fleet Expedition Speed Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-speed.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fleet Expedition Speed Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-speed.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Expedition Speed Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-speed.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Expedition Speed Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-speed.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Expedition Speed Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-speed.webp", "checked": true}
                 ]
             },
             {
@@ -72,9 +72,9 @@
                 "image": "other/fleet-combat.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Fleet Combat and Defense Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-combat.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fleet Combat and Defense Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-combat.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fleet Combat and Defense Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-combat.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Combat and Defense Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-combat.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Combat and Defense Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-combat.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Combat and Defense Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-combat.webp", "checked": true}
                 ]
             },
             {
@@ -83,9 +83,9 @@
                 "image": "other/fleet-exploration.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Fleet Exploration and Science Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-exploration.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fleet Exploration and Science Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-exploration.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fleet Exploration and Science Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-exploration.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Exploration and Science Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-exploration.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Exploration and Science Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-exploration.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Exploration and Science Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-exploration.webp", "checked": true}
                 ]
             },
             {
@@ -94,9 +94,9 @@
                 "image": "other/fleet-mining.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-mining.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-mining.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-mining.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Mining and Industrial Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-mining.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Mining and Industrial Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-mining.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Mining and Industrial Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-mining.webp", "checked": true}
                 ]
             },
             {
@@ -105,9 +105,9 @@
                 "image": "other/fleet-trade.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Fleet Mining and Industrial Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fleet Mining and Industrial Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fleet Mining and Industrial Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Mining and Industrial Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Mining and Industrial Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Mining and Industrial Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true}
                 ]
             }
         ]

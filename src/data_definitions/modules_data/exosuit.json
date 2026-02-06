@@ -10,9 +10,9 @@
                 "color": "yellow",
                 "modules": [
                     {"id": "JP", "type": "core", "label": "Jetpack", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exosuit/jetpack.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Jetpack Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/jetpack-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Jetpack Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/jetpack-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Jetpack Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/jetpack-upgrade.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Jetpack Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/jetpack-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Jetpack Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/jetpack-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Jetpack Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/jetpack-upgrade.webp", "checked": true},
                     {"id": "WJ", "type": "bonus", "label": "Efficient Water Jets", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/waterjets.webp", "checked": true},
                     {"id": "NS", "type": "bonus", "label": "Neural Stimulator", "bonus": 0.1, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/neural.webp", "checked": true},
                     {"id": "AB", "type": "bonus", "label": "Airburst Engine", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/airburst.webp", "checked": true},
@@ -37,9 +37,9 @@
                 "color": "blue",
                 "modules": [
                     {"id": "LS", "type": "core", "label": "Life Support", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exosuit/life.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Life Support Upgrade Theta", "bonus": 0.3, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/life-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Life Support Upgrade Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/life-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Life Support Upgrade Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/life-upgrade.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Life Support Upgrade Theta", "bonus": 0.3, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/life-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Life Support Upgrade Tau", "bonus": 0.29, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/life-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Life Support Upgrade Sigma", "bonus": 0.28, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/life-upgrade.webp", "checked": true},
                     {"id": "RR", "type": "bonus", "label": "Oxygen Rereouter", "bonus": 0.0, "adjacency": "none", "sc_eligible": true, "image": "exosuit/rerouter.webp", "checked": true},
                     {"id": "OR", "type": "bonus", "label": "Oxygen Recycler", "bonus": 0.1, "adjacency": "lesser", "sc_eligible": true, "image": "exosuit/recycler.webp", "checked": true}
                 ]
@@ -91,9 +91,9 @@
                 "color": "white",
                 "modules": [
                     {"id": "CN", "type": "bonus", "label": "Coolant Networt", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Coolant Network Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Coolant Network Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Coolant Network Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Coolant Network Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Coolant Network Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Coolant Network Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -103,9 +103,9 @@
                 "color": "white",
                 "modules": [
                     {"id": "RD", "type": "bonus", "label": "Radiation Deflector", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Radiation Deflector Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Radiation Deflector Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Radiation Deflector Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Radiation Deflector Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Radiation Deflector Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Radiation Deflector Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/radiation-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -115,9 +115,9 @@
                 "color": "white",
                 "modules": [
                     {"id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/aeration.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Aeration Membrane Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Aeration Membrane Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -127,9 +127,9 @@
                 "color": "white",
                 "modules": [
                     {"id": "TL", "type": "bonus", "label": "Thermic Layer", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Thermic Layer Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Thermic Layer Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Thermic Layer Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Thermic Layer Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Thermic Layer Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Thermic Layer Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/thermic-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -139,9 +139,9 @@
                 "color": "white",
                 "modules": [
                     {"id": "TS", "type": "bonus", "label": "Toxin Suppressor", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Toxin Suppressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Toxin Suppressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Toxin Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Toxin Suppressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Toxin Suppressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Toxin Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/toxin-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -151,9 +151,9 @@
                 "color": "white",
                 "modules": [
                     {"id": "SL", "type": "bonus", "label": "Sheild Lattice", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exosuit/protection.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Sheild Lattice Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/protection-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/protection-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/protection-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Sheild Lattice Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/protection-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Sheild Lattice Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/protection-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Sheild Lattice Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exosuit/protection-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -164,9 +164,9 @@
                 "image": "exosuit/defense.webp",
                 "color": "crimson",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Defense Systems Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/defense.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Defense Systems Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/defense.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Defense Systems Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/defense.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Defense Systems Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/defense.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Defense Systems Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/defense.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Defense Systems Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/defense.webp", "checked": true}
                 ]
             },
             {
@@ -175,9 +175,9 @@
                 "image": "exosuit/rebuilt.webp",
                 "color": "crimson",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Rebuilt Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Rebuilt Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Rebuilt Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Rebuilt Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Rebuilt Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Rebuilt Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true}
                 ]
             },
             {
@@ -186,9 +186,9 @@
                 "image": "exosuit/forbidden.webp",
                 "color": "crimson",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "Forbidden Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Forbidden Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Forbidden Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Forbidden Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Forbidden Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Forbidden Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true}
                 ]
             }
         ],

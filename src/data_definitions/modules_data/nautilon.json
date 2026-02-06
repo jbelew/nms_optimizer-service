@@ -10,9 +10,9 @@
                 "color": "orange",
                 "modules": [
                     {"id": "HD", "type": "core", "label": "Humboldt Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/humboldt.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Humboldt Drive Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Humboldt Drive Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Humboldt Drive Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Humboldt Drive Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Humboldt Drive Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Humboldt Drive Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
                     {"id": "OG", "type": "bonus", "label": "Osmatic Generator", "bonus": 0.2, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/osmatic.webp", "checked": true}
                 ]
             },
@@ -52,9 +52,9 @@
                 "color": "blue",
                 "modules": [
                     {"id": "NC", "type": "core", "label": "Nautilon Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Nautilon Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Nautilon Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Nautilon Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Nautilon Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Nautilon Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Nautilon Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/nautilon-upgrade.webp", "checked": true}
                 ]
             }
         ],

@@ -12,9 +12,9 @@
                     {"id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-laser.webp", "checked": true},
                     {"id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/advanced-mining.webp", "checked": true},
                     {"id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.5, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/optical.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
                     {"id": "RL", "type": "bonus", "label": "Runic Lens", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/runic-lens.webp", "checked": true}
                 ]
             }
@@ -48,9 +48,9 @@
                     {"id": "WR", "type": "bonus", "label": "Waveform Recycler", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/waveform.webp", "checked": true},
                     {"id": "SH", "type": "bonus", "label": "Scan Harmonizer", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/harmonizer.webp", "checked": true},
                     {"id": "PC", "type": "bonus", "label": "Polyphonic Core", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/polyphonic.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Scanner Upgrade Theta", "bonus": 1.5, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scanner-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scanner-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Scanner Upgrade Sigma", "bonus": 1.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scanner-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Scanner Upgrade Theta", "bonus": 1.5, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scanner-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Scanner Upgrade Tau", "bonus": 1.45, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scanner-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Scanner Upgrade Sigma", "bonus": 1.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scanner-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -73,9 +73,9 @@
                     {"id": "BJ", "type": "core", "label": "Blaze Javelin", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-javelin.webp", "checked": true},
                     {"id": "MA", "type": "bonus", "label": "Mass Accelerator", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mass-accelerator.webp", "checked": true},
                     {"id": "WO", "type": "bonus", "label": "Waveform Oscillator", "bonus": 0.0, "adjacency": "none", "sc_eligible": true, "image": "multi-tool/waveform-osc.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Blaze Javelin Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Blaze Javelin Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Blaze Javelin Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Blaze Javelin Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Blaze Javelin Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Blaze Javelin Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/blaze-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -87,12 +87,12 @@
                     {"id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "multi-tool/boltcaster.webp", "checked": true},
                     {"id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-rm.webp", "checked": true},
                     {"id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/barrel-ionizer.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Boltcaster Upgrade Theta", "bonus": 0.02, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Boltcaster Upgrade Tau", "bonus": 0.019, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Boltcaster Upgrade Sigma", "bonus": 0.018, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
-                    {"id": "Fa", "type": "atlantid", "label": "Forbidden Module Theta", "bonus": 0.22, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
-                    {"id": "Fb", "type": "atlantid", "label": "Forbidden Module Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
-                    {"id": "Fc", "type": "atlantid", "label": "Forbidden Module Sigma", "bonus": 0.2, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Boltcaster Upgrade Theta", "bonus": 0.02, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Boltcaster Upgrade Tau", "bonus": 0.019, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Boltcaster Upgrade Sigma", "bonus": 0.018, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
+                    {"id": "Fa", "type": "atlantid", "label": "[1] Forbidden Module Theta", "bonus": 0.22, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
+                    {"id": "Fb", "type": "atlantid", "label": "[2] Forbidden Module Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
+                    {"id": "Fc", "type": "atlantid", "label": "[3] Forbidden Module Sigma", "bonus": 0.2, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true}
                 ]
             },
             {
@@ -102,9 +102,9 @@
                 "color": "iris",
                 "modules": [
                     {"id": "GC", "type": "core", "label": "Geology Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Geology Cannon Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Geology Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Geology Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Geology Cannon Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Geology Cannon Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Geology Cannon Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/geology-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -115,9 +115,9 @@
                 "modules": [
                     {"id": "NC", "type": "core", "label": "Neutron Cannon", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "multi-tool/neutron.webp", "checked": true},
                     {"id": "PF", "type": "bonus", "label": "P-Field Compressor", "bonus": 1.62, "adjacency": "lesser", "sc_eligible": true, "image": "multi-tool/p-field.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Neutron Cannon Upgrade Theta", "bonus": 3.15, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/neutron-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Neutron Cannon Upgrade Tau", "bonus": 3.14, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/neutron-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Neutron Cannon Upgrade Sigma", "bonus": 3.13, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/neutron-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Neutron Cannon Upgrade Theta", "bonus": 3.15, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/neutron-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Neutron Cannon Upgrade Tau", "bonus": 3.14, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/neutron-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Neutron Cannon Upgrade Sigma", "bonus": 3.13, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/neutron-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -127,9 +127,9 @@
                 "color": "sky",
                 "modules": [
                     {"id": "PL", "type": "core", "label": "Plasma Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-launcher.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Plasma Launcher Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Plasma Launcher Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Plasma Launcher Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Plasma Launcher Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Plasma Launcher Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Plasma Launcher Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/plasma-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -142,9 +142,9 @@
                     {"id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/amplified.webp", "checked": true},
                     {"id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-rm.webp", "checked": true},
                     {"id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": true, "image": "multi-tool/impact-ignitor.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Pulse Spitter Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Pulse Spitter Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -155,9 +155,9 @@
                 "modules": [
                     {"id": "SB", "type": "core", "label": "Scatter Blaster", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter.webp", "checked": true},
                     {"id": "SG", "type": "bonus", "label": "Shell Greaser", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/shell-greaser.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Scatter Blaster Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Scatter Blaster Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Scatter Blaster Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Scatter Blaster Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Scatter Blaster Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Scatter Blaster Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/scatter-upgrade.webp", "checked": true}
                 ]
             }
         ],

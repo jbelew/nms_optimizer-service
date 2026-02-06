@@ -10,9 +10,9 @@
                 "color": "orange",
                 "modules": [
                     {"id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/fusion.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Fusion Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Fusion Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Fusion Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fusion Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fusion Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fusion Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -31,9 +31,9 @@
                 "color": "jade",
                 "modules": [
                     {"id": "EB", "type": "core", "label": "Exocraft Boost Module", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/boost.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Exocraft Boost Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/boost-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Exocraft Boost Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/boost-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Exocraft Boost Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/boost-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Boost Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/boost-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Boost Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/boost-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Boost Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/boost-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -73,9 +73,9 @@
                 "modules": [
                     {"id": "ML", "type": "core", "label": "Exocraft Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining.webp", "checked": true},
                     {"id": "AL", "type": "bonus", "label": "Advanced Exocraft Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/advanced-mining.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -85,9 +85,9 @@
                 "color": "blue",
                 "modules": [
                     {"id": "MC", "type": "core", "label": "Mounted Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Mounted Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Mounted Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Mounted Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Mounted Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Mounted Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Mounted Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mounted-upgrade.webp", "checked": true}
                 ]
             },
             {

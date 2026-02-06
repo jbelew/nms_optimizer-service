@@ -10,9 +10,9 @@
                 "color": "green",
                 "modules": [
                     {"id": "GE", "type": "core", "label": "Grafted Eyes", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/grafted.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Grafted Eyes Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/grafted-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Grafted Eyes Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/grafted-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Grafted Eyes Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/grafted-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Grafted Eyes Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/grafted-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Grafted Eyes Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/grafted-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Grafted Eyes Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/grafted-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -22,9 +22,9 @@
                 "color": "teal",
                 "modules": [
                     {"id": "SV", "type": "core", "label": "Spewing Vents", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Spewing Vents Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Spewing Vents Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Spewing Vents Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Spewing Vents Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Spewing Vents Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Spewing Vents Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/spewing-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -36,9 +36,9 @@
                 "color": "yellow",
                 "modules": [
                     {"id": "SS", "type": "core", "label": "Scream Supressor", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": true, "image": "starship/scream.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Scream Supressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Scream Supressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Scream Supressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Scream Supressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Scream Supressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Scream Supressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -50,9 +50,9 @@
                 "color": "iris",
                 "modules": [
                     {"id": "NA", "type": "core", "label": "Neural Assembly", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/assembly.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Neural Assembly Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Neural Assembly Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Neural Assembly Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Neural Assembly Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Neural Assembly Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Neural Assembly Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
                     {"id": "CM", "type": "bonus", "label": "Chroloplast Membrane", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": true, "image": "starship/chloroplast.webp", "checked": true}
                 ]
             },
@@ -64,9 +64,9 @@
                 "modules": [
                     {"id": "SC", "type": "core", "label": "Singularity Cortex", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/singularity.webp", "checked": true},
                     {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/atlantid.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Singularity Cortex Upgrade Theta", "bonus": 0.32, "adjacency": "greater", "sc_eligible": true, "image": "starship/singularity-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Singularity Cortex Upgrade Tau", "bonus": 0.31, "adjacency": "greater", "sc_eligible": true, "image": "starship/singularity-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Singularity Cortex Upgrade Sigma", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/singularity-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Singularity Cortex Upgrade Theta", "bonus": 0.32, "adjacency": "greater", "sc_eligible": true, "image": "starship/singularity-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Singularity Cortex Upgrade Tau", "bonus": 0.31, "adjacency": "greater", "sc_eligible": true, "image": "starship/singularity-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Singularity Cortex Upgrade Sigma", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/singularity-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -76,9 +76,9 @@
                 "color": "orange",
                 "modules": [
                     {"id": "PH", "type": "core", "label": "Pulsing Heart", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/pulsing.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "Pulsing Heart Upgrade Theta", "bonus": 0.5, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulsing-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "Pulsing Heart Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulsing-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "Pulsing Heart Upgrade Sigma", "bonus": 0.48, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulsing-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Pulsing Heart Upgrade Theta", "bonus": 0.5, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulsing-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Pulsing Heart Upgrade Tau", "bonus": 0.49, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulsing-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Pulsing Heart Upgrade Sigma", "bonus": 0.48, "adjacency": "greater", "sc_eligible": true, "image": "starship/pulsing-upgrade.webp", "checked": true}
                 ]
             }
         ],
