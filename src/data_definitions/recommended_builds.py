@@ -823,7 +823,7 @@ recommended_builds = {
                     {"tech": "translators", "module": "Tc", "adjacency_bonus": 1},
                     {"tech": "translators", "module": "Td", "adjacency_bonus": 1},
                     {"tech": "life", "module": "OR", "adjacency_bonus": 1},
-                    {"tech": "life", "module": "RR", "adjacency_bonus": 1},
+                    {"tech": "life", "module": "RR", "adjacency_bonus": 0},
                     {"tech": "aeration", "module": "AM", "adjacency_bonus": 1},
                     {"tech": "radiation", "module": "Xa", "adjacency_bonus": 1},
                     {"tech": "radiation", "module": "RD", "adjacency_bonus": 1},
