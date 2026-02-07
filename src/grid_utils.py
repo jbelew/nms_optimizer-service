@@ -42,6 +42,7 @@ class Grid:
                     "supercharged": False,
                     "sc_eligible": False,
                     "image": None,
+                    "group_adjacent": False,
                 }
                 for _ in range(width)
             ]
@@ -314,10 +315,29 @@ class Grid:
                 if cells[y][x]["type"] == "":
                     cells[y][x]["type"] = None
 
+                # Initialize group_adjacent flag
+                cells[y][x]["group_adjacent"] = False
+
+                if cells[y][x]["module"]:
+                    adj = cells[y][x]["adjacency"]
+
+                    # Check neighbors for adjacency borders
+                    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                        nx, ny = x + dx, y + dy
+                        if 0 <= nx < self.width and 0 <= ny < self.height:
+                            neighbor = self.cells[ny][nx]
+                            if neighbor["module"]:
+                                n_adj = neighbor["adjacency"]
+
+                                # Match ONLY matching specialized subtype (e.g., "greater_3")
+                                # and ensure it's not the UI fallback string
+                                if adj == n_adj and isinstance(adj, str) and "_" in adj and adj != "no_adjacency":
+                                    cells[y][x]["group_adjacent"] = True
+                                    break
+
+                # Handle legacy adjacency string mapping for UI
                 adjacency_val = cells[y][x]["adjacency"]
-                if isinstance(adjacency_val, str) and "greater" in adjacency_val:
-                    cells[y][x]["adjacency"] = "greater"
-                elif adjacency_val == "" or adjacency_val is False or adjacency_val == "none":
+                if adjacency_val == "" or adjacency_val is False or adjacency_val == "none":
                     cells[y][x]["adjacency"] = "no_adjacency"
 
         return {"width": self.width, "height": self.height, "cells": cells}
@@ -362,6 +382,7 @@ class Grid:
                         "supercharged": cell_data.get("supercharged", False),
                         "sc_eligible": cell_data.get("sc_eligible", False),
                         "image": cell_data["image"],
+                        "group_adjacent": cell_data.get("group_adjacent", False),
                     }
                 )
         return grid

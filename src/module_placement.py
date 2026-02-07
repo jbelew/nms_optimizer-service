@@ -70,6 +70,7 @@ def clear_all_modules_of_tech(grid, tech):
                 grid.cells[y][x]["total"] = 0
                 grid.cells[y][x]["adjacency_bonus"] = 0
                 grid.cells[y][x]["adjacency"] = False
+                grid.cells[y][x]["group_adjacent"] = False
                 grid.cells[y][x]["sc_eligible"] = False
                 grid.cells[y][x]["image"] = None
                 grid.cells[y][x]["module_position"] = None

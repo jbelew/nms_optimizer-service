@@ -173,8 +173,8 @@ class TestCalculateWindowScore(unittest.TestCase):
                 window.cells[y][x]["supercharged"] = True
 
         score = calculate_window_score(window, "tech")
-        # Should be 4 * 3 = 12
-        self.assertEqual(score, 12)
+        # SC Count = 4, Score = 4 * 3 - 4 * 0.25 = 11.0
+        self.assertEqual(score, 11)
 
     def test_empty_window_no_supercharged(self):
         """Window with empty cells but no supercharged"""
@@ -223,8 +223,8 @@ class TestCalculateWindowScore(unittest.TestCase):
 
         score = calculate_window_score(window, "tech")
         # SC count = 1 (occupied by target tech counts), empty = 3
-        # Return is supercharged_count * 3 = 1 * 3 = 3 (when SC > 0, ignores empty)
-        self.assertEqual(score, 3)
+        # Return is supercharged_count * 3 - edge_penalty * 0.25 = 1 * 3 - 1 * 0.25 = 2.75
+        self.assertEqual(score, 2.75)
 
     def test_supercharged_occupied_by_other_tech(self):
         """Supercharged cell occupied by other tech doesn't count as SC but gets edge penalty
@@ -240,8 +240,8 @@ class TestCalculateWindowScore(unittest.TestCase):
 
         score = calculate_window_score(window, "tech")
         # SC count = 0 (other tech doesn't count), empty = 3
-        # edge_penalty = 1 (cell at x=0), score = 0*3 + 3*1 + 1*0.25 = 3.25
-        self.assertEqual(score, 3.25)
+        # edge_penalty = 1 (cell at x=0), score = 3*1 - 1*0.25 = 2.75
+        self.assertEqual(score, 2.75)
 
     def test_edge_penalty_wide_window(self):
         """Supercharged cells on edges get penalty in fallback scoring"""
@@ -251,8 +251,9 @@ class TestCalculateWindowScore(unittest.TestCase):
             window.cells[0][x]["supercharged"] = True
 
         score = calculate_window_score(window, "tech")
-        # 3 supercharged (no empty) = 3*3 = 9
-        self.assertEqual(score, 9)
+        # 3 supercharged (x=0, 1, 2). Edges are x=0 and x=2.
+        # Score = 3*3 - 2*0.25 = 9 - 0.5 = 8.5
+        self.assertEqual(score, 8.5)
 
     def test_single_cell_window_score(self):
         """1x1 window scoring"""

@@ -120,7 +120,7 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
             window_width, window_height = 4, 3
 
     # --- Generic fallback rules ---
-    elif module_count < 1:
+    elif module_count < 2:
         logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
         return 1, 1
     elif module_count < 3:

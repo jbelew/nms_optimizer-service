@@ -33,6 +33,7 @@ def _scan_grid_with_window(
     tech: str,
     require_supercharge: bool = True,
     require_non_supercharge: bool = False,
+    target_adj: Optional[str] = None,
 ) -> Tuple[float, Optional[Tuple[int, int]]]:
     """
     Scans a grid with a fixed window size to find the best placement opportunity.
@@ -141,7 +142,7 @@ def _scan_grid_with_window(
                 continue  # Skip this window
 
             # Calculate score and update best if this window is better
-            window_score = calculate_window_score(window_grid, tech, grid_copy, start_x, start_y)
+            window_score = calculate_window_score(window_grid, tech, grid_copy, start_x, start_y, target_adj=target_adj)
             if window_score > best_score:
                 best_score = window_score
                 best_start_pos = (start_x, start_y)
@@ -271,6 +272,7 @@ def find_supercharged_opportunities(
         tech,
         require_supercharge=require_supercharge_for_scan,
         require_non_supercharge=require_non_supercharge_for_scan,
+        target_adj=tech_modules[0].get("adjacency") if tech_modules else None,
     )
 
     # --- Scan with Rotated Dimensions (if needed) ---
@@ -290,6 +292,7 @@ def find_supercharged_opportunities(
             tech,
             require_supercharge=require_supercharge_for_scan,
             require_non_supercharge=require_non_supercharge_for_scan,
+            target_adj=tech_modules[0].get("adjacency") if tech_modules else None,
         )
 
     # --- Compare Results and Determine Best Dimensions ---
@@ -334,6 +337,7 @@ def find_supercharged_opportunities(
             tech,
             require_supercharge=False,
             require_non_supercharge=False,
+            target_adj=tech_modules[0].get("adjacency") if tech_modules else None,
         )
         if rotated_needed:
             best_score2, best_pos2 = _scan_grid_with_window(
@@ -344,6 +348,7 @@ def find_supercharged_opportunities(
                 tech,
                 require_supercharge=False,
                 require_non_supercharge=False,
+                target_adj=tech_modules[0].get("adjacency") if tech_modules else None,
             )
 
         # Re-compare scores
@@ -371,7 +376,12 @@ def find_supercharged_opportunities(
 
 
 def calculate_window_score(
-    window_grid: Grid, tech: str, full_grid: Optional[Grid] = None, window_start_x: int = 0, window_start_y: int = 0
+    window_grid: Grid,
+    tech: str,
+    full_grid: Optional[Grid] = None,
+    window_start_x: int = 0,
+    window_start_y: int = 0,
+    target_adj: Optional[str] = None,
 ) -> float:
     """
     Calculates a quality score for a placement window.
@@ -456,15 +466,27 @@ def calculate_window_score(
                             if 0 <= adj_x < full_grid.width and 0 <= adj_y < full_grid.height:
                                 adj_cell = full_grid.get_cell(adj_x, adj_y)
                                 if adj_cell["module"] is not None:
-                                    adjacency_score += 3.0  # Weight for adjacency to other modules
+                                    adj_tech = adj_cell.get("tech")
+                                    adj_adj = adj_cell.get("adjacency")
+
+                                    # Base adjacency
+                                    adjacency_score += 1.0
+
+                                    # Bonus for same tech
+                                    if adj_tech == tech:
+                                        adjacency_score += 5.0
+
+                                    # Bonus for matching specialized subtype
+                                    if target_adj and adj_adj == target_adj and "_" in target_adj:
+                                        adjacency_score += 4.0
 
     if supercharged_count > 0:
-        return supercharged_count * 3  # + (empty_count * 1)
+        # Prioritize supercharged slots. Adjacency is included for 1x1 windows and tie-breaking.
+        # We don't include empty_count here to maintain calibration with existing tests for large windows.
+        return (supercharged_count * 3) + adjacency_score - (edge_penalty * 0.25)
     else:
-        # For single cells with no supercharge, prioritize adjacency
-        if window_grid.width == 1 and window_grid.height == 1:
-            return empty_count * 1 + adjacency_score  # Adjacency bonus dominates for single modules
-        return (supercharged_count * 3) + (empty_count * 1) + (edge_penalty * 0.25)
+        # For windows with no supercharge, prioritize empty space and adjacency
+        return (empty_count * 1) + adjacency_score - (edge_penalty * 0.25)
 
 
 def create_localized_grid(

@@ -63,7 +63,7 @@
                 "image": "exosuit/anomaly.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "AS", "type": "core", "label": "Anomaly Suppressor", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/anomaly.webp", "checked": true}
+                    {"id": "AS", "type": "core", "label": "Anomaly Suppressor (EXP16)", "bonus": 1.0, "adjacency": "greater_3", "sc_eligible": false, "image": "exosuit/anomaly.webp", "checked": true}
                 ]
             },
             {
@@ -72,7 +72,7 @@
                 "image": "exosuit/hazard.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "HP", "type": "core", "label": "Hazard Protection", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/hazard.webp", "checked": true}
+                    {"id": "HP", "type": "core", "label": "Hazard Protection", "bonus": 1.0, "adjacency": "greater_3", "sc_eligible": false, "image": "exosuit/hazard.webp", "checked": true}
                 ]
             },
             {
@@ -81,7 +81,7 @@
                 "image": "exosuit/pressure.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "PM", "type": "core", "label": "Pressure Membrane", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exosuit/pressure.webp", "checked": true}
+                    {"id": "PM", "type": "core", "label": "Pressure Membrane", "bonus": 1.0, "adjacency": "greater_3", "sc_eligible": false, "image": "exosuit/pressure.webp", "checked": true}
                 ]
             },
             {
@@ -114,7 +114,7 @@
                 "image": "exosuit/aeration.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 0.0, "adjacency": "greater_2", "sc_eligible": false, "image": "exosuit/aeration.webp", "checked": true},
+                    {"id": "AM", "type": "bonus", "label": "Aeration Membrane", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": false, "image": "exosuit/aeration.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Aeration Membrane Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Aeration Membrane Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Aeration Membrane Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/aeration-upgrade.webp", "checked": true}

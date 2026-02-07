@@ -315,8 +315,14 @@ def calculate_pattern_adjacency_score(grid, tech):
                         rule_value = int(parts[1])
 
                         # Apply bonus based on the rule
-                        if rule_type == "greater" and num_adjacent_same_group_other_tech > rule_value:
-                            total_adjacency_score += group_adjacency_weight * num_adjacent_same_group_other_tech
+                        # For 'greater', even 1 matching neighbor is a good sign for single modules
+                        if rule_type == "greater" and num_adjacent_same_group_other_tech > 0:
+                            # Base boost for matching the type
+                            total_adjacency_score += group_adjacency_weight
+
+                            # Additional boost if we meet the actual threshold
+                            if num_adjacent_same_group_other_tech > rule_value:
+                                total_adjacency_score += group_adjacency_weight * num_adjacent_same_group_other_tech
                         elif rule_type == "lesser" and num_adjacent_same_group_other_tech < rule_value:
                             total_adjacency_score += group_adjacency_weight * (
                                 rule_value - num_adjacent_same_group_other_tech
