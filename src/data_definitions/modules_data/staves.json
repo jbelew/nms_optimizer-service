@@ -89,9 +89,9 @@
                     {"id": "Xa", "type": "upgrade", "label": "[1] Boltcaster Upgrade Theta", "bonus": 0.02, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Boltcaster Upgrade Tau", "bonus": 0.019, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Boltcaster Upgrade Sigma", "bonus": 0.018, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
-                    {"id": "Fa", "type": "atlantid", "label": "[1] Forbidden Module Theta", "bonus": 0.22, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
-                    {"id": "Fb", "type": "atlantid", "label": "[2] Forbidden Module Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
-                    {"id": "Fc", "type": "atlantid", "label": "[3] Forbidden Module Sigma", "bonus": 0.2, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true}
+                    {"id": "Fa", "type": "atlantid", "label": "[F1] Forbidden Module Theta", "bonus": 0.22, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
+                    {"id": "Fb", "type": "atlantid", "label": "[F2] Forbidden Module Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true},
+                    {"id": "Fc", "type": "atlantid", "label": "[F3] Forbidden Module Sigma", "bonus": 0.2, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/forbidden.webp", "checked": true}
                 ]
             },
             {
