@@ -22,6 +22,55 @@ where
     }
 }
 
+fn adjacency_type_from_string_or_null<'de, D>(deserializer: D) -> Result<Option<AdjacencyType>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: Option<String> = Option::deserialize(deserializer)?;
+    match s {
+        Some(val) => {
+            match val.as_str() {
+                "greater" => Ok(Some(AdjacencyType::Greater)),
+                "lesser" => Ok(Some(AdjacencyType::Lesser)),
+                "no_adjacency" | "none" | "" => Ok(Some(AdjacencyType::NoAdjacency)),
+                _ => {
+                    let val_lower = val.to_lowercase();
+                    if val_lower.contains("greater") {
+                        Ok(Some(AdjacencyType::Greater))
+                    } else if val_lower.contains("lesser") {
+                        Ok(Some(AdjacencyType::Lesser))
+                    } else {
+                        Ok(Some(AdjacencyType::NoAdjacency))
+                    }
+                }
+            }
+        }
+        None => Ok(None),
+    }
+}
+
+fn adjacency_type_from_string<'de, D>(deserializer: D) -> Result<AdjacencyType, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let s: String = String::deserialize(deserializer)?;
+    match s.as_str() {
+        "greater" => Ok(AdjacencyType::Greater),
+        "lesser" => Ok(AdjacencyType::Lesser),
+        "no_adjacency" | "none" | "" => Ok(AdjacencyType::NoAdjacency),
+        _ => {
+            let s_lower = s.to_lowercase();
+            if s_lower.contains("greater") {
+                Ok(AdjacencyType::Greater)
+            } else if s_lower.contains("lesser") {
+                Ok(AdjacencyType::Lesser)
+            } else {
+                Ok(AdjacencyType::NoAdjacency)
+            }
+        }
+    }
+}
+
 #[pyclass]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum AdjacencyType {
@@ -71,6 +120,7 @@ pub struct Cell {
     #[pyo3(get, set)]
     pub active: bool,
     #[pyo3(get, set)]
+    #[serde(deserialize_with = "adjacency_type_from_string_or_null")]
     pub adjacency: Option<AdjacencyType>,
     #[pyo3(get, set)]
     pub tech: Option<String>,
@@ -157,6 +207,7 @@ pub struct Module {
     #[pyo3(get, set)]
     pub bonus: f64,
     #[pyo3(get, set)]
+    #[serde(deserialize_with = "adjacency_type_from_string")]
     pub adjacency: AdjacencyType,
     #[pyo3(get, set)]
     pub sc_eligible: bool,

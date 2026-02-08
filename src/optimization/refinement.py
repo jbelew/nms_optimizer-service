@@ -597,11 +597,20 @@ def simulated_annealing(
         "reactor": rust_scorer.ModuleType.Reactor,  # type: ignore
         "atlantid": rust_scorer.ModuleType.Atlantid,  # type: ignore
     }
-    adjacency_map = {
-        "greater": rust_scorer.AdjacencyType.Greater,  # type: ignore
-        "lesser": rust_scorer.AdjacencyType.Lesser,  # type: ignore
-        "none": rust_scorer.AdjacencyType.NoAdjacency,  # type: ignore
-    }
+
+    def get_rust_adjacency(adj_str):
+        if not adj_str:
+            return rust_scorer.AdjacencyType.NoAdjacency
+        if adj_str == "greater":
+            return rust_scorer.AdjacencyType.Greater
+        if adj_str == "lesser":
+            return rust_scorer.AdjacencyType.Lesser
+        adj_lower = adj_str.lower()
+        if "greater" in adj_lower:
+            return rust_scorer.AdjacencyType.Greater
+        if "lesser" in adj_lower:
+            return rust_scorer.AdjacencyType.Lesser
+        return rust_scorer.AdjacencyType.NoAdjacency
 
     tech_modules_rs = [
         rust_scorer.Module(  # type: ignore
@@ -610,7 +619,7 @@ def simulated_annealing(
             tech=tech,
             module_type=module_type_map[m["type"]],
             bonus=m["bonus"],
-            adjacency=adjacency_map[m["adjacency"]],
+            adjacency=get_rust_adjacency(m["adjacency"]),
             sc_eligible=m["sc_eligible"],
             image=m.get("image"),
         )

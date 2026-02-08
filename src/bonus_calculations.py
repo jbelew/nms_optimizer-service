@@ -35,13 +35,19 @@ def python_grid_to_rust_grid(python_grid: Grid) -> RustGrid:
             py_cell = python_grid.get_cell(x, y)
 
             # Convert adjacency type
-            adjacency = None
-            if py_cell["adjacency"] and "greater" in py_cell["adjacency"]:
-                adjacency = RustAdjacencyType.Greater
-            elif py_cell["adjacency"] == "lesser":
-                adjacency = RustAdjacencyType.Lesser
-            else:  # Handles "no_adjacency", "none", False, or None
-                adjacency = getattr(RustAdjacencyType, "NoAdjacency")
+            adjacency = getattr(RustAdjacencyType, "NoAdjacency")
+            py_adj = py_cell.get("adjacency")
+            if py_adj:
+                if py_adj == "greater":
+                    adjacency = RustAdjacencyType.Greater
+                elif py_adj == "lesser":
+                    adjacency = RustAdjacencyType.Lesser
+                elif isinstance(py_adj, str):
+                    py_adj_lower = py_adj.lower()
+                    if "greater" in py_adj_lower:
+                        adjacency = RustAdjacencyType.Greater
+                    elif "lesser" in py_adj_lower:
+                        adjacency = RustAdjacencyType.Lesser
 
             # Convert module type
             module_type = None
