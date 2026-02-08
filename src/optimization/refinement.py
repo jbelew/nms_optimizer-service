@@ -601,10 +601,6 @@ def simulated_annealing(
     def get_rust_adjacency(adj_str):
         if not adj_str:
             return rust_scorer.AdjacencyType.NoAdjacency
-        if adj_str == "greater":
-            return rust_scorer.AdjacencyType.Greater
-        if adj_str == "lesser":
-            return rust_scorer.AdjacencyType.Lesser
         adj_lower = adj_str.lower()
         if "greater" in adj_lower:
             return rust_scorer.AdjacencyType.Greater

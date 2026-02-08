@@ -29,20 +29,13 @@ where
     let s: Option<String> = Option::deserialize(deserializer)?;
     match s {
         Some(val) => {
-            match val.as_str() {
-                "greater" => Ok(Some(AdjacencyType::Greater)),
-                "lesser" => Ok(Some(AdjacencyType::Lesser)),
-                "no_adjacency" | "none" | "" => Ok(Some(AdjacencyType::NoAdjacency)),
-                _ => {
-                    let val_lower = val.to_lowercase();
-                    if val_lower.contains("greater") {
-                        Ok(Some(AdjacencyType::Greater))
-                    } else if val_lower.contains("lesser") {
-                        Ok(Some(AdjacencyType::Lesser))
-                    } else {
-                        Ok(Some(AdjacencyType::NoAdjacency))
-                    }
-                }
+            let val_lower = val.to_lowercase();
+            if val_lower.contains("greater") {
+                Ok(Some(AdjacencyType::Greater))
+            } else if val_lower.contains("lesser") {
+                Ok(Some(AdjacencyType::Lesser))
+            } else {
+                Ok(Some(AdjacencyType::NoAdjacency))
             }
         }
         None => Ok(None),
@@ -54,20 +47,13 @@ where
     D: Deserializer<'de>,
 {
     let s: String = String::deserialize(deserializer)?;
-    match s.as_str() {
-        "greater" => Ok(AdjacencyType::Greater),
-        "lesser" => Ok(AdjacencyType::Lesser),
-        "no_adjacency" | "none" | "" => Ok(AdjacencyType::NoAdjacency),
-        _ => {
-            let s_lower = s.to_lowercase();
-            if s_lower.contains("greater") {
-                Ok(AdjacencyType::Greater)
-            } else if s_lower.contains("lesser") {
-                Ok(AdjacencyType::Lesser)
-            } else {
-                Ok(AdjacencyType::NoAdjacency)
-            }
-        }
+    let s_lower = s.to_lowercase();
+    if s_lower.contains("greater") {
+        Ok(AdjacencyType::Greater)
+    } else if s_lower.contains("lesser") {
+        Ok(AdjacencyType::Lesser)
+    } else {
+        Ok(AdjacencyType::NoAdjacency)
     }
 }
 
