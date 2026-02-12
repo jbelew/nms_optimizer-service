@@ -90,7 +90,7 @@
                 "image": "exosuit/coolant.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "CN", "type": "bonus", "label": "Coolant Networt", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant.webp", "checked": true},
+                    {"id": "CN", "type": "bonus", "label": "Coolant Network", "bonus": 1.0, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Coolant Network Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Coolant Network Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Coolant Network Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exosuit/coolant-upgrade.webp", "checked": true}

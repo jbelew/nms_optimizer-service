@@ -15,7 +15,7 @@
                     {"id": "Xa", "type": "upgrade", "label": "[1] Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
-                    {"id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-laser.webp", "checked": true}
+                    {"id": "MB", "type": "bonus", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-laser.webp", "checked": true}
                 ]
             }
         ],
