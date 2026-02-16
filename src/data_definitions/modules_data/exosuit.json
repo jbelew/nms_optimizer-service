@@ -170,25 +170,25 @@
                 ]
             },
             {
-                "label": "Rebuilt Exosuit Module",
+                "label": "Salvaged Upgrade Components",
                 "key": "rebuilt",
                 "image": "exosuit/rebuilt.webp",
                 "color": "crimson",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Rebuilt Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Rebuilt Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Rebuilt Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Salvaged Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Salvaged Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Salvaged Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/rebuilt.webp", "checked": true}
                 ]
             },
             {
-                "label": "Forbidden Exosuit Module",
+                "label": "Forbidden Exosuit Technology",
                 "key": "forbidden",
                 "image": "exosuit/forbidden.webp",
                 "color": "crimson",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Forbidden Exosuit Upgrade Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Forbidden Exosuit Upgrade Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Forbidden Exosuit Upgrade Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Forbidden Exosuit Module Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Forbidden Exosuit Module Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Forbidden Exosuit Module Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exosuit/forbidden.webp", "checked": true}
                 ]
             }
         ],
