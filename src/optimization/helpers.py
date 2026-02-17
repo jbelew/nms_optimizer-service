@@ -99,6 +99,12 @@ def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tupl
     elif tech == "bolt-caster":
         window_width, window_height = 4, 3
 
+    elif tech == "trails":
+        if module_count <= 9:
+            window_width, window_height = 3, 3
+        else:
+            window_width, window_height = 4, 3
+
     elif tech == "jetpack":
         window_width, window_height = 3, 3
 
