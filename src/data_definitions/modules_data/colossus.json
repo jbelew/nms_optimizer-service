@@ -163,7 +163,7 @@
                 "image": "exocraft/excavation.webp",
                 "color": "gray",
                 "modules": [
-                    {"id": "EB", "type": "core", "label": "Excavation Blase", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/excavation.webp", "checked": true}
+                    {"id": "EB", "type": "core", "label": "Excavation Blade", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/excavation.webp", "checked": true}
                 ]
             },
             {
