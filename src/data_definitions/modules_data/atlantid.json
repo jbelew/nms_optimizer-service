@@ -39,6 +39,15 @@
                 ]
             },
             {
+                "label": "Gravatino Coil",
+                "key": "gravatino",
+                "image": "multi-tool/gravatino.webp",
+                "color": "gray",
+                "modules": [
+                    {"id": "GC", "type": "core", "label": "Gravatino Coil", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "multi-tool/gravatino.webp", "checked": true}
+                ]
+            },
+            {
                 "label": "Scanners",
                 "key": "scanner",
                 "image": "multi-tool/mt-scanner.webp",

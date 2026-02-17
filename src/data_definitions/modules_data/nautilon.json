@@ -60,6 +60,15 @@
         ],
         "Utilities": [
             {
+                "label": "Cyclops Scope",
+                "key": "cyclops",
+                "image": "exocraft/cyclops.webp",
+                "color": "gray",
+                "modules": [
+                    {"id": "CS", "type": "core", "label": "Cyclops Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/cyclops.webp", "checked": true}
+                ]
+            },
+            {
                 "label": "Hi-Powered Sonar",
                 "key": "sonar",
                 "image": "exocraft/sonar.webp",

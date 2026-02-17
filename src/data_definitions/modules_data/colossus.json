@@ -7,12 +7,12 @@
                 "label": "Fusion Engine",
                 "key": "fusion",
                 "image": "exocraft/fusion.webp",
-                "color": "orange",
+                "color": "sky",
                 "modules": [
                     {"id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/fusion.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Fusion Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Fusion Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Fusion Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fusion Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fusion Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fusion Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -40,27 +40,27 @@
                 "label": "Hi-Slide Suspension",
                 "key": "slide",
                 "image": "exocraft/slide.webp",
-                "color": "gray",
+                "color": "sky",
                 "modules": [
-                    {"id": "HS", "type": "core", "label": "Hi-Slide Suspension", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/slide.webp", "checked": true}
+                    {"id": "HS", "type": "core", "label": "Hi-Slide Suspension", "bonus": 0.0, "adjacency": "greater_1", "sc_eligible": false, "image": "exocraft/slide.webp", "checked": true}
                 ]
             },
             {
                 "label": "Grip Boost Suspension",
                 "key": "grip",
                 "image": "exocraft/grip.webp",
-                "color": "gray",
+                "color": "sky",
                 "modules": [
-                    {"id": "GB", "type": "core", "label": "Grip Boost Suspension", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/grip.webp", "checked": true}
+                    {"id": "GB", "type": "core", "label": "Grip Boost Suspension", "bonus": 0.0, "adjacency": "greater_1", "sc_eligible": false, "image": "exocraft/grip.webp", "checked": true}
                 ]
             },
             {
                 "label": "Drift Suspension",
                 "key": "drift",
                 "image": "exocraft/drift.webp",
-                "color": "gray",
+                "color": "sky",
                 "modules": [
-                    {"id": "DS", "type": "core", "label": "Drift Suspension", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/drift.webp", "checked": true}
+                    {"id": "DS", "type": "core", "label": "Drift Suspension", "bonus": 0.0, "adjacency": "greater_1", "sc_eligible": false, "image": "exocraft/drift.webp", "checked": true}
                 ]
             }
         ],
@@ -146,6 +146,24 @@
                 "color": "gray",
                 "modules": [
                     {"id": "ER", "type": "core", "label": "Exocraft Radar", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/radar.webp", "checked": true}
+                ]
+            },
+            {
+                "label": "Cyclops Scope",
+                "key": "cyclops",
+                "image": "exocraft/cyclops.webp",
+                "color": "gray",
+                "modules": [
+                    {"id": "CS", "type": "core", "label": "Cyclops Scope", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/cyclops.webp", "checked": true}
+                ]
+            },
+            {
+                "label": "Excavation Blade",
+                "key": "excavation",
+                "image": "exocraft/excavation.webp",
+                "color": "gray",
+                "modules": [
+                    {"id": "EB", "type": "core", "label": "Excavation Blase", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/excavation.webp", "checked": true}
                 ]
             },
             {
