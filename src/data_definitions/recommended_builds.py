@@ -593,12 +593,12 @@ recommended_builds = {
                     {
                         "tech": "hardframe-left",
                         "module": "HL",
-                        "adjacency_bonus": 0,
+                        "adjacency_bonus": 1,
                     },
                     {
                         "tech": "liquidator-legs",
                         "module": "LL",
-                        "adjacency_bonus": 0,
+                        "adjacency_bonus": 1,
                     },
                     {"tech": "daedalus", "module": "Xc", "adjacency_bonus": 1},
                     {
