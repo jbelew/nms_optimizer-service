@@ -205,7 +205,7 @@ recommended_builds = {
                     {"tech": "mounted", "module": "Xa", "adjacency_bonus": 1},
                     {"tech": "cyclops", "module": "CS", "adjacency_bonus": 0},
                     {"tech": "radar", "module": "ER", "adjacency_bonus": 0},
-                    {"tech": "slide", "module": "HS", "adjacency_bonus": 1},
+                    {"tech": "drift", "module": "DS", "adjacency_bonus": 1},
                     {"tech": "grip", "module": "GB", "adjacency_bonus": 1},
                 ],
                 [
@@ -591,8 +591,8 @@ recommended_builds = {
                         "supercharged": True,
                     },
                     {
-                        "tech": "cyclops",
-                        "module": "CS",
+                        "tech": "hardframe-left",
+                        "module": "HL",
                         "adjacency_bonus": 0,
                     },
                     {
@@ -606,7 +606,7 @@ recommended_builds = {
                         "module": "LB",
                         "adjacency_bonus": 0,
                     },
-                    {"tech": "ai", "module": "AI", "adjacency_bonus": 0},
+                    {"tech": "cyclops", "module": "CS", "adjacency_bonus": 0},
                 ],
                 [
                     {"active": False},
