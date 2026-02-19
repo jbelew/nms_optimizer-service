@@ -10,10 +10,10 @@
                 "color": "orange",
                 "modules": [
                     {"id": "DE", "type": "core", "label": "Daedalus Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/daedalus.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Daedalus Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Daedalus Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Daedalus Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
-                    {"id": "SG", "type": "bonus", "label": "Self-Greasing Servos", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/servos.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Daedalus Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Daedalus Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Daedalus Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "SG", "type": "bonus", "label": "Self-Greasing Servos", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/servos.webp", "checked": true}
                 ]
             },
             {
@@ -38,18 +38,18 @@
                 "label": "Hardframe Legs",
                 "key": "hardframe-legs",
                 "image": "exocraft/hardframe-legs.webp",
-                "color": "gray",
+                "color": "orange",
                 "modules": [
-                    {"id": "HL", "type": "core", "label": "Hardframe Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": false, "image": "exocraft/hardframe-legs.webp", "checked": true}
+                    {"id": "HL", "type": "core", "label": "Hardframe Legs", "bonus": 0.36, "adjacency": "greater_2", "sc_eligible": false, "image": "exocraft/hardframe-legs.webp", "checked": true}
                 ]
             },
             {
                 "label": "Liquidator Legs",
                 "key": "liquidator-legs",
                 "image": "exocraft/liquidator-legs.webp",
-                "color": "gray",
+                "color": "orange",
                 "modules": [
-                    {"id": "LL", "type": "core", "label": "Liquidator Legs", "bonus": 0.36, "adjacency": "none", "sc_eligible": false, "image": "exocraft/liquidator-legs.webp", "checked": true}
+                    {"id": "LL", "type": "core", "label": "Liquidator Legs", "bonus": 0.36, "adjacency": "greater_2", "sc_eligible": false, "image": "exocraft/liquidator-legs.webp", "checked": true}
                 ]
             }
         ],
@@ -73,10 +73,10 @@
                 "image": "exocraft/minotaur.webp",
                 "color": "blue",
                 "modules": [
-                    {"id": "MC", "type": "core", "label": "Minotaur Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Minotaur Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Minotaur Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Minotaur Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true}
+                    {"id": "MC", "type": "core", "label": "Minotaur Cannon", "bonus": 1.0, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Minotaur Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Minotaur Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Minotaur Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -92,9 +92,9 @@
                 "label": "Hardframe Left Arm",
                 "key": "hardframe-left",
                 "image": "exocraft/hardframe-left.webp",
-                "color": "gray",
+                "color": "green",
                 "modules": [
-                    {"id": "HL", "type": "core", "label": "Hardframe Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/hardframe-left.webp", "checked": true}
+                    {"id": "HL", "type": "core", "label": "Hardframe Left Arm", "bonus": 1.0, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/hardframe-left.webp", "checked": true}
                 ]
             },
             {
