@@ -60,11 +60,11 @@
                 "image": "exocraft/minotaur-laser.webp",
                 "color": "green",
                 "modules": [
-                    {"id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-laser.webp", "checked": true},
-                    {"id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/precision.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
+                    {"id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-laser.webp", "checked": true},
+                    {"id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/precision.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -73,10 +73,10 @@
                 "image": "exocraft/minotaur.webp",
                 "color": "blue",
                 "modules": [
-                    {"id": "MC", "type": "core", "label": "Minotaur Cannon", "bonus": 1.0, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Minotaur Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Minotaur Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Minotaur Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true}
+                    {"id": "MC", "type": "core", "label": "Minotaur Cannon", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Minotaur Cannon Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Minotaur Cannon Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Minotaur Cannon Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/minotaur-upgrade.webp", "checked": true}
                 ]
             },
             {
