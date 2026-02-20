@@ -10,10 +10,12 @@
                 "color": "orange",
                 "modules": [
                     {"id": "DE", "type": "core", "label": "Daedalus Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/daedalus.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Daedalus Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Daedalus Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Daedalus Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
-                    {"id": "SG", "type": "bonus", "label": "Self-Greasing Servos", "bonus": 0.28, "adjacency": "greater_2", "sc_eligible": true, "image": "exocraft/servos.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Daedalus Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Daedalus Engine Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Daedalus Engine Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
+                    {"id": "SG", "type": "bonus", "label": "Self-Greasing Servos", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/servos.webp", "checked": true},
+                    {"id": "HL", "type": "bonus", "label": "Hardframe Legs", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "exocraft/hardframe-legs.webp", "checked": true},
+                    {"id": "LL", "type": "bonus", "label": "Liquidator Legs", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "exocraft/liquidator-legs.webp", "checked": true}
                 ]
             },
             {
@@ -33,24 +35,6 @@
                 "modules": [
                     {"id": "FS", "type": "core", "label": "Icarus Fuel System", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/icarus.webp", "checked": true}
                 ]
-            },
-            {
-                "label": "Hardframe Legs",
-                "key": "hardframe-legs",
-                "image": "exocraft/hardframe-legs.webp",
-                "color": "orange",
-                "modules": [
-                    {"id": "HL", "type": "core", "label": "Hardframe Legs", "bonus": 0.36, "adjacency": "greater_2", "sc_eligible": false, "image": "exocraft/hardframe-legs.webp", "checked": true}
-                ]
-            },
-            {
-                "label": "Liquidator Legs",
-                "key": "liquidator-legs",
-                "image": "exocraft/liquidator-legs.webp",
-                "color": "orange",
-                "modules": [
-                    {"id": "LL", "type": "core", "label": "Liquidator Legs", "bonus": 0.36, "adjacency": "greater_2", "sc_eligible": false, "image": "exocraft/liquidator-legs.webp", "checked": true}
-                ]
             }
         ],
         "Weaponry": [
@@ -60,11 +44,12 @@
                 "image": "exocraft/minotaur-laser.webp",
                 "color": "green",
                 "modules": [
-                    {"id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/minotaur-laser.webp", "checked": true},
-                    {"id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/precision.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
+                    {"id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exocraft/minotaur-laser.webp", "checked": true},
+                    {"id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/precision.webp", "checked": true},
+                    {"id": "HL", "type": "bonus", "label": "Hardframe Left Arm", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/hardframe-left.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -86,15 +71,6 @@
                 "color": "sky",
                 "modules": [
                     {"id": "HR", "type": "core", "label": "Hardframe Right Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/hardframe-right.webp", "checked": true}
-                ]
-            },
-            {
-                "label": "Hardframe Left Arm",
-                "key": "hardframe-left",
-                "image": "exocraft/hardframe-left.webp",
-                "color": "green",
-                "modules": [
-                    {"id": "HL", "type": "core", "label": "Hardframe Left Arm", "bonus": 1.0, "adjacency": "greater_1", "sc_eligible": true, "image": "exocraft/hardframe-left.webp", "checked": true}
                 ]
             },
             {
