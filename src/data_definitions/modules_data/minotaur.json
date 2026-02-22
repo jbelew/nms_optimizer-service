@@ -7,7 +7,7 @@
                 "label": "Daedalus Engine",
                 "key": "daedalus",
                 "image": "exocraft/daedalus.webp",
-                "color": "orange",
+                "color": "sky",
                 "modules": [
                     {"id": "DE", "type": "core", "label": "Daedalus Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/daedalus.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Daedalus Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/daedalus-upgrade.webp", "checked": true},
@@ -68,7 +68,7 @@
                 "label": "Hardframe Right Arm",
                 "key": "hardframe-right",
                 "image": "exocraft/hardframe-right.webp",
-                "color": "sky",
+                "color": "jade",
                 "modules": [
                     {"id": "HR", "type": "core", "label": "Hardframe Right Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/hardframe-right.webp", "checked": true}
                 ]
@@ -77,7 +77,7 @@
                 "label": "Liquidator Right Arm",
                 "key": "liquidator-right",
                 "image": "exocraft/liquidator-right.webp",
-                "color": "sky",
+                "color": "jade",
                 "modules": [
                     {"id": "LR", "type": "core", "label": "Liquidator Right Arm", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "exocraft/liquidator-right.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Flamethrower Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
@@ -89,7 +89,7 @@
                 "label": "Liquidator Left Arm",
                 "key": "liquidator-left",
                 "image": "exocraft/liquidator-left.webp",
-                "color": "sky",
+                "color": "jade",
                 "modules": [
                     {"id": "LL", "type": "core", "label": "Liquidator Left Arm", "bonus": 1.0, "adjacency": "none", "sc_eligible": true, "image": "exocraft/liquidator-left.webp", "checked": true}
                 ]

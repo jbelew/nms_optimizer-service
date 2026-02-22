@@ -7,7 +7,7 @@
                 "label": "Fusion Engine",
                 "key": "fusion",
                 "image": "exocraft/fusion.webp",
-                "color": "orange",
+                "color": "sky",
                 "modules": [
                     {"id": "FE", "type": "core", "label": "Fusion Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/fusion.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Fusion Engine Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/fusion-upgrade.webp", "checked": true},

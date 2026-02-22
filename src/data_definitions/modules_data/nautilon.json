@@ -7,7 +7,7 @@
                 "label": "Humboldt Drive",
                 "key": "humboldt",
                 "image": "exocraft/humboldt.webp",
-                "color": "orange",
+                "color": "sky",
                 "modules": [
                     {"id": "HD", "type": "core", "label": "Humboldt Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": false, "image": "exocraft/humboldt.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Humboldt Drive Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/humboldt-upgrade.webp", "checked": true},
