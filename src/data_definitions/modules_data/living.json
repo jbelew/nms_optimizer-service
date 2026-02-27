@@ -119,6 +119,7 @@
                 "key": "trails",
                 "image": "starship/trails.webp",
                 "color": "white",
+                "window_overrides": {"5": [3, 3], "6": [3, 3]},
                 "modules": [
                     {"id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/artemis.webp", "checked": true},
                     {"id": "PB", "type": "bonus", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": true, "image": "starship/polo.webp", "checked": true},

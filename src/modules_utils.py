@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -170,9 +171,95 @@ def get_tech_tree(ship, module_data):
     return tech_tree
 
 
+# Cache for window profiles
+_WINDOW_PROFILES = None
+
+
+def _get_window_profiles():
+    global _WINDOW_PROFILES
+    if _WINDOW_PROFILES is None:
+        profiles_path = os.path.join(os.path.dirname(__file__), "data_definitions", "window_profiles.json")
+        try:
+            with open(profiles_path, "r", encoding="utf-8") as f:
+                _WINDOW_PROFILES = json.load(f)
+        except Exception as e:
+            logging.error(f"Failed to load window_profiles.json: {e}")
+            _WINDOW_PROFILES = {}
+    return _WINDOW_PROFILES
+
+
+def get_tech_window_rules(modules, ship, tech_key):
+    """Retrieves the merged window rules dictionary for a specific technology.
+
+    Loads the base rules from window_profiles.json and applies any specific
+    overrides defined in the tech's 'window_overrides'.
+
+    Args:
+        modules (dict): The complete module data for the ship.
+        ship (str): The ship type (e.g., "corvette").
+        tech_key (str): The technology key (e.g., "pulse").
+
+    Returns:
+        dict: The merged window rules for the technology, or an empty dict if not found.
+    """
+    ship_data = modules
+    if ship_data is None:
+        return {}
+
+    types_data = ship_data.get("types")
+    if types_data is None:
+        return {}
+
+    candidates_for_tech = []
+    for tech_list in types_data.values():
+        for technology_info in tech_list:
+            if technology_info.get("key") == tech_key:
+                candidates_for_tech.append(technology_info)
+
+    selected_tech_data = None
+    for candidate in candidates_for_tech:
+        if candidate.get("type") is None:
+            selected_tech_data = candidate
+            break
+
+    if selected_tech_data is None and candidates_for_tech:
+        selected_tech_data = candidates_for_tech[0]
+
+    if not selected_tech_data:
+        return {}
+
+    overrides = selected_tech_data.get("window_overrides", {})
+    rules = {}
+
+    profiles = _get_window_profiles()
+
+    # 1. ALWAYS start with the 'standard' profile as the base foundation
+    # This solves scaling issues where users select 1-2 modules for things like jetpacks
+    if "standard" in profiles:
+        rules = json.loads(json.dumps(profiles["standard"]))
+
+    def deep_merge(target, source):
+        for k, v in source.items():
+            if isinstance(v, dict) and k in target and isinstance(target[k], dict):
+                deep_merge(target[k], v)
+            else:
+                target[k] = v
+
+    # 2. Deep merge any specific explicit overrides from this very JSON block
+    deep_merge(rules, overrides)
+
+    # Fallback to older window_rules if present (legacy format)
+    if not overrides and "window_rules" in selected_tech_data:
+        # If legacy, we just return it raw
+        return selected_tech_data["window_rules"]
+
+    return rules
+
+
 __all__ = [
     "get_tech_modules",
     "get_tech_modules_for_training",
     "get_tech_tree",
     "get_tech_tree_json",
+    "get_tech_window_rules",
 ]

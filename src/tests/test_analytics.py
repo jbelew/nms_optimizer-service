@@ -70,12 +70,11 @@ class TestGA4Client(unittest.TestCase):
 
     def test_client_init_with_env_vars(self):
         """Test client initialization with environment variables."""
-        with patch("src.analytics.GA4_MEASUREMENT_ID", "G-TEST"):
-            with patch("src.analytics.GA4_API_SECRET", "secret-123"):
-                client = GA4Client()
-                self.assertEqual(client.measurement_id, "G-TEST")
-                self.assertEqual(client.api_secret, "secret-123")
-                self.assertTrue(client.enabled)
+        with patch.dict("os.environ", {"GA4_MEASUREMENT_ID": "G-TEST", "GA4_API_SECRET": "secret-123"}, clear=True):
+            client = GA4Client()
+            self.assertEqual(client.measurement_id, "G-TEST")
+            self.assertEqual(client.api_secret, "secret-123")
+            self.assertTrue(client.enabled)
 
     def test_client_init_disabled_no_secret(self):
         """Test client is disabled when api_secret is missing."""
@@ -114,13 +113,15 @@ class TestGA4Client(unittest.TestCase):
     @patch("requests.post")
     def test_send_event_disabled(self, mock_post):
         """Test send_event returns False when disabled."""
-        client = GA4Client()  # No credentials, so disabled
-        event = AnalyticsEvent(name="test_event", params={})
+        with patch.dict("os.environ", {}, clear=True):
+            client = GA4Client()  # No credentials, so disabled
+            self.assertFalse(client.enabled)
+            event = AnalyticsEvent(name="test_event", params={})
 
-        result = client.send_event(event)
+            result = client.send_event(event)
 
-        self.assertFalse(result)
-        mock_post.assert_not_called()
+            self.assertFalse(result)
+            mock_post.assert_not_called()
 
     @patch("requests.post")
     def test_send_event_invalid_name(self, mock_post):

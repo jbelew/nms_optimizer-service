@@ -100,6 +100,7 @@
                 "key": "hyper",
                 "image": "starship/hyper.webp",
                 "color": "sky",
+                "window_overrides": {"11": [4, 3], "default": [4, 4]},
                 "modules": [
                     {"id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/hyperdrive.webp", "checked": true},
                     {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/atlantid.webp", "checked": true},
@@ -131,6 +132,7 @@
                 "key": "pulse",
                 "image": "starship/pulse.webp",
                 "color": "orange",
+                "window_overrides": {"7": [4, 2], "8": [4, 3], "9": [4, 3]},
                 "modules": [
                     {"id": "PE", "type": "core", "label": "Pulse Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/pulse.webp", "checked": true},
                     {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp", "checked": true},
@@ -193,11 +195,12 @@
                     {"id": "CD", "type": "core", "label": "Cargo Scan Deflector", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/cargo.webp", "checked": true}
                 ]
             },
-             {
+            {
                 "label": "Starship Trails",
                 "key": "trails",
                 "image": "starship/trails.webp",
                 "color": "white",
+                "window_overrides": {"5": [3, 3], "6": [3, 3]},
                 "modules": [
                     {"id": "AB", "type": "bonus", "label": "Artemis Figurine", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/artemis.webp", "checked": true},
                     {"id": "PB", "type": "bonus", "label": "Polo Figurine", "bonus": 0.06, "adjacency": "greater", "sc_eligible": true, "image": "starship/polo.webp", "checked": true},

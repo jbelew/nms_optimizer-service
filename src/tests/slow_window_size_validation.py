@@ -177,7 +177,7 @@ class TestWindowSizeValidation(unittest.TestCase):
                     continue
 
                 module_count = len(tech_modules)
-                chosen_w, chosen_h = determine_window_dimensions(module_count, tech, ship)
+                chosen_w, chosen_h = determine_window_dimensions(module_count, tech, ship, self.all_modules[ship])
                 chosen_size = (chosen_w, chosen_h)
 
                 # Only test if the chosen size is in our alternatives
@@ -240,7 +240,7 @@ class TestWindowSizeValidation(unittest.TestCase):
                     module_count = len(training_module_ids)
 
                     with self.subTest(ship=ship, tech=tech, module_count=module_count):
-                        w, h = determine_window_dimensions(module_count, tech, ship)
+                        w, h = determine_window_dimensions(module_count, tech, ship, ship_data)
 
                         self.assertGreater(w, 0)
                         self.assertGreater(h, 0)

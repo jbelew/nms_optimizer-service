@@ -14,138 +14,48 @@ Key Functions:
 """
 
 import logging
+import json
 from typing import Optional, Tuple
 from src.grid_utils import Grid
 from src.modules_utils import get_tech_modules
 from src.module_placement import place_module
+from src.modules_utils import get_tech_window_rules, _get_window_profiles  # Moved from inside function
 
 
-def determine_window_dimensions(module_count: int, tech: str, ship: str) -> Tuple[int, int]:
-    """
-    Calculates optimal window dimensions for module placement optimization.
-
-    Uses a hierarchical strategy to determine the window size for localized grid
-    operations, prioritizing ship/tech-specific overrides, then tech-specific rules,
-    then generic fallbacks based on module count.
-
-    Args:
-        module_count (int): Total number of modules for the technology.
-                           Used to determine window capacity.
-        tech (str): Technology identifier (e.g., "trails", "photon", "pulse", "hyper").
-                   Used for tech-specific sizing rules.
-        ship (str): Ship identifier (e.g., "corvette", "freighter", "sentinel").
-                   Used for ship-specific overrides.
-
-    Returns:
-        Tuple[int, int]: A tuple (window_width, window_height) representing
-                        the optimal dimensions for localized windows.
-                        Typical values range from 1×1 to 4×4.
-
-    Priority Order:
-        1. Ship + tech + module_count specific overrides (highest priority)
-        2. Ship + module_count overrides
-        3. Tech-specific rules (varies by tech)
-        4. Generic fallbacks based on module_count only (lowest priority)
-
-    Special Cases:
-        - **sentinel + photonix**: Always 4×3
-        - **corvette + pulse + 7 modules**: 4×2
-        - **corvette + 7-8 modules**: 3×3
-        - **hyper tech**: Scaled by module_count (1×1 to 4×4)
-        - **bolt-caster**: Always 4×3
-        - **pulse-spitter, jetpack**: 3×3 or 4×2 depending on count
-        - **pulse**: Varies 3×2 to 4×3 depending on count
-
-    Fallback Rules:
-        - module_count < 1: 1×1 (warning logged)
-        - module_count < 3: 2×1
-        - module_count 3-9: Scales 3×1 to 3×3
-        - module_count ≥10: 4×3
-
-    Notes:
-        - Windows are typically square or near-square for balanced coverage
-        - Larger windows accommodate more modules for parallel evaluation
-        - Width generally ≥ height for better module distribution
-        - Default is 3×3 for most generic cases
-    """
-    # --- Ship- and tech-specific overrides ---
-    if ship == "sentinel" and tech == "photonix":
-        return 4, 3
-
-    if ship == "corvette" and tech == "pulse" and module_count == 7:
-        return 4, 2
-
-    if ship == "corvette" and module_count in (7, 8):
-        return 3, 3
-
-    # Set 8 modules to 3x3 unless tech has specific sizing rules
-    if module_count == 8 and tech not in ("pulse", "photonix", "hyper", "pulse-spitter"):
-        return 3, 3
-
-    # Default window size if no other conditions are met
-    window_width, window_height = 3, 3
-
-    # --- Technology-specific rules ---
-    if tech == "hyper":
-        if module_count >= 12:
-            window_width, window_height = 4, 4
-        elif module_count >= 10:
-            window_width, window_height = 4, 3
-        elif module_count >= 9:
-            window_width, window_height = 3, 3
-        else:
-            window_width, window_height = 4, 2
-
-    elif tech == "daedalus":
-        window_width, window_height = 3, 3
-
-    elif tech == "bolt-caster":
-        window_width, window_height = 4, 3
-
-    elif tech == "trails":
-        if module_count <= 9:
-            window_width, window_height = 3, 3
-        else:
-            window_width, window_height = 4, 3
-
-    elif tech == "jetpack":
-        window_width, window_height = 3, 3
-
-    elif tech == "neutron":
-        window_width, window_height = 3, 3
-
-    elif tech == "pulse-spitter":
-        if module_count < 7:
-            window_width, window_height = 3, 3
-        else:
-            window_width, window_height = 4, 2
-
-    elif tech == "pulse":
-        if module_count == 6:
-            window_width, window_height = 3, 2
-        elif module_count < 8:
-            window_width, window_height = 4, 2
-        else:
-            window_width, window_height = 4, 3
-
-    # --- Generic fallback rules ---
-    elif module_count < 2:
+def determine_window_dimensions(
+    module_count: int, tech: str, ship: str, modules: Optional[dict] = None
+) -> Tuple[int, int]:
+    rules = {}
+    if module_count < 1:
         logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
         return 1, 1
-    elif module_count < 3:
-        window_width, window_height = 2, 1
-    elif module_count < 5:
-        window_width, window_height = 2, 2
-    elif module_count < 7:
-        window_width, window_height = 3, 2
-    elif module_count == 7:
-        window_width, window_height = 4, 2
-    elif module_count <= 9:
-        window_width, window_height = 3, 3
-    else:  # module_count >= 10
-        window_width, window_height = 4, 3
 
-    return window_width, window_height
+    if modules is not None:
+        rules = get_tech_window_rules(modules, ship, tech)
+
+    if not rules:
+        # Fallback for when modules is not passed or rules not found in modules
+        profiles = _get_window_profiles()
+        rules = json.loads(json.dumps(profiles.get("standard", {})))
+
+    # The flat map structure maps "count" to "dimensions".
+    # e.g. "6": [3, 2], "7": [4, 2].
+    count_str = str(module_count)
+    if count_str in rules and rules[count_str] is not None:
+        return rules[count_str][0], rules[count_str][1]
+
+    int_keys = [int(k) for k in rules.keys() if k.isdigit() and rules[k] is not None]
+    larger_keys = [k for k in int_keys if k > module_count]
+
+    if larger_keys:
+        best_key = str(min(larger_keys))
+        return rules[best_key][0], rules[best_key][1]
+
+    if "default" in rules:
+        return rules["default"][0], rules["default"][1]
+
+    # Final safety fallback (should only hit if JSON misses default)
+    return 1, 1
 
 
 def place_all_modules_in_empty_slots(

@@ -91,6 +91,7 @@
                 "key": "bolt-caster",
                 "image": "multi-tool/boltcaster.webp",
                 "color": "cyan",
+                "window_overrides": {"8": [3, 3], "9": [4, 3]},
                 "modules": [
                     {"id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "multi-tool/boltcaster.webp", "checked": true},
                     {"id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-rm.webp", "checked": true},
@@ -145,6 +146,7 @@
                 "key": "pulse-spitter",
                 "image": "multi-tool/pulse-spitter.webp",
                 "color": "jade",
+                "window_overrides": {"6": [3, 3]},
                 "modules": [
                     {"id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter.webp", "checked": true},
                     {"id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/amplified.webp", "checked": true},

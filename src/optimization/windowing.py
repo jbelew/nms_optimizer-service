@@ -260,7 +260,7 @@ def find_supercharged_opportunities(
     if all_non_sc_eligible and not unoccupied_non_supercharged_slots:
         logging.info("All modules are non-sc_eligible but no non-supercharged slots available.")
         return None
-    window_width, window_height = determine_window_dimensions(module_count, tech, ship)
+    window_width, window_height = determine_window_dimensions(module_count, tech, ship, modules=modules)
     logging.info(f"Using dynamic window size {window_width}x{window_height} for {tech} ({module_count} modules).")
 
     # --- Scan with Original Dimensions ---

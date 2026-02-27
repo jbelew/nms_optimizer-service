@@ -573,7 +573,7 @@ def optimize_placement(
             else:  # No supercharged opportunity window found.
                 logging.warning("No supercharged opportunity window found. Generating pattern from SA solve.")
                 num_modules = len(tech_modules)
-                w, h = determine_window_dimensions(num_modules, tech, ship)
+                w, h = determine_window_dimensions(num_modules, tech, ship, modules)
 
                 # First, perform an initial SA to get a base arrangement
                 solved_grid_sa = None

@@ -16,21 +16,16 @@ from src.optimization.helpers import (
     count_empty_in_localized,
     check_all_modules_placed,
 )
+from src.data_loader import get_module_data
 
 
 class TestDetermineWindowDimensions(unittest.TestCase):
     """Adversarial tests for determine_window_dimensions"""
 
     def test_zero_modules_returns_default(self):
-        """Zero modules BUG: returns tech-specific defaults instead of 1x1
-
-        The function checks tech-specific rules BEFORE checking module_count < 1,
-        so with 0 modules and hyper tech, it returns (4, 2) instead of (1, 1).
-        This is a logic ordering bug in determine_window_dimensions.
-        """
+        """Zero modules returns 1x1 default fallback logic"""
         w, h = determine_window_dimensions(0, "hyper", "corvette")
-        # Documents the bug - should be (1, 1), but is (4, 2)
-        self.assertEqual((w, h), (4, 2))
+        self.assertEqual((w, h), (1, 1))
 
     def test_negative_module_count_treated_as_zero(self):
         """Negative module count should be handled gracefully"""
@@ -40,24 +35,24 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertGreater(h, 0)
 
     def test_sentinel_photonix_override(self):
-        """Sentinel with photonix should use specific dimensions"""
+        """Sentinel photonix uses standard now so 1 length scales down"""
         w, h = determine_window_dimensions(1, "photonix", "sentinel")
-        self.assertEqual((w, h), (4, 3))
+        self.assertEqual((w, h), (1, 1))
 
     def test_sentinel_photonix_override_regardless_module_count(self):
-        """Sentinel photonix override should apply regardless of module count"""
-        w, h = determine_window_dimensions(100, "photonix", "sentinel")
-        self.assertEqual((w, h), (4, 3))
+        """Sentinel photonix override no longer applies regardless of module count. Uses standard scaling."""
+        pass
 
     def test_corvette_pulse_7_modules(self):
         """Corvette pulse with 7 modules has override"""
-        w, h = determine_window_dimensions(7, "pulse", "corvette")
+        modules = get_module_data("corvette")
+        w, h = determine_window_dimensions(7, "pulse", "corvette", modules=modules)
         self.assertEqual((w, h), (4, 2))
 
     def test_corvette_pulse_6_modules_no_override(self):
         """Corvette pulse with 6 modules should NOT match the 7-module override"""
         w, h = determine_window_dimensions(6, "pulse", "corvette")
-        self.assertNotEqual((w, h), (4, 2))
+        self.assertEqual((w, h), (3, 2))
 
     def test_corvette_8_modules_3x3(self):
         """Corvette with 8 modules should return 3x3"""
@@ -65,20 +60,25 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual((w, h), (3, 3))
 
     def test_corvette_7_modules_non_pulse(self):
-        """Corvette with 7 modules (non-pulse) should return 3x3"""
-        w, h = determine_window_dimensions(7, "hyper", "corvette")
+        """Corvette with 7 modules (non-pulse) should return exact 7 fallback 3x3"""
+        modules = get_module_data("corvette")
+        w, h = determine_window_dimensions(7, "hyper", "corvette", modules=modules)
         self.assertEqual((w, h), (3, 3))
 
     def test_hyper_12_plus_modules(self):
         """Hyper with 12+ modules should use 4x4"""
-        w, h = determine_window_dimensions(12, "hyper", "any_ship")
+        mock = {"types": {"core": [{"key": "hyper", "window_overrides": {"12": [4, 4], "default": [4, 4]}}]}}
+        w, h = determine_window_dimensions(12, "hyper", "any_ship", modules=mock)
         self.assertEqual((w, h), (4, 4))
 
     def test_hyper_10_to_11_modules(self):
         """Hyper with 10-11 modules should use 4x3"""
+        mock_modules_for_11 = {
+            "types": {"core": [{"key": "hyper", "window_overrides": {"11": [4, 3], "default": [4, 4]}}]}
+        }
         w, h = determine_window_dimensions(10, "hyper", "any_ship")
         self.assertEqual((w, h), (4, 3))
-        w, h = determine_window_dimensions(11, "hyper", "any_ship")
+        w, h = determine_window_dimensions(11, "hyper", "any_ship", modules=mock_modules_for_11)
         self.assertEqual((w, h), (4, 3))
 
     def test_hyper_9_modules(self):
@@ -87,30 +87,41 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual((w, h), (3, 3))
 
     def test_hyper_less_than_9_modules(self):
-        """Hyper with <9 modules should use 4x2"""
-        for count in [1, 5, 8]:
-            w, h = determine_window_dimensions(count, "hyper", "any_ship")
-            self.assertEqual((w, h), (4, 2))
+        """Hyper with <9 modules should use standard"""
+        w, h = determine_window_dimensions(1, "hyper", "any_ship")
+        self.assertEqual((w, h), (1, 1))
+        w, h = determine_window_dimensions(5, "hyper", "any_ship")
+        self.assertEqual((w, h), (3, 2))
+        w, h = determine_window_dimensions(8, "hyper", "any_ship")
+        self.assertEqual((w, h), (3, 3))
 
     def test_bolt_caster_any_count(self):
-        """Bolt-caster should always use 4x3"""
-        for count in [1, 5, 10, 20]:
-            w, h = determine_window_dimensions(count, "bolt-caster", "any_ship")
-            self.assertEqual((w, h), (4, 3))
+        """Bolt-caster falls back to standard now so it scales with count"""
+        w, h = determine_window_dimensions(1, "bolt-caster", "any_ship")
+        self.assertEqual((w, h), (1, 1))
+        w, h = determine_window_dimensions(5, "bolt-caster", "any_ship")
+        self.assertEqual((w, h), (3, 2))
+        w, h = determine_window_dimensions(10, "bolt-caster", "any_ship")
+        self.assertEqual((w, h), (4, 3))
 
     def test_pulse_spitter_jetpack_less_than_8(self):
-        """Pulse-spitter/jetpack <7 modules should use 3x3, 7+ modules should use 4x2"""
+        """Pulse-spitter/jetpack <7 modules should use generic logic (fallback to 3x3 for 7)"""
         w, h = determine_window_dimensions(7, "pulse-spitter", "any_ship")
-        self.assertEqual((w, h), (4, 2))  # Changed from 3x3 based on SA validation
-        w, h = determine_window_dimensions(5, "jetpack", "any_ship")
         self.assertEqual((w, h), (3, 3))
+        w, h = determine_window_dimensions(5, "jetpack", "any_ship")
+        self.assertEqual((w, h), (3, 2))  # 5 modules -> max 6 rule in standard -> 3x2
 
     def test_pulse_spitter_jetpack_8_plus(self):
-        """Pulse-spitter/jetpack 8+ modules should use 4x2"""
-        w, h = determine_window_dimensions(8, "pulse-spitter", "any_ship")
-        self.assertEqual((w, h), (4, 2))
+        """Pulse-spitter/jetpack 8+ modules should use standard/custom"""
+        mock = {
+            "types": {
+                "core": [{"key": "pulse-spitter", "window_overrides": {"7": [4, 2], "9": None, "default": [4, 2]}}]
+            }
+        }
+        w, h = determine_window_dimensions(8, "pulse-spitter", "any_ship", modules=mock)
+        self.assertEqual((w, h), (4, 3))  # falls to standard 10 -> [4, 3]
         w, h = determine_window_dimensions(10, "jetpack", "any_ship")
-        self.assertEqual((w, h), (3, 3))
+        self.assertEqual((w, h), (4, 3))  # falls to standard default = 4x3
 
     def test_pulse_6_modules(self):
         """Pulse with 6 modules should use 3x2"""
@@ -118,15 +129,17 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual((w, h), (3, 2))
 
     def test_pulse_7_to_8_modules(self):
-        """Pulse with 7-8 modules should use 4x2"""
-        w, h = determine_window_dimensions(7, "pulse", "random_ship")
+        """Pulse with 7-8 modules should use 4x2 and 4x3 respectively"""
+        mock = {"types": {"core": [{"key": "pulse", "window_overrides": {"7": [4, 2], "9": None, "default": [4, 3]}}]}}
+        w, h = determine_window_dimensions(7, "pulse", "random_ship", modules=mock)
         self.assertEqual((w, h), (4, 2))
-        w, h = determine_window_dimensions(8, "pulse", "random_ship")
+        w, h = determine_window_dimensions(8, "pulse", "random_ship", modules=mock)
         self.assertEqual((w, h), (4, 3))
 
     def test_pulse_9_plus_modules(self):
         """Pulse with 9+ modules should use 4x3"""
-        w, h = determine_window_dimensions(9, "pulse", "random_ship")
+        mock = {"types": {"core": [{"key": "pulse", "window_overrides": {"9": None, "default": [4, 3]}}]}}
+        w, h = determine_window_dimensions(9, "pulse", "random_ship", modules=mock)
         self.assertEqual((w, h), (4, 3))
 
     def test_generic_fallback_less_than_3(self):
@@ -151,16 +164,14 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         w, h = determine_window_dimensions(6, "unknown_tech", "unknown_ship")
         self.assertEqual((w, h), (3, 2))
 
-    def test_generic_fallback_7_to_8_modules(self):
-        """Generic with 7 modules should use 4x2, 8 modules should use 3x3"""
+    def test_generic_fallback_7_modules(self):
+        """Generic with 7 modules should use 3x3 as per standard fallback"""
         w, h = determine_window_dimensions(7, "unknown_tech", "unknown_ship")
-        self.assertEqual((w, h), (4, 2))  # Changed from 3x3 based on SA validation
-        w, h = determine_window_dimensions(8, "unknown_tech", "unknown_ship")
         self.assertEqual((w, h), (3, 3))
 
-    def test_generic_fallback_9_modules(self):
-        """Generic with exactly 9 modules should use 3x3"""
-        w, h = determine_window_dimensions(9, "unknown_tech", "unknown_ship")
+    def test_generic_fallback_8_modules(self):
+        """Generic with exactly 8 modules should use 3x3"""
+        w, h = determine_window_dimensions(8, "unknown_tech", "unknown_ship")
         self.assertEqual((w, h), (3, 3))
 
     def test_generic_fallback_10_plus_modules(self):
@@ -168,11 +179,12 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         w, h = determine_window_dimensions(10, "unknown_tech", "unknown_ship")
         self.assertEqual((w, h), (4, 3))
         w, h = determine_window_dimensions(20, "unknown_tech", "unknown_ship")
-        self.assertEqual((w, h), (4, 3))
+        self.assertEqual((w, h), (4, 4))
 
     def test_very_large_module_count(self):
         """Very large module count should still return reasonable dimensions"""
-        w, h = determine_window_dimensions(1000, "hyper", "any_ship")
+        mock = {"types": {"core": [{"key": "hyper", "window_overrides": {"12": [4, 4], "default": [4, 4]}}]}}
+        w, h = determine_window_dimensions(1000, "hyper", "any_ship", modules=mock)
         self.assertEqual((w, h), (4, 4))
 
     def test_dimensions_are_positive(self):

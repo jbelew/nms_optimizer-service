@@ -67,8 +67,8 @@ class GA4Client:
                 measurement_id: GA4 Measurement ID (usually starts with G-)
                 api_secret: GA4 API Secret for Measurement Protocol
         """
-        self.measurement_id = measurement_id or GA4_MEASUREMENT_ID
-        self.api_secret = api_secret or GA4_API_SECRET
+        self.measurement_id = measurement_id or os.environ.get("GA4_MEASUREMENT_ID")
+        self.api_secret = api_secret or os.environ.get("GA4_API_SECRET")
         self.enabled = bool(self.measurement_id and self.api_secret)
 
         if not self.enabled:
