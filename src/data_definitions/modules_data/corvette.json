@@ -79,9 +79,9 @@
                     { "id": "Xa", "type": "upgrade", "label": "[1] Positron Ejector Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true },
                     { "id": "Xb", "type": "upgrade", "label": "[2] Positron Ejector Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true },
                     { "id": "Xc", "type": "upgrade", "label": "[3] Positron Ejector Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true },
-                    { "id": "Ca", "type": "cosmetic", "label": "[C1] Deadeye Cannon Theta", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false },
-                    { "id": "Cb", "type": "cosmetic", "label": "[C2] Deadeye Cannon Tau", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false },
-                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Deadeye Cannon Sigma", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false }
+                    { "id": "Ca", "type": "cosmetic", "label": "[C1] Deadeye Cannon Theta (EXP19)", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false },
+                    { "id": "Cb", "type": "cosmetic", "label": "[C2] Deadeye Cannon Tau (EXP19)", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false },
+                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Deadeye Cannon Sigma (EXP19)", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false }
                 ]
             },
             {
