@@ -5,7 +5,7 @@ import glob
 import logging
 from src.grid_utils import Grid
 from src.bonus_calculations import calculate_grid_score
-from src.data_loader import get_all_module_data
+from src.data_loader import get_all_module_data, get_training_module_ids
 from src.grid_display import print_grid_compact
 from src.module_placement import place_module
 
@@ -53,7 +53,15 @@ def find_best_layout(directory, num_supercharged, ship, tech, solve_type=None):
         print(f"Error: No tech modules found for ship='{ship}', tech='{tech}'.")
         return
 
-    tech_modules = selected_tech_info.get("modules", [])
+    training_module_ids = get_training_module_ids(ship, tech)
+    tech_modules = []
+    for module in selected_tech_info.get("modules", []):
+        if module.get("id") in training_module_ids:
+            tech_modules.append(module)
+
+    if not tech_modules:
+        print(f"Error: No modules found for ship='{ship}', tech='{tech}' after filtering by training IDs.")
+        return
 
     tech_modules.sort(key=lambda m: m["id"])
     module_id_mapping = {i + 1: module["id"] for i, module in enumerate(tech_modules)}
