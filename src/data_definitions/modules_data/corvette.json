@@ -92,9 +92,9 @@
                 "modules": [
                     { "id": "RL", "type": "core", "label": "Rocket Launger", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/rocket.webp", "checked": true },
                     { "id": "LR", "type": "bonus", "label": "Large Rocket Tubes", "bonus": 0.056, "adjacency": "greater", "sc_eligible": true, "image": "starship/tubes.webp", "checked": true },
-                    { "id": "Ca", "type": "cosmetic", "label": "[C1] Torpedo Launcher Theta", "bonus": 0.13, "adjacency": "greater", "sc_eligible": true, "image": "corvette/torpedo.webp", "checked": true},
-                    { "id": "Cb", "type": "cosmetic", "label": "[C2] Torpedo Launcher Tau", "bonus": 0.12, "adjacency": "greater", "sc_eligible": true, "image": "corvette/torpedo.webp", "checked": true},
-                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Torpedo Launcher Sigma", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/torpedo.webp", "checked": true}
+                    { "id": "Ca", "type": "cosmetic", "label": "[C1] Torpedo Launcher Theta", "bonus": 0.13, "adjacency": "greater", "sc_eligible": true, "image": "corvette/torpedo.webp", "checked": false},
+                    { "id": "Cb", "type": "cosmetic", "label": "[C2] Torpedo Launcher Tau", "bonus": 0.12, "adjacency": "greater", "sc_eligible": true, "image": "corvette/torpedo.webp", "checked": false},
+                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Torpedo Launcher Sigma", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/torpedo.webp", "checked": false}
                 ]
             }
         ],
