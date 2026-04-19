@@ -133,7 +133,7 @@
                 "key": "hyper",
                 "image": "starship/hyper.webp",
                 "color": "sky",
-                "window_overrides": {"11": [4, 3], "12": [4, 4]},
+                "window_overrides": {"9": [3, 3], "10": [4, 3], "12": [4, 4]},
                 "modules": [
                     {"id": "HD", "type": "core", "label": "Hyperdrive", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/hyperdrive.webp", "checked": true},
                     {"id": "AD", "type": "bonus", "label": "Atlantid Drive", "bonus": 0.0, "adjacency": "lesser", "sc_eligible": false, "image": "starship/atlantid.webp", "checked": true},
