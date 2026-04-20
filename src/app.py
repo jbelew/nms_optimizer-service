@@ -11,6 +11,11 @@ import time
 import uuid
 from typing import cast
 
+from dotenv import load_dotenv
+
+# Load environment variables before importing other local modules
+load_dotenv()
+
 import gevent
 
 from flask import Flask, jsonify, request
@@ -36,9 +41,6 @@ from .grid_utils import Grid
 from .modules_utils import get_tech_tree_json
 from .optimization import optimize_placement
 from .analytics import send_analytics_event
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 # app.py
@@ -86,6 +88,7 @@ def add_cache_headers(response):
         request.path.startswith("/tech_tree/")
         or request.path == "/platforms"
         or request.path == "/analytics/popular_data"
+        or request.path == "/analytics/performance_data"
     ):
         response.headers["Cache-Control"] = "public, max-age=3600"
     return response
@@ -423,6 +426,67 @@ def get_popular_analytics_data():
     except Exception as e:
         app.logger.error(f"Error fetching Google Analytics data: {e}")
         return jsonify({"error": f"Failed to fetch analytics data: {e}"}), 500
+
+
+@app.route("/analytics/performance_data", methods=["GET"])
+def get_performance_analytics_data():
+    """Fetches and returns aggregate performance data from Google Analytics.
+
+    Queries for "performance_metric" events and returns averages for
+    LCP, FCP, INP, and TBT.
+
+    Query Parameters:
+        start_date (str, optional): Defaults to "30daysAgo".
+        end_date (str, optional): Defaults to "today".
+
+    Returns:
+        JSON: A list of dictionaries containing metric names and average values.
+    """
+    if not ga4_client:
+        return jsonify({"error": "Google Analytics Data API client not initialized."}), 500
+
+    try:
+        start_date = request.args.get("start_date", "30daysAgo")
+        end_date = request.args.get("end_date", "today")
+
+        request_body = RunReportRequest(
+            property=f"properties/{GA_PROPERTY_ID}",
+            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+            dimensions=[
+                Dimension(name="customEvent:metric_name"),
+            ],
+            dimension_filter=FilterExpression(
+                filter=Filter(
+                    field_name="eventName",
+                    string_filter=Filter.StringFilter(value="performance_metric"),
+                )
+            ),
+            metrics=[
+                Metric(name="eventCount"),
+                Metric(name="averageCustomEvent:value"),
+            ],
+            order_bys=[
+                OrderBy(metric=OrderBy.MetricOrderBy(metric_name="eventCount"), desc=True)
+            ],
+        )
+
+        response = ga4_client.run_report(request_body)
+
+        performance_data = []
+        for row in response.rows:
+            performance_data.append(
+                {
+                    "metric_name": row.dimension_values[0].value,
+                    "count": int(row.metric_values[0].value),
+                    "average_value": float(row.metric_values[1].value),
+                }
+            )
+
+        return jsonify(performance_data)
+
+    except Exception as e:
+        app.logger.error(f"Error fetching performance analytics data: {e}")
+        return jsonify({"error": f"Failed to fetch performance data: {e}"}), 500
 
 
 # --- Analytics Event Tracking Endpoint ---
