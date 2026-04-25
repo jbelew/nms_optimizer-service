@@ -54,3 +54,4 @@ wheelhouse/nms_optimizer_service-5.12.2-cp314-cp314-manylinux_2_34_x86_64.whl
 pre-commit==3.7.1
 commitizen==3.27.0
 coverage==7.6.1
+google-cloud-bigquery==3.41.0
