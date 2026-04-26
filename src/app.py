@@ -443,7 +443,7 @@ def get_performance_analytics_data():
     """Fetches aggregate p75 performance metrics from BigQuery with GA4 fallback.
 
     This endpoint attempts to query the BigQuery GA4 export to calculate the 
-    true 75th percentile (p75) for performance metrics (LCP, FCP, INP, TBT).
+    true 75th percentile (p75) for performance metrics (LCP, FCP, INP, CLS).
     It groups data into hourly buckets and handles both historical and 
     real-time (intraday) tables. If BigQuery is unavailable, it falls 
     back to arithmetic means from the GA4 Reporting API.
@@ -508,7 +508,7 @@ def get_performance_analytics_data():
                     MIN(event_timestamp) as first_ts,
                     SUM(val) as total_val
                   FROM deduped_metrics
-                  WHERE m_name IS NOT NULL AND m_name != 'CLS'
+                  WHERE m_name IS NOT NULL AND m_name != 'TBT'
                   GROUP BY COALESCE(m_id, CAST(event_timestamp AS STRING) || user_pseudo_id || m_name)
                 ),
                 hourly_stats AS (
