@@ -440,18 +440,23 @@ def get_popular_analytics_data():
 
 @app.route("/analytics/performance_data", methods=["GET"])
 def get_performance_analytics_data():
-    """Fetches and returns aggregate performance data (p75) from BigQuery or GA4.
+    """Fetches aggregate p75 performance metrics from BigQuery with GA4 fallback.
 
-    Attempts to query BigQuery for "performance_metric" events and calculate
-    the 75th percentile (p75) for metrics. Falls back to GA4 Reporting API averages
-    if BigQuery is unavailable or fails.
+    This endpoint attempts to query the BigQuery GA4 export to calculate the 
+    true 75th percentile (p75) for performance metrics (LCP, FCP, INP, TBT).
+    It groups data into hourly buckets and handles both historical and 
+    real-time (intraday) tables. If BigQuery is unavailable, it falls 
+    back to arithmetic means from the GA4 Reporting API.
+
+    Note: The BigQuery path always returns a fixed 30-day window.
+    The query parameters below only affect the GA4 fallback path.
 
     Query Parameters:
-        start_date (str, optional): Defaults to "30daysAgo".
-        end_date (str, optional): Defaults to "today".
+        start_date (str, optional): Start date for the GA4 fallback. Defaults to "30daysAgo".
+        end_date (str, optional): End date for the GA4 fallback. Defaults to "today".
 
     Returns:
-        JSON: A list of dictionaries containing date, metric names, and p75 values.
+        Response: A JSON array of metric objects with millisecond timestamps.
     """
     start_date_param = request.args.get("start_date", "30daysAgo")
     end_date_param = request.args.get("end_date", "today")
@@ -459,47 +464,94 @@ def get_performance_analytics_data():
     # Try BigQuery first for true p75
     if bq_client:
         try:
-            # Convert relative dates to YYYYMMDD for BigQuery
-            # For simplicity in this implementation, we'll use a fixed window if relative
-            # but in a real app we'd parse '30daysAgo' etc.
-            # Here we'll just use the last 30 days of tables if possible.
-
-            # BigQuery Query for p75 (Hourly)
-            # We use APPROX_QUANTILES for efficiency and to get the 75th percentile
+            # BigQuery Query for p75 (Hourly) - Ironclad 2.0 (Optimized & Secure)
             query = """
-                SELECT
-                  UNIX_MILLIS(TIMESTAMP_TRUNC(TIMESTAMP_MICROS(event_timestamp), HOUR)) as timestamp,
-                  (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as metric_name,
-                  APPROX_QUANTILES(
-                    COALESCE(
-                        (SELECT value.int_value FROM UNNEST(event_params) WHERE key = 'value'),
-                        (SELECT value.double_value FROM UNNEST(event_params) WHERE key = 'value'),
-                        SAFE_CAST((SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'value') AS FLOAT64)
-                    ), 100)[OFFSET(75)] as average_value
-                FROM
-                  (
-                    SELECT event_timestamp, event_params, event_name FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
-                    WHERE _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY))
+                WITH raw_source AS (
+                  -- Stage 1: Cost-optimized extraction with pushed-down filters
+                  SELECT 
+                    event_timestamp, 
+                    user_pseudo_id, 
+                    event_params
+                  FROM (
+                    SELECT event_timestamp, user_pseudo_id, event_params 
+                    FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
+                    WHERE _TABLE_SUFFIX BETWEEN 
+                        FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)) AND
+                        FORMAT_DATE('%Y%m%d', CURRENT_DATE())
+                      AND event_name = 'performance_metric'
+                    
                     UNION ALL
-                    SELECT event_timestamp, event_params, event_name FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
+                    
+                    SELECT event_timestamp, user_pseudo_id, event_params 
+                    FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
                     WHERE _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY))
+                      AND event_name = 'performance_metric'
                   )
-                WHERE
-                  event_name = 'performance_metric'
-                GROUP BY 1, 2
+                ),
+                deduped_metrics AS (
+                  -- Stage 2: Deterministic deduplication
+                  SELECT DISTINCT
+                    event_timestamp,
+                    user_pseudo_id,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label') as m_id,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
+                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64)) 
+                     FROM UNNEST(event_params) WHERE key = 'value') as val
+                  FROM raw_source
+                ),
+                per_metric_totals AS (
+                  -- Stage 3: Aggregation of deltas to session totals
+                  SELECT
+                    ANY_VALUE(m_name) as m_name,
+                    ANY_VALUE(v) as v,
+                    MIN(event_timestamp) as first_ts,
+                    SUM(val) as total_val
+                  FROM deduped_metrics
+                  WHERE m_name IS NOT NULL AND m_name != 'CLS'
+                  GROUP BY COALESCE(m_id, CAST(event_timestamp AS STRING) || user_pseudo_id || m_name)
+                ),
+                hourly_stats AS (
+                  -- Stage 4: Hourly p75 Calculation
+                  SELECT
+                    TIMESTAMP_TRUNC(TIMESTAMP_MICROS(first_ts), HOUR) as hr,
+                    m_name as metric_name,
+                    APPROX_TOP_COUNT(v, 1)[OFFSET(0)].value as app_version,
+                    APPROX_QUANTILES(total_val, 100)[OFFSET(75)] as p75_val
+                  FROM per_metric_totals
+                  GROUP BY 1, 2
+                  HAVING COUNT(*) >= 5
+                ),
+                complete_hours AS (
+                  -- Only keep hours where all 5 metrics have sufficient samples
+                  SELECT hr FROM hourly_stats
+                  GROUP BY hr
+                  HAVING COUNT(DISTINCT metric_name) = 5
+                )
+                -- Stage 5: Final timeseries output
+                SELECT
+                  UNIX_MILLIS(s.hr) as timestamp,
+                  s.metric_name,
+                  s.app_version,
+                  s.p75_val as average_value
+                FROM hourly_stats s
+                INNER JOIN complete_hours c ON s.hr = c.hr
+                WHERE s.hr < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), HOUR)
                 ORDER BY 1 ASC
             """
+            
             query_job = bq_client.query(query)
             results = query_job.result()
 
             performance_data = []
             for row in results:
-                if row.metric_name:
+                if row.metric_name and row.average_value is not None:
                     performance_data.append(
                         {
                             "timestamp": row.timestamp,
                             "metric_name": row.metric_name,
-                            "average_value": float(row.average_value) if row.average_value is not None else 0.0,
+                            "app_version": row.app_version or "unknown",
+                            "average_value": float(row.average_value),
                         }
                     )
 
@@ -604,4 +656,4 @@ def track_event():
 
 # Start the message sending thread
 if __name__ == "__main__":
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=False)
