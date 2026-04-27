@@ -15,9 +15,10 @@ from ..analytics import send_analytics_event
 
 analytics_bp = Blueprint("analytics", __name__)
 
+
 # --- Caching Support ---
 class SimpleCache:
-    def __init__(self, ttl_seconds=900): # 15 minutes default
+    def __init__(self, ttl_seconds=900):  # 15 minutes default
         self.data = None
         self.timestamp = 0
         self.ttl = ttl_seconds
@@ -31,8 +32,10 @@ class SimpleCache:
         self.data = data
         self.timestamp = time.time()
 
+
 perf_cache = SimpleCache()
 # --- End Caching Support ---
+
 
 @analytics_bp.route("/analytics/popular_data", methods=["GET"])
 def get_popular_analytics_data():

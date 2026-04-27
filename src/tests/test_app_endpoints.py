@@ -189,7 +189,7 @@ class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
         mock_row.metric_name = "LCP"
         mock_row.app_version = "v1.0.0"
         mock_row.p50_val = 1000
-        mock_row.average_value = 1200 # p75
+        mock_row.average_value = 1200  # p75
         mock_row.p90_val = 1500
 
         mock_results = MagicMock()

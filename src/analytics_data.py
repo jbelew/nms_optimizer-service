@@ -9,6 +9,7 @@ logger = logging.getLogger(__name__)
 # --- Google Analytics 4 (GA4) Configuration ---
 GA_PROPERTY_ID = "484727815"
 
+
 def initialize_clients():
     """Initializes the Google Analytics and BigQuery clients.
 
@@ -29,6 +30,7 @@ def initialize_clients():
 
         if gcp_key_json:
             import json
+
             credentials_info = json.loads(gcp_key_json)
             credentials = service_account.Credentials.from_service_account_info(
                 credentials_info,
@@ -40,7 +42,7 @@ def initialize_clients():
             if not os.path.exists(GA_KEY_FILE_PATH):
                 logger.warning(f"GA key file not found at {GA_KEY_FILE_PATH}")
                 return None, None
-                
+
             credentials = service_account.Credentials.from_service_account_file(
                 GA_KEY_FILE_PATH,
                 scopes=scopes,
@@ -53,6 +55,7 @@ def initialize_clients():
     except Exception as e:
         logger.error(f"Error initializing Google Cloud clients: {e}")
         return None, None
+
 
 # Initialize singleton instances
 ga4_data_client, bq_client = initialize_clients()

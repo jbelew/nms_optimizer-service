@@ -64,7 +64,8 @@ else:
 # 1. /api/events requires credentials and a strict origin list.
 # 2. Everything else is permissive to support Storybook, local dev, and tests.
 CORS(
-    app, resources={r"/api/events": {"origins": allowed_origins, "supports_credentials": True}, r"/*": {"origins": "*"}},
+    app,
+    resources={r"/api/events": {"origins": allowed_origins, "supports_credentials": True}, r"/*": {"origins": "*"}},
 )
 # --- End CORS Configuration ---
 Compress(app)  # Initialize Flask-Compress
