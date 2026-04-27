@@ -438,18 +438,35 @@ def get_popular_analytics_data():
         return jsonify({"error": f"Failed to fetch analytics data: {e}"}), 500
 
 
+# --- Caching Support ---
+class SimpleCache:
+    def __init__(self, ttl_seconds=900): # 15 minutes default
+        self.data = None
+        self.timestamp = 0
+        self.ttl = ttl_seconds
+
+    def get(self):
+        if self.data and (time.time() - self.timestamp) < self.ttl:
+            return self.data
+        return None
+
+    def set(self, data):
+        self.data = data
+        self.timestamp = time.time()
+
+perf_cache = SimpleCache()
+# --- End Caching Support ---
+
+
 @app.route("/analytics/performance_data", methods=["GET"])
 def get_performance_analytics_data():
-    """Fetches aggregate p75 performance metrics from BigQuery with GA4 fallback.
+    """Fetches aggregate performance metrics from BigQuery with GA4 fallback.
 
     This endpoint attempts to query the BigQuery GA4 export to calculate the
-    true 75th percentile (p75) for performance metrics (LCP, FCP, INP, CLS).
-    It groups data into hourly buckets and handles both historical and
-    real-time (intraday) tables. If BigQuery is unavailable, it falls
-    back to arithmetic means from the GA4 Reporting API.
-
-    Note: The BigQuery path always returns a fixed 30-day window.
-    The query parameters below only affect the GA4 fallback path.
+    50th, 75th, and 90th percentiles for performance metrics (LCP, FCP, INP, CLS, TTFB).
+    It groups data into hourly buckets. If BigQuery is unavailable, it falls
+    back to arithmetic means from the GA4 Reporting API. Results are cached
+    for 15 minutes.
 
     Query Parameters:
         start_date (str, optional): Start date for the GA4 fallback. Defaults to "30daysAgo".
@@ -458,16 +475,20 @@ def get_performance_analytics_data():
     Returns:
         Response: A JSON array of metric objects with millisecond timestamps.
     """
+    # Check cache first
+    cached_data = perf_cache.get()
+    if cached_data:
+        return jsonify(cached_data)
+
     start_date_param = request.args.get("start_date", "30daysAgo")
     end_date_param = request.args.get("end_date", "today")
 
-    # Try BigQuery first for true p75
+    # Try BigQuery first for true percentiles
     if bq_client:
         try:
-            # BigQuery Query for p75 (Hourly) - Ironclad 2.0 (Optimized & Secure)
+            # BigQuery Query for percentiles (Hourly)
             query = """
                 WITH raw_source AS (
-                  -- Stage 1: Cost-optimized extraction with pushed-down filters
                   SELECT
                     event_timestamp,
                     user_pseudo_id,
@@ -489,7 +510,6 @@ def get_performance_analytics_data():
                   )
                 ),
                 deduped_metrics AS (
-                  -- Stage 2: Deterministic deduplication
                   SELECT DISTINCT
                     event_timestamp,
                     user_pseudo_id,
@@ -501,7 +521,6 @@ def get_performance_analytics_data():
                   FROM raw_source
                 ),
                 per_metric_totals AS (
-                  -- Stage 3: Aggregation of deltas to session totals
                   SELECT
                     ANY_VALUE(m_name) as m_name,
                     ANY_VALUE(v) as v,
@@ -512,7 +531,6 @@ def get_performance_analytics_data():
                   GROUP BY COALESCE(m_id, CAST(event_timestamp AS STRING) || user_pseudo_id || m_name)
                 ),
                 hourly_stats AS (
-                  -- Stage 4: Hourly p50, p75, p90 Calculation
                   SELECT
                     TIMESTAMP_TRUNC(TIMESTAMP_MICROS(first_ts), HOUR) as hr,
                     m_name as metric_name,
@@ -525,12 +543,10 @@ def get_performance_analytics_data():
                   HAVING COUNT(*) >= 5
                 ),
                 complete_hours AS (
-                  -- Only keep hours where all 5 metrics have sufficient samples
                   SELECT hr FROM hourly_stats
                   GROUP BY hr
                   HAVING COUNT(DISTINCT metric_name) = 5
                 )
-                -- Stage 5: Final timeseries output
                 SELECT
                   UNIX_MILLIS(s.hr) as timestamp,
                   s.metric_name,
@@ -563,6 +579,7 @@ def get_performance_analytics_data():
                     )
 
             if performance_data:
+                perf_cache.set(performance_data)
                 return jsonify(performance_data)
 
         except Exception as bq_err:
@@ -603,6 +620,9 @@ def get_performance_analytics_data():
                     "average_value": float(row.metric_values[0].value),
                 }
             )
+
+        if performance_data:
+            perf_cache.set(performance_data)
 
         return jsonify(performance_data)
 
