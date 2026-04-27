@@ -512,12 +512,14 @@ def get_performance_analytics_data():
                   GROUP BY COALESCE(m_id, CAST(event_timestamp AS STRING) || user_pseudo_id || m_name)
                 ),
                 hourly_stats AS (
-                  -- Stage 4: Hourly p75 Calculation
+                  -- Stage 4: Hourly p50, p75, p90 Calculation
                   SELECT
                     TIMESTAMP_TRUNC(TIMESTAMP_MICROS(first_ts), HOUR) as hr,
                     m_name as metric_name,
                     APPROX_TOP_COUNT(v, 1)[OFFSET(0)].value as app_version,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(75)] as p75_val
+                    APPROX_QUANTILES(total_val, 100)[OFFSET(50)] as p50_val,
+                    APPROX_QUANTILES(total_val, 100)[OFFSET(75)] as p75_val,
+                    APPROX_QUANTILES(total_val, 100)[OFFSET(90)] as p90_val
                   FROM per_metric_totals
                   GROUP BY 1, 2
                   HAVING COUNT(*) >= 5
@@ -533,7 +535,9 @@ def get_performance_analytics_data():
                   UNIX_MILLIS(s.hr) as timestamp,
                   s.metric_name,
                   s.app_version,
-                  s.p75_val as average_value
+                  s.p50_val,
+                  s.p75_val as average_value,
+                  s.p90_val
                 FROM hourly_stats s
                 INNER JOIN complete_hours c ON s.hr = c.hr
                 WHERE s.hr < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), HOUR)
@@ -551,6 +555,9 @@ def get_performance_analytics_data():
                             "timestamp": row.timestamp,
                             "metric_name": row.metric_name,
                             "app_version": row.app_version or "unknown",
+                            "p50": float(row.p50_val) if row.p50_val is not None else None,
+                            "p75": float(row.average_value),
+                            "p90": float(row.p90_val) if row.p90_val is not None else None,
                             "average_value": float(row.average_value),
                         }
                     )

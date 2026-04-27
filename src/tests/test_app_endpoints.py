@@ -7,6 +7,7 @@ WebSocket events, error handling, and request validation.
 
 import unittest
 import json
+from unittest.mock import patch, MagicMock
 from src.app import app
 
 
@@ -170,6 +171,48 @@ class TestAnalyticsEndpoint(unittest.TestCase):
                 json.loads(response.data)
             except json.JSONDecodeError:
                 self.fail("Response is not valid JSON")
+
+
+class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
+    """Test performance analytics data endpoint."""
+
+    def setUp(self):
+        """Set up test client."""
+        self.client = app.test_client()
+
+    @patch("src.app.bq_client")
+    def test_performance_data_response_format(self, mock_bq):
+        """Test performance analytics response includes p50, p75, and p90."""
+        # Mock BigQuery result
+        mock_row = MagicMock()
+        mock_row.timestamp = 1619370000000
+        mock_row.metric_name = "LCP"
+        mock_row.app_version = "v1.0.0"
+        mock_row.p50_val = 1000
+        mock_row.average_value = 1200 # p75
+        mock_row.p90_val = 1500
+
+        mock_results = MagicMock()
+        mock_results.__iter__.return_value = [mock_row]
+
+        mock_job = MagicMock()
+        mock_job.result.return_value = mock_results
+        mock_bq.query.return_value = mock_job
+
+        response = self.client.get("/analytics/performance_data")
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+
+        self.assertIsInstance(data, list)
+        self.assertGreater(len(data), 0)
+
+        first_item = data[0]
+        self.assertEqual(first_item["metric_name"], "LCP")
+        self.assertEqual(first_item["p50"], 1000.0)
+        self.assertEqual(first_item["p75"], 1200.0)
+        self.assertEqual(first_item["p90"], 1500.0)
+        self.assertEqual(first_item["average_value"], 1200.0)
 
 
 class TestErrorHandling(unittest.TestCase):
