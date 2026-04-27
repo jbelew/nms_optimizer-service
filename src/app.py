@@ -442,10 +442,10 @@ def get_popular_analytics_data():
 def get_performance_analytics_data():
     """Fetches aggregate p75 performance metrics from BigQuery with GA4 fallback.
 
-    This endpoint attempts to query the BigQuery GA4 export to calculate the 
+    This endpoint attempts to query the BigQuery GA4 export to calculate the
     true 75th percentile (p75) for performance metrics (LCP, FCP, INP, CLS).
-    It groups data into hourly buckets and handles both historical and 
-    real-time (intraday) tables. If BigQuery is unavailable, it falls 
+    It groups data into hourly buckets and handles both historical and
+    real-time (intraday) tables. If BigQuery is unavailable, it falls
     back to arithmetic means from the GA4 Reporting API.
 
     Note: The BigQuery path always returns a fixed 30-day window.
@@ -468,23 +468,23 @@ def get_performance_analytics_data():
             query = """
                 WITH raw_source AS (
                   -- Stage 1: Cost-optimized extraction with pushed-down filters
-                  SELECT 
-                    event_timestamp, 
-                    user_pseudo_id, 
+                  SELECT
+                    event_timestamp,
+                    user_pseudo_id,
                     event_params
                   FROM (
-                    SELECT event_timestamp, user_pseudo_id, event_params 
+                    SELECT event_timestamp, user_pseudo_id, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
-                    WHERE _TABLE_SUFFIX BETWEEN 
+                    WHERE _TABLE_SUFFIX BETWEEN
                         FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)) AND
                         FORMAT_DATE('%Y%m%d', CURRENT_DATE())
                       AND event_name = 'performance_metric'
-                    
+
                     UNION ALL
-                    
-                    SELECT event_timestamp, user_pseudo_id, event_params 
+
+                    SELECT event_timestamp, user_pseudo_id, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
-                    WHERE _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY))
+                    WHERE _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY))
                       AND event_name = 'performance_metric'
                   )
                 ),
@@ -496,7 +496,7 @@ def get_performance_analytics_data():
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label') as m_id,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
-                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64)) 
+                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
                      FROM UNNEST(event_params) WHERE key = 'value') as val
                   FROM raw_source
                 ),
@@ -539,7 +539,7 @@ def get_performance_analytics_data():
                 WHERE s.hr < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), HOUR)
                 ORDER BY 1 ASC
             """
-            
+
             query_job = bq_client.query(query)
             results = query_job.result()
 
