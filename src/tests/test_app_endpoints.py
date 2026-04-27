@@ -180,7 +180,7 @@ class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
         """Set up test client."""
         self.client = app.test_client()
 
-    @patch("src.app.bq_client")
+    @patch("src.routes.analytics.bq_client")
     def test_performance_data_response_format(self, mock_bq):
         """Test performance analytics response includes p50, p75, and p90."""
         # Mock BigQuery result

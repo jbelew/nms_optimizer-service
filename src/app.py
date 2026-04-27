@@ -22,18 +22,6 @@ from flask import Flask, jsonify, request
 from flask_compress import Compress
 from flask_cors import CORS
 from flask_socketio import SocketIO, emit
-from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import (
-    DateRange,
-    Dimension,
-    Filter,
-    FilterExpression,
-    Metric,
-    OrderBy,
-    RunReportRequest,
-)
-from google.cloud import bigquery
-from google.oauth2 import service_account
 
 from .data_definitions.grids import grids
 from .data_definitions.recommended_builds import recommended_builds
@@ -41,7 +29,7 @@ from .data_loader import get_all_module_data, get_module_data
 from .grid_utils import Grid
 from .modules_utils import get_tech_tree_json
 from .optimization import optimize_placement
-from .analytics import send_analytics_event
+from .routes.analytics import analytics_bp
 
 
 # app.py
@@ -76,11 +64,14 @@ else:
 # 1. /api/events requires credentials and a strict origin list.
 # 2. Everything else is permissive to support Storybook, local dev, and tests.
 CORS(
-    app, resources={r"/api/events": {"origins": allowed_origins, "supports_credentials": True}, r"/*": {"origins": "*"}}
+    app, resources={r"/api/events": {"origins": allowed_origins, "supports_credentials": True}, r"/*": {"origins": "*"}},
 )
 # --- End CORS Configuration ---
 Compress(app)  # Initialize Flask-Compress
 socketio = SocketIO(app, cors_allowed_origins="*")
+
+# Register Blueprints
+app.register_blueprint(analytics_bp)
 
 
 @app.after_request
@@ -93,65 +84,6 @@ def add_cache_headers(response):
     ):
         response.headers["Cache-Control"] = "public, max-age=3600"
     return response
-
-
-# --- Google Analytics 4 (GA4) Configuration ---
-# IMPORTANT: For production, store this path securely (e.g., environment variable)
-# and ensure the JSON key file is NOT committed to version control.
-GA_PROPERTY_ID = "484727815"  # Your GA4 Property ID
-
-
-def initialize_clients():
-    """Initializes the Google Analytics and BigQuery clients.
-
-    It attempts to load credentials first from the environment variable
-    `GOOGLE_APPLICATION_CREDENTIALS_JSON` (for services like Heroku) and
-    falls back to a local JSON key file for development.
-
-    Returns:
-        tuple: (ga4_client, bq_client) instances, or (None, None) if initialization fails.
-    """
-    try:
-        # Try to get credentials from environment variable first (Heroku)
-        gcp_key_json = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_JSON")
-        scopes = [
-            "https://www.googleapis.com/auth/analytics.readonly",
-            "https://www.googleapis.com/auth/cloud-platform",
-        ]
-
-        if gcp_key_json:
-            import json
-
-            credentials_info = json.loads(gcp_key_json)
-            credentials = service_account.Credentials.from_service_account_info(
-                credentials_info,
-                scopes=scopes,
-            )
-        else:
-            # Fallback to file-based credentials (local development)
-            GA_KEY_FILE_PATH = os.path.join(os.path.dirname(__file__), "cosmic-inkwell-467922-v5-85707f3bcc80.json")
-            credentials = service_account.Credentials.from_service_account_file(
-                GA_KEY_FILE_PATH,
-                scopes=scopes,
-            )
-
-        ga_client = BetaAnalyticsDataClient(credentials=credentials)
-        bq_client = bigquery.Client(credentials=credentials, project="cosmic-inkwell-467922-v5")
-
-        return ga_client, bq_client
-    except Exception as e:
-        app.logger.error(f"Error initializing Google Cloud clients: {e}")
-        return None, None
-
-
-# Initialize the clients globally
-ga4_client, bq_client = initialize_clients()
-if not ga4_client:
-    app.logger.error("Failed to initialize GA4 client.")
-if not bq_client:
-    app.logger.error("Failed to initialize BigQuery client.")
-
-# --- End GA4 Configuration ---
 
 
 def run_optimization(data, progress_callback=None, run_id=None):
@@ -366,319 +298,6 @@ def get_ship_types():
         }  # Get the 'type' field
         ship_types[ship_key] = ship_info
     return jsonify(ship_types)
-
-
-@app.route("/analytics/popular_data", methods=["GET"])
-def get_popular_analytics_data():
-    """Fetches and returns popular optimization data from Google Analytics.
-
-    This endpoint requires the GA4 Data API client to be initialized.
-    It queries for the most frequent "optimize_tech" events and returns
-    the count for different combinations of ship, technology, and
-    supercharged status.
-
-    Query Parameters:
-        start_date (str, optional): The start date for the report, in
-            "YYYY-MM-DD" or "NdaysAgo" format. Defaults to "30daysAgo".
-        end_date (str, optional): The end date for the report. Defaults to
-            "today".
-
-    Returns:
-        JSON: A list of dictionaries, each containing the ship type,
-              technology, supercharged status, and the total event count.
-    """
-    if not ga4_client:
-        return jsonify({"error": "Google Analytics Data API client not initialized."}), 500
-
-    try:
-        # Define the date range for the report
-        start_date = request.args.get("start_date", "30daysAgo")
-        end_date = request.args.get("end_date", "today")
-
-        # Define the report request for GA4
-        # This example assumes you are tracking 'optimize' events and have custom dimensions
-        # for 'ship_type' and 'technology'. Adjust dimension names as per your GA4 setup.
-        request_body = RunReportRequest(
-            property=f"properties/{GA_PROPERTY_ID}",
-            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
-            dimensions=[
-                Dimension(name="eventName"),
-                Dimension(name="customEvent:platform"),  # Your actual custom dimension name for Platform
-                Dimension(name="customEvent:tech"),  # Your actual custom dimension name for Tech
-                Dimension(name="customEvent:supercharged"),  # New custom dimension for supercharged
-            ],
-            dimension_filter=FilterExpression(
-                filter=Filter(
-                    field_name="eventName",
-                    string_filter=Filter.StringFilter(value="optimize_tech"),
-                )
-            ),
-            metrics=[Metric(name="eventCount")],
-            order_bys=[OrderBy(metric=OrderBy.MetricOrderBy(metric_name="eventCount"), desc=True)],
-        )
-
-        response = ga4_client.run_report(request_body)
-
-        popular_data = []
-        for row in response.rows:
-            popular_data.append(
-                {
-                    "event_name": row.dimension_values[0].value,
-                    "ship_type": row.dimension_values[1].value,
-                    "technology": row.dimension_values[2].value,
-                    "supercharged": row.dimension_values[3].value,
-                    "total_events": int(row.metric_values[0].value),
-                }
-            )
-
-        return jsonify(popular_data)
-
-    except Exception as e:
-        app.logger.error(f"Error fetching Google Analytics data: {e}")
-        return jsonify({"error": f"Failed to fetch analytics data: {e}"}), 500
-
-
-# --- Caching Support ---
-class SimpleCache:
-    def __init__(self, ttl_seconds=900): # 15 minutes default
-        self.data = None
-        self.timestamp = 0
-        self.ttl = ttl_seconds
-
-    def get(self):
-        if self.data and (time.time() - self.timestamp) < self.ttl:
-            return self.data
-        return None
-
-    def set(self, data):
-        self.data = data
-        self.timestamp = time.time()
-
-perf_cache = SimpleCache()
-# --- End Caching Support ---
-
-
-@app.route("/analytics/performance_data", methods=["GET"])
-def get_performance_analytics_data():
-    """Fetches aggregate performance metrics from BigQuery with GA4 fallback.
-
-    This endpoint attempts to query the BigQuery GA4 export to calculate the
-    50th, 75th, and 90th percentiles for performance metrics (LCP, FCP, INP, CLS, TTFB).
-    It groups data into hourly buckets. If BigQuery is unavailable, it falls
-    back to arithmetic means from the GA4 Reporting API. Results are cached
-    for 15 minutes.
-
-    Query Parameters:
-        start_date (str, optional): Start date for the GA4 fallback. Defaults to "30daysAgo".
-        end_date (str, optional): End date for the GA4 fallback. Defaults to "today".
-
-    Returns:
-        Response: A JSON array of metric objects with millisecond timestamps.
-    """
-    # Check cache first
-    cached_data = perf_cache.get()
-    if cached_data:
-        return jsonify(cached_data)
-
-    start_date_param = request.args.get("start_date", "30daysAgo")
-    end_date_param = request.args.get("end_date", "today")
-
-    # Try BigQuery first for true percentiles
-    if bq_client:
-        try:
-            # BigQuery Query for percentiles (Hourly)
-            query = """
-                WITH raw_source AS (
-                  SELECT
-                    event_timestamp,
-                    user_pseudo_id,
-                    event_params
-                  FROM (
-                    SELECT event_timestamp, user_pseudo_id, event_params
-                    FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
-                    WHERE _TABLE_SUFFIX BETWEEN
-                        FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)) AND
-                        FORMAT_DATE('%Y%m%d', CURRENT_DATE())
-                      AND event_name = 'performance_metric'
-
-                    UNION ALL
-
-                    SELECT event_timestamp, user_pseudo_id, event_params
-                    FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
-                    WHERE _TABLE_SUFFIX >= FORMAT_DATE('%Y%m%d', DATE_SUB(CURRENT_DATE(), INTERVAL 3 DAY))
-                      AND event_name = 'performance_metric'
-                  )
-                ),
-                deduped_metrics AS (
-                  SELECT DISTINCT
-                    event_timestamp,
-                    user_pseudo_id,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label') as m_id,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
-                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
-                     FROM UNNEST(event_params) WHERE key = 'value') as val
-                  FROM raw_source
-                ),
-                per_metric_totals AS (
-                  SELECT
-                    ANY_VALUE(m_name) as m_name,
-                    ANY_VALUE(v) as v,
-                    MIN(event_timestamp) as first_ts,
-                    SUM(val) as total_val
-                  FROM deduped_metrics
-                  WHERE m_name IS NOT NULL AND m_name != 'TBT'
-                  GROUP BY COALESCE(m_id, CAST(event_timestamp AS STRING) || user_pseudo_id || m_name)
-                ),
-                hourly_stats AS (
-                  SELECT
-                    TIMESTAMP_TRUNC(TIMESTAMP_MICROS(first_ts), HOUR) as hr,
-                    m_name as metric_name,
-                    APPROX_TOP_COUNT(v, 1)[OFFSET(0)].value as app_version,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(50)] as p50_val,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(75)] as p75_val,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(90)] as p90_val
-                  FROM per_metric_totals
-                  GROUP BY 1, 2
-                  HAVING COUNT(*) >= 5
-                ),
-                complete_hours AS (
-                  SELECT hr FROM hourly_stats
-                  GROUP BY hr
-                  HAVING COUNT(DISTINCT metric_name) = 5
-                )
-                SELECT
-                  UNIX_MILLIS(s.hr) as timestamp,
-                  s.metric_name,
-                  s.app_version,
-                  s.p50_val,
-                  s.p75_val as average_value,
-                  s.p90_val
-                FROM hourly_stats s
-                INNER JOIN complete_hours c ON s.hr = c.hr
-                WHERE s.hr < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), HOUR)
-                ORDER BY 1 ASC
-            """
-
-            query_job = bq_client.query(query)
-            results = query_job.result()
-
-            performance_data = []
-            for row in results:
-                if row.metric_name and row.average_value is not None:
-                    performance_data.append(
-                        {
-                            "timestamp": row.timestamp,
-                            "metric_name": row.metric_name,
-                            "app_version": row.app_version or "unknown",
-                            "p50": float(row.p50_val) if row.p50_val is not None else None,
-                            "p75": float(row.average_value),
-                            "p90": float(row.p90_val) if row.p90_val is not None else None,
-                            "average_value": float(row.average_value),
-                        }
-                    )
-
-            if performance_data:
-                perf_cache.set(performance_data)
-                return jsonify(performance_data)
-
-        except Exception as bq_err:
-            app.logger.warning(f"BigQuery performance query failed, falling back to GA4: {bq_err}")
-
-    # Fallback to GA4 Reporting API (Averages only)
-    if not ga4_client:
-        return jsonify({"error": "No analytics clients available."}), 500
-
-    try:
-        request_body = RunReportRequest(
-            property=f"properties/{GA_PROPERTY_ID}",
-            date_ranges=[DateRange(start_date=start_date_param, end_date=end_date_param)],
-            dimensions=[
-                Dimension(name="date"),
-                Dimension(name="customEvent:metric_name"),
-            ],
-            dimension_filter=FilterExpression(
-                filter=Filter(
-                    field_name="eventName",
-                    string_filter=Filter.StringFilter(value="performance_metric"),
-                )
-            ),
-            metrics=[
-                Metric(name="averageCustomEvent:value"),
-            ],
-            order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name="date"), desc=False)],
-        )
-
-        response = ga4_client.run_report(request_body)
-
-        performance_data = []
-        for row in response.rows:
-            performance_data.append(
-                {
-                    "date": row.dimension_values[0].value,
-                    "metric_name": row.dimension_values[1].value,
-                    "average_value": float(row.metric_values[0].value),
-                }
-            )
-
-        if performance_data:
-            perf_cache.set(performance_data)
-
-        return jsonify(performance_data)
-
-    except Exception as e:
-        app.logger.error(f"Error fetching performance analytics data: {e}")
-        return jsonify({"error": f"Failed to fetch performance data: {e}"}), 500
-
-
-# --- Analytics Event Tracking Endpoint ---
-@app.route("/api/events", methods=["POST"])
-def track_event():
-    """Receive and relay analytics events to GA4.
-
-    Expected JSON body:
-    {
-            "clientId": "string",
-            "userId": "string (optional)",
-            "eventName": "string",
-            "params": { "key": "value", ... }
-    }
-
-    Returns:
-            200 OK on success
-            400 Bad Request if required fields missing
-            500 Server Error on GA4 send failure
-    """
-    try:
-        data = request.get_json()
-        if not data:
-            return jsonify({"error": "No JSON body provided"}), 400
-
-        client_id = data.get("clientId")
-        event_name = data.get("eventName")
-        params = data.get("params", {})
-        user_id = data.get("userId")
-
-        # Validate required fields
-        if not client_id or not event_name:
-            return jsonify({"error": "Missing required fields: clientId, eventName"}), 400
-
-        # Send event to GA4
-        success = send_analytics_event(
-            event_name=event_name,
-            client_id=client_id,
-            params=params,
-            user_id=user_id,
-        )
-
-        if success:
-            return jsonify({"status": "ok"}), 200
-        else:
-            return jsonify({"error": "Failed to send event to GA4"}), 500
-
-    except Exception as e:
-        app.logger.error(f"Error in analytics endpoint: {e}")
-        return jsonify({"error": str(e)}), 500
 
 
 # Start the message sending thread
