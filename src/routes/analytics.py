@@ -1,7 +1,8 @@
 import time
 import datetime
+import threading
+from collections import OrderedDict
 from flask import Blueprint, jsonify, request, current_app
-from google.cloud import bigquery
 from google.analytics.data_v1beta.types import (
     DateRange,
     Dimension,
@@ -19,19 +20,33 @@ analytics_bp = Blueprint("analytics", __name__)
 
 
 # --- Caching Support ---
+# NOTE: This is an in-process cache. In multi-worker deployments (e.g., Gunicorn),
+# each worker keeps its own copy. Use Redis/Memcached via Flask-Caching for
+# shared state across workers.
 class SimpleCache:
-    def __init__(self, ttl_seconds=900):  # 15 minutes default
-        self.cache = {}
+    def __init__(self, ttl_seconds=900, max_size=128):  # 15 minutes default
+        self.cache = OrderedDict()
         self.ttl = ttl_seconds
+        self.max_size = max_size
+        self._lock = threading.Lock()
 
     def get(self, key):
-        entry = self.cache.get(key)
-        if entry and (time.time() - entry["timestamp"]) < self.ttl:
-            return entry["data"]
-        return None
+        with self._lock:
+            entry = self.cache.get(key)
+            if entry and (time.time() - entry["timestamp"]) < self.ttl:
+                self.cache.move_to_end(key)
+                return entry["data"]
+            if entry:
+                # Expired; drop it
+                self.cache.pop(key, None)
+            return None
 
     def set(self, key, data):
-        self.cache[key] = {"data": data, "timestamp": time.time()}
+        with self._lock:
+            self.cache[key] = {"data": data, "timestamp": time.time()}
+            self.cache.move_to_end(key)
+            while len(self.cache) > self.max_size:
+                self.cache.popitem(last=False)
 
 
 perf_cache = SimpleCache()
@@ -121,13 +136,23 @@ def get_performance_analytics_data():
     if cached_data:
         return jsonify(cached_data)
 
+    # Parse dates once up-front so both BigQuery and GA4 fallback use validated values.
+    start_date = parse_ga4_date(start_date_param)
+    end_date = parse_ga4_date(end_date_param)
+    start_date_str = start_date.strftime("%Y-%m-%d")
+    end_date_str = end_date.strftime("%Y-%m-%d")
+
     # Try BigQuery first for true percentiles
     if bq_client:
         try:
-            start_date = parse_ga4_date(start_date_param)
-            end_date = parse_ga4_date(end_date_param)
+            # NOTE: BigQuery does not allow query parameters inside `_TABLE_SUFFIX`
+            # filters. The dates are derived from `parse_ga4_date`, which always
+            # returns a `datetime.date`, so f-string interpolation of the
+            # `YYYYMMDD` suffix is safe (no SQL-injection surface).
+            start_suffix = start_date.strftime("%Y%m%d")
+            end_suffix = end_date.strftime("%Y%m%d")
 
-            query = """
+            query = f"""
                 WITH raw_source AS (
                   SELECT
                     event_timestamp,
@@ -141,18 +166,14 @@ def get_performance_analytics_data():
                   FROM (
                     SELECT event_timestamp, user_pseudo_id, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
-                    WHERE _TABLE_SUFFIX BETWEEN
-                        FORMAT_DATE('%Y%m%d', @start_date) AND
-                        FORMAT_DATE('%Y%m%d', @end_date)
+                    WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
                       AND event_name = 'performance_metric'
 
                     UNION ALL
 
                     SELECT event_timestamp, user_pseudo_id, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
-                    WHERE _TABLE_SUFFIX BETWEEN
-                        FORMAT_DATE('%Y%m%d', @start_date) AND
-                        FORMAT_DATE('%Y%m%d', @end_date)
+                    WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
                       AND event_name = 'performance_metric'
                   )
                 ),
@@ -171,7 +192,7 @@ def get_performance_analytics_data():
                   SELECT
                     TIMESTAMP_TRUNC(TIMESTAMP_MICROS(ts), HOUR) as hr,
                     m_name as metric_name,
-                    APPROX_TOP_COUNT(v, 1)[OFFSET(0)].value as app_version,
+                    APPROX_TOP_COUNT(v, 1)[SAFE_OFFSET(0)].value as app_version,
                     APPROX_QUANTILES(total_val, 100)[OFFSET(50)] as p50_val,
                     APPROX_QUANTILES(total_val, 100)[OFFSET(75)] as p75_val,
                     APPROX_QUANTILES(total_val, 100)[OFFSET(90)] as p90_val
@@ -191,13 +212,7 @@ def get_performance_analytics_data():
                 ORDER BY 1 ASC
             """
 
-            job_config = bigquery.QueryJobConfig(
-                query_parameters=[
-                    bigquery.ScalarQueryParameter("start_date", "DATE", start_date),
-                    bigquery.ScalarQueryParameter("end_date", "DATE", end_date),
-                ]
-            )
-            query_job = bq_client.query(query, job_config=job_config)
+            query_job = bq_client.query(query)
             results = query_job.result()
 
             performance_data = []
@@ -229,7 +244,7 @@ def get_performance_analytics_data():
     try:
         request_body = RunReportRequest(
             property=f"properties/{GA_PROPERTY_ID}",
-            date_ranges=[DateRange(start_date=start_date_param, end_date=end_date_param)],
+            date_ranges=[DateRange(start_date=start_date_str, end_date=end_date_str)],
             dimensions=[
                 Dimension(name="dateHour"),
                 Dimension(name="customEvent:metric_name"),
@@ -281,7 +296,7 @@ def get_performance_analytics_data():
 def track_event():
     """Receive and relay analytics events to GA4."""
     try:
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if not data:
             return jsonify({"error": "No JSON body provided"}), 400
 
