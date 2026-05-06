@@ -12,7 +12,7 @@ start_date = datetime.date.today() - datetime.timedelta(days=30)
 end_date = datetime.date.today()
 
 query = """
-    SELECT 
+    SELECT
         (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
         COUNT(*) as count
     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`

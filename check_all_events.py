@@ -1,4 +1,3 @@
-from google.cloud import bigquery
 from src.analytics_data import initialize_clients
 
 ga4_data_client, bq_client = initialize_clients()

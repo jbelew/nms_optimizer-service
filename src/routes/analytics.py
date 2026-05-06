@@ -129,7 +129,10 @@ def get_performance_analytics_data():
     start_date_param = request.args.get("start_date", "30daysAgo")
     end_date_param = request.args.get("end_date", "today")
 
-    cache_key = f"perf_{start_date_param}_{end_date_param}"
+    # Include current hour in cache key to ensure we don't serve stale data
+    # that excludes a newly completed hour.
+    current_hour = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H")
+    cache_key = f"perf_{start_date_param}_{end_date_param}_{current_hour}"
 
     # Check cache first
     cached_data = perf_cache.get(cache_key)
@@ -153,16 +156,11 @@ def get_performance_analytics_data():
             end_suffix = end_date.strftime("%Y%m%d")
 
             query = f"""
-                WITH raw_source AS (
+                WITH raw_source_unioned AS (
                   SELECT
                     event_timestamp,
                     user_pseudo_id,
-                    event_params,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label') as m_id,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
-                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
-                     FROM UNNEST(event_params) WHERE key = 'value') as val
+                    event_params
                   FROM (
                     SELECT event_timestamp, user_pseudo_id, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
@@ -177,8 +175,20 @@ def get_performance_analytics_data():
                       AND event_name = 'performance_metric'
                   )
                 ),
+                raw_source AS (
+                  -- Deduplicate exact row duplicates from table overlap (daily vs intraday)
+                  SELECT DISTINCT
+                    event_timestamp,
+                    user_pseudo_id,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label') as m_id,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
+                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
+                     FROM UNNEST(event_params) WHERE key = 'value') as val
+                  FROM raw_source_unioned
+                ),
                 deduped_vitals AS (
-                  -- Deduplicate by metric ID (from web-vitals) to prevent doubling between tables
+                  -- Deduplicate by metric ID (from web-vitals) to sum deltas correctly
                   SELECT
                     ANY_VALUE(m_name) as m_name,
                     ANY_VALUE(v) as v,
@@ -282,9 +292,9 @@ def get_performance_analytics_data():
                 }
             )
 
-        if performance_data:
-            perf_cache.set(cache_key, performance_data)
-
+        # NOTE: We do not cache the GA4 fallback data because it uses simple
+        # averages (mathematically incorrect for delta-based metrics) and
+        # lacks percentiles. It is strictly a temporary fallback.
         return jsonify(performance_data)
 
     except Exception as e:

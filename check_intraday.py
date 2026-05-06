@@ -1,5 +1,3 @@
-import datetime
-from google.cloud import bigquery
 from src.analytics_data import initialize_clients
 
 ga4_data_client, bq_client = initialize_clients()
@@ -9,7 +7,7 @@ if not bq_client:
     exit(1)
 
 query = """
-    SELECT 
+    SELECT
         (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
         COUNT(*) as count
     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
