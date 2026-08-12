@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main  # Adjust if deploying from a different branch
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -40,6 +43,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: write # Grant write permissions for creating releases and pushing tags
     steps:
@@ -150,6 +154,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: release
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v2
 
