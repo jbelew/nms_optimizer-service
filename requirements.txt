@@ -26,12 +26,12 @@ idna==3.18
 itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.3
-mpmath==1.4.1
+mpmath==1.3.0
 networkx==3.5
 numpy==2.3.4
 packaging==26.3
 proto-plus==1.28.3
-protobuf==6.33.0
+protobuf==7.35.1
 pyasn1==0.6.4
 pyasn1_modules==0.4.2
 python-engineio==4.13.4
