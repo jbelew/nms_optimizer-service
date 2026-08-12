@@ -280,15 +280,16 @@ def calculate_pattern_adjacency_score(grid, tech):
         for x in range(grid.width):
             cell = grid.get_cell(x, y)
             if cell["module"] is not None and cell["tech"] == tech:
+                cell_score = 0.0
                 # Check each edge individually and apply grid_edge_weight
                 if x == 0:
-                    total_adjacency_score += grid_edge_weight  # Left edge
+                    cell_score += grid_edge_weight  # Left edge
                 if x == grid.width - 1:
-                    total_adjacency_score += grid_edge_weight  # Right edge
+                    cell_score += grid_edge_weight  # Right edge
                 if y == 0:
-                    total_adjacency_score += grid_edge_weight  # Top edge
+                    cell_score += grid_edge_weight  # Top edge
                 if y == grid.height - 1:
-                    total_adjacency_score += grid_edge_weight  # Bottom edge
+                    cell_score += grid_edge_weight  # Bottom edge
 
                 # --- Adjacency Checks ---
                 num_adjacent_same_group_other_tech = 0
@@ -301,9 +302,9 @@ def calculate_pattern_adjacency_score(grid, tech):
                         if adjacent_cell["module"] is not None:
                             # Standard adjacency bonus for being next to other modules of a different tech
                             if adjacent_cell["tech"] != tech:
-                                total_adjacency_score += module_edge_weight
+                                cell_score += module_edge_weight
 
-                                # Count for group adjacency bonus if adjacency rules match
+                                # Count for group adjacency bonus if adjacency rules match exactly
                                 if adjacency_rule and adjacent_cell.get("adjacency") == adjacency_rule:
                                     num_adjacent_same_group_other_tech += 1
 
@@ -315,18 +316,23 @@ def calculate_pattern_adjacency_score(grid, tech):
                         rule_value = int(parts[1])
 
                         # Apply bonus based on the rule
-                        # For 'greater', even 1 matching neighbor is a good sign for single modules
-                        if rule_type == "greater" and num_adjacent_same_group_other_tech > 0:
-                            # Base boost for matching the type
-                            total_adjacency_score += group_adjacency_weight
+                        E = num_adjacent_same_group_other_tech
+                        N = rule_value
+                        added_score = 0.0
+                        if rule_type == "greater":
+                            if E >= N:
+                                added_score = group_adjacency_weight * E
+                            elif E > 0:
+                                added_score = (group_adjacency_weight / 2.0) * E
+                        elif rule_type == "lesser":
+                            if 0 < E <= N:
+                                added_score = group_adjacency_weight * E
+                            elif E > N:
+                                added_score = group_adjacency_weight * (2 * N - E)
 
-                            # Additional boost if we meet the actual threshold
-                            if num_adjacent_same_group_other_tech > rule_value:
-                                total_adjacency_score += group_adjacency_weight * num_adjacent_same_group_other_tech
-                        elif rule_type == "lesser" and num_adjacent_same_group_other_tech < rule_value:
-                            total_adjacency_score += group_adjacency_weight * (
-                                rule_value - num_adjacent_same_group_other_tech
-                            )
+                        cell_score += added_score
+
+                total_adjacency_score += cell_score
 
     return total_adjacency_score
 

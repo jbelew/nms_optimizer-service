@@ -205,7 +205,9 @@ def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = 
                 grid.set_total(x, y, rust_grid.cells[y][x].total)
                 total_score += rust_grid.cells[y][x].total
 
-    return total_score
+    # Round total_score to 4 decimal places to match the Rust scorer's output format and precision
+    return round(total_score, 4)
+
 
 
 def calculate_score_delta(grid: Grid, changed_cells_info: list, tech: str) -> float:

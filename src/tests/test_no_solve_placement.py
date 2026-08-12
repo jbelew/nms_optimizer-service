@@ -7,6 +7,7 @@ import unittest
 from src.grid_utils import Grid
 from src.module_placement import place_module, clear_all_modules_of_tech
 from src.pattern_matching import calculate_pattern_adjacency_score
+from src.bonus_calculations import calculate_grid_score
 
 
 class TestAdjacencyBasedPlacement(unittest.TestCase):
@@ -89,6 +90,78 @@ class TestAdjacencyBasedPlacement(unittest.TestCase):
 
         # m1 should get module_edge_weight (3.0) for being adjacent to m2
         self.assertGreater(score, 0.0, "Module adjacent to different tech should score")
+
+    def test_greater_n_adjacency_scaling(self):
+        """Test that greater_3 module score scales correctly with number of matching neighbors"""
+        # Test E = 1
+        grid = self.grid.copy()
+        place_module(grid, 1, 1, "m1", "M1", self.tech, "bonus", 0.5, "greater_3", False, None)
+        place_module(grid, 1, 2, "n1", "N1", "other_tech", "bonus", 0.5, "greater_3", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 1 + 2.5)
+
+        # Test E = 2
+        place_module(grid, 1, 0, "n2", "N2", "other_tech", "bonus", 0.5, "greater_3", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 2 + 5.0)
+
+        # Test E = 3
+        place_module(grid, 0, 1, "n3", "N3", "other_tech", "bonus", 0.5, "greater_3", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 3 + 15.0)
+
+        # Test E = 4
+        place_module(grid, 2, 1, "n4", "N4", "other_tech", "bonus", 0.5, "greater_3", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 4 + 20.0)
+
+    def test_lesser_n_adjacency_scaling(self):
+        """Test that lesser_2 module score scales correctly with number of matching neighbors, penalizing above 2"""
+        # Test E = 1
+        grid = self.grid.copy()
+        place_module(grid, 1, 1, "m1", "M1", self.tech, "bonus", 0.5, "lesser_2", False, None)
+        place_module(grid, 1, 2, "n1", "N1", "other_tech", "bonus", 0.5, "lesser_2", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 1 + 5.0)
+
+        # Test E = 2
+        place_module(grid, 1, 0, "n2", "N2", "other_tech", "bonus", 0.5, "lesser_2", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 2 + 10.0)
+
+        # Test E = 3
+        place_module(grid, 0, 1, "n3", "N3", "other_tech", "bonus", 0.5, "lesser_2", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 3 + 5.0)
+
+        # Test E = 4
+        place_module(grid, 2, 1, "n4", "N4", "other_tech", "bonus", 0.5, "lesser_2", False, None)
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 4 + 0.0)
+
+    def test_cross_rule_family_adjacency(self):
+        """Test that different rule values in the same family (e.g. greater_3 and greater_2) do NOT match (they are different groups)"""
+        grid = self.grid.copy()
+        # Place module with greater_3
+        place_module(grid, 1, 1, "m1", "M1", self.tech, "bonus", 0.5, "greater_3", False, None)
+        # Place different-tech neighbor with greater_2
+        place_module(grid, 1, 2, "n1", "N1", "other_tech", "bonus", 0.5, "greater_2", False, None)
+
+        # They should NOT match, so group bonus is 0. Only standard module edge weight applies (3.0 * 1 = 3.0).
+        self.assertAlmostEqual(calculate_pattern_adjacency_score(grid, self.tech), 3.0 * 1)
+
+    def test_grid_score_float_precision_rounding(self):
+        """Test that calculate_grid_score rounds the score to 4 decimal places to prevent float summation inequalities from impacting decisions."""
+        grid_a = self.grid.copy()
+        grid_b = self.grid.copy()
+
+        # Place a 3-module horizontal block of identical modules on grid_a
+        place_module(grid_a, 1, 1, "m1", "M1", self.tech, "upgrade", 0.3, "greater_2", False, None)
+        place_module(grid_a, 2, 1, "m2", "M2", self.tech, "bonus", 1.0, "greater_2", False, None)
+        place_module(grid_a, 3, 1, "m3", "M3", self.tech, "upgrade", 0.29, "greater_2", False, None)
+
+        # Place the same block at a different position on grid_b to shift the traversal/addition order
+        place_module(grid_b, 3, 1, "m3", "M3", self.tech, "upgrade", 0.29, "greater_2", False, None)
+        place_module(grid_b, 2, 1, "m2", "M2", self.tech, "bonus", 1.0, "greater_2", False, None)
+        place_module(grid_b, 1, 1, "m1", "M1", self.tech, "upgrade", 0.3, "greater_2", False, None)
+
+        score_a = calculate_grid_score(grid_a, self.tech)
+        score_b = calculate_grid_score(grid_b, self.tech)
+
+        # Ensure both grids score exactly the same up to float precision (due to rounding)
+        self.assertEqual(score_a, score_b)
 
     def test_no_modules_placed_scores_zero(self):
         """Grid with no modules of tech should score 0"""
