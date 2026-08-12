@@ -120,7 +120,7 @@ dependencies = [
  "memoffset",
  "once_cell",
  "portable-atomic",
- "pyo3-build-config",
+ "pyo3-build-config 0.27.1",
  "pyo3-ffi",
  "pyo3-macros",
  "unindent",
@@ -136,13 +136,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "pyo3-build-config"
+version = "0.29.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f41027e41b4bd03f6e60f9f417fe24a6341a6bb744edd62b6f709f2a52ea30e9"
+dependencies = [
+ "target-lexicon",
+]
+
+[[package]]
 name = "pyo3-ffi"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2dd13844a4242793e02df3e2ec093f540d948299a6a77ea9ce7afd8623f542be"
 dependencies = [
  "libc",
- "pyo3-build-config",
+ "pyo3-build-config 0.27.1",
 ]
 
 [[package]]
@@ -176,7 +185,7 @@ checksum = "70a3b2274450ba5288bc9b8c1b69ff569d1d61189d4bff38f8d22e03d17f932b"
 dependencies = [
  "heck",
  "proc-macro2",
- "pyo3-build-config",
+ "pyo3-build-config 0.27.1",
  "quote",
  "syn 2.0.108",
 ]
@@ -226,7 +235,7 @@ version = "0.1.1"
 dependencies = [
  "log",
  "pyo3",
- "pyo3-build-config",
+ "pyo3-build-config 0.29.2",
  "pyo3-log",
  "rand",
  "serde",
