@@ -333,7 +333,7 @@ impl Grid {
         let mut placed_module_ids: std::collections::HashSet<String> = std::collections::HashSet::new();
         let mut remaining_sc_eligible: Vec<&Module> = Vec::new();
 
-        let mut rng = rand::thread_rng();
+        let mut rng = rand::rng();
         supercharged_slots.shuffle(&mut rng);
 
         for module in sc_eligible_modules {
@@ -618,7 +618,7 @@ fn simulated_annealing(
     let mut temperature = initial_temperature;
     let mut rng: StdRng = match seed { // Initialized StdRng
         Some(s) => StdRng::seed_from_u64(s),
-        None => StdRng::from_entropy(),
+        None => StdRng::try_from_rng(&mut rand::rngs::SysRng).unwrap(),
     };
     let mut iteration_count = 0;
     let total_iterations_estimate = (initial_temperature.log(cooling_rate) - stopping_temperature.log(cooling_rate)).abs() * iterations_per_temp as f64;
@@ -654,7 +654,7 @@ fn simulated_annealing(
             let normalized_temperature = (temperature - stopping_temperature) / (initial_temperature - stopping_temperature);
             let current_swap_probability = initial_swap_probability + (final_swap_probability - initial_swap_probability) * (1.0 - normalized_temperature);
 
-            let move_type_rand: f64 = rng.r#gen::<f64>();
+            let move_type_rand: f64 = rng.random::<f64>();
 
             let original_cells = if move_type_rand < current_swap_probability {
                 swap_modules(&mut temp_grid, tech, &tech_modules_vec, &mut rng)
@@ -668,7 +668,7 @@ fn simulated_annealing(
                 let new_score = calculate_grid_score(temp_grid.clone(), tech, false).unwrap();
                 let delta_e = new_score - current_score;
 
-                if delta_e > 0.0 || rng.r#gen::<f64>() < (delta_e / temperature).exp() {
+                if delta_e > 0.0 || rng.random::<f64>() < (delta_e / temperature).exp() {
                     current_grid = temp_grid;
                     current_score = new_score;
 
@@ -785,7 +785,7 @@ fn swap_modules(grid: &mut Grid, tech: &str, tech_modules_on_grid: &Vec<Module>,
         return None;
     }
 
-    let sample: Vec<_> = module_positions.choose_multiple(rng, 2).collect();
+    let sample: Vec<_> = module_positions.sample(rng, 2).collect();
     let pos1 = *sample[0];
     let pos2 = *sample[1];
 

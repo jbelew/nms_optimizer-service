@@ -18,6 +18,8 @@ This document serves as a living backlog for all tasks and implementation plans 
 - **Pull Request Workflows**: Update GitHub Actions workflow to run the test suite on pull requests while restricting release and deploy stages to pushes on main.
 - **Grouped Dependabot Updates**: Configure Dependabot to group minor and patch updates to minimize the number of open PRs and avoid redundant release/deployment cycles.
 - **Rust Scorer Deprecation Warnings**: Resolve PyO3 deprecation warnings in `rust_scorer/src/lib.rs` by adding `from_py_object` attribute to `#[pyclass]` macros.
+- **Rust rand 0.10 Migration**: Update `rust_scorer` to support `rand` v0.10 by migrating `thread_rng`, `from_entropy`, and `choose_multiple` usages.
+
 
 
 
