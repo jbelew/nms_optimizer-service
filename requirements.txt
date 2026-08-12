@@ -31,7 +31,7 @@ networkx==3.5
 numpy==2.3.4
 packaging==25.0
 proto-plus==1.26.1
-protobuf==6.33.0
+protobuf==7.35.1
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 python-engineio==4.12.3
