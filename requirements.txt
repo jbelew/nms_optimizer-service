@@ -15,7 +15,7 @@ gevent==25.9.1
 charset-normalizer==3.3.2
 google-analytics-data==0.18.18
 google-api-core==2.26.0
-google-auth==2.29.0
+google-auth==2.56.3
 googleapis-common-protos==1.70.0
 greenlet==3.2.4
 grpcio==1.75.1
