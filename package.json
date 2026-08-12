@@ -30,7 +30,7 @@
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@elsikora/commitizen-plugin-commitlint-ai": "^2.0.1",
+    "@elsikora/commitizen-plugin-commitlint-ai": "^3.0.1",
     "commitizen": "^4.3.1",
     "husky": "^9.1.7"
   }
