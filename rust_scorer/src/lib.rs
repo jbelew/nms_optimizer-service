@@ -57,7 +57,7 @@ where
     }
 }
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum AdjacencyType {
     #[serde(rename = "greater")]
@@ -68,7 +68,7 @@ pub enum AdjacencyType {
     NoAdjacency,
 }
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ModuleType {
     #[serde(rename = "core")]
@@ -85,7 +85,7 @@ pub enum ModuleType {
     Atlantid,
 }
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Cell {
     #[pyo3(get, set)]
@@ -155,7 +155,7 @@ impl Cell {
     }
 }
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Grid {
     #[pyo3(get, set)]
@@ -178,7 +178,7 @@ impl Grid {
     }
 }
 
-#[pyclass]
+#[pyclass(from_py_object)]
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Module {
     #[pyo3(get, set)]
