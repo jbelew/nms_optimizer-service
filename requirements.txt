@@ -11,7 +11,7 @@ Flask-Compress==1.18
 flask-cors==6.0.1
 Flask-SocketIO==5.5.1
 fsspec==2025.9.0
-gevent==25.9.1
+gevent==26.7.0
 charset-normalizer==3.3.2
 google-analytics-data==0.18.18
 google-api-core==2.26.0
