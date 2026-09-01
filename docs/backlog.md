@@ -19,3 +19,9 @@ This document serves as a living backlog for all tasks and implementation plans 
 - **Grouped Dependabot Updates**: Configure Dependabot to group minor and patch updates to minimize the number of open PRs and avoid redundant release/deployment cycles.
 - **Rust Scorer Deprecation Warnings**: Resolve PyO3 deprecation warnings in `rust_scorer/src/lib.rs` by adding `from_py_object` attribute to `#[pyclass]` macros.
 - **Popular Analytics Data Reliability & Caching**: Fix intermittent 503/504 timeout failures on `/analytics/popular_data` by switching the GA4 client to REST transport, adding an in-memory `SimpleCache` (15m TTL), and implementing BigQuery primary query with GA4 fallback.
+- **Rust rand 0.10 Migration**: Update `rust_scorer` to support `rand` v0.10 by migrating `thread_rng`, `from_entropy`, and `choose_multiple` usages.
+
+
+
+
+
