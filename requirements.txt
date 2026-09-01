@@ -1,7 +1,7 @@
 bidict==0.23.1
 blinker==1.9.0
 Brotli==1.2.0
-cachetools==5.5.2
+cachetools==7.1.7
 certifi==2026.7.22
 click==8.5.0
 filelock==3.32.4
