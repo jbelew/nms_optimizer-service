@@ -161,7 +161,7 @@ jobs:
       - name: Install Heroku CLI
         run: |
           curl https://cli-assets.heroku.com/install.sh | sh
-      - uses: akhileshns/heroku-deploy@v3.15.15 # This is the action
+      - uses: akhileshns/heroku-deploy@v4 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "nms-optimizer-service" #Must be unique in Heroku
