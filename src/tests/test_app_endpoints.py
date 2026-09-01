@@ -158,19 +158,100 @@ class TestAnalyticsEndpoint(unittest.TestCase):
 
     def test_analytics_endpoint_exists(self):
         """Analytics endpoint should exist."""
-        response = self.client.get("/api/analytics/popular_data")
-        # Should either work (200) or be disabled (404, 403)
-        self.assertIn(response.status_code, [200, 404, 403])
+        response = self.client.get("/analytics/popular_data")
+        self.assertIn(response.status_code, [200, 500])
 
-    def test_analytics_response_format(self):
-        """Analytics response should be valid JSON if successful."""
-        response = self.client.get("/api/analytics/popular_data")
+    @patch("src.routes.analytics.bq_client")
+    def test_popular_data_from_bigquery(self, mock_bq):
+        """Test popular analytics data retrieved from BigQuery."""
+        mock_row = MagicMock()
+        mock_row.ship_type = "corvette"
+        mock_row.technology = "hyper"
+        mock_row.supercharged = "false"
+        mock_row.total_events = 42
 
-        if response.status_code == 200:
-            try:
-                json.loads(response.data)
-            except json.JSONDecodeError:
-                self.fail("Response is not valid JSON")
+        mock_results = MagicMock()
+        mock_results.__iter__.return_value = [mock_row]
+
+        mock_job = MagicMock()
+        mock_job.result.return_value = mock_results
+        mock_bq.query.return_value = mock_job
+
+        # Use unique date range to avoid cache collisions from other tests
+        response = self.client.get("/analytics/popular_data?start_date=2026-01-01&end_date=2026-01-02")
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertIsInstance(data, list)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["ship_type"], "corvette")
+        self.assertEqual(data[0]["technology"], "hyper")
+        self.assertEqual(data[0]["supercharged"], "false")
+        self.assertEqual(data[0]["total_events"], 42)
+        mock_bq.query.assert_called_once()
+
+    @patch("src.routes.analytics.ga4_data_client")
+    @patch("src.routes.analytics.bq_client")
+    def test_popular_data_fallback_to_ga4(self, mock_bq, mock_ga4):
+        """Test fallback to GA4 when BigQuery query fails."""
+        mock_bq.query.side_effect = Exception("BigQuery error")
+
+        mock_row = MagicMock()
+        mock_dim_platform = MagicMock()
+        mock_dim_platform.value = "standard"
+        mock_dim_tech = MagicMock()
+        mock_dim_tech.value = "shield"
+        mock_dim_sc = MagicMock()
+        mock_dim_sc.value = "true"
+        mock_row.dimension_values = [mock_dim_platform, mock_dim_tech, mock_dim_sc]
+
+        mock_metric = MagicMock()
+        mock_metric.value = "15"
+        mock_row.metric_values = [mock_metric]
+
+        mock_ga4_response = MagicMock()
+        mock_ga4_response.rows = [mock_row]
+        mock_ga4.run_report.return_value = mock_ga4_response
+
+        response = self.client.get("/analytics/popular_data?start_date=2026-02-01&end_date=2026-02-02")
+
+        self.assertEqual(response.status_code, 200)
+        data = json.loads(response.data)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]["ship_type"], "standard")
+        self.assertEqual(data[0]["technology"], "shield")
+        self.assertEqual(data[0]["supercharged"], "true")
+        self.assertEqual(data[0]["total_events"], 15)
+        mock_ga4.run_report.assert_called_once()
+
+    @patch("src.routes.analytics.bq_client")
+    def test_popular_data_caching(self, mock_bq):
+        """Test popular analytics responses are cached."""
+        mock_row = MagicMock()
+        mock_row.ship_type = "sentinel"
+        mock_row.technology = "pulse"
+        mock_row.supercharged = "false"
+        mock_row.total_events = 99
+
+        mock_results = MagicMock()
+        mock_results.__iter__.return_value = [mock_row]
+
+        mock_job = MagicMock()
+        mock_job.result.return_value = mock_results
+        mock_bq.query.return_value = mock_job
+
+        url = "/analytics/popular_data?start_date=2026-03-01&end_date=2026-03-02"
+
+        # First request - hits BigQuery
+        resp1 = self.client.get(url)
+        self.assertEqual(resp1.status_code, 200)
+        self.assertEqual(mock_bq.query.call_count, 1)
+
+        # Second request - served from cache
+        resp2 = self.client.get(url)
+        self.assertEqual(resp2.status_code, 200)
+        self.assertEqual(mock_bq.query.call_count, 1)
+        self.assertEqual(resp1.data, resp2.data)
 
 
 class TestPerformanceAnalyticsEndpoint(unittest.TestCase):

@@ -48,7 +48,7 @@ def initialize_clients():
                 scopes=scopes,
             )
 
-        ga_data_client = BetaAnalyticsDataClient(credentials=credentials)
+        ga_data_client = BetaAnalyticsDataClient(credentials=credentials, transport="rest")
         bq_client = bigquery.Client(credentials=credentials, project="cosmic-inkwell-467922-v5")
 
         return ga_data_client, bq_client

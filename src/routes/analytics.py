@@ -50,6 +50,7 @@ class SimpleCache:
 
 
 perf_cache = SimpleCache()
+popular_cache = SimpleCache()
 # --- End Caching Support ---
 
 
@@ -76,17 +77,104 @@ def parse_ga4_date(date_str: str) -> datetime.date:
 
 @analytics_bp.route("/analytics/popular_data", methods=["GET"])
 def get_popular_analytics_data():
-    """Fetches and returns popular optimization data from Google Analytics."""
+    """Fetches and returns popular optimization data from BigQuery with GA4 fallback.
+
+    Returns:
+        tuple[flask.Response, int] | flask.Response: JSON response containing popular
+        technology optimization counts per ship type and supercharged status.
+    """
+    start_date_param = request.args.get("start_date", "30daysAgo")
+    end_date_param = request.args.get("end_date", "today")
+
+    # Include current hour in cache key to ensure fresh daily/hourly aggregates
+    current_hour = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%d%H")
+    cache_key = f"popular_{start_date_param}_{end_date_param}_{current_hour}"
+
+    # Check cache first
+    cached_data = popular_cache.get(cache_key)
+    if cached_data:
+        return jsonify(cached_data)
+
+    # Parse dates once up-front so both BigQuery and GA4 fallback use validated values.
+    start_date = parse_ga4_date(start_date_param)
+    end_date = parse_ga4_date(end_date_param)
+    start_date_str = start_date.strftime("%Y-%m-%d")
+    end_date_str = end_date.strftime("%Y-%m-%d")
+    start_suffix = start_date.strftime("%Y%m%d")
+    end_suffix = end_date.strftime("%Y%m%d")
+
+    # Try BigQuery first for fast, reliable data retrieval
+    if bq_client:
+        try:
+            query = f"""
+                WITH raw_source_unioned AS (
+                  SELECT
+                    event_timestamp,
+                    user_pseudo_id,
+                    event_params
+                  FROM (
+                    SELECT event_timestamp, user_pseudo_id, event_params
+                    FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
+                    WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
+                      AND event_name = 'optimize_tech'
+
+                    UNION ALL
+
+                    SELECT event_timestamp, user_pseudo_id, event_params
+                    FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
+                    WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
+                      AND event_name = 'optimize_tech'
+                  )
+                ),
+                extracted_events AS (
+                  SELECT
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'platform') AS ship_type,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'tech') AS technology,
+                    COALESCE((SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'supercharged'), 'false') AS supercharged
+                  FROM raw_source_unioned
+                )
+                SELECT
+                  ship_type,
+                  technology,
+                  supercharged,
+                  COUNT(1) AS total_events
+                FROM extracted_events
+                WHERE ship_type IS NOT NULL AND technology IS NOT NULL
+                GROUP BY 1, 2, 3
+                ORDER BY total_events DESC
+            """
+
+            query_job = bq_client.query(query)
+            results = query_job.result()
+
+            popular_data = []
+            for row in results:
+                if row.ship_type and row.technology:
+                    popular_data.append(
+                        {
+                            "event_name": "optimize_tech",
+                            "ship_type": row.ship_type,
+                            "technology": row.technology,
+                            "supercharged": row.supercharged or "false",
+                            "total_events": int(row.total_events),
+                        }
+                    )
+
+            if popular_data:
+                popular_cache.set(cache_key, popular_data)
+                return jsonify(popular_data)
+
+        except Exception as bq_err:
+            current_app.logger.warning(f"BigQuery popular query failed, falling back to GA4: {bq_err}")
+
+    # Fallback to GA4 Data API (REST)
     if not ga4_data_client:
-        return jsonify({"error": "Google Analytics Data API client not initialized."}), 500
+        return jsonify({"error": "No analytics clients available."}), 500
 
     try:
-        start_date = request.args.get("start_date", "30daysAgo")
-        end_date = request.args.get("end_date", "today")
-
         request_body = RunReportRequest(
             property=f"properties/{GA_PROPERTY_ID}",
-            date_ranges=[DateRange(start_date=start_date, end_date=end_date)],
+            date_ranges=[DateRange(start_date=start_date_str, end_date=end_date_str)],
             dimensions=[
                 Dimension(name="customEvent:platform"),
                 Dimension(name="customEvent:tech"),
@@ -116,6 +204,8 @@ def get_popular_analytics_data():
                 }
             )
 
+        if popular_data:
+            popular_cache.set(cache_key, popular_data)
         return jsonify(popular_data)
 
     except Exception as e:
