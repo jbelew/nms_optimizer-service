@@ -214,6 +214,18 @@
                 ]
             },
             {
+                "label": "Tractor Beam",
+                "key": "tractor",
+                "image": "corvette/tractor.webp",
+                "color": "white",
+                "modules": [
+                    {"id": "Ta", "type": "bonus", "label": "[1] Tractor Beam Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": true},
+                    {"id": "Tb", "type": "bonus", "label": "[2] Tractor Beam Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": false},
+                    {"id": "Tc", "type": "bonus", "label": "[3] Tractor Beam Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": false}
+
+                ]
+            },
+            {
                 "label": "Aqua-Jets",
                 "key": "aqua",
                 "image": "starship/aquajet.webp",
