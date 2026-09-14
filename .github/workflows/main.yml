@@ -139,12 +139,12 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v3
         # Only run if a new version was created
         if: steps.create_new_tag.outputs.new_version_created == 'true'
         with:
           tag_name: ${{ steps.create_new_tag.outputs.new_version }}
-          release_name: Release ${{ steps.create_new_tag.outputs.new_version }}
+          name: Release ${{ steps.create_new_tag.outputs.new_version }}
           body: ${{ steps.changelog.outputs.changelog }}
           draft: false
           prerelease: false

@@ -22,6 +22,7 @@ This document serves as a living backlog for all tasks and implementation plans 
 - **Rust rand 0.10 Migration**: Update `rust_scorer` to support `rand` v0.10 by migrating `thread_rng`, `from_entropy`, and `choose_multiple` usages.
 - **Transitive mpmath Dependency Resolution**: Unpin `mpmath` from `requirements.txt` to allow `sympy` and `torch` to manage its compatible version range dynamically and prevent resolution conflicts during automated updates.
 - **Heroku Deploy Action Fix**: Revert `akhileshns/heroku-deploy` to `v3.15.15` and ignore major updates in Dependabot to resolve skipped Heroku deployments caused by invalid ref `refs/head/main` in the unreleased v4 branch.
+- **GitHub Release Action Deprecation Fix**: Replace deprecated `actions/create-release@v1` with `softprops/action-gh-release@v3` to resolve Node.js 20 deprecation and `set-output` deprecation warnings in CI/CD release workflow.
 
 
 
