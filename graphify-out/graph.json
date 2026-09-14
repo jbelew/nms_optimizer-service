@@ -2311,6 +2311,30 @@
       "norm_label": ".test_very_large_pattern()"
     },
     {
+      "label": "determine_window_dimensions()",
+      "file_type": "code",
+      "source_file": "src/optimization/helpers.py",
+      "source_location": "L25",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_optimization_helpers_determine_window_dimensions",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": "determine_window_dimensions()"
+    },
+    {
+      "label": ".test_old_logic_case_001_standard_infra_count_5()",
+      "file_type": "code",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L23",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_001_standard_infra_count_5",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": ".test_old_logic_case_001_standard_infra_count_5()"
+    },
+    {
       "label": ".test_old_logic_case_167_solar_trails_count_12()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
@@ -2319,8 +2343,32 @@
       "_origin": "ast",
       "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_167_solar_trails_count_12",
       "community": 116,
-      "community_name": ".test_old_logic_case_167_solar_trails_count_12",
+      "community_name": "determine_window_dimensions",
       "norm_label": ".test_old_logic_case_167_solar_trails_count_12()"
+    },
+    {
+      "label": ".test_old_logic_case_206_exosuit_core_health_count_3()",
+      "file_type": "code",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L1253",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_206_exosuit_core_health_count_3",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": ".test_old_logic_case_206_exosuit_core_health_count_3()"
+    },
+    {
+      "label": ".test_old_logic_case_271_roamer_flamethrower_count_1()",
+      "file_type": "code",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L1643",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_271_roamer_flamethrower_count_1",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": ".test_old_logic_case_271_roamer_flamethrower_count_1()"
     },
     {
       "label": ".test_old_logic_case_168_solar_teleporter_count_1()",
@@ -2899,52 +2947,40 @@
       "norm_label": "get_module_data()"
     },
     {
-      "label": ".test_old_logic_case_038_corvette_phase_count_5()",
+      "label": ".test_old_logic_case_005_standard_rocket_count_2()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L245",
+      "source_location": "L47",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_038_corvette_phase_count_5",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_005_standard_rocket_count_2",
       "community": 139,
       "community_name": "get_module_data",
-      "norm_label": ".test_old_logic_case_038_corvette_phase_count_5()"
+      "norm_label": ".test_old_logic_case_005_standard_rocket_count_2()"
     },
     {
-      "label": ".test_old_logic_case_074_sentinel_cyclotron_count_5()",
+      "label": ".test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L461",
+      "source_location": "L437",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_074_sentinel_cyclotron_count_5",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1",
       "community": 139,
       "community_name": "get_module_data",
-      "norm_label": ".test_old_logic_case_074_sentinel_cyclotron_count_5()"
+      "norm_label": ".test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1()"
     },
     {
-      "label": ".test_old_logic_case_089_sentinel_cargo_scanner_count_1()",
+      "label": ".test_old_logic_case_273_roamer_cold_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L551",
+      "source_location": "L1655",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_089_sentinel_cargo_scanner_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_273_roamer_cold_count_1",
       "community": 139,
       "community_name": "get_module_data",
-      "norm_label": ".test_old_logic_case_089_sentinel_cargo_scanner_count_1()"
-    },
-    {
-      "label": ".test_old_logic_case_128_freighter_fleet_speed_count_3()",
-      "file_type": "code",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L785",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_128_freighter_fleet_speed_count_3",
-      "community": 139,
-      "community_name": "get_module_data",
-      "norm_label": ".test_old_logic_case_128_freighter_fleet_speed_count_3()"
+      "norm_label": ".test_old_logic_case_273_roamer_cold_count_1()"
     },
     {
       "label": "._create_grid()",
@@ -3631,16 +3667,16 @@
       "norm_label": ".test_old_logic_case_209_exosuit_pressure_count_1()"
     },
     {
-      "label": ".test_old_logic_case_206_exosuit_core_health_count_3()",
+      "label": ".test_old_logic_case_038_corvette_phase_count_5()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1253",
+      "source_location": "L245",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_206_exosuit_core_health_count_3",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_038_corvette_phase_count_5",
       "community": 162,
-      "community_name": ".test_old_logic_case_206_exosuit_core_health_count_3",
-      "norm_label": ".test_old_logic_case_206_exosuit_core_health_count_3()"
+      "community_name": ".test_old_logic_case_038_corvette_phase_count_5",
+      "norm_label": ".test_old_logic_case_038_corvette_phase_count_5()"
     },
     {
       "label": ".test_old_logic_case_211_exosuit_radiation_count_4()",
@@ -5347,16 +5383,16 @@
       "norm_label": ".test_old_logic_case_270_roamer_mounted_count_4()"
     },
     {
-      "label": ".test_old_logic_case_271_roamer_flamethrower_count_1()",
+      "label": ".test_old_logic_case_059_standard_mt_scanner_count_7()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1643",
+      "source_location": "L371",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_271_roamer_flamethrower_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_059_standard_mt_scanner_count_7",
       "community": 227,
-      "community_name": ".test_old_logic_case_271_roamer_flamethrower_count_1",
-      "norm_label": ".test_old_logic_case_271_roamer_flamethrower_count_1()"
+      "community_name": ".test_old_logic_case_059_standard_mt_scanner_count_7",
+      "norm_label": ".test_old_logic_case_059_standard_mt_scanner_count_7()"
     },
     {
       "label": ".test_old_logic_case_269_roamer_mining_count_5()",
@@ -5491,16 +5527,16 @@
       "norm_label": ".test_localized_grid_single_cell()"
     },
     {
-      "label": ".test_old_logic_case_273_roamer_cold_count_1()",
+      "label": ".test_old_logic_case_072_standard_mt_personal_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1655",
+      "source_location": "L449",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_273_roamer_cold_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_072_standard_mt_personal_count_1",
       "community": 230,
-      "community_name": ".test_old_logic_case_273_roamer_cold_count_1",
-      "norm_label": ".test_old_logic_case_273_roamer_cold_count_1()"
+      "community_name": ".test_old_logic_case_072_standard_mt_personal_count_1",
+      "norm_label": ".test_old_logic_case_072_standard_mt_personal_count_1()"
     },
     {
       "label": ".test_old_logic_case_275_roamer_toxic_count_1()",
@@ -5827,16 +5863,16 @@
       "norm_label": ".test_old_logic_case_036_corvette_cyclotron_count_5()"
     },
     {
-      "label": ".test_old_logic_case_001_standard_infra_count_5()",
+      "label": ".test_old_logic_case_074_sentinel_cyclotron_count_5()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L23",
+      "source_location": "L461",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_001_standard_infra_count_5",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_074_sentinel_cyclotron_count_5",
       "community": 249,
-      "community_name": ".test_old_logic_case_001_standard_infra_count_5",
-      "norm_label": ".test_old_logic_case_001_standard_infra_count_5()"
+      "community_name": ".test_old_logic_case_074_sentinel_cyclotron_count_5",
+      "norm_label": ".test_old_logic_case_074_sentinel_cyclotron_count_5()"
     },
     {
       "label": ".setUp()",
@@ -6043,16 +6079,16 @@
       "norm_label": ".test_old_logic_case_042_corvette_shield_count_5()"
     },
     {
-      "label": ".test_old_logic_case_045_corvette_launch_count_6()",
+      "label": ".test_old_logic_case_084_sentinel_aqua_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L287",
+      "source_location": "L521",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_045_corvette_launch_count_6",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_084_sentinel_aqua_count_1",
       "community": 257,
-      "community_name": ".test_old_logic_case_045_corvette_launch_count_6",
-      "norm_label": ".test_old_logic_case_045_corvette_launch_count_6()"
+      "community_name": ".test_old_logic_case_084_sentinel_aqua_count_1",
+      "norm_label": ".test_old_logic_case_084_sentinel_aqua_count_1()"
     },
     {
       "label": ".test_old_logic_case_046_corvette_pulse_count_8()",
@@ -6125,18 +6161,6 @@
       "community": 26,
       "community_name": "test_analytics.py",
       "norm_label": ".test_send_analytics_batch()"
-    },
-    {
-      "label": ".test_send_analytics_event()",
-      "file_type": "code",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L309",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_testpublicfunctions_test_send_analytics_event",
-      "community": 26,
-      "community_name": "test_analytics.py",
-      "norm_label": ".test_send_analytics_event()"
     },
     {
       "label": ".test_send_analytics_event_default_params()",
@@ -6271,28 +6295,16 @@
       "norm_label": ".test_old_logic_case_056_standard_mt_analysis_count_1()"
     },
     {
-      "label": ".test_send_event_disabled()",
+      "label": ".test_send_event_http_error()",
       "file_type": "code",
       "source_file": "src/tests/test_analytics.py",
-      "source_location": "L114",
+      "source_location": "L188",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_analytics_testga4client_test_send_event_disabled",
+      "id": "src_tests_test_analytics_testga4client_test_send_event_http_error",
       "community": 27,
       "community_name": "patch",
-      "norm_label": ".test_send_event_disabled()"
-    },
-    {
-      "label": ".test_send_event_generates_client_id()",
-      "file_type": "code",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L166",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_testga4client_test_send_event_generates_client_id",
-      "community": 27,
-      "community_name": "patch",
-      "norm_label": ".test_send_event_generates_client_id()"
+      "norm_label": ".test_send_event_http_error()"
     },
     {
       "label": ".test_send_event_invalid_name()",
@@ -6377,6 +6389,18 @@
       "community": 27,
       "community_name": "patch",
       "norm_label": ".test_send_events_validation_failure()"
+    },
+    {
+      "label": ".test_send_analytics_event()",
+      "file_type": "code",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L309",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_testpublicfunctions_test_send_analytics_event",
+      "community": 27,
+      "community_name": "patch",
+      "norm_label": ".test_send_analytics_event()"
     },
     {
       "label": ".test_old_logic_case_003_standard_photon_count_5()",
@@ -6679,18 +6703,6 @@
       "norm_label": ".test_old_logic_case_071_standard_mt_paralysis_count_1()"
     },
     {
-      "label": "determine_window_dimensions()",
-      "file_type": "code",
-      "source_file": "src/optimization/helpers.py",
-      "source_location": "L25",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_optimization_helpers_determine_window_dimensions",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": "determine_window_dimensions()"
-    },
-    {
       "label": ".test_old_logic_case_040_corvette_positron_count_5()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
@@ -6699,56 +6711,20 @@
       "_origin": "ast",
       "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_040_corvette_positron_count_5",
       "community": 286,
-      "community_name": "determine_window_dimensions",
+      "community_name": ".test_old_logic_case_040_corvette_positron_count_5",
       "norm_label": ".test_old_logic_case_040_corvette_positron_count_5()"
     },
     {
-      "label": ".test_old_logic_case_072_standard_mt_personal_count_1()",
+      "label": ".test_old_logic_case_089_sentinel_cargo_scanner_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L449",
+      "source_location": "L551",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_072_standard_mt_personal_count_1",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": ".test_old_logic_case_072_standard_mt_personal_count_1()"
-    },
-    {
-      "label": ".test_old_logic_case_084_sentinel_aqua_count_1()",
-      "file_type": "code",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L521",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_084_sentinel_aqua_count_1",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": ".test_old_logic_case_084_sentinel_aqua_count_1()"
-    },
-    {
-      "label": ".test_old_logic_case_096_nomad_grip_count_1()",
-      "file_type": "code",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L593",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_096_nomad_grip_count_1",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": ".test_old_logic_case_096_nomad_grip_count_1()"
-    },
-    {
-      "label": ".test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1()",
-      "file_type": "code",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L437",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_089_sentinel_cargo_scanner_count_1",
       "community": 287,
-      "community_name": ".test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1",
-      "norm_label": ".test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1()"
+      "community_name": ".test_old_logic_case_089_sentinel_cargo_scanner_count_1",
+      "norm_label": ".test_old_logic_case_089_sentinel_cargo_scanner_count_1()"
     },
     {
       "label": ".test_old_logic_case_073_standard_mt_terrian_count_1()",
@@ -6763,16 +6739,16 @@
       "norm_label": ".test_old_logic_case_073_standard_mt_terrian_count_1()"
     },
     {
-      "label": ".test_old_logic_case_075_sentinel_infra_count_5()",
+      "label": ".test_old_logic_case_096_nomad_grip_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L467",
+      "source_location": "L593",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_075_sentinel_infra_count_5",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_096_nomad_grip_count_1",
       "community": 289,
-      "community_name": ".test_old_logic_case_075_sentinel_infra_count_5",
-      "norm_label": ".test_old_logic_case_075_sentinel_infra_count_5()"
+      "community_name": ".test_old_logic_case_096_nomad_grip_count_1",
+      "norm_label": ".test_old_logic_case_096_nomad_grip_count_1()"
     },
     {
       "label": "._create_grid()",
@@ -6895,16 +6871,16 @@
       "norm_label": ".test_old_logic_case_076_sentinel_phase_count_5()"
     },
     {
-      "label": ".test_old_logic_case_005_standard_rocket_count_2()",
+      "label": ".test_old_logic_case_111_minotaur_icarus_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L47",
+      "source_location": "L683",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_005_standard_rocket_count_2",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_111_minotaur_icarus_count_1",
       "community": 291,
-      "community_name": ".test_old_logic_case_005_standard_rocket_count_2",
-      "norm_label": ".test_old_logic_case_005_standard_rocket_count_2()"
+      "community_name": ".test_old_logic_case_111_minotaur_icarus_count_1",
+      "norm_label": ".test_old_logic_case_111_minotaur_icarus_count_1()"
     },
     {
       "label": ".test_old_logic_case_077_sentinel_positron_count_5()",
@@ -7447,16 +7423,28 @@
       "norm_label": ".test_client_init_override_params()"
     },
     {
-      "label": ".test_client_init_with_env_vars()",
+      "label": ".test_send_event_disabled()",
       "file_type": "code",
       "source_file": "src/tests/test_analytics.py",
-      "source_location": "L71",
+      "source_location": "L114",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_analytics_testga4client_test_client_init_with_env_vars",
+      "id": "src_tests_test_analytics_testga4client_test_send_event_disabled",
       "community": 31,
       "community_name": "TestGA4Client",
-      "norm_label": ".test_client_init_with_env_vars()"
+      "norm_label": ".test_send_event_disabled()"
+    },
+    {
+      "label": ".test_send_event_generates_client_id()",
+      "file_type": "code",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L166",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_testga4client_test_send_event_generates_client_id",
+      "community": 31,
+      "community_name": "TestGA4Client",
+      "norm_label": ".test_send_event_generates_client_id()"
     },
     {
       "label": ".test_send_event_invalid_params()",
@@ -7469,18 +7457,6 @@
       "community": 31,
       "community_name": "TestGA4Client",
       "norm_label": ".test_send_event_invalid_params()"
-    },
-    {
-      "label": ".test_validate_event_empty_name()",
-      "file_type": "code",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L277",
-      "_callable": true,
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_testga4client_test_validate_event_empty_name",
-      "community": 31,
-      "community_name": "TestGA4Client",
-      "norm_label": ".test_validate_event_empty_name()"
     },
     {
       "label": ".test_validate_event_invalid_name_format()",
@@ -7603,16 +7579,16 @@
       "norm_label": ".test_old_logic_case_102_nomad_cold_count_1()"
     },
     {
-      "label": ".test_old_logic_case_103_nomad_radiation_count_1()",
+      "label": ".test_old_logic_case_124_freighter_hyper_count_11()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L635",
+      "source_location": "L761",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_103_nomad_radiation_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_124_freighter_hyper_count_11",
       "community": 317,
-      "community_name": ".test_old_logic_case_103_nomad_radiation_count_1",
-      "norm_label": ".test_old_logic_case_103_nomad_radiation_count_1()"
+      "community_name": ".test_old_logic_case_124_freighter_hyper_count_11",
+      "norm_label": ".test_old_logic_case_124_freighter_hyper_count_11()"
     },
     {
       "label": ".test_old_logic_case_110_minotaur_ariadnes_count_1()",
@@ -7987,16 +7963,16 @@
       "norm_label": "track_event()"
     },
     {
-      "label": ".test_old_logic_case_115_minotaur_liquidator_right_count_4()",
+      "label": ".test_old_logic_case_126_freighter_matterbeam_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L707",
+      "source_location": "L773",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_115_minotaur_liquidator_right_count_4",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_126_freighter_matterbeam_count_1",
       "community": 330,
-      "community_name": ".test_old_logic_case_115_minotaur_liquidator_right_count_4",
-      "norm_label": ".test_old_logic_case_115_minotaur_liquidator_right_count_4()"
+      "community_name": ".test_old_logic_case_126_freighter_matterbeam_count_1",
+      "norm_label": ".test_old_logic_case_126_freighter_matterbeam_count_1()"
     },
     {
       "label": ".test_old_logic_case_135_colossus_boost_count_4()",
@@ -8167,16 +8143,28 @@
       "norm_label": ".test_client_init_disabled_no_secret()"
     },
     {
-      "label": ".test_send_event_http_error()",
+      "label": ".test_client_init_with_env_vars()",
       "file_type": "code",
       "source_file": "src/tests/test_analytics.py",
-      "source_location": "L188",
+      "source_location": "L71",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_analytics_testga4client_test_send_event_http_error",
+      "id": "src_tests_test_analytics_testga4client_test_client_init_with_env_vars",
       "community": 34,
       "community_name": "GA4Client",
-      "norm_label": ".test_send_event_http_error()"
+      "norm_label": ".test_client_init_with_env_vars()"
+    },
+    {
+      "label": ".test_validate_event_empty_name()",
+      "file_type": "code",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L277",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_testga4client_test_validate_event_empty_name",
+      "community": 34,
+      "community_name": "GA4Client",
+      "norm_label": ".test_validate_event_empty_name()"
     },
     {
       "label": ".test_validate_event_valid()",
@@ -9691,6 +9679,18 @@
       "norm_label": ".test_variations_always_include_original()"
     },
     {
+      "label": ".test_old_logic_case_128_freighter_fleet_speed_count_3()",
+      "file_type": "code",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L785",
+      "_callable": true,
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_128_freighter_fleet_speed_count_3",
+      "community": 410,
+      "community_name": ".test_old_logic_case_128_freighter_fleet_speed_count_3",
+      "norm_label": ".test_old_logic_case_128_freighter_fleet_speed_count_3()"
+    },
+    {
       "label": ".test_filter_solves_preserves_map_keys()",
       "file_type": "code",
       "source_file": "src/tests/test_solve_map_utils.py",
@@ -11011,52 +11011,52 @@
       "norm_label": ".test_ml_placement_with_empty_grid()"
     },
     {
-      "label": ".test_old_logic_case_059_standard_mt_scanner_count_7()",
+      "label": ".test_old_logic_case_045_corvette_launch_count_6()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L371",
+      "source_location": "L287",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_059_standard_mt_scanner_count_7",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_045_corvette_launch_count_6",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": ".test_old_logic_case_059_standard_mt_scanner_count_7()"
+      "norm_label": ".test_old_logic_case_045_corvette_launch_count_6()"
     },
     {
-      "label": ".test_old_logic_case_111_minotaur_icarus_count_1()",
+      "label": ".test_old_logic_case_075_sentinel_infra_count_5()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L683",
+      "source_location": "L467",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_111_minotaur_icarus_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_075_sentinel_infra_count_5",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": ".test_old_logic_case_111_minotaur_icarus_count_1()"
+      "norm_label": ".test_old_logic_case_075_sentinel_infra_count_5()"
     },
     {
-      "label": ".test_old_logic_case_124_freighter_hyper_count_11()",
+      "label": ".test_old_logic_case_103_nomad_radiation_count_1()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L761",
+      "source_location": "L635",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_124_freighter_hyper_count_11",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_103_nomad_radiation_count_1",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": ".test_old_logic_case_124_freighter_hyper_count_11()"
+      "norm_label": ".test_old_logic_case_103_nomad_radiation_count_1()"
     },
     {
-      "label": ".test_old_logic_case_126_freighter_matterbeam_count_1()",
+      "label": ".test_old_logic_case_115_minotaur_liquidator_right_count_4()",
       "file_type": "code",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L773",
+      "source_location": "L707",
       "_callable": true,
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_126_freighter_matterbeam_count_1",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_testolddeterminewindowdimensionsbehavior_test_old_logic_case_115_minotaur_liquidator_right_count_4",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": ".test_old_logic_case_126_freighter_matterbeam_count_1()"
+      "norm_label": ".test_old_logic_case_115_minotaur_liquidator_right_count_4()"
     },
     {
       "label": ".test_all_cells_non_supercharged()",
@@ -14088,8 +14088,41 @@
       "_origin": "ast",
       "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1020",
       "community": 116,
-      "community_name": ".test_old_logic_case_167_solar_trails_count_12",
+      "community_name": "determine_window_dimensions",
       "norm_label": "old logic: solar trails (12 modules)"
+    },
+    {
+      "label": "Old Logic: exosuit core_health (3 modules)",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L1254",
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1254",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": "old logic: exosuit core_health (3 modules)"
+    },
+    {
+      "label": "Old Logic: roamer flamethrower (1 modules)",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L1644",
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1644",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": "old logic: roamer flamethrower (1 modules)"
+    },
+    {
+      "label": "Old Logic: standard infra (5 modules)",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L24",
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_24",
+      "community": 116,
+      "community_name": "determine_window_dimensions",
+      "norm_label": "old logic: standard infra (5 modules)"
     },
     {
       "label": "Old Logic: solar teleporter (1 modules)",
@@ -14730,6 +14763,17 @@
       "norm_label": "old logic: nautilon dredging (1 modules)"
     },
     {
+      "label": "test_old_determine_window_dimensions_behavior.py",
+      "file_type": "code",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior",
+      "community": 139,
+      "community_name": "get_module_data",
+      "norm_label": "test_old_determine_window_dimensions_behavior.py"
+    },
+    {
       "label": "Loads the module data for a specific ship type from its JSON file. Results are\u2026",
       "file_type": "rationale",
       "source_file": "src/data_loader.py",
@@ -14741,48 +14785,37 @@
       "norm_label": "loads the module data for a specific ship type from its json file. results are..."
     },
     {
-      "label": "Old Logic: corvette phase (5 modules)",
+      "label": "Old Logic: roamer cold (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L246",
+      "source_location": "L1656",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_246",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1656",
       "community": 139,
       "community_name": "get_module_data",
-      "norm_label": "old logic: corvette phase (5 modules)"
+      "norm_label": "old logic: roamer cold (1 modules)"
     },
     {
-      "label": "Old Logic: sentinel cyclotron (5 modules)",
+      "label": "Old Logic: standard-mt voltaic-amplifier (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L462",
+      "source_location": "L438",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_462",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_438",
       "community": 139,
       "community_name": "get_module_data",
-      "norm_label": "old logic: sentinel cyclotron (5 modules)"
+      "norm_label": "old logic: standard-mt voltaic-amplifier (1 modules)"
     },
     {
-      "label": "Old Logic: sentinel cargo_scanner (1 modules)",
+      "label": "Old Logic: standard rocket (2 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L552",
+      "source_location": "L48",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_552",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_48",
       "community": 139,
       "community_name": "get_module_data",
-      "norm_label": "old logic: sentinel cargo_scanner (1 modules)"
-    },
-    {
-      "label": "Old Logic: freighter fleet-speed (3 modules)",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L786",
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_786",
-      "community": 139,
-      "community_name": "get_module_data",
-      "norm_label": "old logic: freighter fleet-speed (3 modules)"
+      "norm_label": "old logic: standard rocket (2 modules)"
     },
     {
       "label": "Should check all valid window positions",
@@ -15544,15 +15577,15 @@
       "norm_label": "old logic: exosuit pressure (1 modules)"
     },
     {
-      "label": "Old Logic: exosuit core_health (3 modules)",
+      "label": "Old Logic: corvette phase (5 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1254",
+      "source_location": "L246",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1254",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_246",
       "community": 162,
-      "community_name": ".test_old_logic_case_206_exosuit_core_health_count_3",
-      "norm_label": "old logic: exosuit core_health (3 modules)"
+      "community_name": ".test_old_logic_case_038_corvette_phase_count_5",
+      "norm_label": "old logic: corvette phase (5 modules)"
     },
     {
       "label": "Old Logic: exosuit radiation (4 modules)",
@@ -17095,15 +17128,15 @@
       "norm_label": "old logic: roamer mounted (4 modules)"
     },
     {
-      "label": "Old Logic: roamer flamethrower (1 modules)",
+      "label": "Old Logic: standard-mt scanner (7 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1644",
+      "source_location": "L372",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1644",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_372",
       "community": 227,
-      "community_name": ".test_old_logic_case_271_roamer_flamethrower_count_1",
-      "norm_label": "old logic: roamer flamethrower (1 modules)"
+      "community_name": ".test_old_logic_case_059_standard_mt_scanner_count_7",
+      "norm_label": "old logic: standard-mt scanner (7 modules)"
     },
     {
       "label": "Old Logic: roamer mining (5 modules)",
@@ -17238,15 +17271,15 @@
       "norm_label": "localized grid of 1x1 should work"
     },
     {
-      "label": "Old Logic: roamer cold (1 modules)",
+      "label": "Old Logic: standard-mt personal (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1656",
+      "source_location": "L450",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_1656",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_450",
       "community": 230,
-      "community_name": ".test_old_logic_case_273_roamer_cold_count_1",
-      "norm_label": "old logic: roamer cold (1 modules)"
+      "community_name": ".test_old_logic_case_072_standard_mt_personal_count_1",
+      "norm_label": "old logic: standard-mt personal (1 modules)"
     },
     {
       "label": "Old Logic: roamer toxic (1 modules)",
@@ -17557,15 +17590,15 @@
       "norm_label": "old logic: corvette cyclotron (5 modules)"
     },
     {
-      "label": "Old Logic: standard infra (5 modules)",
+      "label": "Old Logic: sentinel cyclotron (5 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L24",
+      "source_location": "L462",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_24",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_462",
       "community": 249,
-      "community_name": ".test_old_logic_case_001_standard_infra_count_5",
-      "norm_label": "old logic: standard infra (5 modules)"
+      "community_name": ".test_old_logic_case_074_sentinel_cyclotron_count_5",
+      "norm_label": "old logic: sentinel cyclotron (5 modules)"
     },
     {
       "label": "Test applying patterns to grids with various edge cases.",
@@ -17766,15 +17799,15 @@
       "norm_label": "old logic: corvette shield (5 modules)"
     },
     {
-      "label": "Old Logic: corvette launch (6 modules)",
+      "label": "Old Logic: sentinel aqua (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L288",
+      "source_location": "L522",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_288",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_522",
       "community": 257,
-      "community_name": ".test_old_logic_case_045_corvette_launch_count_6",
-      "norm_label": "old logic: corvette launch (6 modules)"
+      "community_name": ".test_old_logic_case_084_sentinel_aqua_count_1",
+      "norm_label": "old logic: sentinel aqua (1 modules)"
     },
     {
       "label": "Old Logic: corvette pulse (8 modules)",
@@ -17896,17 +17929,6 @@
       "community": 26,
       "community_name": "test_analytics.py",
       "norm_label": "test public module functions."
-    },
-    {
-      "label": "Test send_analytics_event function.",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L310",
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_rationale_310",
-      "community": 26,
-      "community_name": "test_analytics.py",
-      "norm_label": "test send_analytics_event function."
     },
     {
       "label": "Test send_analytics_event with default params.",
@@ -18063,17 +18085,6 @@
       "norm_label": "test successful event send."
     },
     {
-      "label": "Test send_event returns False when disabled.",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L115",
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_rationale_115",
-      "community": 27,
-      "community_name": "patch",
-      "norm_label": "test send_event returns false when disabled."
-    },
-    {
       "label": "Test send_event returns False for invalid event name.",
       "file_type": "rationale",
       "source_file": "src/tests/test_analytics.py",
@@ -18096,15 +18107,15 @@
       "norm_label": "test send_event includes user_id in payload."
     },
     {
-      "label": "Test send_event generates client_id if not provided.",
+      "label": "Test send_event returns False on HTTP error.",
       "file_type": "rationale",
       "source_file": "src/tests/test_analytics.py",
-      "source_location": "L167",
+      "source_location": "L189",
       "_origin": "ast",
-      "id": "src_tests_test_analytics_rationale_167",
+      "id": "src_tests_test_analytics_rationale_189",
       "community": 27,
       "community_name": "patch",
-      "norm_label": "test send_event generates client_id if not provided."
+      "norm_label": "test send_event returns false on http error."
     },
     {
       "label": "Test send_event handles timeout exception.",
@@ -18149,6 +18160,17 @@
       "community": 27,
       "community_name": "patch",
       "norm_label": "test send_events returns false when any event is invalid."
+    },
+    {
+      "label": "Test send_analytics_event function.",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L310",
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_rationale_310",
+      "community": 27,
+      "community_name": "patch",
+      "norm_label": "test send_analytics_event function."
     },
     {
       "label": "Old Logic: standard photon (5 modules)",
@@ -18426,17 +18448,6 @@
       "norm_label": "old logic: standard-mt paralysis (1 modules)"
     },
     {
-      "label": "test_old_determine_window_dimensions_behavior.py",
-      "file_type": "code",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": "test_old_determine_window_dimensions_behavior.py"
-    },
-    {
       "label": "Old Logic: corvette positron (5 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
@@ -18444,52 +18455,19 @@
       "_origin": "ast",
       "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_258",
       "community": 286,
-      "community_name": "determine_window_dimensions",
+      "community_name": ".test_old_logic_case_040_corvette_positron_count_5",
       "norm_label": "old logic: corvette positron (5 modules)"
     },
     {
-      "label": "Old Logic: standard-mt personal (1 modules)",
+      "label": "Old Logic: sentinel cargo_scanner (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L450",
+      "source_location": "L552",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_450",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": "old logic: standard-mt personal (1 modules)"
-    },
-    {
-      "label": "Old Logic: sentinel aqua (1 modules)",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L522",
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_522",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": "old logic: sentinel aqua (1 modules)"
-    },
-    {
-      "label": "Old Logic: nomad grip (1 modules)",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L594",
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_594",
-      "community": 286,
-      "community_name": "determine_window_dimensions",
-      "norm_label": "old logic: nomad grip (1 modules)"
-    },
-    {
-      "label": "Old Logic: standard-mt voltaic-amplifier (1 modules)",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L438",
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_438",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_552",
       "community": 287,
-      "community_name": ".test_old_logic_case_070_standard_mt_voltaic_amplifier_count_1",
-      "norm_label": "old logic: standard-mt voltaic-amplifier (1 modules)"
+      "community_name": ".test_old_logic_case_089_sentinel_cargo_scanner_count_1",
+      "norm_label": "old logic: sentinel cargo_scanner (1 modules)"
     },
     {
       "label": "Old Logic: standard-mt terrian (1 modules)",
@@ -18503,15 +18481,15 @@
       "norm_label": "old logic: standard-mt terrian (1 modules)"
     },
     {
-      "label": "Old Logic: sentinel infra (5 modules)",
+      "label": "Old Logic: nomad grip (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L468",
+      "source_location": "L594",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_468",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_594",
       "community": 289,
-      "community_name": ".test_old_logic_case_075_sentinel_infra_count_5",
-      "norm_label": "old logic: sentinel infra (5 modules)"
+      "community_name": ".test_old_logic_case_096_nomad_grip_count_1",
+      "norm_label": "old logic: nomad grip (1 modules)"
     },
     {
       "label": "Adversarial tests for place_all_modules_in_empty_slots",
@@ -18635,15 +18613,15 @@
       "norm_label": "old logic: sentinel phase (5 modules)"
     },
     {
-      "label": "Old Logic: standard rocket (2 modules)",
+      "label": "Old Logic: minotaur icarus (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L48",
+      "source_location": "L684",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_48",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_684",
       "community": 291,
-      "community_name": ".test_old_logic_case_005_standard_rocket_count_2",
-      "norm_label": "old logic: standard rocket (2 modules)"
+      "community_name": ".test_old_logic_case_111_minotaur_icarus_count_1",
+      "norm_label": "old logic: minotaur icarus (1 modules)"
     },
     {
       "label": "Old Logic: sentinel positron (5 modules)",
@@ -19240,6 +19218,17 @@
       "norm_label": "old logic: nomad mounted (4 modules)"
     },
     {
+      "label": "Test send_event returns False when disabled.",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L115",
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_rationale_115",
+      "community": 31,
+      "community_name": "TestGA4Client",
+      "norm_label": "test send_event returns false when disabled."
+    },
+    {
       "label": "Test send_event returns False when params is not a dict.",
       "file_type": "rationale",
       "source_file": "src/tests/test_analytics.py",
@@ -19251,6 +19240,17 @@
       "norm_label": "test send_event returns false when params is not a dict."
     },
     {
+      "label": "Test send_event generates client_id if not provided.",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L167",
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_rationale_167",
+      "community": 31,
+      "community_name": "TestGA4Client",
+      "norm_label": "test send_event generates client_id if not provided."
+    },
+    {
       "label": "Test _validate_event rejects invalid event name format.",
       "file_type": "rationale",
       "source_file": "src/tests/test_analytics.py",
@@ -19260,17 +19260,6 @@
       "community": 31,
       "community_name": "TestGA4Client",
       "norm_label": "test _validate_event rejects invalid event name format."
-    },
-    {
-      "label": "Test _validate_event rejects empty event name.",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L278",
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_rationale_278",
-      "community": 31,
-      "community_name": "TestGA4Client",
-      "norm_label": "test _validate_event rejects empty event name."
     },
     {
       "label": "Test _validate_event rejects non-string event name.",
@@ -19304,17 +19293,6 @@
       "community": 31,
       "community_name": "TestGA4Client",
       "norm_label": "test ga4client class."
-    },
-    {
-      "label": "Test client initialization with environment variables.",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L72",
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_rationale_72",
-      "community": 31,
-      "community_name": "TestGA4Client",
-      "norm_label": "test client initialization with environment variables."
     },
     {
       "label": "Test client is disabled when measurement_id is missing.",
@@ -19416,15 +19394,15 @@
       "norm_label": "old logic: nomad cold (1 modules)"
     },
     {
-      "label": "Old Logic: nomad radiation (1 modules)",
+      "label": "Old Logic: freighter hyper (11 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L636",
+      "source_location": "L762",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_636",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_762",
       "community": 317,
-      "community_name": ".test_old_logic_case_103_nomad_radiation_count_1",
-      "norm_label": "old logic: nomad radiation (1 modules)"
+      "community_name": ".test_old_logic_case_124_freighter_hyper_count_11",
+      "norm_label": "old logic: freighter hyper (11 modules)"
     },
     {
       "label": "Old Logic: minotaur ariadnes (1 modules)",
@@ -19955,15 +19933,15 @@
       "norm_label": "fetches and returns popular optimization data from bigquery with ga4 fallback...."
     },
     {
-      "label": "Old Logic: minotaur liquidator-right (4 modules)",
+      "label": "Old Logic: freighter matterbeam (1 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L708",
+      "source_location": "L774",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_708",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_774",
       "community": 330,
-      "community_name": ".test_old_logic_case_115_minotaur_liquidator_right_count_4",
-      "norm_label": "old logic: minotaur liquidator-right (4 modules)"
+      "community_name": ".test_old_logic_case_126_freighter_matterbeam_count_1",
+      "norm_label": "old logic: freighter matterbeam (1 modules)"
     },
     {
       "label": "Old Logic: colossus boost (4 modules)",
@@ -20120,17 +20098,6 @@
       "norm_label": "send a single event to ga4. args: event: analyticsevent to send returns: true..."
     },
     {
-      "label": "Test send_event returns False on HTTP error.",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_analytics.py",
-      "source_location": "L189",
-      "_origin": "ast",
-      "id": "src_tests_test_analytics_rationale_189",
-      "community": 34,
-      "community_name": "GA4Client",
-      "norm_label": "test send_event returns false on http error."
-    },
-    {
       "label": "Test _validate_event with valid event.",
       "file_type": "rationale",
       "source_file": "src/tests/test_analytics.py",
@@ -20140,6 +20107,28 @@
       "community": 34,
       "community_name": "GA4Client",
       "norm_label": "test _validate_event with valid event."
+    },
+    {
+      "label": "Test _validate_event rejects empty event name.",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L278",
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_rationale_278",
+      "community": 34,
+      "community_name": "GA4Client",
+      "norm_label": "test _validate_event rejects empty event name."
+    },
+    {
+      "label": "Test client initialization with environment variables.",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_analytics.py",
+      "source_location": "L72",
+      "_origin": "ast",
+      "id": "src_tests_test_analytics_rationale_72",
+      "community": 34,
+      "community_name": "GA4Client",
+      "norm_label": "test client initialization with environment variables."
     },
     {
       "label": "Test client is disabled when api_secret is missing.",
@@ -22056,6 +22045,17 @@
       "norm_label": "generated variations should be unique."
     },
     {
+      "label": "Old Logic: freighter fleet-speed (3 modules)",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L786",
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_786",
+      "community": 410,
+      "community_name": ".test_old_logic_case_128_freighter_fleet_speed_count_3",
+      "norm_label": "old logic: freighter fleet-speed (3 modules)"
+    },
+    {
       "label": "Map position keys should be preserved (tuples).",
       "file_type": "rationale",
       "source_file": "src/tests/test_solve_map_utils.py",
@@ -22202,7 +22202,7 @@
       "ecosystem": "python",
       "source_file": "pyproject.toml",
       "source_location": "L1",
-      "version": "5.16.3",
+      "version": "5.17.0",
       "_origin": "ast",
       "id": "pkg_nms_optimizer_service",
       "community": 424,
@@ -24047,26 +24047,37 @@
       "norm_label": "should handle model prediction errors gracefully."
     },
     {
-      "label": "Old Logic: standard-mt scanner (7 modules)",
+      "label": "Old Logic: corvette launch (6 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L372",
+      "source_location": "L288",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_372",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_288",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": "old logic: standard-mt scanner (7 modules)"
+      "norm_label": "old logic: corvette launch (6 modules)"
     },
     {
-      "label": "Old Logic: minotaur icarus (1 modules)",
+      "label": "Old Logic: sentinel infra (5 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L684",
+      "source_location": "L468",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_684",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_468",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": "old logic: minotaur icarus (1 modules)"
+      "norm_label": "old logic: sentinel infra (5 modules)"
+    },
+    {
+      "label": "Old Logic: nomad radiation (1 modules)",
+      "file_type": "rationale",
+      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
+      "source_location": "L636",
+      "_origin": "ast",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_636",
+      "community": 63,
+      "community_name": "TestOldDetermineWindowDimensionsBehavior",
+      "norm_label": "old logic: nomad radiation (1 modules)"
     },
     {
       "label": "This class captures the behavior of `determine_window_dimensions` as it was at\u2026",
@@ -24080,26 +24091,15 @@
       "norm_label": "this class captures the behavior of `determine_window_dimensions` as it was at..."
     },
     {
-      "label": "Old Logic: freighter hyper (11 modules)",
+      "label": "Old Logic: minotaur liquidator-right (4 modules)",
       "file_type": "rationale",
       "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L762",
+      "source_location": "L708",
       "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_762",
+      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_708",
       "community": 63,
       "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": "old logic: freighter hyper (11 modules)"
-    },
-    {
-      "label": "Old Logic: freighter matterbeam (1 modules)",
-      "file_type": "rationale",
-      "source_file": "src/tests/test_old_determine_window_dimensions_behavior.py",
-      "source_location": "L774",
-      "_origin": "ast",
-      "id": "src_tests_test_old_determine_window_dimensions_behavior_rationale_774",
-      "community": 63,
-      "community_name": "TestOldDetermineWindowDimensionsBehavior",
-      "norm_label": "old logic: freighter matterbeam (1 modules)"
+      "norm_label": "old logic: minotaur liquidator-right (4 modules)"
     },
     {
       "label": "Adversarial tests for supercharged slot detection in windows",
@@ -73017,5 +73017,5 @@
       "source_file": "GEMINI.md"
     }
   ],
-  "built_at_commit": "dafe8bf7cc79c7375afb43427ce6b179b71f1070"
+  "built_at_commit": "5250fc614990dddb6b86edaf75328cd2c278e9ea"
 }
