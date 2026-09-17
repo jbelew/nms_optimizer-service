@@ -295,6 +295,21 @@ class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
         self.assertEqual(first_item["p90"], 1500.0)
         self.assertEqual(first_item["average_value"], 1200.0)
 
+    @patch("src.routes.analytics.bq_client")
+    def test_performance_data_query_structure(self, mock_bq):
+        """Test BigQuery performance query scopes aggregation by user_pseudo_id and regex."""
+        mock_job = MagicMock()
+        mock_job.result.return_value = []
+        mock_bq.query.return_value = mock_job
+
+        self.client.get("/analytics/performance_data?start_date=2026-04-01&end_date=2026-04-02")
+
+        mock_bq.query.assert_called_once()
+        query_sql = mock_bq.query.call_args[0][0]
+        self.assertIn("user_pseudo_id", query_sql)
+        self.assertIn("REGEXP_CONTAINS(m_id", query_sql)
+        self.assertIn("metric_id", query_sql)
+
 
 class TestErrorHandling(unittest.TestCase):
     """Test error handling in endpoints."""

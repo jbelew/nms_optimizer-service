@@ -271,14 +271,19 @@ def get_performance_analytics_data():
                     event_timestamp,
                     user_pseudo_id,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label') as m_id,
+                    COALESCE(
+                      (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_id'),
+                      (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label')
+                    ) as m_id,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
                     (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
                      FROM UNNEST(event_params) WHERE key = 'value') as val
                   FROM raw_source_unioned
                 ),
                 deduped_vitals AS (
-                  -- Deduplicate by metric ID (from web-vitals) to sum deltas correctly
+                  -- Deduplicate by metric ID (from web-vitals) to sum deltas correctly.
+                  -- Group by user_pseudo_id to ensure events are never aggregated across different users.
+                  -- Guard against non-metric ID labels (such as DOM selectors) so distinct interactions are not summed.
                   SELECT
                     ANY_VALUE(m_name) as m_name,
                     ANY_VALUE(v) as v,
@@ -286,7 +291,9 @@ def get_performance_analytics_data():
                     SUM(val) as total_val -- Sum deltas for the same ID
                   FROM raw_source
                   WHERE m_name IS NOT NULL AND m_name != 'TBT'
-                  GROUP BY COALESCE(m_id, CAST(event_timestamp AS STRING) || user_pseudo_id || m_name)
+                  GROUP BY
+                    user_pseudo_id,
+                    IF(m_id IS NOT NULL AND REGEXP_CONTAINS(m_id, r'^v\\d+-\\d+-\\d+$'), m_id, CAST(event_timestamp AS STRING) || m_name)
                 ),
                 hourly_stats AS (
                   SELECT
