@@ -196,6 +196,54 @@ class TestDetermineWindowDimensions(unittest.TestCase):
                     self.assertGreater(w, 0, f"Width 0 for count={count}, tech={tech}, ship={ship}")
                     self.assertGreater(h, 0, f"Height 0 for count={count}, tech={tech}, ship={ship}")
 
+    def test_window_overrides_last_value_equal_or_greater(self):
+        """Window overrides without explicit default treat the last numeric key as equal or greater than."""
+        mock = {
+            "types": {
+                "core": [{"key": "trails", "window_overrides": {"5": [3, 3], "6": [4, 3]}}]
+            }
+        }
+        # Counts below overrides should follow standard base profile
+        self.assertEqual(determine_window_dimensions(1, "trails", "any_ship", modules=mock), (1, 1))
+        self.assertEqual(determine_window_dimensions(2, "trails", "any_ship", modules=mock), (2, 1))
+        self.assertEqual(determine_window_dimensions(3, "trails", "any_ship", modules=mock), (2, 2))
+        self.assertEqual(determine_window_dimensions(4, "trails", "any_ship", modules=mock), (2, 2))
+        # Count 5 matches override 5
+        self.assertEqual(determine_window_dimensions(5, "trails", "any_ship", modules=mock), (3, 3))
+        # Count 6 matches override 6
+        self.assertEqual(determine_window_dimensions(6, "trails", "any_ship", modules=mock), (4, 3))
+        # Counts >= 6 should all return (4, 3) and not fall back to standard profile (e.g. 9 -> 3x3)
+        self.assertEqual(determine_window_dimensions(7, "trails", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(8, "trails", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(9, "trails", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(10, "trails", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(12, "trails", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(13, "trails", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(20, "trails", "any_ship", modules=mock), (4, 3))
+
+    def test_window_overrides_single_key_treated_as_equal_or_greater(self):
+        """Single key window override treats that key as equal or greater than."""
+        mock = {
+            "types": {
+                "core": [{"key": "pulse-spitter", "window_overrides": {"6": [3, 3]}}]
+            }
+        }
+        self.assertEqual(determine_window_dimensions(6, "pulse-spitter", "any_ship", modules=mock), (3, 3))
+        self.assertEqual(determine_window_dimensions(7, "pulse-spitter", "any_ship", modules=mock), (3, 3))
+        self.assertEqual(determine_window_dimensions(8, "pulse-spitter", "any_ship", modules=mock), (3, 3))
+        self.assertEqual(determine_window_dimensions(12, "pulse-spitter", "any_ship", modules=mock), (3, 3))
+
+    def test_window_overrides_with_explicit_default(self):
+        """When default is explicitly provided, it is used for counts exceeding the max key."""
+        mock = {
+            "types": {
+                "core": [{"key": "custom", "window_overrides": {"6": [3, 3], "default": [4, 4]}}]
+            }
+        }
+        self.assertEqual(determine_window_dimensions(6, "custom", "any_ship", modules=mock), (3, 3))
+        self.assertEqual(determine_window_dimensions(7, "custom", "any_ship", modules=mock), (4, 4))
+        self.assertEqual(determine_window_dimensions(10, "custom", "any_ship", modules=mock), (4, 4))
+
 
 class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
     """Adversarial tests for place_all_modules_in_empty_slots"""

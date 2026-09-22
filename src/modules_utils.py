@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from typing import Optional
 
 logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -188,14 +189,17 @@ def _get_window_profiles():
     return _WINDOW_PROFILES
 
 
-def get_tech_window_rules(modules, ship, tech_key):
+def get_tech_window_rules(modules: Optional[dict], ship: str, tech_key: str) -> dict:
     """Retrieves the merged window rules dictionary for a specific technology.
 
     Loads the base rules from window_profiles.json and applies any specific
-    overrides defined in the tech's 'window_overrides'.
+    overrides defined in the tech's 'window_overrides'. If 'window_overrides'
+    defines numeric thresholds without an explicit 'default', the highest
+    threshold is treated as equal-or-greater-than: higher base rules are
+    removed and that last value is set as the default.
 
     Args:
-        modules (dict): The complete module data for the ship.
+        modules (Optional[dict]): The complete module data for the ship.
         ship (str): The ship type (e.g., "corvette").
         tech_key (str): The technology key (e.g., "pulse").
 
@@ -247,6 +251,20 @@ def get_tech_window_rules(modules, ship, tech_key):
 
     # 2. Deep merge any specific explicit overrides from this very JSON block
     deep_merge(rules, overrides)
+
+    if overrides:
+        override_int_keys = [int(k) for k in overrides.keys() if k.isdigit() and overrides[k] is not None]
+        if override_int_keys and not any(v is None for v in overrides.values()):
+            max_override_key = max(override_int_keys)
+            # Remove any keys from base rules strictly greater than max_override_key
+            # so they do not intercept module counts exceeding max_override_key.
+            keys_to_remove = [k for k in rules.keys() if k.isdigit() and int(k) > max_override_key]
+            for k in keys_to_remove:
+                del rules[k]
+            # If 'default' is not explicitly specified in overrides, the last value is treated
+            # as equal or greater than (>= max_override_key), so it becomes the default.
+            if "default" not in overrides:
+                rules["default"] = overrides[str(max_override_key)]
 
     # Fallback to older window_rules if present (legacy format)
     if not overrides and "window_rules" in selected_tech_data:
