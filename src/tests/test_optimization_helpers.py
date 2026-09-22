@@ -210,28 +210,33 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual(determine_window_dimensions(4, "trails", "any_ship", modules=mock), (2, 2))
         # Count 5 matches override 5
         self.assertEqual(determine_window_dimensions(5, "trails", "any_ship", modules=mock), (3, 3))
-        # Count 6 matches override 6
+        # Counts 6 through 12 fit in 4x3 (up to 12 slots) and do not fall back to 3x3
         self.assertEqual(determine_window_dimensions(6, "trails", "any_ship", modules=mock), (4, 3))
-        # Counts >= 6 should all return (4, 3) and not fall back to standard profile (e.g. 9 -> 3x3)
         self.assertEqual(determine_window_dimensions(7, "trails", "any_ship", modules=mock), (4, 3))
         self.assertEqual(determine_window_dimensions(8, "trails", "any_ship", modules=mock), (4, 3))
         self.assertEqual(determine_window_dimensions(9, "trails", "any_ship", modules=mock), (4, 3))
         self.assertEqual(determine_window_dimensions(10, "trails", "any_ship", modules=mock), (4, 3))
         self.assertEqual(determine_window_dimensions(12, "trails", "any_ship", modules=mock), (4, 3))
-        self.assertEqual(determine_window_dimensions(13, "trails", "any_ship", modules=mock), (4, 3))
-        self.assertEqual(determine_window_dimensions(20, "trails", "any_ship", modules=mock), (4, 3))
+        # Counts >= 13 exceed 4x3 capacity (12 slots) and escalate to 4x4
+        self.assertEqual(determine_window_dimensions(13, "trails", "any_ship", modules=mock), (4, 4))
+        self.assertEqual(determine_window_dimensions(20, "trails", "any_ship", modules=mock), (4, 4))
 
     def test_window_overrides_single_key_treated_as_equal_or_greater(self):
-        """Single key window override treats that key as equal or greater than."""
+        """Single key window override treats that key as equal or greater than while capacity allows."""
         mock = {
             "types": {
                 "core": [{"key": "pulse-spitter", "window_overrides": {"6": [3, 3]}}]
             }
         }
+        # Counts 6 through 9 fit in 3x3 (up to 9 slots)
         self.assertEqual(determine_window_dimensions(6, "pulse-spitter", "any_ship", modules=mock), (3, 3))
         self.assertEqual(determine_window_dimensions(7, "pulse-spitter", "any_ship", modules=mock), (3, 3))
         self.assertEqual(determine_window_dimensions(8, "pulse-spitter", "any_ship", modules=mock), (3, 3))
-        self.assertEqual(determine_window_dimensions(12, "pulse-spitter", "any_ship", modules=mock), (3, 3))
+        self.assertEqual(determine_window_dimensions(9, "pulse-spitter", "any_ship", modules=mock), (3, 3))
+        # Counts > 9 exceed 3x3 capacity (9 slots) and escalate to 4x3 / 4x4
+        self.assertEqual(determine_window_dimensions(10, "pulse-spitter", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(12, "pulse-spitter", "any_ship", modules=mock), (4, 3))
+        self.assertEqual(determine_window_dimensions(13, "pulse-spitter", "any_ship", modules=mock), (4, 4))
 
     def test_window_overrides_with_explicit_default(self):
         """When default is explicitly provided, it is used for counts exceeding the max key."""
@@ -243,6 +248,18 @@ class TestDetermineWindowDimensions(unittest.TestCase):
         self.assertEqual(determine_window_dimensions(6, "custom", "any_ship", modules=mock), (3, 3))
         self.assertEqual(determine_window_dimensions(7, "custom", "any_ship", modules=mock), (4, 4))
         self.assertEqual(determine_window_dimensions(10, "custom", "any_ship", modules=mock), (4, 4))
+
+    def test_window_capacity_guard_escalation(self):
+        """When an override window is physically too small (w * h < module_count), automatically escalate."""
+        mock = {
+            "types": {
+                "core": [{"key": "trails", "window_overrides": {"5": [3, 3], "8": [4, 3]}}]
+            }
+        }
+        # 12 modules fits in 4x3 (4 * 3 = 12 >= 12)
+        self.assertEqual(determine_window_dimensions(12, "trails", "any_ship", modules=mock), (4, 3))
+        # 13 modules cannot fit in 4x3 (12 < 13), should escalate to 4x4
+        self.assertEqual(determine_window_dimensions(13, "trails", "any_ship", modules=mock), (4, 4))
 
 
 class TestPlaceAllModulesInEmptySlots(unittest.TestCase):

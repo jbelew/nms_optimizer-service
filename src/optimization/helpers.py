@@ -25,6 +25,23 @@ from src.modules_utils import get_tech_window_rules, _get_window_profiles  # Mov
 def determine_window_dimensions(
     module_count: int, tech: str, ship: str, modules: Optional[dict] = None
 ) -> Tuple[int, int]:
+    """Calculates optimal window dimensions for localized module placement.
+
+    Determines the window size based on module count and technology definitions.
+    Hierarchically evaluates tech-specific window_overrides and base profiles.
+    If the resolved window dimensions cannot physically accommodate module_count
+    (i.e. width * height < module_count), automatically escalates to a fitting
+    window dimension from the base profile or default.
+
+    Args:
+        module_count (int): Total number of modules to place.
+        tech (str): Technology identifier (e.g., "trails", "pulse").
+        ship (str): Ship/multi-tool platform identifier (e.g., "corvette").
+        modules (Optional[dict]): Complete module definitions for the ship. Defaults to None.
+
+    Returns:
+        Tuple[int, int]: A tuple (window_width, window_height) representing the window size.
+    """
     rules = {}
     if module_count < 1:
         logging.warning(f"Module count is {module_count}. Returning default 1x1 window.")
@@ -42,20 +59,38 @@ def determine_window_dimensions(
     # e.g. "6": [3, 2], "7": [4, 2].
     count_str = str(module_count)
     if count_str in rules and rules[count_str] is not None:
-        return rules[count_str][0], rules[count_str][1]
+        w, h = rules[count_str][0], rules[count_str][1]
+    else:
+        int_keys = [int(k) for k in rules.keys() if k.isdigit() and rules[k] is not None]
+        larger_keys = [k for k in int_keys if k > module_count]
 
-    int_keys = [int(k) for k in rules.keys() if k.isdigit() and rules[k] is not None]
-    larger_keys = [k for k in int_keys if k > module_count]
+        if larger_keys:
+            best_key = str(min(larger_keys))
+            w, h = rules[best_key][0], rules[best_key][1]
+        elif "default" in rules:
+            w, h = rules["default"][0], rules["default"][1]
+        else:
+            w, h = 1, 1
 
-    if larger_keys:
-        best_key = str(min(larger_keys))
-        return rules[best_key][0], rules[best_key][1]
+    # Capacity safety guard: if the determined window area cannot physically hold module_count,
+    # escalate to a larger window from the tech's default, standard profile, or default (4, 4).
+    if w * h < module_count:
+        if "default" in rules and rules["default"][0] * rules["default"][1] >= module_count:
+            w, h = rules["default"][0], rules["default"][1]
+        else:
+            profiles = _get_window_profiles()
+            standard_rules = profiles.get("standard", {})
+            std_int_keys = [int(k) for k in standard_rules.keys() if k.isdigit() and standard_rules[k] is not None]
+            std_fit_keys = [k for k in std_int_keys if standard_rules[str(k)][0] * standard_rules[str(k)][1] >= module_count]
+            if std_fit_keys:
+                best_k = str(min(std_fit_keys))
+                w, h = standard_rules[best_k][0], standard_rules[best_k][1]
+            elif "default" in standard_rules:
+                w, h = standard_rules["default"][0], standard_rules["default"][1]
+            else:
+                w, h = 4, 4
 
-    if "default" in rules:
-        return rules["default"][0], rules["default"][1]
-
-    # Final safety fallback (should only hit if JSON misses default)
-    return 1, 1
+    return w, h
 
 
 def place_all_modules_in_empty_slots(
