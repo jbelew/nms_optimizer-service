@@ -185,6 +185,70 @@ class TestMLPlacementModuleAssignment(unittest.TestCase):
         """Shouldn't place multiple modules in same cell."""
         pass
 
+    @patch("src.ml_placement.os.path.exists", return_value=True)
+    @patch("src.ml_placement.get_model")
+    @patch("src.ml_placement.get_training_module_ids")
+    @patch("src.ml_placement.get_module_data")
+    @patch("src.ml_placement.get_tech_modules")
+    @patch("src.ml_placement.get_model_keys")
+    def test_ml_placement_optimal_bipartite_matching(
+        self,
+        mock_get_model_keys,
+        mock_get_tech_modules,
+        mock_get_module_data,
+        mock_get_training_ids,
+        mock_get_model,
+        mock_exists,
+    ):
+        """Hungarian matching should find globally optimal assignment, avoiding greedy suboptimality."""
+        import torch
+
+        mock_get_model_keys.return_value = {
+            "filename_ship_key": "corvette",
+            "filename_tech_key": "pulse",
+            "module_def_ship_key": "corvette",
+            "module_def_tech_key": "pulse",
+        }
+        mock_get_training_ids.return_value = ["pulse_a", "pulse_b"]
+        mock_get_module_data.return_value = self.modules_data
+        modules_list = self.modules_data["types"]["Pulse"][0]["modules"]
+        mock_get_tech_modules.return_value = modules_list
+
+        # Cell (0, 0): pulse_a prob ~0.60, pulse_b prob ~0.39, None ~0.01
+        # Cell (1, 0): pulse_a prob ~0.55, pulse_b prob ~0.05, None ~0.40
+        # Greedy sorts: (0,0,a)=0.60 -> placed; (1,0,a)=0.55 -> skip; (0,0,b)=0.39 -> skip; (1,0,b)=0.05 -> placed
+        # Greedy total prob: 0.60 + 0.05 = 0.65
+        # Hungarian matching total prob: 0.39 + 0.55 = 0.94 (places b at (0,0) and a at (1,0))
+        logits = torch.full((1, 3, 3, 4), -10.0)
+        logits[0, 0, :, :] = 10.0  # Background class default for all other cells
+
+        logits[0, 0, 0, 0] = 0.0
+        logits[0, 1, 0, 0] = 4.0942  # pulse_a at (0, 0)
+        logits[0, 2, 0, 0] = 3.6634  # pulse_b at (0, 0)
+
+        logits[0, 0, 0, 1] = 0.0
+        logits[0, 1, 0, 1] = 0.3185  # pulse_a at (1, 0)
+        logits[0, 2, 0, 1] = -2.0794  # pulse_b at (1, 0)
+
+        mock_model = MagicMock()
+        mock_model.return_value = logits
+        mock_get_model.return_value = mock_model
+
+        result_grid, _ = ml_placement(
+            self.grid,
+            "corvette",
+            "pulse",
+            self.full_grid,
+            0,
+            0,
+            self.original_state_map,
+            polish_result=False,
+        )
+
+        self.assertIsNotNone(result_grid)
+        self.assertEqual(result_grid.get_cell(0, 0)["module"], "pulse_b")
+        self.assertEqual(result_grid.get_cell(1, 0)["module"], "pulse_a")
+
 
 class TestMLPlacementEmptyResults(unittest.TestCase):
     """Test handling of empty or minimal results."""

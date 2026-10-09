@@ -40,6 +40,7 @@ requests==2.34.2
 rsa==4.9.1
 setuptools==84.0.0
 simple-websocket==1.1.0
+scipy>=1.14.0
 sympy==1.14.0
 torch==2.14.0+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu

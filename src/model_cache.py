@@ -28,14 +28,18 @@ def _load_model_from_disk(model_path, model_grid_width, model_grid_height, num_o
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found: {model_path}")
 
+    # Always load to CPU first to ensure the cached object is stored in main memory.
+    state_dict = torch.load(model_path, map_location="cpu")
+    in_channels = state_dict.get("conv1.weight", torch.zeros(64, 4, 3, 3)).shape[1]
+    has_attn = any("self_attn" in k for k in state_dict.keys())
+
     model = ModulePlacementCNN(
         grid_height=model_grid_height,
         grid_width=model_grid_width,
         num_output_classes=num_output_classes,
+        in_channels=in_channels,
+        use_attention=has_attn,
     )
-
-    # Always load to CPU first to ensure the cached object is stored in main memory.
-    state_dict = torch.load(model_path, map_location="cpu")
     model.load_state_dict(state_dict)
     model.eval()
     return model

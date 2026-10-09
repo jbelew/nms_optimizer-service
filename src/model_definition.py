@@ -12,10 +12,11 @@ import torch.nn as nn
 
 
 class ModulePlacementCNN(nn.Module):
-    """A Convolutional Neural Network for module placement prediction.
+    """A Convolutional Neural Network with Spatial Self-Attention for module placement prediction.
 
     This network uses a series of convolutional layers, batch normalization,
-    and a residual block to learn the spatial relationships in the grid.
+    a residual block, and an optional multi-head spatial self-attention block to learn
+    both local spatial relationships and global multi-module synergies across the grid.
     The final output is a set of logits for each possible module class in each
     cell of the grid.
 
@@ -24,9 +25,18 @@ class ModulePlacementCNN(nn.Module):
         grid_width (int): The width of the input grid.
         num_output_classes (int): The number of possible output classes,
             including the "empty" class.
+        in_channels (int): The number of input channels (default 4).
+        use_attention (bool): Whether to include the self-attention layer.
     """
 
-    def __init__(self, grid_height, grid_width, num_output_classes):
+    def __init__(
+        self,
+        grid_height: int,
+        grid_width: int,
+        num_output_classes: int,
+        in_channels: int = 4,
+        use_attention: bool = True,
+    ):
         """Initializes the ModulePlacementCNN model.
 
         Args:
@@ -34,15 +44,18 @@ class ModulePlacementCNN(nn.Module):
             grid_width (int): The width of the input grid.
             num_output_classes (int): The number of possible module classes
                 to predict, including the background/empty class.
+            in_channels (int): Number of input channels (default 4).
+            use_attention (bool): Whether to include spatial self-attention.
         """
         super().__init__()
         self.grid_height = grid_height
         self.grid_width = grid_width
         self.num_output_classes = num_output_classes
+        self.in_channels = in_channels
+        self.use_attention = use_attention
 
         # --- Block 1 ---
-        # Takes a single channel input (the supercharge grid)
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, padding=1)
+        self.conv1 = nn.Conv2d(in_channels, 64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm2d(64, eps=1e-5)
         self.relu1 = nn.ReLU()
 
@@ -51,7 +64,7 @@ class ModulePlacementCNN(nn.Module):
         self.bn2 = nn.BatchNorm2d(128, eps=1e-5)
         self.relu2 = nn.ReLU()
 
-        # --- Residual Block 3 (Replaces old Block 3) ---
+        # --- Residual Block 3 ---
         self.res_conv1 = nn.Conv2d(128, 128, kernel_size=3, padding=1)
         self.res_bn1 = nn.BatchNorm2d(128, eps=1e-5)
         self.res_relu1 = nn.ReLU()
@@ -60,8 +73,13 @@ class ModulePlacementCNN(nn.Module):
         self.res_relu2 = nn.ReLU()
         # --- End Block 3 ---
 
+        # --- Spatial Self-Attention ---
+        if self.use_attention:
+            self.self_attn = nn.MultiheadAttention(embed_dim=128, num_heads=4, batch_first=True)
+            self.attn_norm = nn.LayerNorm(128)
+
         # --- Dropout ---
-        self.dropout = nn.Dropout(0.5)  # Increased dropout slightly for the deeper model
+        self.dropout = nn.Dropout(0.5)
 
         # --- Final Output Layer ---
         self.output_conv = nn.Conv2d(128, num_output_classes, kernel_size=1)
@@ -70,8 +88,7 @@ class ModulePlacementCNN(nn.Module):
         """Defines the forward pass of the model.
 
         Args:
-            x (torch.Tensor): The input tensor, representing the supercharged
-                layout of the grid. Shape: (N, 1, H, W).
+            x (torch.Tensor): The input tensor of shape (N, C, H, W).
 
         Returns:
             torch.Tensor: The output logits for each class at each grid cell.
@@ -93,20 +110,22 @@ class ModulePlacementCNN(nn.Module):
         x = self.relu2(x)
 
         # --- Residual Block 3 ---
-        # Store the input for the skip connection
         residual = x
-
-        # Pass through the residual block layers
         out = self.res_conv1(x)
         out = self.res_bn1(out)
         out = self.res_relu1(out)
         out = self.res_conv2(out)
         out = self.res_bn2(out)
-
-        # Add the skip connection
         out += residual
-        # Apply the final activation for the block
         out = self.res_relu2(out)
+
+        # --- Spatial Self-Attention ---
+        if self.use_attention:
+            b, c, h, w = out.shape
+            tokens = out.flatten(2).transpose(1, 2)
+            attn_out, _ = self.self_attn(tokens, tokens, tokens)
+            tokens = self.attn_norm(tokens + attn_out)
+            out = tokens.transpose(1, 2).view(b, c, h, w)
 
         # --- Dropout ---
         out = self.dropout(out)
@@ -114,21 +133,90 @@ class ModulePlacementCNN(nn.Module):
         # --- Final Output Layer ---
         x_placement = self.output_conv(out)
 
-        # Final check (catches any NaNs that propagated)
+        # Final check
         if torch.isnan(x_placement).any():
             print("!!! NaN DETECTED AT FINAL OUTPUT !!!")
-            # Return NaN so the check in train_model catches it cleanly
             nan_output_shape = (
                 x_placement.shape[0],
                 self.num_output_classes,
                 self.grid_height,
                 self.grid_width,
             )
-            # Ensure NaN tensor is on the same device and dtype as expected output
             return torch.full(nan_output_shape, float("nan"), device=x.device, dtype=x.dtype)
 
         return x_placement
 
 
-# Optional: Add to __all__ if needed
-__all__ = ["ModulePlacementCNN"]
+def add_coord_channels(x: torch.Tensor) -> torch.Tensor:
+    """Adds normalized X and Y coordinate channels in [-1, 1] to input tensor x.
+
+    Args:
+        x (torch.Tensor): Input tensor of shape (N, C, H, W).
+
+    Returns:
+        torch.Tensor: Augmented tensor of shape (N, C + 2, H, W).
+    """
+    b, _, h, w = x.shape
+    device = x.device
+    dtype = x.dtype
+    y_coords = torch.linspace(-1.0, 1.0, steps=h, device=device, dtype=dtype).view(1, 1, h, 1).expand(b, 1, h, w)
+    x_coords = torch.linspace(-1.0, 1.0, steps=w, device=device, dtype=dtype).view(1, 1, 1, w).expand(b, 1, h, w)
+    return torch.cat([x, x_coords, y_coords], dim=1)
+
+
+class FocalLoss(nn.Module):
+    """Multi-class Focal Loss.
+
+    Down-weights easy well-classified examples to focus training on difficult
+    decisions (such as ambiguous module boundaries).
+
+    Formula: FL(p_t) = -alpha_t * (1 - p_t)^gamma * log(p_t)
+    """
+
+    def __init__(
+        self,
+        gamma: float = 2.0,
+        weight: torch.Tensor | None = None,
+        reduction: str = "mean",
+    ):
+        """Initializes FocalLoss.
+
+        Args:
+            gamma (float): Focusing parameter. Default: 2.0.
+            weight (Optional[torch.Tensor]): Class weights of shape (num_classes,).
+            reduction (str): 'mean', 'sum', or 'none'. Default: 'mean'.
+        """
+        super().__init__()
+        self.gamma = gamma
+        self.weight = weight
+        self.reduction = reduction
+
+    def forward(self, inputs: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
+        """Forward pass for FocalLoss.
+
+        Args:
+            inputs (torch.Tensor): Logits of shape (N, C, ...) or (N, C).
+            targets (torch.Tensor): Ground truth class indices of shape (N, ...).
+
+        Returns:
+            torch.Tensor: Computed focal loss.
+        """
+        ce_loss_raw = nn.functional.cross_entropy(inputs, targets, reduction="none")
+        pt = torch.exp(-ce_loss_raw)
+        modulating_factor = (1.0 - pt) ** self.gamma
+        focal_loss = modulating_factor * ce_loss_raw
+
+        if self.weight is not None:
+            weight_on_device = self.weight.to(inputs.device)
+            alpha = weight_on_device[targets]
+            focal_loss = alpha * focal_loss
+
+        if self.reduction == "mean":
+            return focal_loss.mean()
+        elif self.reduction == "sum":
+            return focal_loss.sum()
+        else:
+            return focal_loss
+
+
+__all__ = ["ModulePlacementCNN", "add_coord_channels", "FocalLoss"]

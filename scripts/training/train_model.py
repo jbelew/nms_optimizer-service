@@ -10,19 +10,13 @@ import glob
 import argparse
 import numpy as np
 from typing import Optional, List
+from sklearn.model_selection import train_test_split
+import torchmetrics
 
 # --- Imports from your project ---
-from src.model_definition import ModulePlacementCNN
+from src.model_definition import ModulePlacementCNN, add_coord_channels, FocalLoss
 from src.data_loader import get_all_module_data, get_training_module_ids
 from src.optimization.helpers import determine_window_dimensions
-from sklearn.model_selection import train_test_split  # type: ignore
-
-
-try:
-    import torchmetrics  # type: ignore
-except ImportError:
-    print("torchmetrics not found. Please install it: pip install torchmetrics")
-    torchmetrics = None
 
 # --- Configuration ---
 DEFAULT_DATA_SOURCE_DIR = "scripts/training/generated_batches"
@@ -31,55 +25,71 @@ DEFAULT_LOG_DIR = "runs_placement_only"
 # --- End Configuration ---
 
 
-def random_augmentations(x_sc, y):
+def random_augmentations(x_sc, y, x_inact=None):
     """Applies random horizontal flips, vertical flips, and 90-degree rotations."""
     # Horizontal Flip
     if np.random.rand() > 0.5:
         x_sc = np.fliplr(x_sc)
         y = np.fliplr(y)
+        if x_inact is not None:
+            x_inact = np.fliplr(x_inact)
 
     # Vertical Flip
     if np.random.rand() > 0.5:
         x_sc = np.flipud(x_sc)
         y = np.flipud(y)
+        if x_inact is not None:
+            x_inact = np.flipud(x_inact)
 
     # Rotation (only if the grid is square)
     if x_sc.shape[0] == x_sc.shape[1] and np.random.rand() > 0.5:
         k = np.random.randint(1, 4)  # rotate 90, 180, or 270 degrees
         x_sc = np.rot90(x_sc, k)
         y = np.rot90(y, k)
+        if x_inact is not None:
+            x_inact = np.rot90(x_inact, k)
 
+    if x_inact is not None:
+        return x_sc, y, x_inact
     return x_sc, y
 
 
 # --- Dataset ---
 class PlacementDataset(data.Dataset):
-    def __init__(self, X_supercharge, y, augmentations=None):
+    def __init__(self, X_supercharge, y, X_inactive_mask=None, augmentations=None, in_channels=4):
         self.X_supercharge = X_supercharge
         self.y = y
+        self.X_inactive_mask = X_inactive_mask
         self.augmentations = augmentations
+        self.in_channels = in_channels
 
     def __len__(self):
-        # Use the length of the first available array
         if self.X_supercharge is not None:
             return len(self.X_supercharge)
         elif self.y is not None:
             return len(self.y)
-        else:
-            return 0
+        return 0
 
     def __getitem__(self, idx):
         x_sc = self.X_supercharge[idx]
         target = self.y[idx]
+        x_inact = self.X_inactive_mask[idx] if self.X_inactive_mask is not None else np.zeros_like(x_sc)
 
-        # Apply augmentations if they exist
         if self.augmentations:
-            x_sc, target = self.augmentations(x_sc, target)
+            x_sc, target, x_inact = self.augmentations(x_sc, target, x_inact)
 
-        # Ensure tensors are created correctly
-        input_tensor = torch.tensor(x_sc.copy(), dtype=torch.float32).unsqueeze(0)  # Add channel dimension
+        x_sc_copy = x_sc.copy().astype(np.float32)
+        if self.in_channels == 4:
+            x_active = 1.0 - x_inact.copy().astype(np.float32)
+            base_tensor = torch.tensor(np.stack([x_sc_copy, x_active], axis=0), dtype=torch.float32).unsqueeze(0)
+            input_tensor = add_coord_channels(base_tensor).squeeze(0)
+        elif self.in_channels == 2:
+            x_active = 1.0 - x_inact.copy().astype(np.float32)
+            input_tensor = torch.tensor(np.stack([x_sc_copy, x_active], axis=0), dtype=torch.float32)
+        else:
+            input_tensor = torch.tensor(x_sc_copy, dtype=torch.float32).unsqueeze(0)
+
         target_tensor = torch.tensor(target.copy(), dtype=torch.long)
-
         return input_tensor, target_tensor
 
 
@@ -98,12 +108,16 @@ def train_model(
     criterion_weights: Optional[torch.Tensor] = None,
     early_stopping_patience: int = 10,
     early_stopping_metric: str = "val_loss",
+    in_channels: int = 4,
+    use_attention: bool = True,
+    use_focal_loss: bool = True,
+    focal_gamma: float = 2.0,
 ):
     """Initializes and trains a ModulePlacementCNN model with validation and early stopping."""
     print(f"Starting training for {log_dir}...")
     print(f"  Saving best model to: {model_save_path}")
     print(f"  Early Stopping: Patience={early_stopping_patience}, Metric='{early_stopping_metric}'")
-    print(f"  Grid Dimensions: {grid_height}x{grid_width}")  # <<< Use passed-in dynamic dimensions
+    print(f"  Grid Dimensions: {grid_height}x{grid_width}, Input Channels: {in_channels}, Attention: {use_attention}")
     print(f"  Num Output Classes: {num_output_classes}")
     print(f"  Epochs: {num_epochs}, LR: {learning_rate}, WD: {weight_decay}")
     print("  Scheduler: CosineAnnealingLR")
@@ -111,14 +125,22 @@ def train_model(
     device = torch.device("cpu" if torch.cuda.is_available() else "cpu")
     print(f"  Training device: {device}")
 
-    # <<< Initialize model with dynamic dimensions >>>
+    # <<< Initialize model with dynamic dimensions and channels >>>
     model = ModulePlacementCNN(
         grid_height=grid_height,
         grid_width=grid_width,
         num_output_classes=num_output_classes,
+        in_channels=in_channels,
+        use_attention=use_attention,
     ).to(device)
 
-    if criterion_weights is not None:
+    if use_focal_loss:
+        print(f"  Using FocalLoss (gamma={focal_gamma}) with class weights: {criterion_weights is not None}")
+        criterion_placement = FocalLoss(
+            gamma=focal_gamma,
+            weight=criterion_weights.to(device) if criterion_weights is not None else None,
+        )
+    elif criterion_weights is not None:
         print("  Using provided class weights for loss.")
         criterion_placement = nn.CrossEntropyLoss(weight=criterion_weights.to(device))
     else:
@@ -406,6 +428,10 @@ def run_training_from_files(
     validation_split=0.2,
     early_stopping_patience=10,
     early_stopping_metric="val_loss",
+    in_channels: int = 4,
+    use_attention: bool = True,
+    use_focal_loss: bool = True,
+    focal_gamma: float = 2.0,
 ):
     """
     Orchestrates the training process, loading data and saving models
@@ -509,7 +535,7 @@ def run_training_from_files(
             continue
         print(f"Found {len(data_files)} data files for tech '{tech}'. Loading and validating...")  # <<< Updated print
 
-        all_X_supercharge_data, all_y_data = [], []
+        all_X_supercharge_data, all_y_data, all_X_inactive_mask_data = [], [], []
         total_loaded_samples = 0
         invalid_files_count = 0  # <<< Track invalid files
         load_start_time = time.time()
@@ -525,6 +551,11 @@ def run_training_from_files(
                     x_sc_batch, y_batch = (
                         npz_file["X_supercharge"],
                         npz_file["y"],
+                    )
+                    x_inact_batch = (
+                        npz_file["X_inactive_mask"]
+                        if "X_inactive_mask" in npz_file
+                        else np.zeros_like(x_sc_batch)
                     )
 
                     # --- Data Validation Checks ---
@@ -563,6 +594,7 @@ def run_training_from_files(
 
                     all_X_supercharge_data.append(x_sc_batch)
                     all_y_data.append(y_batch)
+                    all_X_inactive_mask_data.append(x_inact_batch)
                     total_loaded_samples += x_sc_batch.shape[0]
 
             except Exception as e:
@@ -580,6 +612,11 @@ def run_training_from_files(
         try:
             X_supercharge_data_np = np.concatenate(all_X_supercharge_data, axis=0)
             y_data_np = np.concatenate(all_y_data, axis=0)
+            X_inactive_mask_data_np = (
+                np.concatenate(all_X_inactive_mask_data, axis=0)
+                if all_X_inactive_mask_data
+                else np.zeros_like(X_supercharge_data_np)
+            )
             load_time = time.time() - load_start_time
             print(
                 f"Loaded and concatenated {total_loaded_samples} total valid samples for tech '{tech}' in {load_time:.2f}s."
@@ -591,6 +628,7 @@ def run_training_from_files(
 
         # --- 2. Perform Train/Validation Split ---
         X_train_sc_np, X_val_sc_np = None, None
+        X_train_inact_np, X_val_inact_np = None, None
         y_train_np, y_val_np = None, None
         val_loader = None
 
@@ -600,12 +638,14 @@ def run_training_from_files(
                 X_supercharge_data_np,
                 y_data_np,
             )
+            X_train_inact_np = X_inactive_mask_data_np
         elif validation_split <= 0 or validation_split >= 1:
             print(f"Warning: Invalid validation_split ({validation_split}). Training without validation.")
             X_train_sc_np, y_train_np = (
                 X_supercharge_data_np,
                 y_data_np,
             )
+            X_train_inact_np = X_inactive_mask_data_np
         else:
             try:
                 num_samples = len(X_supercharge_data_np)
@@ -617,6 +657,10 @@ def run_training_from_files(
                     X_supercharge_data_np[train_indices],
                     X_supercharge_data_np[val_indices],
                 )
+                X_train_inact_np, X_val_inact_np = (
+                    X_inactive_mask_data_np[train_indices],
+                    X_inactive_mask_data_np[val_indices],
+                )
                 y_train_np, y_val_np = y_data_np[train_indices], y_data_np[val_indices]
                 print(f"Split data: {len(X_train_sc_np)} train, {len(X_val_sc_np)} validation samples.")
             except Exception as e:
@@ -625,6 +669,7 @@ def run_training_from_files(
                     X_supercharge_data_np,
                     y_data_np,
                 )
+                X_train_inact_np = X_inactive_mask_data_np
         # --- End Split ---
 
         # --- Calculate Class Weights (using y_train_np) ---
@@ -661,9 +706,20 @@ def run_training_from_files(
 
         # --- 3. Prepare Datasets and DataLoaders ---
         try:
-            train_dataset = PlacementDataset(X_train_sc_np, y_train_np, augmentations=random_augmentations)
+            train_dataset = PlacementDataset(
+                X_train_sc_np,
+                y_train_np,
+                X_inactive_mask=X_train_inact_np,
+                augmentations=random_augmentations,
+                in_channels=in_channels,
+            )
             if X_val_sc_np is not None and y_val_np is not None and len(X_val_sc_np) > 0:
-                val_dataset = PlacementDataset(X_val_sc_np, y_val_np)
+                val_dataset = PlacementDataset(
+                    X_val_sc_np,
+                    y_val_np,
+                    X_inactive_mask=X_val_inact_np,
+                    in_channels=in_channels,
+                )
                 val_batch_size = min(batch_size, len(val_dataset))
                 if val_batch_size > 0:
                     val_loader = data.DataLoader(
@@ -725,6 +781,10 @@ def run_training_from_files(
             criterion_weights=class_weights_tensor,
             early_stopping_patience=effective_patience,
             early_stopping_metric=early_stopping_metric,
+            in_channels=in_channels,
+            use_attention=use_attention,
+            use_focal_loss=use_focal_loss,
+            focal_gamma=focal_gamma,
         )
         # --- End Train Model ---
         trained_models[tech] = model
@@ -799,6 +859,31 @@ if __name__ == "__main__":
         choices=["val_loss", "val_miou"],
         help="Early Stopping: Metric to monitor ('val_loss' or 'val_miou').",
     )
+    parser.add_argument(
+        "--in_channels",
+        type=int,
+        default=4,
+        choices=[1, 2, 4],
+        help="Input channels for the model (1: SC only, 2: SC + Active, 4: SC + Active + CoordConv). Default: 4.",
+    )
+    parser.add_argument(
+        "--no_attention",
+        action="store_true",
+        help="Disable spatial self-attention in the model.",
+    )
+    parser.add_argument(
+        "--loss_fn",
+        type=str,
+        default="focal",
+        choices=["focal", "ce"],
+        help="Loss function to use ('focal' or 'ce'). Default: 'focal'.",
+    )
+    parser.add_argument(
+        "--focal_gamma",
+        type=float,
+        default=2.0,
+        help="Focusing parameter gamma for FocalLoss. Default: 2.0.",
+    )
 
     args = parser.parse_args()
     print(f"DEBUG: args.data_source_dir = {args.data_source_dir}")
@@ -820,10 +905,7 @@ if __name__ == "__main__":
             specific_techs_list = None
 
     config = {
-        # <<< Remove width and height from config >>>
-        # "grid_width": args.width, "grid_height": args.height,
         "ship": args.ship,
-        # <<< Pass the potentially None category >>>
         "tech_category_to_train": args.category,
         "specific_techs_to_train": specific_techs_list,
         "solve_type": args.solve_type,
@@ -837,6 +919,10 @@ if __name__ == "__main__":
         "validation_split": args.val_split,
         "early_stopping_patience": args.es_patience,
         "early_stopping_metric": effective_es_metric,
+        "in_channels": args.in_channels,
+        "use_attention": not args.no_attention,
+        "use_focal_loss": (args.loss_fn == "focal"),
+        "focal_gamma": args.focal_gamma,
     }
 
     start_time_all = time.time()
@@ -850,8 +936,6 @@ if __name__ == "__main__":
         ship=config["ship"],
         tech_category_to_train=config["tech_category_to_train"],  # <<< Pass the value from args
         specific_techs_to_train=config["specific_techs_to_train"],
-        # grid_width=config["grid_width"], # Removed
-        # grid_height=config["grid_height"], # Removed
         learning_rate=config["learning_rate"],
         weight_decay=config["weight_decay"],
         num_epochs=config["num_epochs"],
@@ -863,6 +947,10 @@ if __name__ == "__main__":
         validation_split=config["validation_split"],
         early_stopping_patience=config["early_stopping_patience"],
         early_stopping_metric=config["early_stopping_metric"],
+        in_channels=config["in_channels"],
+        use_attention=config["use_attention"],
+        use_focal_loss=config["use_focal_loss"],
+        focal_gamma=config["focal_gamma"],
     )
 
     end_time_all = time.time()

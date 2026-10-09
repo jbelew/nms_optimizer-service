@@ -17,6 +17,11 @@ import logging
 from typing import Optional, Tuple
 from collections import Counter
 
+try:
+    from scipy.optimize import linear_sum_assignment
+except ImportError:
+    linear_sum_assignment = None
+
 # --- Add project root to sys.path if needed ---
 # Ensure the project root is in the path if running this script directly
 # or if imports fail in your environment.
@@ -204,10 +209,27 @@ def ml_placement(
                 logging.warning(f"Warning: Input grid access out of bounds at ({x},{y}) during tensor prep.")
                 continue
 
-    # Create a single-channel tensor for the supercharge grid.
-    # The model now only expects this one channel.
-    # Shape: (N, C, H, W) -> (1, 1, H, W)
-    input_tensor = torch.tensor(input_supercharge_np, dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
+    expected_channels = getattr(model, "in_channels", 1)
+    if expected_channels == 4:
+        from src.model_definition import add_coord_channels
+
+        active_np = active_cell_mask.astype(np.float32)
+        base_tensor = (
+            torch.tensor(np.stack([input_supercharge_np, active_np], axis=0), dtype=torch.float32)
+            .unsqueeze(0)
+            .to(device)
+        )
+        input_tensor = add_coord_channels(base_tensor)
+    elif expected_channels == 2:
+        active_np = active_cell_mask.astype(np.float32)
+        input_tensor = (
+            torch.tensor(np.stack([input_supercharge_np, active_np], axis=0), dtype=torch.float32)
+            .unsqueeze(0)
+            .to(device)
+        )
+    else:
+        # Legacy single-channel tensor
+        input_tensor = torch.tensor(input_supercharge_np, dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
 
     # --- 7. Get Prediction ---
     # logging.info("ML Placement: Generating prediction...") # Less critical step
@@ -277,6 +299,79 @@ def ml_placement(
     # logging.info(f"INFO -- ML Placement: Assigning modules based on confidence...") # Less critical step
     current_modules_needed = modules_needed_count.copy()
 
+    # --- Optimal Bipartite Matching (Hungarian Algorithm) ---
+    active_cells = []
+    for y in range(model_grid_height):
+        for x in range(model_grid_width):
+            if active_cell_mask[y, x]:
+                active_cells.append((x, y))
+
+    assigned_module_placements = []
+    if linear_sum_assignment is not None and active_cells and modules_to_place_list:
+        n_mods = len(modules_to_place_list)
+        n_cells = len(active_cells)
+        cost_matrix = np.zeros((n_mods, n_cells), dtype=np.float64)
+        for i, mod in enumerate(modules_to_place_list):
+            class_idx = module_id_mapping.get(mod["id"])
+            for j, (cx, cy) in enumerate(active_cells):
+                if class_idx is not None and 0 <= class_idx < num_output_classes:
+                    prob = float(output_scores[class_idx, cy, cx])
+                    cost_matrix[i, j] = -np.log(max(prob, 1e-7))
+                else:
+                    cost_matrix[i, j] = 100.0
+
+        row_ind, col_ind = linear_sum_assignment(cost_matrix)
+        for r, c in zip(row_ind, col_ind):
+            cx, cy = active_cells[c]
+            assigned_module_placements.append((modules_to_place_list[r]["id"], cx, cy))
+
+    if assigned_module_placements:
+        for predicted_module_id, x, y in assigned_module_placements:
+            if placed_module_count >= total_modules_to_place:
+                break
+            cell_coord = (x, y)
+            if cell_coord in used_cells:
+                continue
+            if predicted_module_id is None or current_modules_needed.get(predicted_module_id, 0) <= 0:
+                continue
+            try:
+                if not predicted_grid.get_cell(x, y)["active"]:
+                    continue
+            except IndexError:
+                continue
+
+            module_data_for_placement = ui_module_defs_map.get(predicted_module_id)
+            if module_data_for_placement:
+                try:
+                    place_module(
+                        predicted_grid,
+                        x,
+                        y,
+                        module_data_for_placement["id"],
+                        module_data_for_placement["label"],
+                        tech,
+                        module_data_for_placement.get("type"),
+                        module_data_for_placement["bonus"],
+                        module_data_for_placement["adjacency"],
+                        module_data_for_placement["sc_eligible"],
+                        module_data_for_placement["image"],
+                    )
+                    used_cells.add(cell_coord)
+                    current_modules_needed[predicted_module_id] -= 1
+                    placed_module_count += 1
+                except Exception as e:
+                    logging.error(f"ML Placement: Error placing module {predicted_module_id} at ({x},{y}): {e}")
+                    try:
+                        predicted_grid.set_module(x, y, None)
+                        predicted_grid.set_tech(x, y, None)
+                    except IndexError:
+                        pass
+            else:
+                logging.warning(
+                    f"ML Placement: Predicted module ID '{predicted_module_id}' not found in UI module definitions map."
+                )
+
+    # --- Fallback Greedy Assignment for any remaining unplaced modules ---
     for placement in potential_placements:
         if placed_module_count >= total_modules_to_place:
             break
