@@ -17,7 +17,7 @@ if [ "$ARG1" = "recommended" ] || [[ "$ARG1" == *"/"* ]]; then
     LEGACY=false
 else
     SHIP="$ARG1"
-    TECH="${2:-pulse}"
+    TECH="${2:-mining}"
     TARGET_SETS="${3:-64}"
     NUM_SOLVERS="${4:-4}"
     LEGACY=true
