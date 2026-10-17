@@ -130,15 +130,16 @@ def get_tech_tree_json(ship, module_data):
         return json.dumps({"error": str(e)})  # Catch any errors during tree generation
 
 
-def get_tech_tree(ship, module_data):
+def get_tech_tree(ship: str, module_data: Optional[dict]) -> dict:
     """Generates a structured technology tree for a given ship.
 
     The tree is organized by technology type (e.g., "ship", "weapon") and
-    contains detailed information for each technology, including its modules.
+    contains detailed information for each technology, including its modules
+    and resolved Solver Window rules.
 
     Args:
         ship (str): The ship type (e.g., "hauler").
-        module_data (dict): The complete module data for the ship.
+        module_data (Optional[dict]): The complete module data for the ship.
 
     Returns:
         dict: A dictionary representing the technology tree. The keys are
@@ -164,6 +165,7 @@ def get_tech_tree(ship, module_data):
                 "image": tech.get("image"),
                 "color": tech.get("color"),
                 "module_count": len([m for m in tech["modules"] if not m.get("reward")]),
+                "window_rules": _resolve_tech_window_rules(tech),
             }
             if "type" in tech:
                 tech_info["type"] = tech["type"]
@@ -187,6 +189,57 @@ def _get_window_profiles():
             logging.error(f"Failed to load window_profiles.json: {e}")
             _WINDOW_PROFILES = {}
     return _WINDOW_PROFILES
+
+
+def _resolve_tech_window_rules(selected_tech_data: dict) -> dict:
+    """Resolves the merged Solver Window rules dictionary for a single technology definition.
+
+    Args:
+        selected_tech_data (dict): The technology definition dictionary.
+
+    Returns:
+        dict: The merged window rules for the technology.
+    """
+    overrides = selected_tech_data.get("window_overrides", {})
+    rules = {}
+
+    profiles = _get_window_profiles()
+
+    # 1. ALWAYS start with the 'standard' profile as the base foundation
+    # This solves scaling issues where users select 1-2 modules for things like jetpacks
+    if "standard" in profiles:
+        rules = json.loads(json.dumps(profiles["standard"]))
+
+    def deep_merge(target, source):
+        for k, v in source.items():
+            if isinstance(v, dict) and k in target and isinstance(target[k], dict):
+                deep_merge(target[k], v)
+            else:
+                target[k] = v
+
+    # 2. Deep merge any specific explicit overrides from this very JSON block
+    deep_merge(rules, overrides)
+
+    if overrides:
+        override_int_keys = [int(k) for k in overrides.keys() if k.isdigit() and overrides[k] is not None]
+        if override_int_keys and not any(v is None for v in overrides.values()):
+            max_override_key = max(override_int_keys)
+            # Remove any keys from base rules strictly greater than max_override_key
+            # so they do not intercept module counts exceeding max_override_key.
+            keys_to_remove = [k for k in rules.keys() if k.isdigit() and int(k) > max_override_key]
+            for k in keys_to_remove:
+                del rules[k]
+            # If 'default' is not explicitly specified in overrides, the last value is treated
+            # as equal or greater than (>= max_override_key), so it becomes the default.
+            if "default" not in overrides:
+                rules["default"] = overrides[str(max_override_key)]
+
+    # Fallback to older window_rules if present (legacy format)
+    if not overrides and "window_rules" in selected_tech_data:
+        # If legacy, we just return it raw
+        return selected_tech_data["window_rules"]
+
+    return rules
 
 
 def get_tech_window_rules(modules: Optional[dict], ship: str, tech_key: str) -> dict:
@@ -232,46 +285,7 @@ def get_tech_window_rules(modules: Optional[dict], ship: str, tech_key: str) -> 
     if not selected_tech_data:
         return {}
 
-    overrides = selected_tech_data.get("window_overrides", {})
-    rules = {}
-
-    profiles = _get_window_profiles()
-
-    # 1. ALWAYS start with the 'standard' profile as the base foundation
-    # This solves scaling issues where users select 1-2 modules for things like jetpacks
-    if "standard" in profiles:
-        rules = json.loads(json.dumps(profiles["standard"]))
-
-    def deep_merge(target, source):
-        for k, v in source.items():
-            if isinstance(v, dict) and k in target and isinstance(target[k], dict):
-                deep_merge(target[k], v)
-            else:
-                target[k] = v
-
-    # 2. Deep merge any specific explicit overrides from this very JSON block
-    deep_merge(rules, overrides)
-
-    if overrides:
-        override_int_keys = [int(k) for k in overrides.keys() if k.isdigit() and overrides[k] is not None]
-        if override_int_keys and not any(v is None for v in overrides.values()):
-            max_override_key = max(override_int_keys)
-            # Remove any keys from base rules strictly greater than max_override_key
-            # so they do not intercept module counts exceeding max_override_key.
-            keys_to_remove = [k for k in rules.keys() if k.isdigit() and int(k) > max_override_key]
-            for k in keys_to_remove:
-                del rules[k]
-            # If 'default' is not explicitly specified in overrides, the last value is treated
-            # as equal or greater than (>= max_override_key), so it becomes the default.
-            if "default" not in overrides:
-                rules["default"] = overrides[str(max_override_key)]
-
-    # Fallback to older window_rules if present (legacy format)
-    if not overrides and "window_rules" in selected_tech_data:
-        # If legacy, we just return it raw
-        return selected_tech_data["window_rules"]
-
-    return rules
+    return _resolve_tech_window_rules(selected_tech_data)
 
 
 __all__ = [

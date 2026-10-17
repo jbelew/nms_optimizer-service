@@ -148,6 +148,73 @@ class TestTechTreeEndpoint(unittest.TestCase):
             except json.JSONDecodeError:
                 self.fail("Response is not valid JSON")
 
+    def test_tech_tree_get_includes_standard_window_rules(self):
+        """GET /tech_tree/<ship_name> includes window_rules for each technology item and base profile for standard techs."""
+        response = self.client.get("/tech_tree/standard")
+        self.assertEqual(response.status_code, 200)
+
+        data = json.loads(response.data)
+        category_keys = [k for k in data.keys() if k not in ("recommended_builds", "grid_definition")]
+        self.assertGreater(len(category_keys), 0)
+
+        tech_by_key = {}
+        for category in category_keys:
+            for item in data[category]:
+                self.assertIn("window_rules", item)
+                self.assertIsInstance(item["window_rules"], dict)
+                self.assertGreater(len(item["window_rules"]), 0)
+                tech_by_key[item["key"]] = item
+
+        self.assertIn("cyclotron", tech_by_key)
+        self.assertEqual(
+            tech_by_key["cyclotron"]["window_rules"],
+            {
+                "1": [1, 1],
+                "2": [2, 1],
+                "4": [2, 2],
+                "6": [3, 2],
+                "9": [3, 3],
+                "12": [4, 3],
+                "default": [4, 4],
+            },
+        )
+
+    def test_tech_tree_get_includes_merged_window_overrides(self):
+        """GET /tech_tree/<ship_name> merges custom window_overrides into window_rules for Trails and Pulse Spitter."""
+        standard_resp = self.client.get("/tech_tree/standard")
+        self.assertEqual(standard_resp.status_code, 200)
+        standard_data = json.loads(standard_resp.data)
+
+        trails_item = next(item for item in standard_data["Utilities"] if item["key"] == "trails")
+        self.assertEqual(
+            trails_item["window_rules"],
+            {
+                "1": [1, 1],
+                "2": [2, 1],
+                "4": [2, 2],
+                "5": [3, 3],
+                "6": [3, 2],
+                "8": [4, 3],
+                "default": [4, 3],
+            },
+        )
+
+        mt_resp = self.client.get("/tech_tree/standard-mt")
+        self.assertEqual(mt_resp.status_code, 200)
+        mt_data = json.loads(mt_resp.data)
+
+        pulse_spitter_item = next(item for item in mt_data["Weaponry"] if item["key"] == "pulse-spitter")
+        self.assertEqual(
+            pulse_spitter_item["window_rules"],
+            {
+                "1": [1, 1],
+                "2": [2, 1],
+                "4": [2, 2],
+                "6": [3, 3],
+                "default": [3, 3],
+            },
+        )
+
 
 class TestAnalyticsEndpoint(unittest.TestCase):
     """Test analytics/popular data endpoint."""
