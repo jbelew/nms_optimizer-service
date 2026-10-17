@@ -417,17 +417,17 @@ def run_training_from_files(
     # <<< Remove grid_width, grid_height as direct parameters >>>
     # grid_width,
     # grid_height,
-    learning_rate,
-    weight_decay,
-    num_epochs,
-    batch_size,
-    base_log_dir,
-    base_model_save_dir,
-    base_data_source_dir,
-    solve_type: Optional[str],
-    validation_split=0.2,
-    early_stopping_patience=10,
-    early_stopping_metric="val_loss",
+    learning_rate: float = 2e-4,
+    weight_decay: float = 5e-5,
+    num_epochs: int = 40,
+    batch_size: int = 128,
+    base_log_dir: str = DEFAULT_LOG_DIR,
+    base_model_save_dir: str = DEFAULT_MODEL_SAVE_DIR,
+    base_data_source_dir: str = DEFAULT_DATA_SOURCE_DIR,
+    solve_type: Optional[str] = None,
+    validation_split: float = 0.2,
+    early_stopping_patience: int = 12,
+    early_stopping_metric: str = "val_miou",
     in_channels: int = 4,
     use_attention: bool = True,
     use_focal_loss: bool = True,
@@ -818,10 +818,10 @@ if __name__ == "__main__":
         default=None,
         help="Optional solve type to specify a subdirectory for data and model naming.",
     )
-    parser.add_argument("--lr", type=float, default=2e-5, help="Initial learning rate.")
+    parser.add_argument("--lr", type=float, default=2e-4, help="Initial learning rate.")
     parser.add_argument("--wd", type=float, default=5e-5, help="Weight decay (L2 regularization).")
-    parser.add_argument("--epochs", type=int, default=200, help="Maximum number of training epochs.")
-    parser.add_argument("--batch_size", type=int, default=32, help="Training batch size.")
+    parser.add_argument("--epochs", type=int, default=40, help="Maximum number of training epochs.")
+    parser.add_argument("--batch_size", type=int, default=128, help="Training batch size.")
     parser.add_argument(
         "--log_dir",
         type=str,
@@ -849,7 +849,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--es_patience",
         type=int,
-        default=16,
+        default=12,
         help="Early Stopping: Number of epochs to wait for improvement.",
     )
     parser.add_argument(

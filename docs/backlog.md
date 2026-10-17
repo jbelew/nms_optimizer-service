@@ -23,6 +23,8 @@ This document serves as a living backlog for all tasks and implementation plans 
 - **Transitive mpmath Dependency Resolution**: Unpin `mpmath` from `requirements.txt` to allow `sympy` and `torch` to manage its compatible version range dynamically and prevent resolution conflicts during automated updates.
 - **Heroku Deploy Action Fix**: Revert `akhileshns/heroku-deploy` to `v3.15.15` and ignore major updates in Dependabot to resolve skipped Heroku deployments caused by invalid ref `refs/head/main` in the unreleased v4 branch.
 - **GitHub Release Action Deprecation Fix**: Replace deprecated `actions/create-release@v1` with `softprops/action-gh-release@v3` to resolve Node.js 20 deprecation and `set-output` deprecation warnings in CI/CD release workflow.
+- **Batch Model Generation Script**: Add `scripts/training/train_all_models.py` to automatically discover all dataset batches in `scripts/training/generated_batches/`, handle spatial transposing to canonical `width >= height` models, and train models using 4-channel CoordConv, Self-Attention, and Focal Loss.
+- **Multi-Target Solver Scaling and Presets**: Add `scripts/training/resolve_targets.py` and update `scripts/training/solver_worker.sh` and `scripts/training/run_solvers_tmux.sh` to support cross-ship multi-target generation, worker-offset load balancing, and a `recommended` preset for Tier 1 high-complexity technologies.
 
 
 

@@ -31,8 +31,8 @@
                     { "id": "Xb", "type": "upgrade", "label": "[2] Infraknife Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true },
                     { "id": "Xc", "type": "upgrade", "label": "[3] Infraknife Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true },
                     { "id": "Ca", "type": "cosmetic", "label": "[C1] Infraknife Platform Theta", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/infra.webp", "checked": false},
-                    { "id": "Cb", "type": "cosmetic", "label": "[C2] Infraknife Platform Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/infra.webp", "checked": false},
-                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Infraknife Platform Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/infra.webp", "checked": false}
+                    { "id": "Cb", "type": "cosmetic", "label": "[C2] Infraknife Platform Tau", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/infra.webp", "checked": false},
+                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Infraknife Platform Sigma", "bonus": 0.19, "adjacency": "greater", "sc_eligible": true, "image": "corvette/infra.webp", "checked": false}
 
                 ]
             },
@@ -48,8 +48,8 @@
                     {"id": "Xb", "type": "upgrade", "label": "[2] Phase Beam Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Phase Beam Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/phase-upgrade.webp", "checked": true},
                     {"id": "Ca", "type": "cosmetic", "label": "[C1] Phase Beam Array Theta", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp", "checked": false},
-                    {"id": "Cb", "type": "cosmetic", "label": "[C2] Phase Beam Array Tau", "bonus": 0.21, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp", "checked": false},
-                    {"id": "Cc", "type": "cosmetic", "label": "[C3] Phase Beam Array Sigma", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp", "checked": false}
+                    {"id": "Cb", "type": "cosmetic", "label": "[C2] Phase Beam Array Tau", "bonus": 0.20, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp", "checked": false},
+                    {"id": "Cc", "type": "cosmetic", "label": "[C3] Phase Beam Array Sigma", "bonus": 0.19, "adjacency": "greater", "sc_eligible": true, "image": "corvette/phase.webp", "checked": false}
                 ]
             },
             {
@@ -81,7 +81,7 @@
                     { "id": "Xc", "type": "upgrade", "label": "[3] Positron Ejector Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/positron-upgrade.webp", "checked": true },
                     { "id": "Ca", "type": "cosmetic", "label": "[C1] Deadeye Cannon Theta (EXP19)", "bonus": 0.15, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false },
                     { "id": "Cb", "type": "cosmetic", "label": "[C2] Deadeye Cannon Tau (EXP19)", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false },
-                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Deadeye Cannon Sigma (EXP19)", "bonus": 0.14, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false }
+                    { "id": "Cc", "type": "cosmetic", "label": "[C3] Deadeye Cannon Sigma (EXP19)", "bonus": 0.13, "adjacency": "greater", "sc_eligible": true, "image": "corvette/deadeye.webp", "checked": false }
                 ]
             },
             {
@@ -121,9 +121,9 @@
                 "image": "corvette/ceto.webp",
                 "color": "cyan",
                 "modules": [
-                    {"id": "Ca", "type": "reactor", "label": "[R1] Ceto-Class Reactor Theta", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
-                    {"id": "Cb", "type": "reactor", "label": "[R2] Ceto-Class Reactor Tau", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
-                    {"id": "Cc", "type": "reactor", "label": "[R3] Ceto-Class Reactor Sigma", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true}
+                    {"id": "Ca", "type": "reactor", "label": "[R1] Ceto-Class Reactor Theta", "bonus": 0.17, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
+                    {"id": "Cb", "type": "reactor", "label": "[R2] Ceto-Class Reactor Tau", "bonus": 0.11, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true},
+                    {"id": "Cc", "type": "reactor", "label": "[R3] Ceto-Class Reactor Sigma", "bonus": 0.10, "adjacency": "greater", "sc_eligible": true, "image": "corvette/ceto.webp", "checked": true}
                 ]
             }
         ],
@@ -168,15 +168,15 @@
                     {"id": "LT", "type": "core", "label": "Launch Thruster", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": false, "image": "starship/launch.webp", "checked": true},
                     {"id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/efficient.webp", "checked": false},
                     {"id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "starship/recharger.webp", "checked": false},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": false},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": false},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": false},
-                    {"id": "La", "type": "cosmetic", "label": "[C1] Thunderbird Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": false},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
+                    {"id": "La", "type": "cosmetic", "label": "[C1] Thunderbird Thruster Theta", "bonus": 0.030, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": true},
                     {"id": "Lb", "type": "cosmetic", "label": "[C2] Thunderbird Thruster Tau", "bonus": 0.029, "adjacency": "greater", "sc_eligible": true, "image": "corvette/landing.webp", "checked": false},
                     {"id": "Lc", "type": "cosmetic", "label": "[C3] Mag-Field Thruster Sigma", "bonus": 0.028, "adjacency": "greater", "sc_eligible": true, "image": "corvette/mag-field.webp", "checked": false},
-                    {"id": "Aa", "type": "reactor", "label": "[R1] Azimuth-Class Reactor Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true},
-                    {"id": "Ab", "type": "reactor", "label": "[R2] Azimuth-Class Reactor Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true},
-                    {"id": "Ac", "type": "reactor", "label": "[R3] Azimuth-Class Reactor Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true}
+                    {"id": "Aa", "type": "reactor", "label": "[R1] Azimuth-Class Reactor Theta", "bonus": 0.019, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": true},
+                    {"id": "Ab", "type": "reactor", "label": "[R2] Azimuth-Class Reactor Tau", "bonus": 0.018, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": false},
+                    {"id": "Ac", "type": "reactor", "label": "[R3] Azimuth-Class Reactor Sigma", "bonus": 0.017, "adjacency": "greater", "sc_eligible": false, "image": "corvette/azimuth.webp", "checked": false}
                 ]
             },
             {
@@ -208,8 +208,8 @@
                 "color": "orange",
                 "modules": [
                     {"id": "Ha", "type": "bonus", "label": "[1] Habitation Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true},
-                    {"id": "Hb", "type": "bonus", "label": "[2] Habitation Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true},
-                    {"id": "Hc", "type": "bonus", "label": "[3] Habitation Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true}
+                    {"id": "Hb", "type": "bonus", "label": "[2] Habitation Module Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true},
+                    {"id": "Hc", "type": "bonus", "label": "[3] Habitation Module Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "corvette/habitation.webp", "checked": true}
 
                 ]
             },
@@ -220,8 +220,8 @@
                 "color": "white",
                 "modules": [
                     {"id": "Ta", "type": "bonus", "label": "[1] Tractor Beam Module Theta", "bonus": 0.30, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": true},
-                    {"id": "Tb", "type": "bonus", "label": "[2] Tractor Beam Module Tau", "bonus": 0.30, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": false},
-                    {"id": "Tc", "type": "bonus", "label": "[3] Tractor Beam Module Sigma", "bonus": 0.30, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": false}
+                    {"id": "Tb", "type": "bonus", "label": "[2] Tractor Beam Module Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": false},
+                    {"id": "Tc", "type": "bonus", "label": "[3] Tractor Beam Module Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": false, "image": "corvette/tractor.webp", "checked": false}
 
                 ]
             },

@@ -657,7 +657,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--category",
         type=str,
-        required=True,
+        default=None,
         help="Tech category (used if --tech is not specified).",
         metavar="CATEGORY_NAME",
     )
@@ -711,6 +711,8 @@ if __name__ == "__main__":
         help="If set, applies experimental data generation logic (e.g., for pulse 4x3).",
     )
     args = parser.parse_args()
+    if not args.category and not args.tech:
+        parser.error("Either --category or --tech must be provided.")
     if not 0.0 <= args.solve_prob <= 1.0:
         parser.error("--solve_prob must be between 0.0 and 1.0")
 
@@ -735,8 +737,10 @@ if __name__ == "__main__":
     tech_keys_to_process = []
     try:
         if config["specific_tech_to_process"]:
-            tech_keys_to_process = [config["specific_tech_to_process"]]
-            print(f"Processing specific tech: {tech_keys_to_process[0]}")
+            tech_keys_to_process = [
+                t.strip() for t in config["specific_tech_to_process"].split(",") if t.strip()
+            ]
+            print(f"Processing specific tech(s): {tech_keys_to_process}")
         else:
             modules = get_all_module_data()
             ship_data = modules.get(config["ship"])
