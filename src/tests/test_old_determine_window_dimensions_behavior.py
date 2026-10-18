@@ -1278,31 +1278,31 @@ class TestOldDetermineWindowDimensionsBehavior(unittest.TestCase):
         """Old Logic: exosuit coolant (4 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(4, "coolant", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 2))
 
     def test_old_logic_case_211_exosuit_radiation_count_4(self):
         """Old Logic: exosuit radiation (4 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(4, "radiation", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 2))
 
     def test_old_logic_case_212_exosuit_aeration_count_4(self):
         """Old Logic: exosuit aeration (4 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(4, "aeration", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 2))
 
     def test_old_logic_case_213_exosuit_thermic_count_4(self):
         """Old Logic: exosuit thermic (4 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(4, "thermic", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 2))
 
     def test_old_logic_case_214_exosuit_toxin_count_4(self):
         """Old Logic: exosuit toxin (4 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(4, "toxin", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 2))
 
     def test_old_logic_case_215_exosuit_protection_count_4(self):
         """Old Logic: exosuit protection (4 modules)"""
@@ -1314,19 +1314,19 @@ class TestOldDetermineWindowDimensionsBehavior(unittest.TestCase):
         """Old Logic: exosuit defense (3 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(3, "defense", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 1))
 
     def test_old_logic_case_217_exosuit_rebuilt_count_3(self):
         """Old Logic: exosuit rebuilt (3 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(3, "rebuilt", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 1))
 
     def test_old_logic_case_218_exosuit_forbidden_count_3(self):
         """Old Logic: exosuit forbidden (3 modules)"""
         modules_data = get_module_data("exosuit")
         w, h = determine_window_dimensions(3, "forbidden", "exosuit", modules=modules_data)
-        self.assertEqual((w, h), (2, 2))
+        self.assertEqual((w, h), (3, 1))
 
     def test_old_logic_case_219_exosuit_translators_count_4(self):
         """Old Logic: exosuit translators (4 modules)"""

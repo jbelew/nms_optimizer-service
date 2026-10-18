@@ -198,11 +198,7 @@ class TestDetermineWindowDimensions(unittest.TestCase):
 
     def test_window_overrides_last_value_equal_or_greater(self):
         """Window overrides without explicit default treat the last numeric key as equal or greater than."""
-        mock = {
-            "types": {
-                "core": [{"key": "trails", "window_overrides": {"5": [3, 3], "6": [4, 3]}}]
-            }
-        }
+        mock = {"types": {"core": [{"key": "trails", "window_overrides": {"5": [3, 3], "6": [4, 3]}}]}}
         # Counts below overrides should follow standard base profile
         self.assertEqual(determine_window_dimensions(1, "trails", "any_ship", modules=mock), (1, 1))
         self.assertEqual(determine_window_dimensions(2, "trails", "any_ship", modules=mock), (2, 1))
@@ -223,11 +219,7 @@ class TestDetermineWindowDimensions(unittest.TestCase):
 
     def test_window_overrides_single_key_treated_as_equal_or_greater(self):
         """Single key window override treats that key as equal or greater than while capacity allows."""
-        mock = {
-            "types": {
-                "core": [{"key": "pulse-spitter", "window_overrides": {"6": [3, 3]}}]
-            }
-        }
+        mock = {"types": {"core": [{"key": "pulse-spitter", "window_overrides": {"6": [3, 3]}}]}}
         # Counts 6 through 9 fit in 3x3 (up to 9 slots)
         self.assertEqual(determine_window_dimensions(6, "pulse-spitter", "any_ship", modules=mock), (3, 3))
         self.assertEqual(determine_window_dimensions(7, "pulse-spitter", "any_ship", modules=mock), (3, 3))
@@ -240,26 +232,35 @@ class TestDetermineWindowDimensions(unittest.TestCase):
 
     def test_window_overrides_with_explicit_default(self):
         """When default is explicitly provided, it is used for counts exceeding the max key."""
-        mock = {
-            "types": {
-                "core": [{"key": "custom", "window_overrides": {"6": [3, 3], "default": [4, 4]}}]
-            }
-        }
+        mock = {"types": {"core": [{"key": "custom", "window_overrides": {"6": [3, 3], "default": [4, 4]}}]}}
         self.assertEqual(determine_window_dimensions(6, "custom", "any_ship", modules=mock), (3, 3))
         self.assertEqual(determine_window_dimensions(7, "custom", "any_ship", modules=mock), (4, 4))
         self.assertEqual(determine_window_dimensions(10, "custom", "any_ship", modules=mock), (4, 4))
 
     def test_window_capacity_guard_escalation(self):
         """When an override window is physically too small (w * h < module_count), automatically escalate."""
-        mock = {
-            "types": {
-                "core": [{"key": "trails", "window_overrides": {"5": [3, 3], "8": [4, 3]}}]
-            }
-        }
+        mock = {"types": {"core": [{"key": "trails", "window_overrides": {"5": [3, 3], "8": [4, 3]}}]}}
         # 12 modules fits in 4x3 (4 * 3 = 12 >= 12)
         self.assertEqual(determine_window_dimensions(12, "trails", "any_ship", modules=mock), (4, 3))
         # 13 modules cannot fit in 4x3 (12 < 13), should escalate to 4x4
         self.assertEqual(determine_window_dimensions(13, "trails", "any_ship", modules=mock), (4, 4))
+
+    def test_window_overrides_removes_intermediate_base_rules(self):
+        """Intermediate base keys from standard (like '6': [3, 2]) do not leak into overridden ranges."""
+        mock_5_8 = {"types": {"core": [{"key": "trails", "window_overrides": {"5": [3, 3], "8": [4, 3]}}]}}
+        self.assertEqual(determine_window_dimensions(4, "trails", "any_ship", modules=mock_5_8), (2, 2))
+        self.assertEqual(determine_window_dimensions(5, "trails", "any_ship", modules=mock_5_8), (3, 3))
+        self.assertEqual(determine_window_dimensions(6, "trails", "any_ship", modules=mock_5_8), (4, 3))
+        self.assertEqual(determine_window_dimensions(8, "trails", "any_ship", modules=mock_5_8), (4, 3))
+
+        mock_4_6_8 = {
+            "types": {"core": [{"key": "trails", "window_overrides": {"4": [2, 2], "6": [3, 3], "8": [4, 3]}}]}
+        }
+        self.assertEqual(determine_window_dimensions(4, "trails", "corvette", modules=mock_4_6_8), (2, 2))
+        self.assertEqual(determine_window_dimensions(5, "trails", "corvette", modules=mock_4_6_8), (3, 3))
+        self.assertEqual(determine_window_dimensions(6, "trails", "corvette", modules=mock_4_6_8), (3, 3))
+        self.assertEqual(determine_window_dimensions(7, "trails", "corvette", modules=mock_4_6_8), (4, 3))
+        self.assertEqual(determine_window_dimensions(8, "trails", "corvette", modules=mock_4_6_8), (4, 3))
 
 
 class TestPlaceAllModulesInEmptySlots(unittest.TestCase):
