@@ -130,7 +130,11 @@ def get_popular_analytics_data():
                   SELECT
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'platform') AS ship_type,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'tech') AS technology,
-                    COALESCE((SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'supercharged'), 'false') AS supercharged
+                    COALESCE(
+                      (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'supercharged'),
+                      (SELECT IF(value.int_value = 1, 'true', IF(value.int_value = 0, 'false', NULL)) FROM UNNEST(event_params) WHERE key = 'supercharged'),
+                      'false'
+                    ) AS supercharged
                   FROM raw_source_unioned
                 )
                 SELECT
