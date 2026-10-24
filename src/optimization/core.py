@@ -128,6 +128,112 @@ def _opportunity_rank(
     return has_available_sc, score
 
 
+def _has_fitting_window(
+    cleared_grid: Grid,
+    window_width: int,
+    window_height: int,
+    module_count: int,
+    tech: str,
+    require_supercharge: bool = True,
+    target_adj: Optional[str] = None,
+) -> bool:
+    """
+    Checks whether a Solver Window of size (window_width, window_height) or
+    rotated (window_height, window_width) with at least module_count available
+    active cells fits on the cleared grid.
+
+    Args:
+        cleared_grid (Grid): Grid with the target technology's existing modules cleared.
+        window_width (int): Resolved Solver Window width.
+        window_height (int): Resolved Solver Window height.
+        module_count (int): Number of selected modules to place.
+        tech (str): Technology identifier.
+        require_supercharge (bool, optional): Whether the window must contain at least
+            one unoccupied active supercharged slot. Defaults to True.
+        target_adj (Optional[str], optional): Target adjacency subtype. Defaults to None.
+
+    Returns:
+        bool: True if a valid window fits in either original or rotated orientation.
+    """
+    orientations = [(window_width, window_height)]
+    if window_width != window_height:
+        orientations.append((window_height, window_width))
+    for w, h in orientations:
+        _, pos = _scan_grid_with_window(
+            cleared_grid.copy(),
+            w,
+            h,
+            module_count,
+            tech,
+            require_supercharge=require_supercharge,
+            target_adj=target_adj,
+        )
+        if pos is not None:
+            return True
+    return False
+
+
+def _compare_with_forced_full_sa(
+    grid: Grid,
+    solved_grid: Grid,
+    solved_bonus: float,
+    solve_method: str,
+    ship: str,
+    modules: dict,
+    tech: str,
+    tech_modules: list[dict],
+    progress_callback: Optional[Callable] = None,
+    run_id: Optional[str] = None,
+    send_grid_updates: bool = False,
+) -> tuple[Grid, float, str]:
+    """
+    Evaluates full-grid Simulated Annealing alongside a non-supercharged placement
+    during a Forced Solve when no supercharged Solver Window fits, returning
+    whichever achieves the higher score.
+
+    Args:
+        grid (Grid): Original grid before placement.
+        solved_grid (Grid): Candidate grid produced by standard non-supercharged placement.
+        solved_bonus (float): Bonus score of solved_grid.
+        solve_method (str): Method label of solved_grid.
+        ship (str): Ship identifier.
+        modules (dict): Module definitions dictionary.
+        tech (str): Technology identifier.
+        tech_modules (list[dict]): Active module selection for the technology.
+        progress_callback (Optional[Callable], optional): Progress callback. Defaults to None.
+        run_id (Optional[str], optional): Run identifier. Defaults to None.
+        send_grid_updates (bool, optional): Whether to emit grid updates. Defaults to False.
+
+    Returns:
+        tuple[Grid, float, str]: The winning (grid, bonus, solve_method) tuple.
+    """
+    full_sa_input = grid.copy()
+    clear_all_modules_of_tech(full_sa_input, tech)
+    full_sa_grid, full_sa_bonus = simulated_annealing(
+        full_sa_input,
+        ship,
+        modules,
+        tech,
+        grid,
+        progress_callback=progress_callback,
+        run_id=run_id,
+        stage="forced_full_sa",
+        send_grid_updates=send_grid_updates,
+        tech_modules=tech_modules,
+    )
+    if full_sa_grid is not None and full_sa_bonus > solved_bonus:
+        logging.info(
+            f"Forced full-grid SA improved score over non-supercharged placement "
+            f"({full_sa_bonus:.4f} > {solved_bonus:.4f}) for {ship}/{tech}."
+        )
+        return full_sa_grid, full_sa_bonus, "Forced Full SA"
+    logging.info(
+        f"Keeping non-supercharged placement ({solved_bonus:.4f} >= forced full-grid SA "
+        f"{full_sa_bonus:.4f}) for {ship}/{tech}."
+    )
+    return solved_grid, solved_bonus, solve_method
+
+
 def optimize_placement(
     grid: Grid,
     ship: str,
@@ -164,7 +270,8 @@ def optimize_placement(
         ship (str): Ship identifier (e.g., "corvette", "freighter", "solar").
         modules (dict): Complete module definitions indexed by [ship][tech].
         tech (str): Technology identifier (e.g., "trails", "photon", "pulse").
-        forced (bool, optional): If False, returns "Pattern No Fit" when no pattern matches.
+        forced (bool, optional): If False, returns "Pattern No Fit" when no pattern matches
+                                or "Supercharged No Fit" when no supercharged Solver Window fits.
                                 If True, forces SA fallback instead. Defaults to False.
         progress_callback (Optional[Callable], optional): Callback for progress updates during
                                                          SA refinement. Signature: fn(step, msg).
@@ -180,10 +287,10 @@ def optimize_placement(
 
     Returns:
         tuple: (best_grid, percentage, best_bonus, solve_method)
-               - best_grid (Grid | None): Optimized grid; None if "Pattern No Fit" and forced=False
+               - best_grid (Grid | None): Optimized grid; None if "Pattern No Fit" or "Supercharged No Fit" and forced=False
                - percentage (float): Percentage of official solve score achieved (0-100+)
                - best_bonus (float): Actual score achieved by the optimized grid
-               - solve_method (str): Description of method used (e.g., "Pattern Match", "Windowed SA")
+               - solve_method (str): Description of method used (e.g., "Pattern Match", "Windowed SA", "Supercharged No Fit")
 
     Raises:
         ValueError: If:
@@ -234,8 +341,71 @@ def optimize_placement(
     )
     # --- End On-Demand Loading ---
 
+    # --- Pre-Solve Supercharged Window Fit Check ---
+    has_sc_eligible_modules = any(m.get("sc_eligible", False) for m in tech_modules)
+    has_unoccupied_supercharged = any(
+        (cell := solved_grid.get_cell(x, y))["active"] and cell["supercharged"] and cell["module"] is None
+        for y in range(solved_grid.height)
+        for x in range(solved_grid.width)
+    )
+    supercharged_window_blocked = False
+    if len(tech_modules) > 1 and has_sc_eligible_modules and has_unoccupied_supercharged:
+        sc_window_w, sc_window_h = determine_window_dimensions(len(tech_modules), tech, ship, modules=modules)
+        target_adj = tech_modules[0].get("adjacency") if tech_modules else None
+        if not _has_fitting_window(
+            solved_grid,
+            sc_window_w,
+            sc_window_h,
+            len(tech_modules),
+            tech,
+            require_supercharge=True,
+            target_adj=target_adj,
+        ):
+            supercharged_window_blocked = True
+            if not forced and _has_fitting_window(
+                solved_grid,
+                sc_window_w,
+                sc_window_h,
+                len(tech_modules),
+                tech,
+                require_supercharge=False,
+                target_adj=target_adj,
+            ):
+                logging.info(
+                    f"No supercharged Solver Window ({sc_window_w}x{sc_window_h}) fits for {ship}/{tech}, "
+                    f"but a non-supercharged window fits. Returning 'Supercharged No Fit'."
+                )
+                return None, 0.0, 0.0, "Supercharged No Fit"
+    # --- End Pre-Solve Supercharged Window Fit Check ---
+
+    def _maybe_compare_forced_full_sa(
+        candidate_grid: Grid,
+        candidate_bonus: float,
+        candidate_method: str,
+    ) -> tuple[Grid, float, str]:
+        if not (forced and supercharged_window_blocked):
+            return candidate_grid, candidate_bonus, candidate_method
+        return _compare_with_forced_full_sa(
+            grid,
+            candidate_grid,
+            candidate_bonus,
+            candidate_method,
+            ship,
+            modules,
+            tech,
+            tech_modules,
+            progress_callback=progress_callback,
+            run_id=run_id,
+            send_grid_updates=send_grid_updates,
+        )
+
     # --- Initial Placement Strategy ---
     if ship not in filtered_solves or (ship in filtered_solves and tech not in filtered_solves[ship]):
+        if supercharged_window_blocked and not forced:
+            logging.info(
+                f"No supercharged or non-supercharged Solver Window fits for {ship}/{tech} (no solve map). Returning 'Pattern No Fit'."
+            )
+            return None, 0.0, 0.0, "Pattern No Fit"
         # --- Special Case: No Solve Available ---
         # When no solve map exists, fall back to greedy adjacency scoring.
         # This handles cases where pattern matching is not applicable.
@@ -464,6 +634,12 @@ def optimize_placement(
             else:
                 logging.info(f"Placed {num_modules} modules using individual adjacency scoring")
 
+            solved_grid, solved_bonus, solve_method = _maybe_compare_forced_full_sa(
+                solved_grid,
+                solved_bonus,
+                solve_method,
+            )
+
         percentage = 100.0 if solved_bonus > 1e-9 else 0.0
         logging.info(
             f"Final Score (No Solve Map): {solved_bonus:.4f} ({percentage:.2f}% of potential {solve_score:.4f}) using method '{solve_method}' for ship: '{ship}' -- tech: '{tech}'"
@@ -515,6 +691,11 @@ def optimize_placement(
                 is_partial_set = False
 
         if is_partial_set:
+            if supercharged_window_blocked and not forced:
+                logging.info(
+                    f"Partial module set for {ship}/{tech}, but neither supercharged nor non-supercharged Solver Window fits. Returning 'Pattern No Fit'."
+                )
+                return None, 0.0, 0.0, "Pattern No Fit"
             if full_tech_modules_list:
                 logging.info(
                     f"Partial module set ({len(tech_modules)}/{len(full_tech_modules_list)}) for {ship}/{tech}. Skipping patterns, running windowed SA."
@@ -590,6 +771,12 @@ def optimize_placement(
                         f"Final check score {final_check_score:.4f} differs from tracked solved_bonus {solved_bonus:.4f}. Using check score."
                     )
                     solved_bonus = final_check_score
+
+                solved_grid, solved_bonus, solve_method = _maybe_compare_forced_full_sa(
+                    solved_grid,
+                    solved_bonus,
+                    solve_method,
+                )
 
                 if solve_score > 1e-9:
                     percentage = (solved_bonus / solve_score) * 100
@@ -804,6 +991,16 @@ def optimize_placement(
                     f"Partial set optimization failed: solved_grid is None or solved_bonus is invalid for {ship}/{tech}. solve_method={solve_method}"
                 )
 
+            if (
+                sa_method_for_pattern_gen != "Full SA"
+                and solve_method != "Forced Initial SA (No SA-generated Pattern Fit)"
+            ):
+                solved_grid, solved_bonus, solve_method = _maybe_compare_forced_full_sa(
+                    solved_grid,
+                    solved_bonus,
+                    solve_method,
+                )
+
             if solve_score > 1e-9:
                 percentage = (solved_bonus / solve_score) * 100
             else:
@@ -876,6 +1073,11 @@ def optimize_placement(
                             best_pattern_height = pattern_height
 
         if highest_pattern_bonus > -float("inf"):
+            if supercharged_window_blocked and not forced:
+                logging.info(
+                    f"No supercharged Solver Window fits for {ship}/{tech}, but a non-supercharged pattern fits. Returning 'Supercharged No Fit'."
+                )
+                return None, 0.0, 0.0, "Supercharged No Fit"
             # Pattern match successful - use this grid
             # This indicates at least one pattern variation fit on the grid
             solved_grid = best_pattern_grid
@@ -1259,6 +1461,13 @@ def optimize_placement(
         # solved_grid remains grid_after_initial_placement
         solved_bonus = current_best_score
         # solve_method remains what it was before refinement
+
+    if solve_method != "Forced Initial SA (No Pattern Fit)":
+        solved_grid, solved_bonus, solve_method = _maybe_compare_forced_full_sa(
+            solved_grid,
+            solved_bonus,
+            solve_method,
+        )
 
     # --- Final Result Calculation ---
     # Compile final output with optimized grid and score metrics

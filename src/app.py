@@ -153,6 +153,12 @@ def run_optimization(data, progress_callback=None, run_id=None):
             )
             return result, 200
 
+        if solve_method == "Supercharged No Fit":
+            result["message"] = (
+                "Available supercharged slots exist, but no Solver Window fits around them. User can choose to force a Simulated Annealing solve."
+            )
+            return result, 200
+
         return result, 200
 
     except ValueError as e:

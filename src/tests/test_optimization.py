@@ -1046,3 +1046,250 @@ class TestOptimization(unittest.TestCase):
             expected_window=(5, 0, 4, 3),
             sc_coord=(6, 1),
         )
+
+    def test_optimize_returns_supercharged_no_fit_when_sc_window_blocked_and_not_forced(self):
+        """
+        When unoccupied active supercharged slots exist and the technology has >1 modules
+        with at least one sc_eligible module, but surrounding modules block any (w, h) or
+        (h, w) Solver Window around the supercharged slots while a non-supercharged window
+        fits elsewhere, optimize_placement(..., forced=False) must return
+        (None, 0.0, 0.0, "Supercharged No Fit").
+        """
+        grid = Grid(7, 2)
+        # Left 3x2 region (0..2, 0..1) is open and non-supercharged (shield 3x2 pattern fits here).
+        # Right region has an open supercharged slot at (5, 1), but other_tech modules block
+        # enough cells around it that fewer than 5 empty active cells exist in any 3x2/2x3 window
+        # containing (5, 1).
+        for x, y in [(3, 0), (3, 1), (4, 0), (5, 0), (6, 0)]:
+            grid.set_module(x, y, "OTHER")
+            grid.set_tech(x, y, "other_tech")
+        grid.set_supercharged(5, 1, True)
+
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            grid,
+            "standard",
+            self.modules,
+            "shield",
+            forced=False,
+        )
+
+        self.assertIsNone(result_grid)
+        self.assertEqual(percentage, 0.0)
+        self.assertEqual(solved_bonus, 0.0)
+        self.assertEqual(solve_method, "Supercharged No Fit")
+
+    def test_optimize_returns_pattern_no_fit_when_no_window_or_pattern_fits_anywhere(self):
+        """
+        When unoccupied active supercharged slots exist and no supercharged Solver Window fits,
+        and no non-supercharged window or pattern fits anywhere on the grid either,
+        optimize_placement(..., forced=False) must return (None, 0.0, 0.0, "Pattern No Fit").
+        """
+        grid = Grid(4, 2)
+        # Occupy cells so fewer than 5 empty active cells exist anywhere on the 4x2 grid,
+        # while leaving an unoccupied active supercharged slot at (3, 1).
+        for x, y in [(0, 0), (1, 0), (2, 0), (0, 1), (1, 1)]:
+            grid.set_module(x, y, "OTHER")
+            grid.set_tech(x, y, "other_tech")
+        grid.set_supercharged(3, 1, True)
+
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            grid,
+            "standard",
+            self.modules,
+            "shield",
+            forced=False,
+        )
+
+        self.assertIsNone(result_grid)
+        self.assertEqual(percentage, 0.0)
+        self.assertEqual(solved_bonus, 0.0)
+        self.assertEqual(solve_method, "Pattern No Fit")
+
+    def test_optimize_returns_supercharged_no_fit_when_pattern_fits_non_sc_region_without_full_window(self):
+        """
+        When determine_window_dimensions resolves a 4x3 Solver Window (e.g. pulse with 8 modules)
+        that cannot fit on a 7x2 grid around an open supercharged slot, but the 4x2 precomputed
+        pattern fits in a non-supercharged region, optimize_placement(..., forced=False) must
+        halt and return (None, 0.0, 0.0, "Supercharged No Fit").
+        """
+        grid = Grid(7, 2)
+        # Left 4x2 region (0..3, 0..1) is open and non-supercharged (photonix 4x2 pattern fits here).
+        # Right region has an open supercharged slot at (6, 1) surrounded by other_tech modules.
+        for x, y in [(4, 0), (4, 1), (5, 0), (5, 1), (6, 0)]:
+            grid.set_module(x, y, "OTHER")
+            grid.set_tech(x, y, "other_tech")
+        grid.set_supercharged(6, 1, True)
+
+        result_grid, percentage, solved_bonus, solve_method = optimize_placement(
+            grid,
+            "standard",
+            self.modules,
+            "pulse",
+            forced=False,
+        )
+
+        self.assertIsNone(result_grid)
+        self.assertEqual(percentage, 0.0)
+        self.assertEqual(solved_bonus, 0.0)
+        self.assertEqual(solve_method, "Supercharged No Fit")
+
+    def test_optimize_does_not_trigger_supercharged_no_fit_for_exclusions_or_rotated_fit(self):
+        """
+        Verify that:
+        1. Single-module selections (len <= 1) do not trigger "Supercharged No Fit".
+        2. Selections with zero sc_eligible modules do not trigger "Supercharged No Fit".
+        3. Grids where all supercharged slots are occupied by other technologies do not
+           trigger "Supercharged No Fit".
+        4. Grids where the rotated (h, w) Solver Window fits over an open supercharged slot
+           (even though original (w, h) does not) do not trigger "Supercharged No Fit".
+        """
+        # 1. Single-module selection (shield core module 'DS' has sc_eligible=False, or single sc_eligible module 'Xa')
+        grid_single = Grid(7, 2)
+        for x, y in [(3, 0), (3, 1), (4, 0), (5, 0), (6, 0)]:
+            grid_single.set_module(x, y, "OTHER")
+            grid_single.set_tech(x, y, "other_tech")
+        grid_single.set_supercharged(5, 1, True)
+
+        single_grid, _, _, single_method = optimize_placement(
+            grid_single,
+            "standard",
+            self.modules,
+            "shield",
+            forced=False,
+            available_modules=["Xa"],
+        )
+        self.assertIsNotNone(single_grid)
+        self.assertNotEqual(single_method, "Supercharged No Fit")
+
+        # 2. Multi-module selection with zero sc_eligible modules (trails figurines/trails are sc_eligible=False)
+        non_sc_grid, _, _, non_sc_method = optimize_placement(
+            grid_single,
+            "standard",
+            self.modules,
+            "trails",
+            forced=False,
+            available_modules=["RT", "CT", "ET"],
+        )
+        self.assertIsNotNone(non_sc_grid)
+        self.assertNotEqual(non_sc_method, "Supercharged No Fit")
+
+        # 3. Supercharged slot occupied by another technology (no unoccupied active SC slot)
+        grid_occupied_sc = grid_single.copy()
+        grid_occupied_sc.set_module(5, 1, "OTHER_SC")
+        grid_occupied_sc.set_tech(5, 1, "other_tech")
+
+        occ_grid, _, _, occ_method = optimize_placement(
+            grid_occupied_sc,
+            "standard",
+            self.modules,
+            "shield",
+            forced=False,
+        )
+        self.assertIsNotNone(occ_grid)
+        self.assertNotEqual(occ_method, "Supercharged No Fit")
+
+        # 4. Rotated (2x3) window fits over open supercharged slot when (3x2) does not
+        grid_rotated = Grid(2, 3)
+        grid_rotated.set_supercharged(1, 1, True)
+        rot_grid, _, _, rot_method = optimize_placement(
+            grid_rotated,
+            "standard",
+            self.modules,
+            "shield",
+            forced=False,
+        )
+        self.assertIsNotNone(rot_grid)
+        self.assertNotEqual(rot_method, "Supercharged No Fit")
+
+    def test_optimize_forced_evaluates_full_grid_sa_when_supercharged_window_blocked(self):
+        """
+        When forced=True and no supercharged Solver Window fits around an open supercharged
+        slot, optimize_placement must bypass "Supercharged No Fit", evaluate full-grid
+        Simulated Annealing alongside standard non-supercharged placement, and return
+        whichever achieves the higher score (both for full-set pattern match and partial sets).
+        """
+        grid = Grid(7, 2)
+        # Left 3x2 region (0..2, 0..1) is open and non-supercharged.
+        # Right region has an open supercharged slot at (5, 1) with only (4, 1), (5, 1), (6, 1) open,
+        # blocking any 3x2 or 2x3 supercharged Solver Window for shield (5 modules).
+        for x, y in [(3, 0), (3, 1), (4, 0), (5, 0), (6, 0)]:
+            grid.set_module(x, y, "OTHER")
+            grid.set_tech(x, y, "other_tech")
+        grid.set_supercharged(5, 1, True)
+
+        high_sa_grid = grid.copy()
+        high_sa_grid.set_module(5, 1, "Xa")
+        high_sa_grid.set_tech(5, 1, "shield")
+
+        # Case A: Full-grid SA scores higher than non-supercharged Pattern Match -> returns SA grid
+        with patch(
+            "src.optimization.core.simulated_annealing",
+            return_value=(high_sa_grid, 99.0),
+        ) as mock_sa:
+            with patch(
+                "src.optimization.core.calculate_grid_score",
+                side_effect=lambda g, t, **kw: 99.0 if g.get_cell(5, 1)["module"] == "Xa" else 2.0,
+            ):
+                result_grid, _, solved_bonus, solve_method = optimize_placement(
+                    grid,
+                    "standard",
+                    self.modules,
+                    "shield",
+                    forced=True,
+                )
+
+        mock_sa.assert_called_once()
+        self.assertIsNotNone(result_grid)
+        if result_grid is not None:
+            self.assertEqual(result_grid.get_cell(5, 1)["module"], "Xa")
+        self.assertEqual(solved_bonus, 99.0)
+        self.assertEqual(solve_method, "Forced Full SA")
+
+        # Case B: Non-supercharged Pattern Match scores higher than full-grid SA -> keeps Pattern Match
+        with patch(
+            "src.optimization.core.simulated_annealing",
+            return_value=(high_sa_grid, 1.0),
+        ) as mock_sa_low:
+            with patch(
+                "src.optimization.core.calculate_grid_score",
+                side_effect=lambda g, t, **kw: 1.0 if g.get_cell(5, 1)["module"] == "Xa" else 20.0,
+            ):
+                result_grid_b, _, solved_bonus_b, solve_method_b = optimize_placement(
+                    grid,
+                    "standard",
+                    self.modules,
+                    "shield",
+                    forced=True,
+                )
+
+        mock_sa_low.assert_called_once()
+        self.assertIsNotNone(result_grid_b)
+        if result_grid_b is not None:
+            self.assertIsNone(result_grid_b.get_cell(5, 1)["module"])
+        self.assertEqual(solved_bonus_b, 20.0)
+        self.assertEqual(solve_method_b, "Pattern Match")
+
+        # Case C: Partial module set with forced=True also compares full-grid SA against windowed SA
+        with patch(
+            "src.optimization.core.simulated_annealing",
+            return_value=(high_sa_grid, 88.0),
+        ) as mock_sa_partial:
+            with patch(
+                "src.optimization.core.calculate_grid_score",
+                side_effect=lambda g, t, **kw: 88.0 if g.get_cell(5, 1)["module"] == "Xa" else 1.5,
+            ):
+                result_grid_c, _, solved_bonus_c, solve_method_c = optimize_placement(
+                    grid,
+                    "standard",
+                    self.modules,
+                    "shield",
+                    forced=True,
+                    available_modules=["DS", "Xa", "Xb", "Xc"],
+                )
+
+        mock_sa_partial.assert_called_once()
+        self.assertIsNotNone(result_grid_c)
+        if result_grid_c is not None:
+            self.assertEqual(result_grid_c.get_cell(5, 1)["module"], "Xa")
+        self.assertEqual(solved_bonus_c, 88.0)
+        self.assertEqual(solve_method_c, "Forced Full SA")
