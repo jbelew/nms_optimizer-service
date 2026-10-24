@@ -25,7 +25,6 @@ sample_solves = get_all_solve_data()
 
 # --- Test Class ---
 class TestOptimization(unittest.TestCase):
-
     # --- Merged setUp method ---
     def setUp(self):
         """Set up common test resources."""
@@ -908,3 +907,142 @@ class TestOptimization(unittest.TestCase):
         # and the window should NOT span column 3
         self.assertIn(window_width, [2, 3])
         self.assertIn(window_height, [2, 3])
+
+    def test_optimize_prioritizes_supercharged_scanned_window_over_non_sc_3x2_pattern(self):
+        """
+        Regression test for issue #813: when a 3x2 pattern matches in a non-supercharged
+        region (window score 6.0) and a valid 3x2 Solver Window with 1 or 2 open
+        supercharged slots exists elsewhere on the grid (window score 2.75-5.75),
+        optimize_placement must select the supercharged scanned window and refine using
+        the supercharged slots.
+        """
+        grid = Grid(7, 2)
+        # Separate left 3x2 region (0..2, 0..1) from right 3x2 region (4..6, 0..1)
+        grid.set_active(3, 0, False)
+        grid.set_active(3, 1, False)
+        # In the right 3x2 region, deactivate middle cell (5, 0) so the rigid shield
+        # 3x2 pattern (which only has a corner empty slot) cannot match there, while 5
+        # active slots remain for the 5 shield modules around 2 supercharged slots.
+        grid.set_active(5, 0, False)
+        grid.set_supercharged(4, 1, True)
+        grid.set_supercharged(5, 1, True)
+
+        result_grid, _, solved_bonus, solve_method = optimize_placement(
+            grid,
+            "standard",
+            self.modules,
+            "shield",
+        )
+
+        self.assertIsNotNone(result_grid)
+        if result_grid is not None:
+            # Both open supercharged slots in the scanned window should be occupied by shield modules
+            self.assertIsNotNone(result_grid.get_cell(4, 1)["module"])
+            self.assertEqual(result_grid.get_cell(4, 1)["tech"], "shield")
+            self.assertIsNotNone(result_grid.get_cell(5, 1)["module"])
+            self.assertEqual(result_grid.get_cell(5, 1)["tech"], "shield")
+            self.assertNotEqual(solve_method, "Pattern Match")
+            self.assertGreater(solved_bonus, 2.0649)
+
+    def _assert_ml_refines_window(
+        self,
+        grid: Grid,
+        tech: str,
+        expected_window: tuple[int, int, int, int],
+        sc_coord: tuple[int, int],
+    ) -> None:
+        """
+        Helper to run optimize_placement with a stubbed ML refinement outcome and
+        verify that refinement targets expected_window and adopts the refined result.
+        """
+        sc_x, sc_y = sc_coord
+        refined_grid = grid.copy()
+        refined_grid.set_module(sc_x, sc_y, "Xa")
+        refined_grid.set_tech(sc_x, sc_y, tech)
+
+        with patch(
+            "src.optimization.core._handle_ml_opportunity",
+            return_value=(refined_grid, 50.0),
+        ) as mock_handle_ml:
+            with patch(
+                "src.optimization.core.calculate_grid_score",
+                side_effect=lambda g, t, **kw: 50.0 if g.get_cell(sc_x, sc_y)["module"] == "Xa" else 10.0,
+            ):
+                result_grid, _, solved_bonus, solve_method = optimize_placement(
+                    grid,
+                    "standard",
+                    self.modules,
+                    tech,
+                )
+
+        mock_handle_ml.assert_called_once()
+        ml_args = mock_handle_ml.call_args[0]
+        self.assertEqual((ml_args[4], ml_args[5], ml_args[6], ml_args[7]), expected_window)
+        self.assertEqual(solve_method, "ML")
+        self.assertEqual(solved_bonus, 50.0)
+        self.assertIsNotNone(result_grid)
+
+    def test_optimize_prioritizes_supercharged_scanned_window_over_non_sc_3x3_pattern(self):
+        """
+        Regression test for issue #813: when a 3x3 pattern matches in a non-supercharged
+        region (window score 9.0) and a valid Solver Window with 1 open supercharged slot
+        exists elsewhere on the grid (window score 3.0), optimize_placement must select
+        the supercharged scanned window (4, 0, 3, 3) and refine using the supercharged slot.
+        """
+        # Use hyper (3x3 pattern, 9 modules) where the pattern matches at (0, 0) in a
+        # non-supercharged 3x3 region (window score 9.0) and a 3x3 supercharged window
+        # at (4, 0) has 1 open supercharged slot at (5, 1) (window score 3.0).
+        grid = Grid(7, 3)
+        grid.set_active(3, 0, False)
+        grid.set_active(3, 1, False)
+        grid.set_active(3, 2, False)
+        grid.set_supercharged(5, 1, True)
+
+        orig_apply = __import__("src.pattern_matching", fromlist=["apply_pattern_to_grid"]).apply_pattern_to_grid
+
+        def apply_only_left(g, pattern, modules, tech, start_x, start_y, ship, tech_modules=None):
+            if start_x == 0 and start_y == 0:
+                return orig_apply(g, pattern, modules, tech, start_x, start_y, ship, tech_modules=tech_modules)
+            return None, 0
+
+        with patch("src.optimization.core.apply_pattern_to_grid", side_effect=apply_only_left):
+            self._assert_ml_refines_window(
+                grid,
+                "hyper",
+                expected_window=(4, 0, 3, 3),
+                sc_coord=(5, 1),
+            )
+
+    @patch("src.optimization.core.find_supercharged_opportunities", return_value=None)
+    def test_pulse_4x3_sizing_prioritizes_supercharged_window_over_non_sc_pattern(
+        self,
+        _mock_find_opportunities,
+    ):
+        """
+        Regression test for issue #813 (pulse 4x3 window sizing): when pulse (8 modules)
+        initially matches a 4x2 non-supercharged pattern (window score 8.0) and
+        _scan_grid_with_window finds a 4x3 window containing 1 open supercharged slot
+        (window score 3.0 < 8.0), pulse 4x3 sizing must override the non-supercharged
+        window with the supercharged 4x3 window.
+        """
+        grid = Grid(9, 3)
+        # Separate left 4x2 non-SC region (0..3, 0..1) from right 4x3 SC region (5..8, 0..2)
+        grid.set_active(4, 0, False)
+        grid.set_active(4, 1, False)
+        grid.set_active(4, 2, False)
+        for x in range(4):
+            grid.set_active(x, 2, False)
+        # Deactivate (6, 0) and (6, 2) in the right 4x3 region so the rigid 4x2 photonix
+        # pattern cannot fit in either rows 0..1 or rows 1..2 of (5..8), while 10 active
+        # cells (>= 8 modules) remain in the 4x3 window (5..8, 0..2) with 1 open
+        # supercharged slot at (6, 1) (window score 3.0 < 8.0).
+        grid.set_active(6, 0, False)
+        grid.set_active(6, 2, False)
+        grid.set_supercharged(6, 1, True)
+
+        self._assert_ml_refines_window(
+            grid,
+            "pulse",
+            expected_window=(5, 0, 4, 3),
+            sc_coord=(6, 1),
+        )

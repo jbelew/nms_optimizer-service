@@ -97,6 +97,37 @@ def _prepare_optimization_run(
     return full_tech_modules_list, tech_modules  # type: ignore[return-value]
 
 
+def _opportunity_rank(
+    grid: Grid,
+    window: Optional[tuple[int, int, int, int]],
+    score: float,
+    has_sc_eligible_modules: bool,
+) -> tuple[bool, float]:
+    """
+    Computes a comparable rank tuple for a candidate Solver Window.
+
+    Because calculate_window_score uses different numeric scales when
+    supercharged slots are present vs absent, ranking by
+    (has_eligible_supercharged_slot, window_score) ensures windows with
+    available supercharged slots are prioritized when the technology has
+    supercharge-eligible modules.
+
+    Args:
+        grid (Grid): The grid to inspect (typically with the target tech cleared).
+        window (Optional[tuple[int, int, int, int]]): Window bounds as
+            (start_x, start_y, width, height), or None if no window was found.
+        score (float): The window score from calculate_window_score.
+        has_sc_eligible_modules (bool): Whether the technology has any sc_eligible modules.
+
+    Returns:
+        tuple[bool, float]: A (has_available_sc, score) tuple for lexicographical comparison.
+    """
+    has_available_sc = (
+        has_sc_eligible_modules and window is not None and grid.has_available_supercharged_in_window(window)
+    )
+    return has_available_sc, score
+
+
 def optimize_placement(
     grid: Grid,
     ship: str,
@@ -969,11 +1000,28 @@ def optimize_placement(
             scanned_opportunity_result = None  # Invalidate if score calculation failed
 
     # --- Compare Scores and Select Final Opportunity ---
-    # Choose the window with the highest opportunity score
-    # This becomes the location for ML or SA refinement
+    # Choose the window with the highest opportunity rank.
+    # Because calculate_window_score uses different scales when supercharged_count > 0
+    # vs supercharged_count == 0, prioritize any window containing an available
+    # supercharged slot (when the technology has sc_eligible modules) over a window
+    # without available supercharged slots.
+    has_sc_eligible_modules = any(m.get("sc_eligible", False) for m in tech_modules)
+    pattern_rank = _opportunity_rank(
+        grid_for_opportunity_scan,
+        pattern_opportunity_result,
+        pattern_window_score,
+        has_sc_eligible_modules,
+    )
+    scanned_rank = _opportunity_rank(
+        grid_for_opportunity_scan,
+        scanned_opportunity_result,
+        scanned_window_score,
+        has_sc_eligible_modules,
+    )
+
     final_opportunity_result = None
     opportunity_source = "None"  # For logging
-    if pattern_window_score >= scanned_window_score and pattern_opportunity_result is not None:
+    if pattern_opportunity_result is not None and pattern_rank >= scanned_rank:
         logging.info("Using pattern location as the refinement opportunity window (score >= scanned).")
         final_opportunity_result = pattern_opportunity_result
         opportunity_source = "Pattern"
@@ -1041,18 +1089,33 @@ def optimize_placement(
                 f"Pulse Sizing: Best 4x3 window found by scan: score {best_4x3_score_from_scan:.4f} at ({best_4x3_pos_from_scan[0]},{best_4x3_pos_from_scan[1]})."
             )
 
-            # Compare the best 4x3 score (from scan) with the score of the current best opportunity
-            if best_4x3_score_from_scan > score_of_current_best_opportunity:
+            candidate_4x3_window = (
+                best_4x3_pos_from_scan[0],
+                best_4x3_pos_from_scan[1],
+                4,  # 4x3 is standard for pulse tech
+                3,
+            )
+            current_best_rank = _opportunity_rank(
+                grid_for_opportunity_scan,
+                final_opportunity_result,
+                score_of_current_best_opportunity,
+                has_sc_eligible_modules,
+            )
+            scan_4x3_rank = _opportunity_rank(
+                grid_for_opportunity_scan,
+                candidate_4x3_window,
+                best_4x3_score_from_scan,
+                has_sc_eligible_modules,
+            )
+
+            # Compare the best 4x3 score (from scan) with the score of the current best opportunity,
+            # prioritizing windows with available supercharged slots when sc_eligible modules exist.
+            if scan_4x3_rank > current_best_rank:
                 logging.info(
                     f"Pulse Sizing: Scanned 4x3 window (score {best_4x3_score_from_scan:.4f}) is better than current best ({score_of_current_best_opportunity:.4f}). Selecting 4x3."
                 )
                 # Override final_opportunity_result with the 4x3 window's location and dimensions
-                final_opportunity_result = (
-                    best_4x3_pos_from_scan[0],
-                    best_4x3_pos_from_scan[1],
-                    4,  # 4x3 is standard for pulse tech
-                    3,
-                )
+                final_opportunity_result = candidate_4x3_window
             else:
                 logging.info(
                     f"Pulse Sizing: Current best opportunity (score {score_of_current_best_opportunity:.4f}) is better or equal to scanned 4x3 ({best_4x3_score_from_scan:.4f}). Keeping original dimensions ({current_opp_w}x{current_opp_h})."
@@ -1068,18 +1131,10 @@ def optimize_placement(
 
         # Check for Available Supercharged Slot in Window
         # Refinement only proceeds if the window contains at least one available supercharged slot
-        window_has_available_sc = False
         # Use grid_for_opportunity_scan as it has the tech cleared
-        for y_win in range(opportunity_y, opportunity_y + window_height):
-            for x_win in range(opportunity_x, opportunity_x + window_width):
-                # Bounds check for safety
-                if 0 <= x_win < grid_for_opportunity_scan.width and 0 <= y_win < grid_for_opportunity_scan.height:
-                    cell = grid_for_opportunity_scan.get_cell(x_win, y_win)
-                    if cell["active"] and cell["supercharged"] and cell["module"] is None:
-                        window_has_available_sc = True
-                        break
-            if window_has_available_sc:
-                break
+        window_has_available_sc = grid_for_opportunity_scan.has_available_supercharged_in_window(
+            final_opportunity_result
+        )
 
         # Only proceed with refinement if the window contains at least one supercharged slot
         if window_has_available_sc:

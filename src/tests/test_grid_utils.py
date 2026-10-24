@@ -72,6 +72,25 @@ class TestGridUtils(unittest.TestCase):
         self.assertEqual(self.grid.get_cell(0, 0)["module"], "ORIGINAL")
         self.assertEqual(copied_grid.get_cell(0, 0)["module"], "COPIED")
 
+    def test_has_available_supercharged_in_window(self):
+        """
+        Test detection of active, unoccupied supercharged slots within a Solver Window.
+        """
+        self.assertFalse(self.grid.has_available_supercharged_in_window((0, 0, 2, 2)))
+
+        self.grid.set_supercharged(1, 1, True)
+        self.assertTrue(self.grid.has_available_supercharged_in_window((0, 0, 2, 2)))
+        self.assertFalse(self.grid.has_available_supercharged_in_window((2, 0, 2, 2)))
+
+        # Occupied supercharged slot should not count as available
+        self.grid.set_module(1, 1, "MOD")
+        self.assertFalse(self.grid.has_available_supercharged_in_window((0, 0, 2, 2)))
+
+        # Inactive supercharged slot should not count as available
+        self.grid.set_module(1, 1, None)
+        self.grid.set_active(1, 1, False)
+        self.assertFalse(self.grid.has_available_supercharged_in_window((0, 0, 2, 2)))
+
 
 if __name__ == "__main__":
     unittest.main()

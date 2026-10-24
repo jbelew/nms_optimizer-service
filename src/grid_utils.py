@@ -156,6 +156,25 @@ class Grid:
         """
         return self.get_cell(x, y)["supercharged"]
 
+    def has_available_supercharged_in_window(self, window: tuple[int, int, int, int]) -> bool:
+        """Checks whether a rectangular Solver Window contains an active, unoccupied supercharged slot.
+
+        Args:
+            window (tuple[int, int, int, int]): Window bounds as (start_x, start_y, width, height).
+
+        Returns:
+            bool: True if at least one cell in the window is active, supercharged,
+                and unoccupied; False otherwise.
+        """
+        start_x, start_y, width, height = window
+        for y_win in range(start_y, start_y + height):
+            for x_win in range(start_x, start_x + width):
+                if 0 <= x_win < self.width and 0 <= y_win < self.height:
+                    cell = self.get_cell(x_win, y_win)
+                    if cell["active"] and cell["supercharged"] and cell["module"] is None:
+                        return True
+        return False
+
     def set_adjacency_bonus(self, x, y, bonus):
         """Sets the adjacency bonus for a module in a specific cell.
 
