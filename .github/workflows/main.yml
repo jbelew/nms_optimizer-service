@@ -37,6 +37,11 @@ jobs:
       - name: Build Rust Module
         run: maturin develop --release --manifest-path rust_scorer/Cargo.toml
 
+      - name: Lint and Typecheck
+        run: |
+          ruff check src/
+          pyright src/
+
       - name: Run Unit Tests
         run: python -m unittest discover -v -s ./src/tests -p "test_*.py"
 

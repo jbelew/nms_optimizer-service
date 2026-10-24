@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+set -e
+staged_py=$(git diff --cached --name-only --diff-filter=ACMR -- '*.py')
+if [ -n "$staged_py" ]; then
+  ./venv/bin/ruff check --fix $staged_py
+  ./venv/bin/ruff format --check $staged_py
+  ./venv/bin/pyright $staged_py
+fi
+

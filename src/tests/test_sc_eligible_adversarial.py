@@ -38,6 +38,7 @@ class TestScEligibleAdversarial(unittest.TestCase):
 
         # Should find a window
         self.assertIsNotNone(pos)
+        assert pos is not None
         x, y = pos
 
         # Verify the found window contains NO supercharged cells
@@ -46,7 +47,7 @@ class TestScEligibleAdversarial(unittest.TestCase):
                 cell = grid.get_cell(x + dx, y + dy)
                 self.assertFalse(
                     cell["supercharged"],
-                    f"Found window at ({x},{y}) contains supercharged cell at ({x+dx},{y+dy})",
+                    f"Found window at ({x},{y}) contains supercharged cell at ({x + dx},{y + dy})",
                 )
 
     def test_non_supercharge_scan_vs_supercharge_scan_different_results(self):
@@ -75,6 +76,8 @@ class TestScEligibleAdversarial(unittest.TestCase):
         # Both should find windows
         self.assertIsNotNone(pos1, "Should find supercharged window")
         self.assertIsNotNone(pos2, "Should find non-supercharged window")
+        assert pos1 is not None
+        assert pos2 is not None
 
         # Windows should be in different locations
         # Supercharged window should be on the right, non-supercharged on the left
@@ -194,7 +197,13 @@ class TestScEligibleAdversarial(unittest.TestCase):
         # The require_non_supercharge check comes after require_supercharge in the code
         # so it should take precedence
         score, pos = _scan_grid_with_window(
-            grid, 2, 1, 2, "tech", require_supercharge=True, require_non_supercharge=True  # Want SC  # Want no SC
+            grid,
+            2,
+            1,
+            2,
+            "tech",
+            require_supercharge=True,
+            require_non_supercharge=True,  # Want SC  # Want no SC
         )
 
         # Should return None (no window can satisfy both)
@@ -406,6 +415,7 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
 
         # Module should be placed despite supercharged constraint
         self.assertIsNotNone(result_grid)
+        assert result_grid is not None
 
         # Verify module was actually placed
         module_found = False
@@ -461,6 +471,7 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
 
         # Run optimization
         result_grid, _, _, _ = optimize_placement(grid, "test_ship", modules, "test_tech", forced=True)
+        assert result_grid is not None
 
         # Module should be placed in non-supercharged slot (preference)
         module_found = False
@@ -516,6 +527,7 @@ class TestScEligibleFallbackPlacement(unittest.TestCase):
 
         # Run optimization
         result_grid, _, _, _ = optimize_placement(grid, "test_ship", modules, "test_tech", forced=True)
+        assert result_grid is not None
 
         # All three modules should be placed
         placed_count = 0
