@@ -8,6 +8,9 @@ manifest-path = "rust_scorer/Cargo.toml"
 [tool.ruff]
 line-length = 120
 
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]
+
 [tool.ruff.lint.per-file-ignores]
 "scripts/debugging_utils/solve_map_generator.py" = ["E402"]
 "scripts/training/train_model.py" = ["E402"]
