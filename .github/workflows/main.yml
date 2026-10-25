@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install commitizen ruff==0.14.3 pyright==1.1.407
+          pip install commitizen pytest ruff==0.14.3 pyright==1.1.407
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Install Maturin
