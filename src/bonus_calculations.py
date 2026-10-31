@@ -6,6 +6,7 @@ multipliers, and calculating the overall score for a given technology layout.
 The core logic revolves around the concept of "adjacency factors," which are
 weights applied to modules based on their neighbors.
 """
+
 import logging
 from .grid_utils import Grid
 from enum import Enum
@@ -207,7 +208,6 @@ def calculate_grid_score(grid: Grid, tech: str, apply_supercharge_first: bool = 
 
     # Round total_score to 4 decimal places to match the Rust scorer's output format and precision
     return round(total_score, 4)
-
 
 
 def calculate_score_delta(grid: Grid, changed_cells_info: list, tech: str) -> float:

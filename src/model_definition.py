@@ -7,6 +7,7 @@ The `ModulePlacementCNN` class implements a Convolutional Neural Network (CNN)
 designed to take a grid's supercharge layout as input and produce a probability
 distribution for the placement of each possible module in each cell.
 """
+
 import torch
 import torch.nn as nn
 

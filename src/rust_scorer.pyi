@@ -4,6 +4,7 @@ This is a stub file for the 'rust_scorer' native module.
 It provides type hints to static analysis tools like Pylance,
 which cannot introspect the compiled Rust code.
 """
+
 from typing import Any, Callable, List, Optional, Dict
 
 class AdjacencyType:

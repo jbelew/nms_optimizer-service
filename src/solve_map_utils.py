@@ -6,6 +6,7 @@ optimal layouts for specific technologies on specific ships.
 The primary function, `filter_solves`, is used to adapt a generic solve map
 to a player's specific context by removing modules that the player does not own.
 """
+
 from .modules_utils import get_tech_modules
 
 

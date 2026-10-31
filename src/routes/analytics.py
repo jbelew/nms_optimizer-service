@@ -2,6 +2,7 @@ import time
 import datetime
 import threading
 from collections import OrderedDict
+from typing import Any
 from flask import Blueprint, Response, current_app, jsonify, request
 from google.analytics.data_v1beta.types import (
     DateRange,
@@ -24,13 +25,29 @@ analytics_bp = Blueprint("analytics", __name__)
 # each worker keeps its own copy. Use Redis/Memcached via Flask-Caching for
 # shared state across workers.
 class SimpleCache:
-    def __init__(self, ttl_seconds=900, max_size=128):  # 15 minutes default
-        self.cache = OrderedDict()
+    """Thread-safe bounded TTL cache for in-process analytics responses."""
+
+    def __init__(self, ttl_seconds: int = 900, max_size: int = 128) -> None:
+        """Initialize the cache with a TTL and maximum entry count.
+
+        Args:
+            ttl_seconds: Time-to-live per cached entry in seconds (default 900).
+            max_size: Maximum number of keys retained before LRU eviction.
+        """
+        self.cache: OrderedDict[str, dict[str, Any]] = OrderedDict()
         self.ttl = ttl_seconds
         self.max_size = max_size
         self._lock = threading.Lock()
 
-    def get(self, key):
+    def get(self, key: str) -> Any | None:
+        """Return cached data for ``key`` if present and unexpired, else ``None``.
+
+        Args:
+            key: Cache lookup key.
+
+        Returns:
+            Any | None: Cached payload when valid, or ``None`` on miss/expiry.
+        """
         with self._lock:
             entry = self.cache.get(key)
             if entry and (time.time() - entry["timestamp"]) < self.ttl:
@@ -41,7 +58,13 @@ class SimpleCache:
                 self.cache.pop(key, None)
             return None
 
-    def set(self, key, data):
+    def set(self, key: str, data: Any) -> None:
+        """Store ``data`` under ``key`` and evict oldest entries beyond ``max_size``.
+
+        Args:
+            key: Cache storage key.
+            data: Serializable response payload to cache.
+        """
         with self._lock:
             self.cache[key] = {"data": data, "timestamp": time.time()}
             self.cache.move_to_end(key)
@@ -76,7 +99,7 @@ def parse_ga4_date(date_str: str) -> datetime.date:
 
 
 @analytics_bp.route("/analytics/popular_data", methods=["GET"])
-def get_popular_analytics_data():
+def get_popular_analytics_data() -> tuple[Response, int] | Response:
     """Fetches and returns popular optimization data from BigQuery with GA4 fallback.
 
     Returns:
@@ -434,8 +457,12 @@ def get_performance_analytics_data() -> tuple[Response, int] | Response:
 
 
 @analytics_bp.route("/api/events", methods=["POST"])
-def track_event():
-    """Receive and relay analytics events to GA4."""
+def track_event() -> tuple[Response, int] | Response:
+    """Receive and relay client analytics events to GA4.
+
+    Returns:
+        tuple[Response, int] | Response: JSON status payload and HTTP status code.
+    """
     try:
         data = request.get_json(silent=True)
         if not data:

@@ -10,7 +10,6 @@ sample_solves = get_all_solve_data()
 
 
 class TestOptimizationSimplified(unittest.TestCase):
-
     def setUp(self):
         self.ship = "standard"
         self.tech = "pulse"

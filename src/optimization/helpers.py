@@ -81,7 +81,9 @@ def determine_window_dimensions(
             profiles = _get_window_profiles()
             standard_rules = profiles.get("standard", {})
             std_int_keys = [int(k) for k in standard_rules.keys() if k.isdigit() and standard_rules[k] is not None]
-            std_fit_keys = [k for k in std_int_keys if standard_rules[str(k)][0] * standard_rules[str(k)][1] >= module_count]
+            std_fit_keys = [
+                k for k in std_int_keys if standard_rules[str(k)][0] * standard_rules[str(k)][1] >= module_count
+            ]
             if std_fit_keys:
                 best_k = str(min(std_fit_keys))
                 w, h = standard_rules[best_k][0], standard_rules[best_k][1]

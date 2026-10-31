@@ -24,7 +24,7 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install commitizen pytest ruff==0.14.3 pyright==1.1.407
+          pip install commitizen pytest ruff==0.17.3 pyright==1.1.414
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Install Maturin
@@ -37,13 +37,14 @@ jobs:
       - name: Build Rust Module
         run: maturin develop --release --manifest-path rust_scorer/Cargo.toml
 
-      - name: Lint and Typecheck
+      - name: Lint, Format, and Typecheck
         run: |
           ruff check src/
-          pyright src/
+          ruff format --check src/
+          pyright --pythonpath "$(python -c 'import sys; print(sys.executable)')" src/
 
       - name: Run Unit Tests
-        run: python -m unittest discover -v -s ./src/tests -p "test_*.py"
+        run: pytest -m "not slow"
 
   release:
     runs-on: ubuntu-latest

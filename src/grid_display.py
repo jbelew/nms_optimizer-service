@@ -7,6 +7,7 @@ using ANSI color codes to represent different technologies and supercharged slot
 The display functions are designed to only output when the logging level is set
 to DEBUG.
 """
+
 import logging
 from .grid_utils import Grid
 from .data_loader import get_all_module_data

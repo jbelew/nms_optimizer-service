@@ -8,6 +8,7 @@ loads the appropriate PyTorch model, and generates a predicted layout. It also
 includes an optional "polishing" step that uses a simulated annealing algorithm
 to refine the model's output.
 """
+
 import torch
 import torch.nn.functional as F
 import numpy as np

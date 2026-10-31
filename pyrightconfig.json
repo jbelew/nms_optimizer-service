@@ -13,6 +13,8 @@
     "**/.venv"
   ],
   "reportMissingImports": true,
-  "pythonVersion": "3.12",
+  "venvPath": ".",
+  "venv": "venv",
+  "pythonVersion": "3.14",
   "pythonPlatform": "Linux"
 }
