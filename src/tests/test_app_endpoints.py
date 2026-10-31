@@ -5,10 +5,12 @@ This test suite focuses on finding bugs in REST API handlers,
 WebSocket events, error handling, and request validation.
 """
 
-import unittest
 import json
-from unittest.mock import patch, MagicMock
+import re
+import unittest
+from unittest.mock import MagicMock, patch
 from src.app import app
+from src.routes.analytics import perf_cache
 
 
 class TestAppInitialization(unittest.TestCase):
@@ -323,12 +325,31 @@ class TestAnalyticsEndpoint(unittest.TestCase):
 class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
     """Test performance analytics data endpoint."""
 
-    def setUp(self):
-        """Set up test client."""
+    def setUp(self) -> None:
+        """Set up test client and clear performance analytics cache."""
+        perf_cache.cache.clear()
         self.client = app.test_client()
 
+    def _capture_performance_query(self, mock_bq: MagicMock) -> str:
+        """Execute /analytics/performance_data against a mocked BigQuery client and return the SQL query.
+
+        Args:
+            mock_bq: Patched BigQuery client mock.
+
+        Returns:
+            str: Executed BigQuery SQL query string.
+        """
+        mock_job = MagicMock()
+        mock_job.result.return_value = []
+        mock_bq.query.return_value = mock_job
+
+        self.client.get("/analytics/performance_data?start_date=2026-04-01&end_date=2026-04-02")
+
+        mock_bq.query.assert_called_once()
+        return mock_bq.query.call_args[0][0]
+
     @patch("src.routes.analytics.bq_client")
-    def test_performance_data_response_format(self, mock_bq):
+    def test_performance_data_response_format(self, mock_bq: MagicMock) -> None:
         """Test performance analytics response includes p50, p75, and p90."""
         # Mock BigQuery result
         mock_row = MagicMock()
@@ -362,19 +383,150 @@ class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
         self.assertEqual(first_item["average_value"], 1200.0)
 
     @patch("src.routes.analytics.bq_client")
-    def test_performance_data_query_structure(self, mock_bq):
-        """Test BigQuery performance query scopes aggregation by user_pseudo_id and regex."""
-        mock_job = MagicMock()
-        mock_job.result.return_value = []
-        mock_bq.query.return_value = mock_job
+    def test_performance_data_query_structure(self, mock_bq: MagicMock) -> None:
+        """Test deduped_vitals partitions by (user_pseudo_id, metric_name, metric_id) and buckets via MAX(event_timestamp)."""
+        query_sql = self._capture_performance_query(mock_bq)
 
-        self.client.get("/analytics/performance_data?start_date=2026-04-01&end_date=2026-04-02")
-
-        mock_bq.query.assert_called_once()
-        query_sql = mock_bq.query.call_args[0][0]
         self.assertIn("user_pseudo_id", query_sql)
-        self.assertIn("REGEXP_CONTAINS(m_id", query_sql)
+        self.assertIn("REGEXP_CONTAINS(metric_id", query_sql)
         self.assertIn("metric_id", query_sql)
+        self.assertIn("MAX(event_timestamp)", query_sql)
+        self.assertNotIn("ANY_VALUE(event_timestamp)", query_sql)
+        self.assertNotIn("ANY_VALUE(metric_name)", query_sql)
+        self.assertNotIn("ANY_VALUE(m_name)", query_sql)
+
+        deduped_match = re.search(
+            r"deduped_vitals\s+AS\s*\((?P<body>.*?)\),\s*hourly_stats\s+AS",
+            query_sql,
+            re.DOTALL | re.IGNORECASE,
+        )
+        self.assertIsNotNone(deduped_match, "Expected deduped_vitals CTE before hourly_stats CTE")
+        assert deduped_match is not None
+        deduped_body = deduped_match.group("body")
+
+        group_by_match = re.search(
+            r"GROUP\s+BY\s+(?P<group_by>.+?)\s*\)\s*$", deduped_body.strip(), re.DOTALL | re.IGNORECASE
+        )
+        self.assertIsNotNone(group_by_match, "Expected GROUP BY clause in deduped_vitals CTE")
+        assert group_by_match is not None
+        group_by_sql = group_by_match.group("group_by")
+        self.assertRegex(group_by_sql, r"\buser_pseudo_id\s*,\s*metric_name\s*,")
+        self.assertIn(r"r'^v\d+-\d+-\d+$'", group_by_sql)
+
+    @patch("src.routes.analytics.bq_client")
+    def test_performance_data_snapshot_vs_delta_aggregation(self, mock_bq: MagicMock) -> None:
+        """Test CLS and pre-v8.4.3 INP sum deltas while v8.4.3+ INP and single-fire vitals take latest snapshot."""
+        query_sql = self._capture_performance_query(mock_bq)
+
+        self.assertRegex(query_sql, r"SUM\(\s*event_value\s*\)\s+AS\s+delta_sum")
+        self.assertRegex(
+            query_sql,
+            r"ARRAY_AGG\(\s*event_value\s+IGNORE\s+NULLS\s+ORDER\s+BY\s+event_timestamp\s+DESC\s+LIMIT\s+1\s*\)\[SAFE_OFFSET\(0\)\]\s+AS\s+latest_value",
+        )
+        self.assertEqual(
+            len(re.findall(r"ARRAY_AGG\(\s*app_version\s+IGNORE\s+NULLS", query_sql)),
+            1,
+            "Expected app_version ARRAY_AGG to be evaluated once without duplication",
+        )
+
+        metric_value_match = re.search(
+            r"CASE(?P<case_body>.*?)END\s+AS\s+metric_value",
+            query_sql,
+            re.DOTALL | re.IGNORECASE,
+        )
+        self.assertIsNotNone(metric_value_match, "Expected CASE ... END AS metric_value in deduped_vitals")
+        assert metric_value_match is not None
+        case_body = metric_value_match.group("case_body")
+
+        self.assertRegex(case_body, r"WHEN\s+metric_name\s*=\s*'CLS'\s+THEN\s+delta_sum")
+        self.assertRegex(case_body, r"ELSE\s+latest_value")
+
+        inp_branch_match = re.search(
+            r"WHEN\s+metric_name\s*=\s*'INP'\s+AND\s+REGEXP_CONTAINS\(.*?,\s*r'(?P<semver_regex>[^']+)'\s*\)\s+THEN\s+delta_sum",
+            case_body,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(inp_branch_match, "Expected pre-v8.4.3 INP delta branch using REGEXP_CONTAINS")
+        assert inp_branch_match is not None
+        legacy_inp_re = re.compile(inp_branch_match.group("semver_regex"))
+
+        for legacy_version in ("v7.9.0", "v8.0.0", "v8.3.9", "v8.4.0", "v8.4.1", "v8.4.2", "8.4.2", "v8.4.2-rc.1"):
+            with self.subTest(legacy_version=legacy_version):
+                self.assertIsNotNone(
+                    legacy_inp_re.search(legacy_version),
+                    f"Expected legacy version {legacy_version!r} to aggregate INP via SUM(val)",
+                )
+
+        for snapshot_version in (
+            "v8.4.3",
+            "8.4.3",
+            "v8.4.4",
+            "v8.4.10",
+            "v8.4.20",
+            "v8.5.0",
+            "v8.7.0",
+            "v8.8.1",
+            "v8.10.0",
+            "v9.0.0",
+            "v10.0.0",
+            "unknown",
+            "",
+        ):
+            with self.subTest(snapshot_version=snapshot_version):
+                self.assertIsNone(
+                    legacy_inp_re.search(snapshot_version),
+                    f"Expected snapshot version {snapshot_version!r} to resolve INP to latest chronological val",
+                )
+
+    @patch("src.routes.analytics.bq_client")
+    def test_performance_data_excludes_non_production_hosts(self, mock_bq: MagicMock) -> None:
+        """Test BigQuery source filters exclude non-prod hostnames and page_location origins while keeping MP events."""
+        query_sql = self._capture_performance_query(mock_bq)
+
+        self.assertIn("device.web_info.hostname", query_sql)
+        self.assertIn("'nms-optimizer.app'", query_sql)
+        self.assertRegex(
+            query_sql,
+            r"LOWER\(\s*COALESCE\(\s*hostname\s*,\s*''\s*\)\s*\)\s+IN\s*\(\s*''\s*,\s*'nms-optimizer\.app'",
+        )
+        self.assertRegex(query_sql, r"page_location\s+IS\s+NULL\s+OR\s+page_location\s*=\s*''")
+
+        loc_filter_match = re.search(
+            r"NOT\s+REGEXP_CONTAINS\(\s*LOWER\(\s*page_location\s*\)\s*,\s*r'(?P<loc_regex>[^']+)'\s*\)",
+            query_sql,
+            re.DOTALL,
+        )
+        self.assertIsNotNone(loc_filter_match, "Expected NOT REGEXP_CONTAINS(LOWER(page_location), ...) filter")
+        assert loc_filter_match is not None
+        non_prod_loc_re = re.compile(loc_filter_match.group("loc_regex"))
+
+        for excluded_url in (
+            "http://localhost:5173/",
+            "http://localhost/performance/",
+            "http://127.0.0.1:5173/",
+            "http://127.0.0.1:8080/about/",
+            "https://pr-830.nms-optimizer-web.pages.dev/",
+            "https://nms-optimizer-web.pages.dev/performance/",
+            "https://NMS-Optimizer-Staging.herokuapp.com/",
+            "https://nms-optimizer-web.herokuapp.com",
+        ):
+            with self.subTest(excluded_url=excluded_url):
+                self.assertIsNotNone(
+                    non_prod_loc_re.search(excluded_url.lower()),
+                    f"Expected non-production page_location {excluded_url!r} to be excluded",
+                )
+
+        for allowed_url in (
+            "https://nms-optimizer.app/",
+            "https://nms-optimizer.app/es/performance/",
+            "https://www.nms-optimizer.app/about/",
+            "https://nms-optimizer.app/?ref=localhost&preview=foo.pages.dev",
+        ):
+            with self.subTest(allowed_url=allowed_url):
+                self.assertIsNone(
+                    non_prod_loc_re.search(allowed_url.lower()),
+                    f"Expected production page_location {allowed_url!r} to be preserved",
+                )
 
 
 class TestErrorHandling(unittest.TestCase):

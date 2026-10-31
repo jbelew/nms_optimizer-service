@@ -2,7 +2,7 @@ import time
 import datetime
 import threading
 from collections import OrderedDict
-from flask import Blueprint, jsonify, request, current_app
+from flask import Blueprint, Response, current_app, jsonify, request
 from google.analytics.data_v1beta.types import (
     DateRange,
     Dimension,
@@ -218,8 +218,13 @@ def get_popular_analytics_data():
 
 
 @analytics_bp.route("/analytics/performance_data", methods=["GET"])
-def get_performance_analytics_data():
-    """Fetches aggregate performance metrics from BigQuery with GA4 fallback."""
+def get_performance_analytics_data() -> tuple[Response, int] | Response:
+    """Fetches aggregate production Web Vitals metrics from BigQuery with GA4 fallback.
+
+    Returns:
+        tuple[Response, int] | Response: JSON response containing hourly
+        p50, p75, and p90 Core Web Vitals percentiles per metric and app version.
+    """
     start_date_param = request.args.get("start_date", "30daysAgo")
     end_date_param = request.args.get("end_date", "today")
 
@@ -254,72 +259,97 @@ def get_performance_analytics_data():
                   SELECT
                     event_timestamp,
                     user_pseudo_id,
-                    event_params
+                    event_params,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location') AS page_location
                   FROM (
-                    SELECT event_timestamp, user_pseudo_id, event_params
+                    SELECT event_timestamp, user_pseudo_id, device.web_info.hostname AS hostname, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
                     WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
                       AND event_name = 'performance_metric'
 
                     UNION ALL
 
-                    SELECT event_timestamp, user_pseudo_id, event_params
+                    SELECT event_timestamp, user_pseudo_id, device.web_info.hostname AS hostname, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
                     WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
                       AND event_name = 'performance_metric'
                   )
+                  WHERE LOWER(COALESCE(hostname, '')) IN ('', 'nms-optimizer.app', 'www.nms-optimizer.app')
                 ),
                 raw_source AS (
                   -- Deduplicate exact row duplicates from table overlap (daily vs intraday)
                   SELECT DISTINCT
                     event_timestamp,
                     user_pseudo_id,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') as m_name,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_name') AS metric_name,
                     COALESCE(
                       (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'metric_id'),
                       (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label')
-                    ) as m_id,
-                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') as v,
+                    ) AS metric_id,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') AS app_version,
                     (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
-                     FROM UNNEST(event_params) WHERE key = 'value') as val
+                     FROM UNNEST(event_params) WHERE key = 'value') AS event_value
                   FROM raw_source_unioned
+                  WHERE page_location IS NULL
+                    OR page_location = ''
+                    OR NOT REGEXP_CONTAINS(
+                      LOWER(page_location),
+                      r'^https?://(localhost|127\\.0\\.0\\.1|([^/?#:]+\\.)?pages\\.dev|([^/?#:]+\\.)?herokuapp\\.com)([:/?#]|$)'
+                    )
                 ),
                 deduped_vitals AS (
-                  -- Deduplicate by metric ID (from web-vitals) to sum deltas correctly.
-                  -- Group by user_pseudo_id to ensure events are never aggregated across different users.
-                  -- Guard against non-metric ID labels (such as DOM selectors) so distinct interactions are not summed.
+                  -- Partition explicitly by (user_pseudo_id, metric_name, metric_instance_key) and bucket
+                  -- deterministically by MAX(event_timestamp). Sum incremental deltas for CLS and
+                  -- legacy pre-v8.4.3 INP; resolve v8.4.3+ INP and single-fire Web Vitals
+                  -- (TTFB, FCP, LCP) to the latest chronological snapshot.
                   SELECT
-                    ANY_VALUE(m_name) as m_name,
-                    ANY_VALUE(v) as v,
-                    ANY_VALUE(event_timestamp) as ts,
-                    SUM(val) as total_val -- Sum deltas for the same ID
-                  FROM raw_source
-                  WHERE m_name IS NOT NULL AND m_name != 'TBT'
-                  GROUP BY
-                    user_pseudo_id,
-                    IF(m_id IS NOT NULL AND REGEXP_CONTAINS(m_id, r'^v\\d+-\\d+-\\d+$'), m_id, CAST(event_timestamp AS STRING) || m_name)
+                    metric_name,
+                    app_version,
+                    latest_timestamp,
+                    CASE
+                      WHEN metric_name = 'CLS' THEN delta_sum
+                      WHEN metric_name = 'INP' AND REGEXP_CONTAINS(
+                        COALESCE(app_version, ''),
+                        r'^[vV]?([0-7]\\.\\d+\\.\\d+|8\\.[0-3]\\.\\d+|8\\.4\\.[0-2])($|[^0-9.])'
+                      ) THEN delta_sum
+                      ELSE latest_value
+                    END AS metric_value
+                  FROM (
+                    SELECT
+                      metric_name,
+                      ARRAY_AGG(app_version IGNORE NULLS ORDER BY event_timestamp DESC LIMIT 1)[SAFE_OFFSET(0)] AS app_version,
+                      MAX(event_timestamp) AS latest_timestamp,
+                      SUM(event_value) AS delta_sum,
+                      ARRAY_AGG(event_value IGNORE NULLS ORDER BY event_timestamp DESC LIMIT 1)[SAFE_OFFSET(0)] AS latest_value
+                    FROM raw_source
+                    WHERE metric_name IS NOT NULL AND metric_name != 'TBT' AND event_value IS NOT NULL
+                    GROUP BY
+                      user_pseudo_id,
+                      metric_name,
+                      IF(metric_id IS NOT NULL AND REGEXP_CONTAINS(metric_id, r'^v\\d+-\\d+-\\d+$'), metric_id, CAST(event_timestamp AS STRING))
+                  )
                 ),
                 hourly_stats AS (
                   SELECT
-                    TIMESTAMP_TRUNC(TIMESTAMP_MICROS(ts), HOUR) as hr,
-                    m_name as metric_name,
-                    APPROX_TOP_COUNT(v, 1)[SAFE_OFFSET(0)].value as app_version,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(50)] as p50_val,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(75)] as p75_val,
-                    APPROX_QUANTILES(total_val, 100)[OFFSET(90)] as p90_val
+                    TIMESTAMP_TRUNC(TIMESTAMP_MICROS(latest_timestamp), HOUR) AS hour_bucket,
+                    metric_name,
+                    APPROX_TOP_COUNT(app_version, 1)[SAFE_OFFSET(0)].value AS app_version,
+                    APPROX_QUANTILES(metric_value, 100)[OFFSET(50)] AS p50_val,
+                    APPROX_QUANTILES(metric_value, 100)[OFFSET(75)] AS p75_val,
+                    APPROX_QUANTILES(metric_value, 100)[OFFSET(90)] AS p90_val
                   FROM deduped_vitals
                   GROUP BY 1, 2
                   HAVING COUNT(*) >= 5 -- Still require 5 samples for statistical significance
                 )
                 SELECT
-                  UNIX_MILLIS(s.hr) as timestamp,
+                  UNIX_MILLIS(s.hour_bucket) AS timestamp,
                   s.metric_name,
                   s.app_version,
                   s.p50_val,
-                  s.p75_val as average_value,
+                  s.p75_val AS average_value,
                   s.p90_val
                 FROM hourly_stats s
-                WHERE s.hr < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), HOUR)
+                WHERE s.hour_bucket < TIMESTAMP_TRUNC(CURRENT_TIMESTAMP(), HOUR)
                 ORDER BY 1 ASC
             """
 
