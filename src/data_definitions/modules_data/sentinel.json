@@ -17,16 +17,16 @@
                 ]
             },
             {
-                "label": "Infraknife Accelerator",
+                "label": "Infra-Knife Accelerator",
                 "key": "infra",
                 "image": "starship/infra.webp",
                 "color": "red",
                 "modules": [
-                    {"id": "IK", "type": "core", "label": "Infraknife Accelerator", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra.webp", "checked": true},
+                    {"id": "IK", "type": "core", "label": "Infra-Knife Accelerator", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra.webp", "checked": true},
                     {"id": "QR", "type": "bonus", "label": "Q-Resonator", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "starship/q-resonator.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Infraknife Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Infraknife Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Infraknife Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Infra-Knife Accelerator Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Infra-Knife Accelerator Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Infra-Knife Accelerator Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -61,7 +61,7 @@
                 "image": "starship/rocket.webp",
                 "color": "iris",
                 "modules": [
-                    {"id": "RL", "type": "core", "label": "Rocket Launger", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/rocket.webp", "checked": true},
+                    {"id": "RL", "type": "core", "label": "Rocket Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/rocket.webp", "checked": true},
                     {"id": "LR", "type": "bonus", "label": "Large Rocket Tubes", "bonus": 0.056, "adjacency": "greater", "sc_eligible": true, "image": "starship/tubes.webp", "checked": true}
                 ]
             },
@@ -103,7 +103,7 @@
                 "modules": [
                     {"id": "LT", "type": "core", "label": "Anti-Gravity Well", "bonus": 0.01, "adjacency": "lesser", "sc_eligible": true, "image": "starship/anti-gravity.webp", "checked": true},
                     {"id": "EF", "type": "bonus", "label": "Efficient Thrusters", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/efficient.webp", "checked": true},
-                    {"id": "RC", "type": "bonus", "label": "Launch Atuo-Charger", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/recharger.webp", "checked": true},
+                    {"id": "RC", "type": "bonus", "label": "Launch Auto-Charger", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/recharger.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Launch Thruster Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Launch Thruster Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Launch Thruster Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/launch-upgrade.webp", "checked": true}
@@ -128,13 +128,13 @@
                 ]
             },
             {
-                "label": "Luminance Drive",
+                "label": "Luminance Engine",
                 "key": "pulse",
                 "image": "starship/luminance.webp",
                 "color": "orange",
                 "window_overrides": {"7": [4, 2], "8": [4, 3]},
                 "modules": [
-                    {"id": "PE", "type": "core", "label": "Luminance Drive", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/luminance.webp", "checked": true},
+                    {"id": "PE", "type": "core", "label": "Luminance Engine", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "starship/luminance.webp", "checked": true},
                     {"id": "PC", "type": "bonus", "label": "Photonix Core (EXP12)", "bonus": 1.1, "adjacency": "greater", "sc_eligible": false, "image": "starship/photonix.webp", "checked": false},
                     {"id": "FA", "type": "bonus", "label": "Flight Assist Override", "bonus": 1.07, "adjacency": "greater", "sc_eligible": false, "image": "starship/flight-assist.webp", "checked": true},
                     {"id": "SL", "type": "bonus", "label": "Sub-Light Amplifier", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/sublight.webp", "checked": true},

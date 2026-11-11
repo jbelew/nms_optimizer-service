@@ -30,15 +30,15 @@
         ],
         "Defensive Systems": [
             {
-                "label": "Scream Supressor",
+                "label": "Scream Suppressor",
                 "key": "scream",
                 "image": "starship/scream.webp",
                 "color": "yellow",
                 "modules": [
-                    {"id": "SS", "type": "core", "label": "Scream Supressor", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": true, "image": "starship/scream.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Scream Supressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Scream Supressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Scream Supressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true}
+                    {"id": "SS", "type": "core", "label": "Scream Suppressor", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": true, "image": "starship/scream.webp", "checked": true},
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Scream Suppressor Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Scream Suppressor Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Scream Suppressor Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/scream-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -53,7 +53,7 @@
                     {"id": "Xa", "type": "upgrade", "label": "[1] Neural Assembly Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Neural Assembly Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Neural Assembly Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "starship/assembly-upgrade.webp", "checked": true},
-                    {"id": "CM", "type": "bonus", "label": "Chroloplast Membrane", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": true, "image": "starship/chloroplast.webp", "checked": true}
+                    {"id": "CM", "type": "bonus", "label": "Chloroplast Membrane", "bonus": 0.0001, "adjacency": "greater", "sc_eligible": true, "image": "starship/chloroplast.webp", "checked": true}
                 ]
             },
             {
@@ -89,7 +89,7 @@
                 "image": "starship/saline.webp",
                 "color": "gray",
                 "modules": [
-                    {"id": "SC", "type": "core", "label": "Saline Catapace", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/saline.webp", "checked": true}
+                    {"id": "SC", "type": "core", "label": "Saline Carapace", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "starship/saline.webp", "checked": true}
                 ]
             },
             {

@@ -47,9 +47,9 @@
                     {"id": "ML", "type": "core", "label": "Minotaur Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": false, "image": "exocraft/minotaur-laser.webp", "checked": true},
                     {"id": "AL", "type": "bonus", "label": "Precision Minotaur Laser", "bonus": 0.04, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/precision.webp", "checked": true},
                     {"id": "HL", "type": "bonus", "label": "Hardframe Left Arm", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/hardframe-left.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Exocraft Mining Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Exocraft Mining Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Exocraft Mining Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Minotaur Laser Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Minotaur Laser Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Minotaur Laser Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/mining-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -80,9 +80,9 @@
                 "color": "jade",
                 "modules": [
                     {"id": "LR", "type": "core", "label": "Liquidator Right Arm", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "exocraft/liquidator-right.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Flamethrower Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Flamethrower Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Flamethrower Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Minotaur Flamethrower Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Minotaur Flamethrower Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Minotaur Flamethrower Upgrade Sigma", "bonus": 0.28, "adjacency": "greater", "sc_eligible": true, "image": "exocraft/liquidator-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -117,21 +117,21 @@
                 ]
             },
             {
-                "label": "Radar Array",
+                "label": "Minotaur Radar Array",
                 "key": "array",
                 "image": "exocraft/array.webp",
                 "color": "gray",
                 "modules": [
-                    {"id": "RA", "type": "core", "label": "Radar Array", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/array.webp", "checked": true}
+                    {"id": "RA", "type": "core", "label": "Minotaur Radar Array", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/array.webp", "checked": true}
                 ]
             },
             {
-                "label": "AI Pilot",
+                "label": "Minotaur AI Pilot",
                 "key": "ai",
                 "image": "exocraft/ai.webp",
                 "color": "gray",
                 "modules": [
-                    {"id": "AI", "type": "core", "label": "AI Pilot", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/ai.webp", "checked": true}
+                    {"id": "AI", "type": "core", "label": "Minotaur AI Pilot", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "exocraft/ai.webp", "checked": true}
                 ]
             },
             {

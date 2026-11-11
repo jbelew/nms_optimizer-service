@@ -160,7 +160,7 @@
           {
             "id": "RR",
             "type": "bonus",
-            "label": "Oxygen Rereouter",
+            "label": "Oxygen Rerouter",
             "bonus": 0.0,
             "adjacency": "none",
             "sc_eligible": true,
@@ -470,7 +470,7 @@
         ]
       },
       {
-        "label": "Toxin Suppressor",
+        "label": "Toxic Suppressor",
         "key": "toxin",
         "image": "exosuit/toxin.webp",
         "color": "white",
@@ -479,7 +479,7 @@
           {
             "id": "TS",
             "type": "bonus",
-            "label": "Toxin Suppressor",
+            "label": "Toxic Suppressor",
             "bonus": 1.0,
             "adjacency": "greater_2",
             "sc_eligible": true,
@@ -489,7 +489,7 @@
           {
             "id": "Xa",
             "type": "upgrade",
-            "label": "[1] Toxin Suppressor Upgrade Theta",
+            "label": "[1] Toxic Suppressor Upgrade Theta",
             "bonus": 0.3,
             "adjacency": "greater_2",
             "sc_eligible": true,
@@ -499,7 +499,7 @@
           {
             "id": "Xb",
             "type": "upgrade",
-            "label": "[2] Toxin Suppressor Upgrade Tau",
+            "label": "[2] Toxic Suppressor Upgrade Tau",
             "bonus": 0.29,
             "adjacency": "greater_2",
             "sc_eligible": true,
@@ -509,7 +509,7 @@
           {
             "id": "Xc",
             "type": "upgrade",
-            "label": "[3] Toxin Suppressor Upgrade Sigma",
+            "label": "[3] Toxic Suppressor Upgrade Sigma",
             "bonus": 0.28,
             "adjacency": "greater_2",
             "sc_eligible": true,
@@ -519,7 +519,7 @@
         ]
       },
       {
-        "label": "Sheild Lattice",
+        "label": "Shield Lattice",
         "key": "protection",
         "image": "exosuit/protection.webp",
         "color": "white",
@@ -527,7 +527,7 @@
           {
             "id": "SL",
             "type": "bonus",
-            "label": "Sheild Lattice",
+            "label": "Shield Lattice",
             "bonus": 1.0,
             "adjacency": "lesser",
             "sc_eligible": false,
@@ -537,7 +537,7 @@
           {
             "id": "Xa",
             "type": "upgrade",
-            "label": "[1] Sheild Lattice Upgrade Theta",
+            "label": "[1] Shield Lattice Upgrade Theta",
             "bonus": 0.3,
             "adjacency": "greater",
             "sc_eligible": true,
@@ -547,7 +547,7 @@
           {
             "id": "Xb",
             "type": "upgrade",
-            "label": "[2] Sheild Lattice Upgrade Tau",
+            "label": "[2] Shield Lattice Upgrade Tau",
             "bonus": 0.29,
             "adjacency": "greater",
             "sc_eligible": true,
@@ -557,7 +557,7 @@
           {
             "id": "Xc",
             "type": "upgrade",
-            "label": "[3] Sheild Lattice Upgrade Sigma",
+            "label": "[3] Shield Lattice Upgrade Sigma",
             "bonus": 0.28,
             "adjacency": "greater",
             "sc_eligible": true,
@@ -688,7 +688,7 @@
     ],
     "Utilities": [
       {
-        "label": "Tranlators",
+        "label": "Automatic Translation",
         "key": "translators",
         "image": "exosuit/translator.webp",
         "color": "white",
@@ -772,7 +772,7 @@
         ]
       },
       {
-        "label": "Exo Skiff",
+        "label": "Exo-Skiff",
         "key": "skiff",
         "image": "exosuit/skiff.webp",
         "color": "gray",
@@ -780,7 +780,7 @@
           {
             "id": "ES",
             "type": "core",
-            "label": "Exo Skiff",
+            "label": "Exo-Skiff",
             "bonus": 0.0,
             "adjacency": "none",
             "sc_eligible": false,
@@ -816,7 +816,7 @@
           {
             "id": "ES",
             "type": "core",
-            "label": "Exosuit Summoning Unit",
+            "label": "Exocraft Summoning Unit",
             "bonus": 0.0,
             "adjacency": "none",
             "sc_eligible": false,

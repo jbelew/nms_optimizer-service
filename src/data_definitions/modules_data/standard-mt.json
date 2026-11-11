@@ -9,12 +9,12 @@
                 "image": "multi-tool/mining-beam.webp",
                 "color": "green",
                 "modules": [
-                    {"id": "MB", "type": "core", "label": "Mining Laser", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-laser.webp", "checked": true},
+                    {"id": "MB", "type": "core", "label": "Mining Beam", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-laser.webp", "checked": true},
                     {"id": "AM", "type": "bonus", "label": "Advanced Mining Laser", "bonus": 0.5, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/advanced-mining.webp", "checked": true},
                     {"id": "OD", "type": "bonus", "label": "Optical Drill", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/optical.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Mining Laser Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Mining Laser Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Mining Laser Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Mining Beam Upgrade Theta", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Mining Beam Upgrade Tau", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Mining Beam Upgrade Sigma", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/mining-upgrade.webp", "checked": true}
                 ]
             }
         ],
@@ -38,12 +38,12 @@
                 ]
             },
             {
-                "label": "Gravatino Coil",
+                "label": "Gravitino Coil",
                 "key": "gravatino",
                 "image": "multi-tool/gravatino.webp",
                 "color": "gray",
                 "modules": [
-                    {"id": "GC", "type": "core", "label": "Gravatino Coil", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "multi-tool/gravatino.webp", "checked": true}
+                    {"id": "GC", "type": "core", "label": "Gravitino Coil", "bonus": 0.0, "adjacency": "none", "sc_eligible": false, "image": "multi-tool/gravatino.webp", "checked": true}
                 ]
             },
             {
@@ -93,7 +93,7 @@
                 "color": "cyan",
                 "window_overrides": {"8": [3, 3], "9": [4, 3]},
                 "modules": [
-                    {"id": "BC", "type": "core", "label": "Bolt Caster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "multi-tool/boltcaster.webp", "checked": true},
+                    {"id": "BC", "type": "core", "label": "Boltcaster", "bonus": 1.0, "adjacency": "lesser", "sc_eligible": true, "image": "multi-tool/boltcaster.webp", "checked": true},
                     {"id": "RM", "type": "bonus", "label": "Boltcaster Ricochet Module", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-rm.webp", "checked": true},
                     {"id": "BI", "type": "bonus", "label": "Barrel Ionizer", "bonus": 0.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/barrel-ionizer.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Boltcaster Upgrade Theta", "bonus": 0.02, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/boltcaster-upgrade.webp", "checked": true},
@@ -150,8 +150,8 @@
                 "modules": [
                     {"id": "PS", "type": "core", "label": "Pulse Spitter", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter.webp", "checked": true},
                     {"id": "AC", "type": "bonus", "label": "Amplified Cartridges", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/amplified.webp", "checked": true},
-                    {"id": "RM", "type": "bonus", "label": "Richochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-rm.webp", "checked": true},
-                    {"id": "II", "type": "bonus", "label": "Impact Ignitor", "bonus": 0.0, "adjacency": "none", "sc_eligible": true, "image": "multi-tool/impact-ignitor.webp", "checked": true},
+                    {"id": "RM", "type": "bonus", "label": "Ricochet Module", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-rm.webp", "checked": true},
+                    {"id": "II", "type": "bonus", "label": "Impact Igniter", "bonus": 0.0, "adjacency": "none", "sc_eligible": true, "image": "multi-tool/impact-ignitor.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Pulse Spitter Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Pulse Spitter Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true},
                     {"id": "Xc", "type": "upgrade", "label": "[3] Pulse Spitter Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "multi-tool/pulse-spitter-upgrade.webp", "checked": true}

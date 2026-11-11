@@ -17,16 +17,16 @@
                 ]
             },
             {
-                "label": "Infraknife Accelerator",
+                "label": "Infra-Knife Accelerator",
                 "key": "infra",
                 "image": "starship/infra.webp",
                 "color": "red",
                 "modules": [
-                    {"id": "IK", "type": "core", "label": "Infraknife Accelerator", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra.webp", "checked": true},
+                    {"id": "IK", "type": "core", "label": "Infra-Knife Accelerator", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra.webp", "checked": true},
                     {"id": "QR", "type": "bonus", "label": "Q-Resonator", "bonus": 0.03, "adjacency": "greater", "sc_eligible": true, "image": "starship/q-resonator.webp", "checked": true},
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Infraknife Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Infraknife Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Infraknife Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Infra-Knife Accelerator Upgrade Theta", "bonus": 0.4, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Infra-Knife Accelerator Upgrade Tau", "bonus": 0.39, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Infra-Knife Accelerator Upgrade Sigma", "bonus": 0.38, "adjacency": "greater", "sc_eligible": true, "image": "starship/infra-upgrade.webp", "checked": true}
                 ]
             },
             {
@@ -74,7 +74,7 @@
                 "image": "starship/rocket.webp",
                 "color": "iris",
                 "modules": [
-                    {"id": "RL", "type": "core", "label": "Rocket Launger", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/rocket.webp", "checked": true},
+                    {"id": "RL", "type": "core", "label": "Rocket Launcher", "bonus": 1.0, "adjacency": "greater", "sc_eligible": true, "image": "starship/rocket.webp", "checked": true},
                     {"id": "LR", "type": "bonus", "label": "Large Rocket Tubes", "bonus": 0.056, "adjacency": "greater", "sc_eligible": true, "image": "starship/tubes.webp", "checked": true}
                 ]
             }
@@ -86,7 +86,7 @@
                 "image": "starship/shield.webp",
                 "color": "yellow",
                 "modules": [
-                    {"id": "DS", "type": "core", "label": "Defensive Shields", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": true, "image": "starship/shield.webp", "checked": true},
+                    {"id": "DS", "type": "core", "label": "Deflector Shield", "bonus": 1.00, "adjacency": "lesser", "sc_eligible": true, "image": "starship/shield.webp", "checked": true},
                     {"id": "AA", "type": "bonus", "label": "Ablative Armor", "bonus": 0.07, "adjacency": "greater", "sc_eligible": true, "image": "starship/ablative.webp", "checked": true},
                     {"id": "Xa", "type": "upgrade", "label": "[1] Shield Upgrade Theta", "bonus": 0.3, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},
                     {"id": "Xb", "type": "upgrade", "label": "[2] Shield Upgrade Tau", "bonus": 0.29, "adjacency": "greater", "sc_eligible": true, "image": "starship/shield-upgrade.webp", "checked": true},

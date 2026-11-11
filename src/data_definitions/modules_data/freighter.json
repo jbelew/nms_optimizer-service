@@ -105,9 +105,9 @@
                 "image": "other/fleet-trade.webp",
                 "color": "white",
                 "modules": [
-                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Mining and Industrial Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
-                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Mining and Industrial Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
-                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Mining and Industrial Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true}
+                    {"id": "Xa", "type": "upgrade", "label": "[1] Fleet Trade Upgrade Theta", "bonus": 0.3, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
+                    {"id": "Xb", "type": "upgrade", "label": "[2] Fleet Trade Upgrade Tau", "bonus": 0.29, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true},
+                    {"id": "Xc", "type": "upgrade", "label": "[3] Fleet Trade Upgrade Sigma", "bonus": 0.28, "adjacency": "greater_1", "sc_eligible": true, "image": "other/fleet-trade.webp", "checked": true}
                 ]
             }
         ]
