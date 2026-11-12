@@ -4,11 +4,15 @@ import unittest
 from unittest.mock import patch, MagicMock
 import uuid
 from src.analytics import (
+    ALLOWED_CLIENT_EVENT_NAMES,
     AnalyticsEvent,
     GA4Client,
-    send_analytics_event,
-    send_analytics_batch,
     VALID_EVENT_NAME_PATTERN,
+    enqueue_analytics_event,
+    format_mp_user_properties,
+    sanitize_event_params,
+    send_analytics_batch,
+    send_analytics_event,
 )
 
 
@@ -386,6 +390,126 @@ class TestEventNameValidation(unittest.TestCase):
                     re.match(VALID_EVENT_NAME_PATTERN, name),
                     f"Expected '{name}' to NOT match pattern",
                 )
+
+
+class TestRelayHelpersAndParity(unittest.TestCase):
+    """Test parameter sanitization, user properties formatting, and MP top-level fields."""
+
+    def test_sanitize_event_params_normalizes_types_and_bounds(self) -> None:
+        """Sanitizes booleans to strings, preserves numeric session/engagement fields, and drops invalid keys."""
+        raw = {
+            "supercharged": True,
+            "fatal": False,
+            "session_id": 1731369600,
+            "engagement_time_msec": 420,
+            "metric_value": 125.5,
+            "nan_val": float("nan"),
+            "long_str": "x" * 700,
+            "1invalid": "dropped",
+            "bad-key": "dropped",
+            "none_val": None,
+            "nested": {"dropped": 1},
+        }
+        result = sanitize_event_params(raw)
+        self.assertEqual(result["supercharged"], "true")
+        self.assertEqual(result["fatal"], "false")
+        self.assertEqual(result["session_id"], 1731369600)
+        self.assertIsInstance(result["session_id"], int)
+        self.assertEqual(result["engagement_time_msec"], 420)
+        self.assertEqual(result["metric_value"], 125.5)
+        self.assertNotIn("nan_val", result)
+        self.assertEqual(len(str(result["long_str"])), 500)
+        self.assertNotIn("1invalid", result)
+        self.assertNotIn("bad-key", result)
+        self.assertNotIn("none_val", result)
+        self.assertNotIn("nested", result)
+
+    def test_format_mp_user_properties_wraps_values(self) -> None:
+        """Formats user properties into Measurement Protocol {'value': ...} entries."""
+        formatted = format_mp_user_properties(
+            {
+                "app_version": "8.9.0",
+                "is_installed": "no",
+                "platform_type": "corvette",
+                "flag": True,
+                "invalid-key": "skip",
+            }
+        )
+        self.assertEqual(
+            formatted,
+            {
+                "app_version": {"value": "8.9.0"},
+                "is_installed": {"value": "no"},
+                "platform_type": {"value": "corvette"},
+                "flag": {"value": "true"},
+            },
+        )
+
+    @patch("requests.post")
+    def test_send_event_includes_user_properties_ua_and_ip_override(self, mock_post: MagicMock) -> None:
+        """Forwards user_properties, user_agent, and ip_override in Measurement Protocol payload."""
+        mock_response = MagicMock()
+        mock_response.status_code = 204
+        mock_post.return_value = mock_response
+
+        client = GA4Client(measurement_id="G-TEST", api_secret="secret-123")
+        event = AnalyticsEvent(
+            name="optimize_tech",
+            params={"session_id": 1700000000, "engagement_time_msec": 1200},
+            client_id="12345.67890",
+            user_properties={"app_version": "8.9.0", "platform_type": "standard"},
+            user_agent="Mozilla/5.0 TestBrowser",
+            ip_override="203.0.113.42",
+        )
+
+        self.assertTrue(client.send_event(event))
+        payload = mock_post.call_args.kwargs["json"]
+        self.assertEqual(payload["client_id"], "12345.67890")
+        self.assertEqual(payload["user_agent"], "Mozilla/5.0 TestBrowser")
+        self.assertEqual(payload["ip_override"], "203.0.113.42")
+        self.assertEqual(
+            payload["user_properties"],
+            {
+                "app_version": {"value": "8.9.0"},
+                "platform_type": {"value": "standard"},
+            },
+        )
+
+    def test_enqueue_analytics_event_delivers_on_worker_executor(self) -> None:
+        """Dispatches validated events asynchronously via worker executor when enabled."""
+        delivered = []
+
+        def _fake_send(ev: AnalyticsEvent) -> bool:
+            delivered.append(ev)
+            return True
+
+        with (
+            patch("src.analytics._ga4_client.enabled", True),
+            patch("src.analytics._ga4_client.send_event", side_effect=_fake_send),
+        ):
+            accepted = enqueue_analytics_event(
+                event_name="optimize_tech",
+                client_id="client-abc",
+                params={"tech": "pulse"},
+                user_properties={"app_version": "8.9.0"},
+                user_agent="TestUA/1.0",
+                ip_override="198.51.100.7",
+            )
+            self.assertTrue(accepted)
+            # Drain worker executor tasks
+            from src.analytics import _get_worker_executor
+
+            _get_worker_executor().submit(lambda: None).result(timeout=2)
+
+        self.assertEqual(len(delivered), 1)
+        self.assertEqual(delivered[0].name, "optimize_tech")
+        self.assertEqual(delivered[0].ip_override, "198.51.100.7")
+        self.assertIn("app_installed", ALLOWED_CLIENT_EVENT_NAMES)
+        self.assertIn("earn_virtual_currency", ALLOWED_CLIENT_EVENT_NAMES)
+        self.assertIn("optimize_tech", ALLOWED_CLIENT_EVENT_NAMES)
+        self.assertNotIn("unlock_achievement", ALLOWED_CLIENT_EVENT_NAMES)
+        self.assertNotIn("dialog_open", ALLOWED_CLIENT_EVENT_NAMES)
+        self.assertNotIn("supercharge_limit_exceeded", ALLOWED_CLIENT_EVENT_NAMES)
 
 
 if __name__ == "__main__":

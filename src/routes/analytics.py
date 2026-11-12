@@ -1,6 +1,7 @@
-import time
 import datetime
+import ipaddress
 import threading
+import time
 from collections import OrderedDict
 from typing import Any
 from flask import Blueprint, Response, current_app, jsonify, request
@@ -15,9 +16,59 @@ from google.analytics.data_v1beta.types import (
 )
 
 from ..analytics_data import ga4_data_client, bq_client, GA_PROPERTY_ID
-from ..analytics import send_analytics_event
+from ..analytics import (
+    ALLOWED_CLIENT_EVENT_NAMES,
+    MAX_CLIENT_ID_LENGTH,
+    enqueue_analytics_event,
+    sanitize_event_params,
+)
 
 analytics_bp = Blueprint("analytics", __name__)
+
+_NON_ROUTABLE_NETWORKS = (
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+    ipaddress.ip_network("fc00::/7"),
+)
+
+
+def extract_client_ip() -> str | None:
+    """Extract the end-user IP address from proxy headers for coarse GA4 geo resolution.
+
+    Inspects ``CF-Connecting-IP``, the left-most entry of ``X-Forwarded-For``, and
+    ``request.remote_addr`` in order, returning the first valid non-loopback,
+    non-RFC1918/ULA IP address.
+
+    Returns:
+        str | None: Normalized IPv4 or IPv6 address string, or ``None`` if unavailable.
+    """
+    candidates: list[str] = []
+    cf_ip = request.headers.get("CF-Connecting-IP")
+    if cf_ip:
+        candidates.append(cf_ip.strip())
+
+    xff = request.headers.get("X-Forwarded-For")
+    if xff:
+        first_hop = xff.split(",")[0].strip()
+        if first_hop:
+            candidates.append(first_hop)
+
+    if request.remote_addr:
+        candidates.append(request.remote_addr.strip())
+
+    for raw_ip in candidates:
+        try:
+            parsed = ipaddress.ip_address(raw_ip)
+        except ValueError:
+            continue
+        if parsed.is_loopback or parsed.is_unspecified or parsed.is_link_local:
+            continue
+        if any(parsed in net for net in _NON_ROUTABLE_NETWORKS):
+            continue
+        return str(parsed)
+
+    return None
 
 
 # --- Caching Support ---
@@ -134,23 +185,28 @@ def get_popular_analytics_data() -> tuple[Response, int] | Response:
                   SELECT
                     event_timestamp,
                     user_pseudo_id,
-                    event_params
+                    event_params,
+                    (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'page_location') AS page_location
                   FROM (
-                    SELECT event_timestamp, user_pseudo_id, event_params
+                    SELECT event_timestamp, user_pseudo_id, device.web_info.hostname AS hostname, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_*`
                     WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
                       AND event_name = 'optimize_tech'
 
                     UNION ALL
 
-                    SELECT event_timestamp, user_pseudo_id, event_params
+                    SELECT event_timestamp, user_pseudo_id, device.web_info.hostname AS hostname, event_params
                     FROM `cosmic-inkwell-467922-v5.analytics_484727815.events_intraday_*`
                     WHERE _TABLE_SUFFIX BETWEEN '{start_suffix}' AND '{end_suffix}'
                       AND event_name = 'optimize_tech'
                   )
+                  WHERE LOWER(COALESCE(hostname, '')) IN ('', 'nms-optimizer.app', 'www.nms-optimizer.app')
                 ),
                 extracted_events AS (
-                  SELECT
+                  -- Deduplicate exact row duplicates across daily and intraday rollover windows
+                  SELECT DISTINCT
+                    event_timestamp,
+                    user_pseudo_id,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'platform') AS ship_type,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'tech') AS technology,
                     COALESCE(
@@ -159,6 +215,12 @@ def get_popular_analytics_data() -> tuple[Response, int] | Response:
                       'false'
                     ) AS supercharged
                   FROM raw_source_unioned
+                  WHERE page_location IS NULL
+                    OR page_location = ''
+                    OR NOT REGEXP_CONTAINS(
+                      LOWER(page_location),
+                      r'^https?://(localhost|127\\.0\\.0\\.1|([^/?#:]+\\.)?pages\\.dev|([^/?#:]+\\.)?herokuapp\\.com)([:/?#]|$)'
+                    )
                 )
                 SELECT
                   ship_type,
@@ -310,8 +372,12 @@ def get_performance_analytics_data() -> tuple[Response, int] | Response:
                       (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'label')
                     ) AS metric_id,
                     (SELECT value.string_value FROM UNNEST(event_params) WHERE key = 'app_version') AS app_version,
-                    (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
-                     FROM UNNEST(event_params) WHERE key = 'value') AS event_value
+                    COALESCE(
+                      (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
+                       FROM UNNEST(event_params) WHERE key = 'metric_value'),
+                      (SELECT COALESCE(value.int_value, value.double_value, SAFE_CAST(value.string_value AS FLOAT64))
+                       FROM UNNEST(event_params) WHERE key = 'value')
+                    ) AS event_value
                   FROM raw_source_unioned
                   WHERE page_location IS NULL
                     OR page_location = ''
@@ -406,26 +472,33 @@ def get_performance_analytics_data() -> tuple[Response, int] | Response:
         return jsonify({"error": "No analytics clients available."}), 500
 
     try:
-        request_body = RunReportRequest(
-            property=f"properties/{GA_PROPERTY_ID}",
-            date_ranges=[DateRange(start_date=start_date_str, end_date=end_date_str)],
-            dimensions=[
-                Dimension(name="dateHour"),
-                Dimension(name="customEvent:metric_name"),
-            ],
-            dimension_filter=FilterExpression(
-                filter=Filter(
-                    field_name="eventName",
-                    string_filter=Filter.StringFilter(value="performance_metric"),
-                )
-            ),
-            metrics=[
-                Metric(name="averageCustomEvent:value"),
-            ],
-            order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name="dateHour"), desc=False)],
-        )
 
-        response = ga4_data_client.run_report(request_body)
+        def _build_perf_report_request(metric_names: list[str]) -> RunReportRequest:
+            return RunReportRequest(
+                property=f"properties/{GA_PROPERTY_ID}",
+                date_ranges=[DateRange(start_date=start_date_str, end_date=end_date_str)],
+                dimensions=[
+                    Dimension(name="dateHour"),
+                    Dimension(name="customEvent:metric_name"),
+                ],
+                dimension_filter=FilterExpression(
+                    filter=Filter(
+                        field_name="eventName",
+                        string_filter=Filter.StringFilter(value="performance_metric"),
+                    )
+                ),
+                metrics=[Metric(name=m) for m in metric_names],
+                order_bys=[OrderBy(dimension=OrderBy.DimensionOrderBy(dimension_name="dateHour"), desc=False)],
+            )
+
+        try:
+            response = ga4_data_client.run_report(
+                _build_perf_report_request(["averageCustomEvent:metric_value", "averageCustomEvent:value"])
+            )
+        except Exception as metric_err:
+            if "metric_value" not in str(metric_err):
+                raise
+            response = ga4_data_client.run_report(_build_perf_report_request(["averageCustomEvent:value"]))
 
         performance_data = []
         for row in response.rows:
@@ -434,15 +507,19 @@ def get_performance_analytics_data() -> tuple[Response, int] | Response:
             dt = datetime.datetime.strptime(date_hour_str, "%Y%m%d%H")
             timestamp = int(dt.replace(tzinfo=datetime.timezone.utc).timestamp() * 1000)
 
+            primary_val = float(row.metric_values[0].value or 0)
+            fallback_val = float(row.metric_values[1].value or 0) if len(row.metric_values) > 1 else 0.0
+            resolved_avg = primary_val if primary_val > 0 else fallback_val
+
             performance_data.append(
                 {
                     "timestamp": timestamp,
                     "metric_name": row.dimension_values[1].value,
                     "app_version": "unknown",
                     "p50": None,
-                    "p75": float(row.metric_values[0].value),
+                    "p75": resolved_avg,
                     "p90": None,
-                    "average_value": float(row.metric_values[0].value),
+                    "average_value": resolved_avg,
                 }
             )
 
@@ -458,37 +535,63 @@ def get_performance_analytics_data() -> tuple[Response, int] | Response:
 
 @analytics_bp.route("/api/events", methods=["POST"])
 def track_event() -> tuple[Response, int] | Response:
-    """Receive and relay client analytics events to GA4.
+    """Receive, validate, and asynchronously relay client analytics events to GA4.
 
     Returns:
         tuple[Response, int] | Response: JSON status payload and HTTP status code.
     """
     try:
         data = request.get_json(silent=True)
-        if not data:
+        if not isinstance(data, dict) or not data:
             return jsonify({"error": "No JSON body provided"}), 400
 
-        client_id = data.get("clientId")
+        raw_client_id = data.get("clientId")
         event_name = data.get("eventName")
         params = data.get("params", {})
-        user_id = data.get("userId")
+        raw_user_id = data.get("userId")
+        user_properties = data.get("userProperties")
 
-        # Validate required fields
-        if not client_id or not event_name:
+        if (
+            not isinstance(raw_client_id, str)
+            or not raw_client_id.strip()
+            or not isinstance(event_name, str)
+            or not event_name.strip()
+        ):
             return jsonify({"error": "Missing required fields: clientId, eventName"}), 400
 
-        # Send event to GA4
-        success = send_analytics_event(
+        client_id = raw_client_id.strip()
+        if len(client_id) > MAX_CLIENT_ID_LENGTH:
+            return jsonify({"error": "clientId exceeds maximum length"}), 400
+
+        if event_name not in ALLOWED_CLIENT_EVENT_NAMES:
+            return jsonify({"error": f"Unsupported eventName: {event_name}"}), 400
+
+        if params is None:
+            params = {}
+        if not isinstance(params, dict):
+            return jsonify({"error": "params must be an object"}), 400
+
+        if user_properties is not None and not isinstance(user_properties, dict):
+            return jsonify({"error": "userProperties must be an object"}), 400
+
+        user_id = raw_user_id.strip() if isinstance(raw_user_id, str) and raw_user_id.strip() else None
+        sanitized_params = sanitize_event_params(params)
+        user_agent = request.headers.get("User-Agent") or None
+        ip_override = extract_client_ip()
+
+        accepted = enqueue_analytics_event(
             event_name=event_name,
             client_id=client_id,
-            params=params,
+            params=sanitized_params,
             user_id=user_id,
+            user_properties=user_properties,
+            user_agent=user_agent,
+            ip_override=ip_override,
         )
 
-        if success:
+        if accepted:
             return jsonify({"status": "ok"}), 200
-        else:
-            return jsonify({"error": "Failed to send event to GA4"}), 500
+        return jsonify({"error": "Failed to enqueue event for GA4"}), 503
 
     except Exception as e:
         current_app.logger.error(f"Error in analytics endpoint: {e}")

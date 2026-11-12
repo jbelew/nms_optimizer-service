@@ -321,6 +321,22 @@ class TestAnalyticsEndpoint(unittest.TestCase):
         self.assertEqual(mock_bq.query.call_count, 1)
         self.assertEqual(resp1.data, resp2.data)
 
+    @patch("src.routes.analytics.bq_client")
+    def test_popular_data_deduplicates_and_filters_non_prod(self, mock_bq: MagicMock) -> None:
+        """Test /analytics/popular_data deduplicates daily/intraday rows and excludes non-production hosts."""
+        mock_job = MagicMock()
+        mock_job.result.return_value = []
+        mock_bq.query.return_value = mock_job
+
+        self.client.get("/analytics/popular_data?start_date=2026-03-10&end_date=2026-03-11")
+
+        mock_bq.query.assert_called_once()
+        query_sql = mock_bq.query.call_args[0][0]
+        self.assertIn("SELECT DISTINCT", query_sql)
+        self.assertIn("device.web_info.hostname", query_sql)
+        self.assertIn("'nms-optimizer.app'", query_sql)
+        self.assertIn("NOT REGEXP_CONTAINS", query_sql)
+
 
 class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
     """Test performance analytics data endpoint."""
@@ -527,6 +543,95 @@ class TestPerformanceAnalyticsEndpoint(unittest.TestCase):
                     non_prod_loc_re.search(allowed_url.lower()),
                     f"Expected production page_location {allowed_url!r} to be preserved",
                 )
+
+    @patch("src.routes.analytics.bq_client")
+    def test_performance_data_coalesces_metric_value_and_value(self, mock_bq: MagicMock) -> None:
+        """Test BigQuery Web Vitals query prefers metric_value and falls back to legacy value."""
+        query_sql = self._capture_performance_query(mock_bq)
+        self.assertIn("key = 'metric_value'", query_sql)
+        self.assertIn("key = 'value'", query_sql)
+        self.assertLess(query_sql.index("key = 'metric_value'"), query_sql.index("key = 'value'"))
+
+
+class TestTrackEventRelayEndpoint(unittest.TestCase):
+    """Test POST /api/events GA4 relay validation and enrichment."""
+
+    def setUp(self) -> None:
+        """Set up Flask test client."""
+        self.client = app.test_client()
+
+    @patch("src.routes.analytics.enqueue_analytics_event", return_value=True)
+    def test_track_event_accepts_allowlisted_event_and_forwards_context(self, mock_enqueue: MagicMock) -> None:
+        """Forwards allowlisted event with sanitized params, userProperties, User-Agent, and client IP."""
+        payload = {
+            "clientId": "111.222",
+            "eventName": "optimize_tech",
+            "params": {
+                "platform": "corvette",
+                "tech": "pulse",
+                "supercharged": True,
+                "session_id": 1731369600,
+                "engagement_time_msec": 350,
+            },
+            "userProperties": {
+                "app_version": "8.9.0",
+                "is_installed": "no",
+                "platform_type": "corvette",
+            },
+        }
+        response = self.client.post(
+            "/api/events",
+            data=json.dumps(payload),
+            content_type="application/json",
+            headers={
+                "User-Agent": "Mozilla/5.0 Safari/605.1.15",
+                "CF-Connecting-IP": "203.0.113.99",
+                "X-Forwarded-For": "198.51.100.1, 10.0.0.1",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        mock_enqueue.assert_called_once_with(
+            event_name="optimize_tech",
+            client_id="111.222",
+            params={
+                "platform": "corvette",
+                "tech": "pulse",
+                "supercharged": "true",
+                "session_id": 1731369600,
+                "engagement_time_msec": 350,
+            },
+            user_id=None,
+            user_properties={
+                "app_version": "8.9.0",
+                "is_installed": "no",
+                "platform_type": "corvette",
+            },
+            user_agent="Mozilla/5.0 Safari/605.1.15",
+            ip_override="203.0.113.99",
+        )
+
+    @patch("src.routes.analytics.enqueue_analytics_event", return_value=True)
+    def test_track_event_rejects_disallowed_event_name(self, mock_enqueue: MagicMock) -> None:
+        """Rejects arbitrary event names outside ALLOWED_CLIENT_EVENT_NAMES with HTTP 400."""
+        response = self.client.post(
+            "/api/events",
+            data=json.dumps({"clientId": "111.222", "eventName": "purchase", "params": {"value": 999}}),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 400)
+        mock_enqueue.assert_not_called()
+
+    @patch("src.routes.analytics.enqueue_analytics_event", return_value=True)
+    def test_track_event_skips_loopback_and_rfc1918_ips(self, mock_enqueue: MagicMock) -> None:
+        """Does not forward loopback or RFC1918 router addresses as ip_override."""
+        response = self.client.post(
+            "/api/events",
+            data=json.dumps({"clientId": "111.222", "eventName": "page_view", "params": {}}),
+            content_type="application/json",
+            headers={"X-Forwarded-For": "10.1.2.3"},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(mock_enqueue.call_args.kwargs["ip_override"])
 
 
 class TestErrorHandling(unittest.TestCase):
