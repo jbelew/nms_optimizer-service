@@ -15,7 +15,7 @@ gevent==26.9.0
 charset-normalizer==3.5.2
 google-analytics-data==0.23.3
 google-api-core==2.44.0
-google-auth==2.62.1
+google-auth==2.62.2
 googleapis-common-protos==1.76.0
 greenlet==3.5.6
 grpcio==1.85.1
@@ -52,5 +52,5 @@ zope.interface==8.7
 wheelhouse/nms_optimizer_service-5.12.2-cp314-cp314-manylinux_2_34_x86_64.whl
 pre-commit==4.7.0
 commitizen==4.19.3
-coverage==7.17.2
+coverage==7.17.3
 google-cloud-bigquery==3.47.0
